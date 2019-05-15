@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>srg_worldmodel</name>
+  <version>0.0.0</version>
+  <description>The srg_worldmodel package</description>
+
+  <maintainer email="info@das-lab.net">Carpe Noctem</maintainer>
+
+  <license>MIT</license>
+
+  <author email="info@das-lab.net">Carpe Noctem</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  
+  <depend>message_generation</depend>
+  <depend>system_config</depend>
+  <depend>alica_engine</depend>
+  <depend>event_handling</depend>
+  <depend>world_model</depend>
+  <depend>asp_solver_wrapper</depend>
+  <depend>asp_solver</depend>
+  <depend>asp_commons</depend>
+  <depend>capnzero</depend>
+
+  <export>
+  </export>
+</package>
