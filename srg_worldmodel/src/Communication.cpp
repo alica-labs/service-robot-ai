@@ -1,7 +1,10 @@
 #include "srg/wm/Communication.h"
-#include <SRGWorldModel.h>
-
+#include <capnzero/Common.h>
 #include <capnzero/Subscriber.h>
+#include <Message.h>
+
+#include <srg/SRGWorldModel.h>
+
 #include <SystemConfig.h>
 
 namespace srg {
@@ -15,13 +18,15 @@ namespace srg {
 
             this->TelegramMessageSub->connect(capnzero::CommType::UDP, "224.0.0.2:5555");
 
-            this->TelegramMessageSub->subscribe(&srg::wm::Communication::onTelegramMessage, &(*this));
+            this->TelegramMessageSub->subscribe(&Communication::onTelegramMessage, &(*this));
         }
+
         Communication::~Communication() {
             zmq_ctx_term(this->ctx);
             delete this->TelegramMessageSub;
         }
-        void Communication::onTelegramMessage() {
+
+        void Communication::onTelegramMessage(capnp::FlatArrayMessageReader &msg) {
 
         }
     }

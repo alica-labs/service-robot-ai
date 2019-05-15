@@ -35,6 +35,6 @@ add_library(srg_communication
 )
 
 target_link_libraries(srg_communication
-    system_config
+    ${catkin_LIBRARIES}
 #    srg_worldmodel
 )

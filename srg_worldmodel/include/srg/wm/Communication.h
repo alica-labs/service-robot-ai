@@ -13,7 +13,7 @@ namespace srg{
             virtual ~Communication();
 
         private:
-            void onTelegramMessage(/* Telegram message */);
+            void onTelegramMessage(capnp::FlatArrayMessageReader &msg);
 
             SRGWorldModel *wm;
             essentials::SystemConfig *sc;
