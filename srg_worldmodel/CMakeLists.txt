@@ -7,12 +7,28 @@ set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 ## Enable exception handling for segfaults using SigFault.h
 set(CMAKE_CXX_FLAGS "-rdynamic -fnon-call-exceptions -ggdb ${CMAKE_CXX_FLAGS}")
 
-find_package(catkin REQUIRED COMPONENTS system_config event_handling alica_engine world_model asp_solver_wrapper asp_solver capnzero)
+find_package(catkin REQUIRED COMPONENTS
+    system_config
+    event_handling
+    alica_engine
+    world_model
+    asp_solver_wrapper
+    asp_solver
+    capnzero
+    telegram-client
+)
 
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES srg_worldmodel
-  CATKIN_DEPENDS system_config event_handling world_model asp_solver_wrapper asp_solver capnzero
+  CATKIN_DEPENDS
+    system_config
+    event_handling
+    world_model
+    asp_solver_wrapper
+    asp_solver
+    capnzero
+    telegram_msg_wrapper
 )
 
 include_directories(include ${catkin_INCLUDE_DIRS})

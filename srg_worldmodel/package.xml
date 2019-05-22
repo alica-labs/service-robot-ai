@@ -21,7 +21,7 @@
   <depend>asp_solver</depend>
   <depend>asp_commons</depend>
   <depend>capnzero</depend>
-  <depend>telegram-message</depend>
+  <depend>telegram_msg_wrapper</depend>
 
   <export>
   </export>

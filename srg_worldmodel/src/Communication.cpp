@@ -27,7 +27,9 @@ namespace srg {
         }
 
         void Communication::onTelegramMessage(capnp::FlatArrayMessageReader &msg) {
-
+            Message m;
+            m.fromCapnp(msg);
+            this->wm->rawSensorData.processTelegramMessage(m);
         }
     }
 }
