@@ -2,6 +2,7 @@
 
 #include "wm/KnowledgeManager.h"
 #include "wm/SRGSimData.h"
+#include "wm/RawSensorData.h"
 #include "srg/wm/ConceptNet.h"
 #include <SystemConfig.h>
 #include <essentials/EventTrigger.h>
@@ -33,6 +34,7 @@ public:
     wm::SRGSimData sRGSimData;
     wm::KnowledgeManager knowledgeManager;
     wm::ConceptNet conceptNet;
+    wm::RawSensorData rawSensorData;
 
 private:
     SRGWorldModel(); /**< Private Singleton Constructor */
