@@ -2,9 +2,8 @@
 
 #include "wm/KnowledgeManager.h"
 #include "wm/SRGSimData.h"
-#include "wm/RawSensorData.h"
 #include "srg/wm/ConceptNet.h"
-#include <SystemConfig.h>
+#include "srg/wm/RawSensorData.h"
 #include <essentials/EventTrigger.h>
 #include <supplementary/InformationElement.h>
 #include <supplementary/WorldModel.h>

@@ -39,6 +39,7 @@ add_library(srg_worldmodel
     src/ASPKnowledgeBase.cpp
     src/KnowledgeManager.cpp
     src/ConceptNet.cpp include/srg/wm/ConceptNet.h
+    src/RawSensorData.cpp include/srg/wm/RawSensorData.h
 )
 
 target_link_libraries(srg_worldmodel
