@@ -6,6 +6,7 @@
 #include <UtilityFunctionCreator.h>
 #include <ConstraintCreator.h>
 #include <communication/AlicaCapnzeroCommunication.h>
+#include <srg/SRGWorldModel.h>
 
 #include <chrono>
 #include <iostream>
@@ -20,7 +21,7 @@ bool Base::running = false;
 
 Base::Base(std::string roleSetName, std::string masterPlanName, std::string roleSetDir)
 {
-    ae = new alica::AlicaEngine(new essentials::AgentIDManager(new essentials::AgentIDFactory()), roleSetName, masterPlanName, false);
+    ae = new alica::AlicaEngine(new essentials::IDManager(), roleSetName, masterPlanName, false);
     bc = new alica::BehaviourCreator();
     cc = new alica::ConditionCreator();
     uc = new alica::UtilityFunctionCreator();
@@ -36,9 +37,9 @@ Base::Base(std::string roleSetName, std::string masterPlanName, std::string role
 //    solverWrapper->init(solver);
 //    ae->addSolver(solverWrapper);
 
-    //    wm = WumpusWorldModel::getInstance();
-    //    wm->setEngine(ae);
-    //    wm->init();
+        wm = SRGWorldModel::getInstance();
+        wm->setEngine(ae);
+        wm->init();
 
     if (!ae->init(bc, cc, uc, crc)) {
         std::cerr << "Base: Unable to initialize the Alica Engine successfull!" << std::endl;
