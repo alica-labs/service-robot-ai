@@ -14,7 +14,7 @@ class ConstraintCreator;
 namespace srg
 {
 
-class ServiceRobotWorldModel;
+class SRGWorldModel;
 
 class Base
 {
@@ -33,7 +33,7 @@ public:
     alica::ConditionCreator* cc;
     alica::UtilityFunctionCreator* uc;
     alica::ConstraintCreator* crc;
-    ServiceRobotWorldModel* wm;
+    SRGWorldModel* wm;
 };
 
 } // namespace srg

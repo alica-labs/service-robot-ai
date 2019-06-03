@@ -4,6 +4,7 @@
 #include "wm/SRGSimData.h"
 #include "srg/wm/ConceptNet.h"
 #include "srg/wm/RawSensorData.h"
+#include <SystemConfig.h>
 #include <essentials/EventTrigger.h>
 #include <supplementary/InformationElement.h>
 #include <supplementary/WorldModel.h>

@@ -12,7 +12,7 @@ namespace srg {
             this->wm = wm;
             auto sc = this->wm->getSystemConfig();
             this->telegramMessageValidityDuration = alica::AlicaTime::nanoseconds((*sc)["SRGWorldModel"]->get<int>("Data.TelegramMessage.ValidityDuration", NULL));
-            this->telegramMessageBuffer = new supplementary::InfoBuffer<Message>((*sc)["SRGWorldmodel"]->get<int>("Data.TelegramMessage.BufferLength", NULL));
+            this->telegramMessageBuffer = new supplementary::InfoBuffer<Message>((*sc)["SRGWorldModel"]->get<int>("Data.TelegramMessage.BufferLength", NULL));
         }
 
         RawSensorData::~RawSensorData() {
@@ -20,7 +20,9 @@ namespace srg {
         }
 
         void RawSensorData::processTelegramMessage(Message message) {
+            std::cout << "processTelegramMessage called\n";
             auto messageInfo = std::make_shared<supplementary::InformationElement<Message>>(message, wm->getTime(), telegramMessageValidityDuration, 1.0);
+            telegramMessageBuffer->add(messageInfo);
         }
     }
 }

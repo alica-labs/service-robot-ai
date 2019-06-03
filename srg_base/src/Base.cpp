@@ -7,6 +7,10 @@
 #include <ConstraintCreator.h>
 #include <communication/AlicaCapnzeroCommunication.h>
 #include <srg/SRGWorldModel.h>
+#include <essentials/IDManager.h>
+
+#include <asp_solver_wrapper/ASPSolverWrapper.h>
+#include <reasoner/asp/Solver.h>
 
 #include <chrono>
 #include <iostream>
@@ -37,9 +41,9 @@ Base::Base(std::string roleSetName, std::string masterPlanName, std::string role
 //    solverWrapper->init(solver);
 //    ae->addSolver(solverWrapper);
 
-        wm = SRGWorldModel::getInstance();
-        wm->setEngine(ae);
-        wm->init();
+    wm = SRGWorldModel::getInstance();
+    wm->setEngine(ae);
+    wm->init();
 
     if (!ae->init(bc, cc, uc, crc)) {
         std::cerr << "Base: Unable to initialize the Alica Engine successfull!" << std::endl;

@@ -3,7 +3,9 @@
 #include <engine/BasicBehaviour.h>
 #include <string>
 /*PROTECTED REGION ID(domainBehaviourHeaderHead) ENABLED START*/
-// Add additional options here
+namespace srg {
+    class Robot;
+}
 /*PROTECTED REGION END*/
 
 namespace alica
@@ -15,7 +17,7 @@ public:
     virtual ~DomainBehaviour();
 
     /*PROTECTED REGION ID(domainBehaviourClassDecl) ENABLED START*/
-    // Add additional options here
+    srg::Robot* robot;
     /*PROTECTED REGION END*/
 };
 } /* namespace alica */

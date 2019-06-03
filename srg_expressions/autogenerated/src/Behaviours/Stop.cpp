@@ -2,7 +2,7 @@
 #include <memory>
 
 /*PROTECTED REGION ID(inccpp1555602210283) ENABLED START*/
-// Add additional includes here
+#include <srg/Robot.h>
 /*PROTECTED REGION END*/
 
 namespace alica
@@ -27,7 +27,9 @@ Stop::~Stop()
 void Stop::run(void* msg)
 {
     /*PROTECTED REGION ID(run1555602210283) ENABLED START*/
-    // Add additional options here
+    std::cout << "Stop is called!" << std::endl;
+
+    this->robot->spawn();
     /*PROTECTED REGION END*/
 }
 void Stop::initialiseParameters()

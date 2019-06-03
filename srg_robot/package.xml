@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>srg_robot</name>
+  <version>0.0.0</version>
+  <description>The srg_robot package</description>
+  <maintainer email="opfer@vs.uni-kassel.de">Stephan Opfer</maintainer>
+  <license>MIT</license>
+  <depend>srg_worldmodel</depend>
+  <depend>capnzero</depend>
+  <depend>id_capnzero</depend>
+  <buildtool_depend>catkin</buildtool_depend>
+  <export>
+  </export>
+</package>
