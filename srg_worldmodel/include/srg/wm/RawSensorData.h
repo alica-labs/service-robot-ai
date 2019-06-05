@@ -1,5 +1,7 @@
 #pragma once
 
+#include "srg/container/SpeechAct.h"
+
 #include <Message.h>
 #include <supplementary/InformationElement.h>
 
@@ -18,11 +20,16 @@ namespace srg {
 
             // Methods for processing Messages
             void processTelegramMessage(Message message);
+            void processSpeechAct(srg::container::SpeechAct act);
 
         private:
             SRGWorldModel* wm;
-            supplementary::InfoBuffer<Message>* telegramMessageBuffer;
+
             alica::AlicaTime telegramMessageValidityDuration;
+            supplementary::InfoBuffer<Message>* telegramMessageBuffer;
+
+            alica::AlicaTime speechActValidityDuration;
+            supplementary::InfoBuffer<srg::container::SpeechAct>* speechActBuffer;
         };
     }
 }

@@ -13,13 +13,15 @@ namespace srg{
             virtual ~Communication();
 
         private:
-            void onTelegramMessage(capnp::FlatArrayMessageReader &msg);
-
             SRGWorldModel *wm;
             essentials::SystemConfig *sc;
-            void* ctx;
-            capnzero::Subscriber *TelegramMessageSub;
 
+            void* ctx;
+            capnzero::Subscriber *telegramMessageSub;
+            capnzero::Subscriber *speechActSub;
+
+            void onTelegramMessage(capnp::FlatArrayMessageReader &msg);
+            void onSpeechAct(capnp::FlatArrayMessageReader &msg);
         };
     }
 }
