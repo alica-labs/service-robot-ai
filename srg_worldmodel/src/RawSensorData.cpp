@@ -35,6 +35,10 @@ namespace srg {
             std::cout << "RawSensorData: processSpeechAct called" << std::endl;
             auto speechActInfo = std::make_shared<supplementary::InformationElement<srg::container::SpeechAct>>(act, wm->getTime(), speechActValidityDuration, 1.0);
             speechActBuffer->add(speechActInfo);
+            auto stuff = this->wm->basicHumanNeeds.answerNeed(act.text);
+            for (std::string answer : stuff) {
+                std::cout << "RawSensorData: " << answer << std::endl;
+            }
         }
     }
 }
