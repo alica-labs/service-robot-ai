@@ -23,6 +23,7 @@
   <depend>telegram-client</depend>
   <depend>id_manager</depend>
   <depend>srg_msgs</depend>
+  <depend>knowledge_manager</depend>
 
   <export>
   </export>

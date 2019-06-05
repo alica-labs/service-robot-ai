@@ -65,7 +65,8 @@ namespace srg {
         msg.setSenderID(sender);
         msg.setSpeechType(speechType);
         msg.setText(text);
-        if (this->running) {
+        if (Talker::operating) {
+            std::cout << "Talker: sending msg '" << msg.toString().flatten().cStr() << "'" << std::endl;
             this->speechActPublisher->send(msgBuilder);
         }
     }

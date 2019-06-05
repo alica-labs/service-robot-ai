@@ -36,20 +36,20 @@ Base::Base(std::string roleSetName, std::string masterPlanName, std::string role
 
     // ASP Solver
 //    std::vector<char const*> args{"clingo", nullptr};
-//    auto solver = new ::reasoner::asp::Solver(args);
-//    auto solverWrapper = new alica::reasoner::ASPSolverWrapper(ae, args);
-//    solverWrapper->init(solver);
-//    ae->addSolver(solverWrapper);
+    auto solver = new ::reasoner::asp::Solver({});
+    auto solverWrapper = new alica::reasoner::ASPSolverWrapper(ae, {});
+    solverWrapper->init(solver);
+    ae->addSolver(solverWrapper);
 
     wm = SRGWorldModel::getInstance();
     wm->setEngine(ae);
     wm->init();
+    wm->setSolver(solver);
 
     if (!ae->init(bc, cc, uc, crc)) {
         std::cerr << "Base: Unable to initialize the Alica Engine successfull!" << std::endl;
     }
 
-//    wm->knowledgeManager.initializeSolver();
 }
 
 void Base::start()

@@ -27,6 +27,10 @@ public:
     std::vector<std::string> sources;
 
     std::string toString();
+
+    bool operator< (const Edge& other) {
+        return weight > other.weight;
+    }
 };
 } // namespace container
 } // namespace srg

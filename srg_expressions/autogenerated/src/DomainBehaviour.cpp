@@ -1,7 +1,7 @@
 #include "DomainBehaviour.h"
 /*PROTECTED REGION ID(domainBehaviourSrcHeaders) ENABLED START*/
-#include <srg/SRGWorldModel.h>
 #include <srg/Robot.h>
+#include <srg/SRGWorldModel.h>
 /*PROTECTED REGION END*/
 
 namespace alica

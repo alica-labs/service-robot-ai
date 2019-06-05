@@ -1,7 +1,6 @@
 #include "srg/wm/SRGSimData.h"
 
 #include "srg/SRGWorldModel.h"
-#include "srg/wm/ASPKnowledgeBase.h"
 
 #include <SystemConfig.h>
 #include <engine/AlicaClock.h>

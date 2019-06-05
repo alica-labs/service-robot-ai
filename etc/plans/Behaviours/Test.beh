@@ -1,6 +1,6 @@
 {
-  "id" : 1555602210283,
-  "name" : "Stop",
+  "id" : 1559635479527,
+  "name" : "Test",
   "comment" : "",
   "relativeDirectory" : "Behaviours",
   "variables" : [ ],
@@ -9,12 +9,5 @@
   "preCondition" : null,
   "runtimeCondition" : null,
   "postCondition" : null,
-  "parameters" : {
-    "D" : "3",
-    "asdf" : "1",
-    "e" : "",
-    "3" : "",
-    "32" : "",
-    "asdeqq" : ""
-  }
+  "parameters" : { }
 }

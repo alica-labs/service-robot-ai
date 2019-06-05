@@ -3,8 +3,9 @@
 #include <engine/BasicBehaviour.h>
 #include <string>
 /*PROTECTED REGION ID(domainBehaviourHeaderHead) ENABLED START*/
-namespace srg {
-    class Robot;
+namespace srg
+{
+class Robot;
 }
 /*PROTECTED REGION END*/
 

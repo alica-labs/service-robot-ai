@@ -14,8 +14,8 @@ namespace srg {
             std::cout << "RawSensorData: Creating RawSensorData" << std::endl;
             this->wm = wm;
             auto sc = essentials::SystemConfig::getInstance();
-            this->telegramMessageValidityDuration = alica::AlicaTime::nanoseconds((*sc)["SRGWorldModel"]->get<int>("Data.TelegramMessage.ValidityDuration", NULL));
-            this->telegramMessageBuffer = new supplementary::InfoBuffer<Message>((*sc)["SRGWorldModel"]->get<int>("Data.TelegramMessage.BufferLength", NULL));
+            this->telegramMessageValidityDuration = alica::AlicaTime::nanoseconds((*sc)["SRGWorldModel"]->get<int>("Data.Telegram.ValidityDuration", NULL));
+            this->telegramMessageBuffer = new supplementary::InfoBuffer<Message>((*sc)["SRGWorldModel"]->get<int>("Data.Telegram.BufferLength", NULL));
 
             this->speechActValidityDuration = alica::AlicaTime::nanoseconds((*sc)["SRGWorldModel"]->get<int>("Data.SpeechAct.ValidityDuration", NULL));
             this->speechActBuffer = new supplementary::InfoBuffer<srg::container::SpeechAct>((*sc)["SRGWorldModel"]->get<int>("Data.SpeechAct.BufferLength", NULL));
@@ -35,7 +35,6 @@ namespace srg {
             std::cout << "RawSensorData: processSpeechAct called" << std::endl;
             auto speechActInfo = std::make_shared<supplementary::InformationElement<srg::container::SpeechAct>>(act, wm->getTime(), speechActValidityDuration, 1.0);
             speechActBuffer->add(speechActInfo);
-//            this->wm->
         }
     }
 }

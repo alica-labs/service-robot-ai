@@ -20,11 +20,12 @@ public:
     explicit ConceptNet(SRGWorldModel* wm);
     virtual ~ConceptNet() = default;
 
-    std::vector<srg::container::Edge> getEdges(const std::string& concept);
-    std::vector<srg::container::Edge> getCompleteEdge(srg::container::Relation relation, const std::string& fromConcept, const std::string& toConcept);
-    std::vector<srg::container::Edge> getOutgoingEdges(srg::container::Relation relation, const std::string& fromConcept);
-    std::vector<srg::container::Edge> getIncomingEdges(srg::container::Relation relation, const std::string& toConcept);
-    std::vector<srg::container::Edge> getRelations(const std::string& concept, const std::string& otherConcept);
+    std::vector<srg::container::Edge> getEdges(const std::string& concept, int limit=1000);
+    std::vector<srg::container::Edge> getEdges(srg::container::Relation relation, const std::string& concept, int limit=1000);
+    std::vector<srg::container::Edge> getCompleteEdge(srg::container::Relation relation, const std::string& fromConcept, const std::string& toConcept, int limit=1000);
+    std::vector<srg::container::Edge> getOutgoingEdges(srg::container::Relation relation, const std::string& fromConcept, int limit=1000);
+    std::vector<srg::container::Edge> getIncomingEdges(srg::container::Relation relation, const std::string& toConcept, int limit=1000);
+    std::vector<srg::container::Edge> getRelations(const std::string& concept, const std::string& otherConcept, int limit=1000);
     double getRelatedness(const std::string& firstConcept, const std::string& secondConcept);
 
 private:
@@ -34,7 +35,7 @@ private:
     srg::container::Relation getRelation(const std::string& relation);
     bool conceptContainsNonASCII(const std::string& concept);
     std::string trimTerm(const std::string& term);
-    void generateEdges(const std::string& json, std::vector<srg::container::Edge>& edges);
+    void generateEdges(const std::string& json, std::vector<srg::container::Edge>& edges, double minWeight = 1.0);
 
     /**
      * Containts the begin of a concept net query url.

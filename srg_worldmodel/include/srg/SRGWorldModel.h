@@ -1,26 +1,33 @@
 #pragma once
 
-#include "wm/KnowledgeManager.h"
-#include "wm/SRGSimData.h"
 #include "srg/wm/ConceptNet.h"
 #include "srg/wm/RawSensorData.h"
+#include "wm/BasicHumanNeeds.h"
+#include "wm/SRGSimData.h"
+#include "wm/Communication.h"
+
 #include <SystemConfig.h>
 #include <essentials/EventTrigger.h>
+#include <knowledge_manager/ASPKnowledgeManager.h>
 #include <supplementary/InformationElement.h>
 #include <supplementary/WorldModel.h>
+
 namespace essentials
 {
 class SystemConfig;
 }
 
-namespace alica
+namespace reasoner
 {
-class AlicaEngine;
-class AlicaClock;
-} // namespace alica
+namespace asp
+{
+class Solver;
+}
+} // namespace reasoner
 
 namespace srg
 {
+class ConceptNet;
 class SRGWorldModel : public supplementary::WorldModel
 {
 public:
@@ -28,13 +35,16 @@ public:
 
     virtual ~SRGWorldModel();
     void init();
+    void setSolver(::reasoner::asp::Solver* solver);
     std::string getAgentName();
 
     // Public Data Access Classes
     wm::SRGSimData sRGSimData;
-    wm::KnowledgeManager knowledgeManager;
-    wm::ConceptNet conceptNet;
+    wm::ConceptNet* conceptNet;
+    wm::BasicHumanNeeds basicHumanNeeds;
     wm::RawSensorData rawSensorData;
+    wm::Communication* communication;
+    knowledge_manager::ASPKnowledgeManager knowledgeManager;
 
 private:
     SRGWorldModel(); /**< Private Singleton Constructor */

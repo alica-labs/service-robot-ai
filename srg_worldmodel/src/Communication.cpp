@@ -19,12 +19,12 @@ namespace srg {
             this->ctx = zmq_ctx_new();
             this->sc = essentials::SystemConfig::getInstance();
 
-            std::string telegramMessageTopic = (*sc)["SRGWorldModel"]->get<std::string>("Telegram.Topic");
+            std::string telegramMessageTopic = (*sc)["SRGWorldModel"]->get<std::string>("Data.Telegram.Topic", NULL);
             this->telegramMessageSub = new capnzero::Subscriber(this->ctx, telegramMessageTopic);
             this->telegramMessageSub->connect(capnzero::CommType::UDP, "224.0.0.2:5555");
             this->telegramMessageSub->subscribe(&Communication::onTelegramMessage, &(*this));
 
-            std::string speechActTopic = (*sc)["SRGWorldModel"]->get<std::string>("SpeechAct.Topic");
+            std::string speechActTopic = (*sc)["SRGWorldModel"]->get<std::string>("Data.SpeechAct.Topic", NULL);
             this->speechActSub = new capnzero::Subscriber(this->ctx, speechActTopic);
             this->speechActSub->connect(capnzero::CommType::UDP, "224.0.0.2:5555");
             this->speechActSub->subscribe(&Communication::onSpeechAct, &(*this));
@@ -44,6 +44,7 @@ namespace srg {
         }
 
         void Communication::onSpeechAct(capnp::FlatArrayMessageReader &msg) {
+            std::cout << "Communication: SpeechAct received..." << std::endl;
             srg::SpeechAct::Reader reader = msg.getRoot<srg::SpeechAct>();
 
             // fill container

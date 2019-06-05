@@ -57,7 +57,7 @@
     "comment" : "",
     "entryPoint" : null,
     "parentPlan" : 1555601736192,
-    "abstractPlans" : [ ],
+    "abstractPlans" : [ "Behaviours/Test.beh#1559635479527" ],
     "variableBindings" : [ ],
     "outTransitions" : [ 1558533498560, 1558533519854, 1558533714287 ],
     "inTransitions" : [ 1558533498560, 1558533514929 ]
