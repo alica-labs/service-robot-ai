@@ -34,6 +34,7 @@ namespace srg {
             zmq_ctx_term(this->ctx);
 
             delete this->telegramMessageSub;
+            delete this->speechActSub;
         }
 
         void Communication::onTelegramMessage(capnp::FlatArrayMessageReader &msg) {
