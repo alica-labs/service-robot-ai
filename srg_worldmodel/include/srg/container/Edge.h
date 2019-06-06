@@ -31,6 +31,10 @@ public:
     bool operator< (const Edge& other) {
         return weight > other.weight;
     }
+
+    bool operator==(const Edge& other) {
+        return fromConcept.term == other.fromConcept.term && toConcept.term == other.toConcept.term  && relation == other.relation;
+    }
 };
 } // namespace container
 } // namespace srg

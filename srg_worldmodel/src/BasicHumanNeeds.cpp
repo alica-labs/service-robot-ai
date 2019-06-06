@@ -29,7 +29,7 @@ std::vector<std::string> BasicHumanNeeds::answerNeed(std::string need)
     // 1. ask ConceptNet for MotivatedByGoal(WILDCARD, need)
     std::vector<container::Edge> motivatedEdges = this->cn->getIncomingEdges(container::Relation::MotivatedByGoal, need, 5);
     std::vector<container::Edge> causesDesireEdges = this->cn->getOutgoingEdges(container::Relation::CausesDesire, need, 5);
-    motivatedEdges.insert(motivatedEdges.end(), causesDesireEdges.begin(), causesDesireEdges.end());
+    insertNewEdges(causesDesireEdges, motivatedEdges);
     std::sort(motivatedEdges.begin(), motivatedEdges.end());
     // 2. ask ConceptNet for Synonyms for top 5 results from 1.
     //=> Synonym, IsA(subtype), SimilarTo, InstanceOf
@@ -43,7 +43,7 @@ std::vector<std::string> BasicHumanNeeds::answerNeed(std::string need)
     std::vector<container::Edge> usedForEdges;
     for (int i = 0; i < size; i++) {
         auto tmp = this->cn->getIncomingEdges(container::Relation::UsedFor, synonyms.at(i).fromConcept.term, 5);
-        usedForEdges.insert(usedForEdges.end(), tmp.begin(), tmp.end());
+        insertNewEdges(tmp, usedForEdges);
     }
     // 5. ask ConceptNet for Synonyms for top 5 results from 4
     //=> Synonym, IsA(subtype), SimilarTo, InstanceOf
@@ -59,19 +59,35 @@ std::vector<std::string> BasicHumanNeeds::answerNeed(std::string need)
     return answer;
 }
 
-void BasicHumanNeeds::getSynonyms(std::vector<container::Edge>& edges, int size, std::vector<container::Edge>& synonyms) const
+    void BasicHumanNeeds::insertNewEdges(std::vector<container::Edge> &from, std::vector<container::Edge> &to) const {
+        bool insert;
+        for (container::Edge causesEdge : from) {
+            insert = true;
+            for (container::Edge motivatedEdge : to) {
+                if (motivatedEdge == causesEdge) {
+                    insert = false;
+                    break;
+                }
+            }
+            if (insert) {
+                to.push_back(causesEdge);
+            }
+        }
+    }
+
+    void BasicHumanNeeds::getSynonyms(std::vector<container::Edge>& edges, int size, std::vector<container::Edge>& synonyms) const
 {
-    synonyms.insert(synonyms.begin(), edges.begin(), edges.begin() + size);
+    insertNewEdges(edges, synonyms);
     std::vector<container::Edge> tmp;
     for (int i = 0; i < size; i++) {
         tmp = cn->getOutgoingEdges(container::Synonym, edges.at(i).toConcept.term, 5);
-        synonyms.insert(synonyms.end(), tmp.begin(), tmp.end());
+        insertNewEdges(tmp, synonyms);
         tmp = cn->getOutgoingEdges(container::IsA, edges.at(i).toConcept.term , 5);
-        synonyms.insert(synonyms.end(), tmp.begin(), tmp.end());
+        insertNewEdges(tmp, synonyms);
         tmp = cn->getOutgoingEdges(container::SimilarTo, edges.at(i).toConcept.term, 5);
-        synonyms.insert(synonyms.end(), tmp.begin(), tmp.end());
+        insertNewEdges(tmp, synonyms);
         tmp = cn->getOutgoingEdges(container::InstanceOf, edges.at(i).toConcept.term, 5);
-        synonyms.insert(synonyms.end(), tmp.begin(), tmp.end());
+        insertNewEdges(tmp, synonyms);
     }
 }
 } // namespace wm
