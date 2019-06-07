@@ -1,6 +1,7 @@
-#include "srg/wm/EdgeTranslator.h"
+#include "srg/conceptnet/EdgeTranslator.h"
 
-#include "srg/container/Relations.h"
+#include "srg/conceptnet/Relations.h"
+#include "srg/conceptnet/Concept.h"
 
 #include <algorithm>
 #include <map>
@@ -14,7 +15,7 @@ const std::string EdgeTranslator::PREFIX = "cn5_";
 const std::string EdgeTranslator::COMMONSENSE_KNOWLEDGE = "#program cn5_commonsenseKnowledge";
 const std::string EdgeTranslator::SITUATIONAL_KNOWLEDGE = "#program cn5_situationalKnowledge(n,m).\n";
 
-std::string EdgeTranslator::translate(std::vector<srg::container::Edge>& edges)
+std::string EdgeTranslator::translate(std::vector<srg::conceptnet::Edge>& edges)
 {
     std::string program = EdgeTranslator::COMMONSENSE_KNOWLEDGE;
     program.append(".\n");
@@ -24,7 +25,7 @@ std::string EdgeTranslator::translate(std::vector<srg::container::Edge>& edges)
     std::map<std::string, std::string> relationMap;
     std::vector<std::string> addedRelations;
     for (auto& edge : edges) {
-        std::string rel = srg::container::relations[edge.relation];
+        std::string rel = srg::conceptnet::relations[edge.relation];
         std::transform(rel.begin(), rel.begin() + 1, rel.begin(), [](unsigned char c) -> unsigned char { return std::tolower(c); });
         auto it = find(addedRelations.begin(), addedRelations.end(), rel);
         if (it == addedRelations.end()) {
@@ -43,31 +44,31 @@ std::string EdgeTranslator::translate(std::vector<srg::container::Edge>& edges)
     return program;
 }
 
-std::string EdgeTranslator::createBackgroundKnowledgeRule(std::string& relation, srg::container::Edge& edge)
+std::string EdgeTranslator::createBackgroundKnowledgeRule(std::string& relation, srg::conceptnet::Edge& edge)
 {
     std::string ret = relation;
     ret.append("(n, m, W) :- not -")
             .append(relation)
             .append("(n, m), typeOf(n, ")
             .append(EdgeTranslator::PREFIX)
-            .append(conceptToASPPredicate(edge.fromConcept.term))
+            .append(conceptToASPPredicate(edge.fromConcept->term))
             .append("), typeOf(m, ")
             .append(EdgeTranslator::PREFIX)
-            .append(conceptToASPPredicate(edge.toConcept.term))
+            .append(conceptToASPPredicate(edge.toConcept->term))
             .append("), ")
             .append(EdgeTranslator::PREFIX)
             .append(relation)
             .append("(")
             .append(EdgeTranslator::PREFIX)
-            .append(conceptToASPPredicate(edge.fromConcept.term))
+            .append(conceptToASPPredicate(edge.fromConcept->term))
             .append(",")
             .append(EdgeTranslator::PREFIX)
-            .append(conceptToASPPredicate(edge.toConcept.term))
+            .append(conceptToASPPredicate(edge.toConcept->term))
             .append(", W).\n");
     return ret;
 }
 
-std::string EdgeTranslator::createASPPredicates(std::vector<srg::container::Edge>& edges)
+std::string EdgeTranslator::createASPPredicates(std::vector<srg::conceptnet::Edge>& edges)
 {
     std::string ret;
     for (const auto& edge : edges) {
@@ -76,15 +77,15 @@ std::string EdgeTranslator::createASPPredicates(std::vector<srg::container::Edge
             continue;
         }*/
         std::string tmp;
-        std::string rel = srg::container::relations[edge.relation];
+        std::string rel = srg::conceptnet::relations[edge.relation];
         std::transform(rel.begin(), rel.begin() + 1, rel.begin(), [](unsigned char c) -> unsigned char { return std::tolower(c); });
         tmp.append(EdgeTranslator::PREFIX).append(rel);
         tmp.append("(")
                 .append(EdgeTranslator::PREFIX)
-                .append(conceptToASPPredicate(edge.fromConcept.term))
+                .append(conceptToASPPredicate(edge.fromConcept->term))
                 .append(", ")
                 .append(EdgeTranslator::PREFIX)
-                .append(conceptToASPPredicate(edge.toConcept.term))
+                .append(conceptToASPPredicate(edge.toConcept->term))
                 .append(", ")
                 .append(std::to_string(edge.weight))
                 .append(").\n");

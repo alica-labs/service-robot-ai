@@ -1,10 +1,11 @@
 #pragma once
 
-#include "srg/wm/ConceptNet.h"
+#include "srg/conceptnet/ConceptNet.h"
+#include "srg/dialogue/BasicHumanNeeds.h"
+#include "srg/dialogue/DialogueManager.h"
 #include "srg/wm/RawSensorData.h"
-#include "wm/BasicHumanNeeds.h"
-#include "wm/SRGSimData.h"
 #include "wm/Communication.h"
+#include "wm/SRGSimData.h"
 
 #include <SystemConfig.h>
 #include <essentials/EventTrigger.h>
@@ -27,7 +28,17 @@ class Solver;
 
 namespace srg
 {
+
+namespace conceptnet
+{
 class ConceptNet;
+}
+
+namespace dialogue
+{
+class DialogueManager;
+}
+
 class SRGWorldModel : public supplementary::WorldModel
 {
 public:
@@ -40,8 +51,8 @@ public:
 
     // Public Data Access Classes
     wm::SRGSimData sRGSimData;
-    wm::ConceptNet* conceptNet;
-    wm::BasicHumanNeeds basicHumanNeeds;
+    conceptnet::ConceptNet* conceptNet;
+    dialogue::DialogueManager dialogueManager;
     wm::RawSensorData rawSensorData;
     wm::Communication* communication;
     knowledge_manager::ASPKnowledgeManager knowledgeManager;

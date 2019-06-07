@@ -1,6 +1,6 @@
 #include "srg/wm/Communication.h"
 
-#include "srg/container/SpeechAct.h"
+#include "srg/dialogue/SpeechAct.h"
 
 #include <srg/SRGWorldModel.h>
 
@@ -48,19 +48,19 @@ namespace srg {
             srg::SpeechAct::Reader reader = msg.getRoot<srg::SpeechAct>();
 
             // fill container
-            srg::container::SpeechAct speechAct;
+            srg::dialogue::SpeechAct speechAct;
             speechAct.senderID = this->wm->getEngine()->getIDFromBytes(
                     reader.getSenderID().getValue().asBytes().begin(), reader.getSenderID().getValue().size(), (uint8_t) reader.getSenderID().getType());
             speechAct.text = std::string(reader.getText().cStr());
             switch(reader.getSpeechType()) {
                 case srg::SpeechType::INFORM:
-                    speechAct.type = srg::container::SpeechType::inform;
+                    speechAct.type = srg::dialogue::SpeechType::inform;
                     break;
                 case srg::SpeechType::COMMAND:
-                    speechAct.type = srg::container::SpeechType::command;
+                    speechAct.type = srg::dialogue::SpeechType::command;
                     break;
                 case srg::SpeechType::REQUEST:
-                    speechAct.type = srg::container::SpeechType::request;
+                    speechAct.type = srg::dialogue::SpeechType::request;
                     break;
                 default:
                     std::cerr << "Communication: Unknown speach act type received!" << std::endl;

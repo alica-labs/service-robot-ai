@@ -1,8 +1,9 @@
-#include "srg/container/Concept.h"
+#include "srg/conceptnet/Concept.h"
+#include "srg/conceptnet/Edge.h"
 
 namespace srg
 {
-namespace container
+namespace conceptnet
 {
 Concept::Concept(std::string term, std::string senseLabel, std::string id)
 {

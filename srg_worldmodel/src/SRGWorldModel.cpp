@@ -1,6 +1,7 @@
 #include "srg/SRGWorldModel.h"
 
-#include "srg/wm/ConceptNet.h"
+#include "srg/conceptnet/ConceptNet.h"
+#include "srg/dialogue/DialogueManager.h"
 
 namespace srg
 {
@@ -15,11 +16,11 @@ SRGWorldModel::SRGWorldModel()
         : WorldModel()
         , sRGSimData(this)
         , rawSensorData(this)
-        , basicHumanNeeds(this)
+        , dialogueManager(this)
         , communication(nullptr)
 {
     this->agentName = sc->getHostname();
-    this->conceptNet = new wm::ConceptNet(this);
+    this->conceptNet = new conceptnet::ConceptNet(this);
     std::cout << "Creating a SRGWorldModel\n";
 }
 

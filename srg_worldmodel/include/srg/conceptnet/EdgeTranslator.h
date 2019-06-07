@@ -1,6 +1,6 @@
 #pragma once
 
-#include "srg/container/Edge.h"
+#include "srg/conceptnet/Edge.h"
 
 #include <string>
 #include <vector>
@@ -13,12 +13,12 @@ class EdgeTranslator
 {
 public:
     EdgeTranslator() = delete;
-    static std::string translate(std::vector<srg::container::Edge>& edges);
+    static std::string translate(std::vector<srg::conceptnet::Edge>& edges);
 
 private:
-    static std::string createBackgroundKnowledgeRule(std::string& relation, srg::container::Edge& edge);
+    static std::string createBackgroundKnowledgeRule(std::string& relation, srg::conceptnet::Edge& edge);
     static std::string conceptToASPPredicate(std::string concept);
-    static std::string createASPPredicates(std::vector<srg::container::Edge>& edges);
+    static std::string createASPPredicates(std::vector<srg::conceptnet::Edge>& edges);
     /**
      * Containts the cn5_ prefix.
      */

@@ -2,7 +2,7 @@
 
 namespace srg
 {
-namespace container
+namespace conceptnet
 {
 
 #define UNUSED_VAR     __attribute__ ((unused))

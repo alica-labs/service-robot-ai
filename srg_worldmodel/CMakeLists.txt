@@ -21,14 +21,17 @@ include_directories(include ${catkin_INCLUDE_DIRS} ${YAML_CPP_INCLUDE_DIR})
 
 add_library(srg_worldmodel
         src/SRGWorldModel.cpp
-        src/SRGSimData.cpp
+        src/wm/SRGSimData.cpp
         src/conceptnet/ConceptNet.cpp
         src/conceptnet/Edge.cpp
         src/conceptnet/Concept.cpp
         src/conceptnet/EdgeTranslator.cpp
-        src/RawSensorData.cpp
-        src/Communication.cpp
-        src/BasicHumanNeeds.cpp
+        src/dialogue/AnswerGraph.cpp
+        src/wm/RawSensorData.cpp
+        src/wm/Communication.cpp
+        src/dialogue/BasicHumanNeeds.cpp
+        src/dialogue/SpeechAct.cpp
+        src/dialogue/DialogueManager.cpp
 )
 
 target_link_libraries(srg_worldmodel
