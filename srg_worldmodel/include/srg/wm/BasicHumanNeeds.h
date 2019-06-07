@@ -17,6 +17,7 @@ public:
     BasicHumanNeeds(SRGWorldModel* wm);
 
     std::vector<std::string> answerNeed(std::string need);
+    static const int bestWeightedEdges;
 
 private:
     SRGWorldModel* wm;

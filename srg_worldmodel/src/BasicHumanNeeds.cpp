@@ -7,7 +7,7 @@ namespace srg
 {
 namespace wm
 {
-
+const int BasicHumanNeeds::bestWeightedEdges = 10;
 #define HUMAN_NEEDS_DEBUG
 BasicHumanNeeds::BasicHumanNeeds(SRGWorldModel* wm)
         : wm(wm)
@@ -20,33 +20,33 @@ std::vector<std::string> BasicHumanNeeds::answerNeed(std::string need)
     // TODO add CausesDesire to step 1
     /**
      *  1. ask ConceptNet for MotivatedByGoal(WILDCARD, need)
-     *  2. ask ConceptNet for Synonyms for top 5 results from 1.
+     *  2. ask ConceptNet for Synonyms for top bestWeightedEdges results from 1.
      *  => Synonym, IsA(subtype), SimilarTo, InstanceOf
-     *  3. select top 5 from resulting concepts
+     *  3. select top bestWeightedEdges from resulting concepts
      *  4. ask ConceptNet for UsedFor(concept, WILDCARD)
-     *  5. ask ConceptNet for Synonyms for top 5 results from 4
+     *  bestWeightedEdges. ask ConceptNet for Synonyms for top bestWeightedEdges results from 4
      *  => Synonym, IsA(subtype), SimilarTo, InstanceOf
-     *  6. return top 5
+     *  6. return top bestWeightedEdges
      */
     // 1. ask ConceptNet for MotivatedByGoal(WILDCARD, need)
-    std::vector<container::Edge> motivatedEdges = this->cn->getIncomingEdges(container::Relation::MotivatedByGoal, need, 5);
-    std::vector<container::Edge> causesDesireEdges = this->cn->getOutgoingEdges(container::Relation::CausesDesire, need, 5);
+    std::vector<container::Edge> motivatedEdges = this->cn->getIncomingEdges(container::Relation::MotivatedByGoal, need, bestWeightedEdges);
+    std::vector<container::Edge> causesDesireEdges = this->cn->getOutgoingEdges(container::Relation::CausesDesire, need, bestWeightedEdges);
 #ifdef HUMAN_NEEDS_DEBUG
-    int size = (motivatedEdges.size() < 5 ? motivatedEdges.size() : 5);
+    int size = (motivatedEdges.size() < bestWeightedEdges ? motivatedEdges.size() : bestWeightedEdges);
     std::cout << "BasicHumanNeeds: Motivated Edges: " << std::endl;
     for (int i = 0; i < size; i++) {
         std::cout << motivatedEdges.at(i).toString() << std::endl;
     }
     std::cout << std::endl;
     std::cout << "BasicHumanNeeds: Desired Edges: " << std::endl;
-    for (int i = 0; i < (causesDesireEdges.size() < 5 ? causesDesireEdges.size() : 5); i++) {
+    for (int i = 0; i < (causesDesireEdges.size() < bestWeightedEdges ? causesDesireEdges.size() : bestWeightedEdges); i++) {
         std::cout << "\t" << causesDesireEdges.at(i).toString() << std::endl;
     }
     std::cout << std::endl;
 #endif
-    // 2. ask ConceptNet for Synonyms for top 5 results from 1.
+    // 2. ask ConceptNet for Synonyms for top bestWeightedEdges results from 1.
     //=> Synonym, IsA(subtype), SimilarTo, InstanceOf
-    size = (motivatedEdges.size() < 5 ? motivatedEdges.size() : 5);
+    size = (motivatedEdges.size() < bestWeightedEdges ? motivatedEdges.size() : bestWeightedEdges);
 
     std::cout << std::endl;
     std::vector<container::Edge> synonymsMotivated;
@@ -59,7 +59,7 @@ std::vector<std::string> BasicHumanNeeds::answerNeed(std::string need)
     }
     std::cout << std::endl;
 #endif
-    size = (causesDesireEdges.size() < 5 ? causesDesireEdges.size() : 5);
+    size = (causesDesireEdges.size() < bestWeightedEdges ? causesDesireEdges.size() : bestWeightedEdges);
     getSynonyms(causesDesireEdges, size, synonymsDesire, true);
 #ifdef HUMAN_NEEDS_DEBUG
     std::cout << "BasicHumanNeeds: Synonyms for CausesDesire Edges : " << std::endl;
@@ -68,19 +68,19 @@ std::vector<std::string> BasicHumanNeeds::answerNeed(std::string need)
     }
     std::cout << std::endl;
 #endif
-    // 3. select top 5 from resulting concepts
-    size = (synonymsMotivated.size() < 5 ? synonymsMotivated.size() : 5);
+    // 3. select top bestWeightedEdges from resulting concepts
+    size = (synonymsMotivated.size() < bestWeightedEdges ? synonymsMotivated.size() : bestWeightedEdges);
     // 4. ask ConceptNet for UsedFor(concept, WILDCARD)
     std::vector<container::Edge> usedForEdges;
     for (int i = 0; i < size; i++) {
-        auto tmp = this->cn->getIncomingEdges(container::Relation::UsedFor, synonymsMotivated.at(i).fromConcept.term, 5);
+        auto tmp = this->cn->getIncomingEdges(container::Relation::UsedFor, synonymsMotivated.at(i).fromConcept.term, bestWeightedEdges);
         insertNewEdges(tmp, usedForEdges);
     }
-    // 3. select top 5 from resulting concepts
-    size = (synonymsDesire.size() < 5 ? synonymsDesire.size() : 5);
+    // 3. select top bestWeightedEdges from resulting concepts
+    size = (synonymsDesire.size() < bestWeightedEdges ? synonymsDesire.size() : bestWeightedEdges);
     // 4. ask ConceptNet for UsedFor(concept, WILDCARD)
     for (int i = 0; i < size; i++) {
-        auto tmp = this->cn->getIncomingEdges(container::Relation::UsedFor, synonymsDesire.at(i).fromConcept.term, 5);
+        auto tmp = this->cn->getIncomingEdges(container::Relation::UsedFor, synonymsDesire.at(i).fromConcept.term, bestWeightedEdges);
         insertNewEdges(tmp, usedForEdges);
     }
     std::sort(usedForEdges.begin(), usedForEdges.end());
@@ -91,10 +91,10 @@ std::vector<std::string> BasicHumanNeeds::answerNeed(std::string need)
     }
     std::cout << std::endl;
 #endif
-    // 5. ask ConceptNet for Synonyms for top 5 results from 4
+    // bestWeightedEdges. ask ConceptNet for Synonyms for top bestWeightedEdges results from 4
     //=> Synonym, IsA(subtype), SimilarTo, InstanceOf
     std::vector<container::Edge> synonyms;
-    getSynonyms(usedForEdges, (usedForEdges.size() < 5 ? usedForEdges.size() : 5), synonyms, false);
+    getSynonyms(usedForEdges, (usedForEdges.size() < bestWeightedEdges ? usedForEdges.size() : bestWeightedEdges), synonyms, false);
 #ifdef HUMAN_NEEDS_DEBUG
     std::cout << "BasicHumanNeeds: Synonyms for UsedFor Edges: " << std::endl;
     for (int i = 0; i < size; i++) {
@@ -102,9 +102,9 @@ std::vector<std::string> BasicHumanNeeds::answerNeed(std::string need)
     }
     std::cout << std::endl;
 #endif
-    // 6. return top 5
+    // 6. return top bestWeightedEdges
     std::sort(synonyms.begin(), synonyms.end());
-    size = (synonyms.size() < 5 ? synonyms.size() : 5);
+    size = (synonyms.size() < bestWeightedEdges ? synonyms.size() : bestWeightedEdges);
 #ifdef HUMAN_NEEDS_DEBUG
     std::cout << "BasicHumanNeeds: Sorted Synonyms for UsedFor Edges: " << std::endl;
     for (int i = 0; i < size; i++) {
@@ -147,13 +147,13 @@ void BasicHumanNeeds::getSynonyms(std::vector<container::Edge>& edges, int size,
         } else {
             concept = edges.at(i).fromConcept.term;
         }
-        tmp = cn->getOutgoingEdges(container::Synonym, concept, 5);
+        tmp = cn->getOutgoingEdges(container::Synonym, concept, bestWeightedEdges);
         insertNewEdges(tmp, synonyms);
-        tmp = cn->getOutgoingEdges(container::IsA, concept, 5);
+        tmp = cn->getOutgoingEdges(container::IsA, concept, bestWeightedEdges);
         insertNewEdges(tmp, synonyms);
-        tmp = cn->getOutgoingEdges(container::SimilarTo, concept, 5);
+        tmp = cn->getOutgoingEdges(container::SimilarTo, concept, bestWeightedEdges);
         insertNewEdges(tmp, synonyms);
-        tmp = cn->getOutgoingEdges(container::InstanceOf, concept, 5);
+        tmp = cn->getOutgoingEdges(container::InstanceOf, concept, bestWeightedEdges);
         insertNewEdges(tmp, synonyms);
     }
 }
