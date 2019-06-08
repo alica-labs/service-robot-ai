@@ -29,7 +29,10 @@ Edge::Edge(const Edge& edge)
     this->relation = edge.relation;
 }
 
-Edge::~Edge() {}
+Edge::~Edge() {
+    delete this->toConcept;
+    delete this->fromConcept;
+}
 
 std::string Edge::toString()
 {

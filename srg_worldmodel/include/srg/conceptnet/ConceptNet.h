@@ -21,12 +21,12 @@ public:
     virtual ~ConceptNet() = default;
 
     srg::conceptnet::Concept* getConcept(const std::string& concept);
-    std::vector<srg::conceptnet::Edge> getEdges(const std::string& concept, int limit=1000);
-    std::vector<srg::conceptnet::Edge> getEdges(srg::conceptnet::Relation relation, const std::string& concept, int limit=1000);
-    std::vector<srg::conceptnet::Edge> getCompleteEdge(srg::conceptnet::Relation relation, const std::string& fromConcept, const std::string& toConcept, int limit=1000);
-    std::vector<srg::conceptnet::Edge> getOutgoingEdges(srg::conceptnet::Relation relation, const std::string& fromConcept, int limit=1000);
-    std::vector<srg::conceptnet::Edge> getIncomingEdges(srg::conceptnet::Relation relation, const std::string& toConcept, int limit=1000);
-    std::vector<srg::conceptnet::Edge> getRelations(const std::string& concept, const std::string& otherConcept, int limit=1000);
+    std::vector<srg::conceptnet::Edge*> getEdges(const std::string& concept, int limit=1000);
+    std::vector<srg::conceptnet::Edge*> getEdges(srg::conceptnet::Relation relation, const std::string& concept, int limit=1000);
+    std::vector<srg::conceptnet::Edge*> getCompleteEdge(srg::conceptnet::Relation relation, const std::string& fromConcept, const std::string& toConcept, int limit=1000);
+    std::vector<srg::conceptnet::Edge*> getOutgoingEdges(srg::conceptnet::Relation relation, const std::string& fromConcept, int limit=1000);
+    std::vector<srg::conceptnet::Edge*> getIncomingEdges(srg::conceptnet::Relation relation, const std::string& toConcept, int limit=1000);
+    std::vector<srg::conceptnet::Edge*> getRelations(const std::string& concept, const std::string& otherConcept, int limit=1000);
     double getRelatedness(const std::string& firstConcept, const std::string& secondConcept);
 
 private:
@@ -36,7 +36,7 @@ private:
     srg::conceptnet::Relation getRelation(const std::string& relation);
     bool conceptContainsNonASCII(const std::string& concept);
     std::string trimTerm(const std::string& term);
-    void generateEdges(const std::string& json, std::vector<srg::conceptnet::Edge>& edges, double minWeight = 1.0);
+    void generateEdges(const std::string& json, std::vector<srg::conceptnet::Edge*>& edges, double minWeight = 1.0);
 
     /**
      * Containts the begin of a concept net query url.

@@ -19,7 +19,8 @@ public:
     std::string senseLabel;
     std::string id;
 
-    std::vector<Edge*> outgoingEdge;
+    std::vector<Edge*> outgoingEdges;
+    std::vector<Edge*> incomingEdges;
 };
 } // namespace container
 } // namespace srg

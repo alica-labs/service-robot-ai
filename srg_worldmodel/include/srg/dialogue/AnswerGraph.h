@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
 namespace srg
 {
@@ -14,9 +15,10 @@ class AnswerGraph
 {
 public:
     AnswerGraph(srg::conceptnet::Concept* root);
-
+    ~AnswerGraph();
     srg::conceptnet::Concept* graph;
     std::vector<srg::conceptnet::Concept*> answerConcepts;
+    std::string toString();
 };
 } // namespace dialogue
 } // namespace srg
