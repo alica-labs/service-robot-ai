@@ -26,8 +26,9 @@ private:
     SRGWorldModel* wm;
     conceptnet::ConceptNet* cn;
 
-    void getSynonyms(std::vector<srg::conceptnet::Edge*>& edges, int size, std::vector<srg::conceptnet::Edge*>& synonyms, bool useToConcept) const;
+    void getSynonyms(std::vector<srg::conceptnet::Edge*>& edges, bool useToConcept) const;
     void insertNewEdges(std::vector<conceptnet::Edge*> &from, std::vector<conceptnet::Edge*> &to) const;
+    bool compareEdges(const srg::conceptnet::Edge* first , const srg::conceptnet::Edge* second);
 };
 } // namespace wm
 } // namespace srg
