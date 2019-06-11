@@ -68,6 +68,7 @@ Base::~Base()
     delete bc;
     delete uc;
     delete crc;
+    delete wm;
 }
 
 bool Base::isRunning()

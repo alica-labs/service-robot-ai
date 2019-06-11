@@ -47,23 +47,13 @@ AnswerGraph* BasicHumanNeeds::answerNeed(std::string need)
     conceptnet::Concept* rootConcept = answerGraph->graph;
 
     // 3. ask ConceptNet for UsedFor(concept, WILDCARD) for MotivatedByGoal edges + 5.
-    for (int i = 0; i < rootConcept->incomingEdges.size(); i++) {
-        srg::conceptnet::Concept* current = rootConcept->incomingEdges.at(i)->fromConcept;
-        for (int j = 0; j < current->incomingEdges.size(); j++) {
-            auto tmp = this->cn->getIncomingEdges(conceptnet::Relation::UsedFor, current->incomingEdges.at(j)->fromConcept->term, bestWeightedEdges);
-            insertNewEdges(current->incomingEdges.at(j)->fromConcept->incomingEdges, tmp);
-            getSynonyms(current->incomingEdges.at(j)->fromConcept->incomingEdges, false);
-        }
+    for (size_t i = 0; i < rootConcept->incomingEdges.size(); i++) {
+        getUsedFor(rootConcept->incomingEdges.at(i)->fromConcept);
     }
 
     // 4. ask ConceptNet for UsedFor(concept, WILDCARD) for CausesDesire edges + 5.
-    for (int i = 0; i < rootConcept->outgoingEdges.size(); i++) {
-        srg::conceptnet::Concept* current = rootConcept->outgoingEdges.at(i)->toConcept;
-        for (int j = 0; j < current->outgoingEdges.size(); j++) {
-            auto tmp = this->cn->getIncomingEdges(conceptnet::Relation::UsedFor, current->outgoingEdges.at(j)->toConcept->term, bestWeightedEdges);
-            insertNewEdges(current->outgoingEdges.at(j)->toConcept->incomingEdges, tmp);
-            getSynonyms(current->outgoingEdges.at(j)->toConcept->incomingEdges, false);
-        }
+    for (size_t i = 0; i < rootConcept->outgoingEdges.size(); i++) {
+        getUsedFor(rootConcept->outgoingEdges.at(i)->toConcept);
     }
 
     // 6. return answer graph
@@ -71,40 +61,76 @@ AnswerGraph* BasicHumanNeeds::answerNeed(std::string need)
     for (conceptnet::Edge* edge1 : rootConcept->outgoingEdges) {
         for (conceptnet::Edge* edge2 : edge1->toConcept->outgoingEdges) {
             for (conceptnet::Edge* edge3 : edge2->toConcept->incomingEdges) {
-                insertNewEdges(bestAnswers, edge3->fromConcept->outgoingEdges);
+                insertNewEdges(edge3->fromConcept->outgoingEdges, bestAnswers);
             }
         }
     }
     for (conceptnet::Edge* edge1 : rootConcept->incomingEdges) {
         for (conceptnet::Edge* edge2 : edge1->fromConcept->outgoingEdges) {
             for (conceptnet::Edge* edge3 : edge2->toConcept->incomingEdges) {
-                insertNewEdges(bestAnswers, edge3->fromConcept->outgoingEdges);
+                insertNewEdges(edge3->fromConcept->outgoingEdges, bestAnswers);
             }
         }
     }
     std::sort(bestAnswers.begin(), bestAnswers.end(), [](conceptnet::Edge* first, conceptnet::Edge* second) { return first->weight > second->weight; });
-    int size = (bestAnswers.size() < this->bestWeightedEdges ? bestAnswers.size() : this->bestWeightedEdges);
-    for (int i = 0; i < size; i++) {
-        answerGraph->answerConcepts.push_back(bestAnswers.at(i)->toConcept);
+    std::cout << "Best Answers: " << std::endl;
+    for (size_t i = 0; i < bestAnswers.size(); i++) {
+        std::cout << "\t" << bestAnswers.at(i)->toString() << std::endl;
+        if (bestAnswers.at(i)->relation == conceptnet::Relation::UsedFor || bestAnswers.at(i)->relation == conceptnet::Relation::IsA) {
+            insertNewConcepts(bestAnswers.at(i)->fromConcept, answerGraph->answerConcepts);
+        } else {
+            insertNewConcepts(bestAnswers.at(i)->toConcept, answerGraph->answerConcepts);
+        }
+        if (answerGraph->answerConcepts.size() == this->bestWeightedEdges) {
+            break;
+        }
     }
     std::cout << "AnswerGraph: " << answerGraph->toString() << std::endl;
     return answerGraph;
 }
 
+void BasicHumanNeeds::getUsedFor(const conceptnet::Concept* current) const
+{
+    for (size_t j = 0; j < current->outgoingEdges.size(); j++) {
+        std::vector<srg::conceptnet::Edge*> tmp;
+        if (current->outgoingEdges.at(j)->relation == conceptnet::Relation::MotivatedByGoal) {
+            tmp = cn->getIncomingEdges(conceptnet::UsedFor, current->outgoingEdges.at(j)->fromConcept->term, bestWeightedEdges);
+        } else {
+            tmp = cn->getIncomingEdges(conceptnet::UsedFor, current->outgoingEdges.at(j)->toConcept->term, bestWeightedEdges);
+        }
+        insertNewEdges(tmp, current->outgoingEdges.at(j)->toConcept->incomingEdges);
+        getSynonyms(current->outgoingEdges.at(j)->toConcept->incomingEdges, false);
+    }
+}
+
 void BasicHumanNeeds::insertNewEdges(std::vector<conceptnet::Edge*>& from, std::vector<conceptnet::Edge*>& to) const
 {
     bool insert;
-    for (conceptnet::Edge* causesEdge : from) {
+    for (conceptnet::Edge* f : from) {
         insert = true;
-        for (conceptnet::Edge* motivatedEdge : to) {
-            if (&motivatedEdge == &causesEdge) {
+        for (conceptnet::Edge* t : to) {
+            if (&t == &f) {
                 insert = false;
                 break;
             }
         }
         if (insert) {
-            to.push_back(causesEdge);
+            to.push_back(f);
         }
+    }
+}
+
+void BasicHumanNeeds::insertNewConcepts(srg::conceptnet::Concept* concept, std::vector<srg::conceptnet::Concept*>& to) const
+{
+    bool insert = true;
+    for (conceptnet::Concept* c : to) {
+        if (c->term == concept->term) {
+            insert = false;
+            break;
+        }
+    }
+    if (insert) {
+        to.push_back(concept);
     }
 }
 
@@ -120,6 +146,7 @@ void BasicHumanNeeds::getSynonyms(std::vector<conceptnet::Edge*>& edges, bool us
         } else {
             concept = edges.at(i)->fromConcept;
         }
+        synonyms.push_back(edges.at(i));
         tmp = cn->getOutgoingEdges(conceptnet::Synonym, concept->term, this->bestWeightedEdges);
         insertNewEdges(tmp, synonyms);
         tmp = cn->getOutgoingEdges(conceptnet::IsA, concept->term, this->bestWeightedEdges);
@@ -130,8 +157,8 @@ void BasicHumanNeeds::getSynonyms(std::vector<conceptnet::Edge*>& edges, bool us
         insertNewEdges(tmp, synonyms);
         std::sort(synonyms.begin(), synonyms.end(), [](conceptnet::Edge* first, conceptnet::Edge* second) { return first->weight > second->weight; });
         int size = (synonyms.size() < this->bestWeightedEdges ? synonyms.size() : this->bestWeightedEdges);
-        for (int i = 0; i < size; i++) {
-            concept->outgoingEdges.push_back(synonyms.at(i));
+        for (int j = 0; j < size; j++) {
+            concept->outgoingEdges.push_back(synonyms.at(j));
         }
         synonyms.clear();
     }

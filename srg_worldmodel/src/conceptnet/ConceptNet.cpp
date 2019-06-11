@@ -11,8 +11,8 @@ namespace srg
 namespace conceptnet
 {
 
-//const std::string ConceptNet::BASE_URL = "http://api.localhost:8084";
-const std::string ConceptNet::BASE_URL = "http://api.conceptnet.io";
+const std::string ConceptNet::BASE_URL = "http://api.localhost:8084";
+//const std::string ConceptNet::BASE_URL = "http://api.conceptnet.io";
 const std::string ConceptNet::QUERYSTART = "/query?start=/c/en/";
 const std::string ConceptNet::QUERYEND = "/query?end=/c/en/";
 const std::string ConceptNet::QUERYNODE = "/query?node=/c/en/";

@@ -25,7 +25,7 @@ DialogueManager::~DialogueManager() {
 void DialogueManager::processSpeechAct(std::shared_ptr<supplementary::InformationElement<SpeechAct>> speechAct)
 {
     AnswerGraph* answerGraph = this->basicHumanNeeds->answerNeed(speechAct->getInformation().text);
-    actMapping.emplace(speechAct->getInformation().actID, answerGraph);
+    actMapping.emplace(speechAct, answerGraph);
 
 }
 } // namespace dialogue

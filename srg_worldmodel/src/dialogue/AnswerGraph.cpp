@@ -20,9 +20,11 @@ AnswerGraph::~AnswerGraph() {
     for(conceptnet::Edge* edge : graph->outgoingEdges) {
         delete edge;
     }
+    graph->outgoingEdges.clear();
     for(conceptnet::Edge* edge : graph->incomingEdges) {
         delete edge;
     }
+    graph->outgoingEdges.clear();
 }
 
 std::string AnswerGraph::toString() {
@@ -67,14 +69,14 @@ std::string AnswerGraph::toString() {
     }
     ret << "Synonyms: " << std::endl;
     for(conceptnet::Edge* edge1 : graph->outgoingEdges) {
-        for(conceptnet::Edge* edge2 : edge1->fromConcept->outgoingEdges) {
+        for(conceptnet::Edge* edge2 : edge1->toConcept->outgoingEdges) {
             ret << "\t" << edge2->toString() << std::endl;
         }
 
     }
     ret << "UsedFor: " << std::endl;
     for(conceptnet::Edge* edge1 : graph->outgoingEdges) {
-        for(conceptnet::Edge* edge2 : edge1->fromConcept->outgoingEdges) {
+        for(conceptnet::Edge* edge2 : edge1->toConcept->outgoingEdges) {
             for(conceptnet::Edge* edge3 : edge2->toConcept->incomingEdges) {
                 ret << "\t" << edge3->toString() << std::endl;
             }
@@ -83,7 +85,7 @@ std::string AnswerGraph::toString() {
     }
     ret << "Synonyms: " << std::endl;
     for(conceptnet::Edge* edge1 : graph->outgoingEdges) {
-        for(conceptnet::Edge* edge2 : edge1->fromConcept->outgoingEdges) {
+        for(conceptnet::Edge* edge2 : edge1->toConcept->outgoingEdges) {
             for(conceptnet::Edge* edge3 : edge2->toConcept->incomingEdges) {
                 for(conceptnet::Edge* edge4 : edge3->fromConcept->outgoingEdges) {
                     ret << "\t" << edge4->toString() << std::endl;
@@ -91,6 +93,12 @@ std::string AnswerGraph::toString() {
             }
         }
 
+    }
+
+    ret << "Answer Concepts:" << std::endl;
+    for(auto& concept : answerConcepts)
+    {
+        ret << "\t" << concept->term << std::endl;
     }
     return ret.str();
 }

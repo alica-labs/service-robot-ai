@@ -1,6 +1,5 @@
 #pragma once
 
-#include <essentials/IdentifierConstPtr.h>
 #include <memory>
 #include <map>
 
@@ -27,7 +26,7 @@ public:
 private:
     srg::SRGWorldModel* wm;
     BasicHumanNeeds* basicHumanNeeds;
-    std::map <essentials::IdentifierConstPtr, AnswerGraph*> actMapping;
+    std::map <std::shared_ptr<supplementary::InformationElement<SpeechAct>>, AnswerGraph*> actMapping;
 };
 } // namespace dialogue
 } // namespace srg

@@ -30,8 +30,14 @@ Edge::Edge(const Edge& edge)
 }
 
 Edge::~Edge() {
-    delete this->toConcept;
-    delete this->fromConcept;
+    if(this->toConcept != nullptr) {
+        delete this->toConcept;
+        this->toConcept = nullptr;
+    }
+    if(this->fromConcept != nullptr) {
+        delete this->fromConcept;
+        this->fromConcept = nullptr;
+    }
 }
 
 std::string Edge::toString()
