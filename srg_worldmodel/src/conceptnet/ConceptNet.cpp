@@ -1,6 +1,7 @@
 #include "srg/conceptnet/ConceptNet.h"
 #include "srg/SRGWorldModel.h"
 #include "srg/conceptnet/Concept.h"
+#include "srg/conceptnet/CNManager.h"
 
 #include <curl/curl.h>
 
@@ -11,8 +12,12 @@ namespace srg
 namespace conceptnet
 {
 
-const std::string ConceptNet::BASE_URL = "http://api.localhost:8084";
+/*Use this for the web hosted conceptnet*/
 //const std::string ConceptNet::BASE_URL = "http://api.conceptnet.io";
+
+/*Use this for the locally hosted conceptnet*/
+const std::string ConceptNet::BASE_URL = "http://api.localhost:8084";
+
 const std::string ConceptNet::QUERYSTART = "/query?start=/c/en/";
 const std::string ConceptNet::QUERYEND = "/query?end=/c/en/";
 const std::string ConceptNet::QUERYNODE = "/query?node=/c/en/";
@@ -30,62 +35,77 @@ ConceptNet::ConceptNet(SRGWorldModel* wm)
     this->wm = wm;
 }
 
-srg::conceptnet::Concept* ConceptNet::getConcept(const std::string& conceptName)
+Concept* ConceptNet::getConcept(CNManager* cnManager, const std::string& conceptName)
 {
-    std::string json = httpGet(ConceptNet::BASE_URL + ConceptNet::QUERYNODE + conceptName + ConceptNet::LIMIT + std::to_string(0));
+    std::string json = httpGet(ConceptNet::BASE_URL + ConceptNet::QUERYNODE + conceptName + ConceptNet::LIMIT + std::to_string(1));
     YAML::Node node;
     node = YAML::Load(json);
     if (!isValid(node)) {
         return nullptr;
     }
-    std::string conceptId = node["@id"].as<std::string>();
-    return new Concept(conceptName, "", conceptId);
+    std::string conceptId = node["edges"][0]["start"]["term"].as<std::string>();
+    if(conceptId.find(conceptName) == std::string::npos) {
+        conceptId = node["edges"][0]["end"]["term"].as<std::string>();
+    }
+    return cnManager->createConcept(conceptId, this->trimTerm(conceptId), "");
 }
 
-std::vector<srg::conceptnet::Edge*> ConceptNet::getEdges(const std::string& concept, int limit)
+std::vector<Edge*> ConceptNet::getEdges(CNManager* cnManager, const std::string& concept, int limit)
 {
-    std::vector<srg::conceptnet::Edge*> edges;
+    std::vector<Edge*> edges;
     std::string json = httpGet(ConceptNet::BASE_URL + ConceptNet::QUERYNODE + concept + ConceptNet::LIMIT + std::to_string(limit));
-    generateEdges(json, edges);
+    generateEdges(cnManager, json, edges);
     return edges;
 }
 
-std::vector<srg::conceptnet::Edge*> ConceptNet::getEdges(srg::conceptnet::Relation relation, const std::string& concept, int limit) {
-    std::vector<srg::conceptnet::Edge*> edges;
-    std::string json = httpGet(ConceptNet::BASE_URL + ConceptNet::QUERYNODE + concept + ConceptNet::RELATION + srg::conceptnet::relations[relation] + ConceptNet::LIMIT + std::to_string(limit));
-    generateEdges(json, edges);
+std::vector<Edge*> ConceptNet::getEdges(CNManager* cnManager, Relation relation, const std::string& concept, int limit) {
+    std::vector<Edge*> edges;
+    std::string json = httpGet(ConceptNet::BASE_URL + ConceptNet::QUERYNODE + concept + ConceptNet::RELATION + relations[relation] + ConceptNet::LIMIT + std::to_string(limit));
+    generateEdges(cnManager, json, edges);
     return edges;
 }
 
-std::vector<srg::conceptnet::Edge*> ConceptNet::getCompleteEdge(srg::conceptnet::Relation relation, const std::string& fromConcept, const std::string& toConcept, int limit)
+std::vector<Edge*> ConceptNet::getCompleteEdge(CNManager* cnManager, Relation relation, const std::string& fromConcept, const std::string& toConcept, int limit)
 {
-    std::vector<srg::conceptnet::Edge*> edges;
-    std::string json = httpGet(ConceptNet::BASE_URL + ConceptNet::QUERYSTART + fromConcept + ConceptNet::RELATION + srg::conceptnet::relations[relation] + END +
+    std::vector<Edge*> edges;
+    std::string json = httpGet(ConceptNet::BASE_URL + ConceptNet::QUERYSTART + fromConcept + ConceptNet::RELATION + relations[relation] + END +
                                toConcept + ConceptNet::LIMIT + std::to_string(limit));
-    generateEdges(json, edges);
+    generateEdges(cnManager, json, edges);
     return edges;
 }
-std::vector<srg::conceptnet::Edge*> ConceptNet::getOutgoingEdges(srg::conceptnet::Relation relation, const std::string& fromConcept, int limit)
+std::vector<Edge*> ConceptNet::getOutgoingEdges(CNManager* cnManager, Relation relation, const std::string& fromConcept, int limit)
 {
-    std::vector<srg::conceptnet::Edge*> edges;
+    std::vector<Edge*> edges;
     std::string json = httpGet(
-            ConceptNet::BASE_URL + ConceptNet::QUERYSTART + fromConcept + ConceptNet::RELATION + srg::conceptnet::relations[relation] + ConceptNet::LIMIT + std::to_string(limit));
-    generateEdges(json, edges);
+            ConceptNet::BASE_URL + ConceptNet::QUERYSTART + fromConcept + ConceptNet::RELATION + relations[relation] + ConceptNet::LIMIT + std::to_string(limit));
+    generateEdges(cnManager, json, edges);
     return edges;
 }
-std::vector<srg::conceptnet::Edge*> ConceptNet::getIncomingEdges(srg::conceptnet::Relation relation, const std::string& toConcept, int limit)
+std::vector<Edge*> ConceptNet::getIncomingEdges(CNManager* cnManager, Relation relation, const std::string& toConcept, int limit)
 {
-    std::vector<srg::conceptnet::Edge*> edges;
+    std::vector<Edge*> edges;
     std::string json =
-            httpGet(ConceptNet::BASE_URL + ConceptNet::QUERYEND + toConcept + ConceptNet::RELATION + srg::conceptnet::relations[relation] + ConceptNet::LIMIT + std::to_string(limit));
-    generateEdges(json, edges);
+            httpGet(ConceptNet::BASE_URL + ConceptNet::QUERYEND + toConcept + ConceptNet::RELATION + relations[relation] + ConceptNet::LIMIT + std::to_string(limit));
+    generateEdges(cnManager, json, edges);
     return edges;
 }
-std::vector<srg::conceptnet::Edge*> ConceptNet::getRelations(const std::string& concept, const std::string& otherConcept, int limit)
+std::vector<Edge*> ConceptNet::getRelations(CNManager* cnManager, const std::string& concept, const std::string& otherConcept, int limit)
 {
-    std::vector<srg::conceptnet::Edge*> edges;
+    std::vector<Edge*> edges;
     std::string json = httpGet(ConceptNet::BASE_URL + ConceptNet::QUERYSTART + concept + ConceptNet::END + otherConcept + ConceptNet::LIMIT + std::to_string(limit));
-    generateEdges(json, edges);
+    generateEdges(cnManager, json, edges);
+    return edges;
+}
+
+std::vector<Edge*> ConceptNet::getEquivalentOutgoingEdges(CNManager* cnManager, const conceptnet::Concept* concept, int limit) {
+    std::vector<Edge*> edges = this->getOutgoingEdges(cnManager, conceptnet::Synonym, concept->term, limit);
+
+    std::vector<Edge*> simirToEdges = this->getOutgoingEdges(cnManager, conceptnet::SimilarTo, concept->term, limit);
+    edges.insert(edges.end(), simirToEdges.begin(), simirToEdges.end());
+
+    std::vector<Edge*> instanceOfEdges = this->getOutgoingEdges(cnManager, conceptnet::InstanceOf, concept->term, limit);
+    edges.insert(edges.end(), instanceOfEdges.begin(), instanceOfEdges.end());
+
     return edges;
 }
 
@@ -144,7 +164,7 @@ std::string ConceptNet::httpGet(const std::string& url)
     return *httpData;
 }
 
-void ConceptNet::generateEdges(const std::string& json, std::vector<srg::conceptnet::Edge*>& edges, double minWeight)
+void ConceptNet::generateEdges(CNManager* cnManager, const std::string& json, std::vector<Edge*>& edges, double minWeight)
 {
     YAML::Node node;
     node = YAML::Load(json);
@@ -159,7 +179,6 @@ void ConceptNet::generateEdges(const std::string& json, std::vector<srg::concept
             return;
         }
         // end of edge
-        std::string edgeId = edge["@id"].as<std::string>();
         YAML::Node end = edge["end"];
         std::string endLanguage = end["language"].as<std::string>();
         // skip non English
@@ -167,7 +186,6 @@ void ConceptNet::generateEdges(const std::string& json, std::vector<srg::concept
             continue;
         }
         std::string endTerm = end["term"].as<std::string>();
-        endTerm = trimTerm(endTerm);
         if (std::isdigit(endTerm.at(0)) || this->conceptContainsNonASCII(endTerm)) {
             std::cout << "ConceptNetQueryCommand: Skipping Concept:" << endTerm << std::endl;
             continue;
@@ -185,7 +203,6 @@ void ConceptNet::generateEdges(const std::string& json, std::vector<srg::concept
             continue;
         }
         std::string startTerm = start["term"].as<std::string>();
-        startTerm = trimTerm(startTerm);
         if (std::isdigit(startTerm.at(0)) || this->conceptContainsNonASCII(startTerm)) {
             std::cout << "ConceptNetQueryCommand: Skipping concept:" << startTerm << std::endl;
             continue;
@@ -198,8 +215,11 @@ void ConceptNet::generateEdges(const std::string& json, std::vector<srg::concept
         std::string relation = edge["rel"]["@id"].as<std::string>();
         relation = trimTerm(relation); //.right(relation.size() - relation.lastIndexOf('/') - 1);
         // create edge
-        edges.push_back(new Edge(srg::conceptnet::Edge(edgeId, startLanguage, new srg::conceptnet::Concept(startTerm, startSenseLabel, startID),
-                new srg::conceptnet::Concept(endTerm, endSenseLabel, endID), getRelation(relation), weight * edge["sources"].size())));
+        Concept* fromConcept = cnManager->createConcept(startTerm, trimTerm(startTerm), startSenseLabel);
+        Concept* toConcept = cnManager->createConcept(endTerm, trimTerm(endTerm), endSenseLabel);
+        std::string edgeId = "/a["+relation+","+startTerm+","+endTerm+"]"; // dont use cn's edgeId, its evil!
+        edges.push_back(cnManager->createEdge(edgeId, startLanguage, fromConcept, toConcept, getRelation(relation), weight));
+//        edges.push_back(cnManager->createEdge(edgeId, startLanguage, fromConcept, toConcept, getRelation(relation), weight * edge["sources"].size()));
     }
 }
 
@@ -208,17 +228,17 @@ bool ConceptNet::isValid(const YAML::Node& node)
     return node && YAML::NodeType::Null != node.Type();
 }
 
-srg::conceptnet::Relation ConceptNet::getRelation(const std::string& relation)
+Relation ConceptNet::getRelation(const std::string& relation)
 {
     int position = 0;
-    for (auto& rel : srg::conceptnet::relations) {
+    for (auto& rel : relations) {
         std::string str(rel);
         if (str == relation) {
-            return static_cast<srg::conceptnet::Relation>(position);
+            return static_cast<Relation>(position);
         }
         position++;
     }
-    return srg::conceptnet::Relation::UNDEFINED;
+    return Relation::UNDEFINED;
 }
 
 bool ConceptNet::conceptContainsNonASCII(const std::string& concept)

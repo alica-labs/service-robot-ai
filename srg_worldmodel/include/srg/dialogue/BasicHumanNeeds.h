@@ -10,6 +10,7 @@ namespace srg
 namespace conceptnet {
     class ConceptNet;
     class Concept;
+    class CNManager;
 }
 class SRGWorldModel;
 namespace dialogue
@@ -27,12 +28,11 @@ private:
     SRGWorldModel* wm;
     conceptnet::ConceptNet* cn;
 
-    void getSynonyms(std::vector<srg::conceptnet::Edge*>& edges, bool useToConcept) const;
     void insertNewEdges(std::vector<conceptnet::Edge*> &from, std::vector<conceptnet::Edge*> &to) const;
     void insertNewConcepts(conceptnet::Concept* concept, std::vector<conceptnet::Concept*> &to) const;
-    bool compareEdges(const srg::conceptnet::Edge* first , const srg::conceptnet::Edge* second);
+    bool compareEdges(const conceptnet::Edge* first , const conceptnet::Edge* second);
 
-    void getUsedFor(const conceptnet::Concept *current) const;
+//    void getUsedFor(const conceptnet::Concept *current) const;
 };
 } // namespace wm
 } // namespace srg

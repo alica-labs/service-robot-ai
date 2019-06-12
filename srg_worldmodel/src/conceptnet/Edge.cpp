@@ -19,28 +19,10 @@ Edge::Edge(std::string id, std::string language, Concept* fromConcept, Concept* 
     this->toConcept = toConcept;
 }
 
-Edge::Edge(const Edge& edge)
-        : fromConcept(edge.fromConcept)
-        , toConcept(edge.toConcept)
-{
-    this->id = edge.id;
-    this->language = edge.language;
-    this->weight = edge.weight;
-    this->relation = edge.relation;
-}
-
 Edge::~Edge() {
-    if(this->toConcept != nullptr) {
-        delete this->toConcept;
-        this->toConcept = nullptr;
-    }
-    if(this->fromConcept != nullptr) {
-        delete this->fromConcept;
-        this->fromConcept = nullptr;
-    }
 }
 
-std::string Edge::toString()
+std::string Edge::toString() const
 {
     std::stringstream ss;
     ss << "Edge with Language: " << this->language << " From Concept: " << this->fromConcept->term << " Sense: " << this->fromConcept->senseLabel

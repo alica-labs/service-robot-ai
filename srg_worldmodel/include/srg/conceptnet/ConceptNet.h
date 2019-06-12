@@ -13,33 +13,35 @@ namespace srg
 class SRGWorldModel;
 namespace conceptnet
 {
-
+class CNManager;
 class ConceptNet
 {
 public:
     explicit ConceptNet(SRGWorldModel* wm);
     virtual ~ConceptNet() = default;
 
-    srg::conceptnet::Concept* getConcept(const std::string& concept);
-    std::vector<srg::conceptnet::Edge*> getEdges(const std::string& concept, int limit=1000);
-    std::vector<srg::conceptnet::Edge*> getEdges(srg::conceptnet::Relation relation, const std::string& concept, int limit=1000);
-    std::vector<srg::conceptnet::Edge*> getCompleteEdge(srg::conceptnet::Relation relation, const std::string& fromConcept, const std::string& toConcept, int limit=1000);
-    std::vector<srg::conceptnet::Edge*> getOutgoingEdges(srg::conceptnet::Relation relation, const std::string& fromConcept, int limit=1000);
-    std::vector<srg::conceptnet::Edge*> getIncomingEdges(srg::conceptnet::Relation relation, const std::string& toConcept, int limit=1000);
-    std::vector<srg::conceptnet::Edge*> getRelations(const std::string& concept, const std::string& otherConcept, int limit=1000);
+    Concept* getConcept(CNManager* cnManager, const std::string& conceptName);
+    std::vector<Edge*> getEdges(CNManager* cnManager, const std::string& concept, int limit=1000);
+    std::vector<Edge*> getEdges(CNManager* cnManager, Relation relation, const std::string& concept, int limit=1000);
+    std::vector<Edge*> getCompleteEdge(CNManager* cnManager, Relation relation, const std::string& fromConcept, const std::string& toConcept, int limit=1000);
+    std::vector<Edge*> getOutgoingEdges(CNManager* cnManager, Relation relation, const std::string& fromConcept, int limit=1000);
+    std::vector<Edge*> getIncomingEdges(CNManager* cnManager, Relation relation, const std::string& toConcept, int limit=1000);
+    std::vector<Edge*> getRelations(CNManager* cnManager, const std::string& concept, const std::string& otherConcept, int limit=1000);
+    std::vector<Edge*> getEquivalentOutgoingEdges(CNManager* cnManager, const conceptnet::Concept* concept, int limit=1000);
+
     double getRelatedness(const std::string& firstConcept, const std::string& secondConcept);
 
 private:
     SRGWorldModel* wm;
     std::string httpGet(const std::string& url);
     bool isValid(const YAML::Node& node);
-    srg::conceptnet::Relation getRelation(const std::string& relation);
+    Relation getRelation(const std::string& relation);
     bool conceptContainsNonASCII(const std::string& concept);
     std::string trimTerm(const std::string& term);
-    void generateEdges(const std::string& json, std::vector<srg::conceptnet::Edge*>& edges, double minWeight = 1.0);
+    void generateEdges(CNManager* cnManager, const std::string& json, std::vector<Edge*>& edges, double minWeight = 1.0);
 
     /**
-     * Containts the begin of a concept net query url.
+     * Contains the begin of a concept net query url.
      */
     static const std::string BASE_URL;
     /**

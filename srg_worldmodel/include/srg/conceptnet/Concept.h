@@ -1,5 +1,7 @@
 #pragma once
 
+#include "srg/conceptnet/Relations.h"
+
 #include <string>
 #include <vector>
 
@@ -7,20 +9,25 @@ namespace srg
 {
 namespace conceptnet
 {
+
 class Edge;
 class Concept
 {
 public:
-    Concept(std::string term, std::string senseLabel, std::string id);
+    Concept(std::string id, std::string term, std::string senseLabel);
     virtual ~Concept() = default;
-    Concept(const Concept& concept);
 
+    std::string id;
     std::string term;
     std::string senseLabel;
-    std::string id;
 
-    std::vector<Edge*> outgoingEdges;
-    std::vector<Edge*> incomingEdges;
+    const std::vector<Edge*> getEdges();
+    void addEdges(std::vector<Edge*> edges);
+    const std::vector<Concept*> getConnectedConcepts(conceptnet::Relation relation, bool includeEquivalents);
+    const std::vector<Concept*> getConnectedConcepts(std::vector<conceptnet::Relation> relations, bool includeEquivalents);
+
+private:
+    std::vector<Edge*> edges;
 };
 } // namespace container
 } // namespace srg

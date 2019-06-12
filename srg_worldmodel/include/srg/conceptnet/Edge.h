@@ -17,7 +17,6 @@ class Edge
 public:
     Edge(std::string id, std::string language, Concept* fromConcept, Concept* toConcept, srg::conceptnet::Relation relation, double weight);
     virtual ~Edge();
-    Edge(const Edge& edge);
 
     std::string id;
     std::string language;
@@ -27,7 +26,7 @@ public:
     double weight;
     std::vector<std::string> sources;
 
-    std::string toString();
+    std::string toString() const;
 
     bool operator<(const srg::conceptnet::Edge& another);
 };
