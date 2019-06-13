@@ -19,11 +19,13 @@ namespace srg {
             this->ctx = zmq_ctx_new();
             this->sc = essentials::SystemConfig::getInstance();
 
+            std::cout << "Telegram Message: ";
             std::string telegramMessageTopic = (*sc)["SRGWorldModel"]->get<std::string>("Data.Telegram.Topic", NULL);
             this->telegramMessageSub = new capnzero::Subscriber(this->ctx, telegramMessageTopic);
-            this->telegramMessageSub->connect(capnzero::CommType::UDP, "224.0.0.2:5555");
+            this->telegramMessageSub->connect(capnzero::CommType::INT, (*sc)["SRGWorldModel"]->get<std::string>("Data.Telegram.Address", NULL));
             this->telegramMessageSub->subscribe(&Communication::onTelegramMessage, &(*this));
 
+            std::cout << "Speech act: ";
             std::string speechActTopic = (*sc)["SRGWorldModel"]->get<std::string>("Data.SpeechAct.Topic", NULL);
             this->speechActSub = new capnzero::Subscriber(this->ctx, speechActTopic);
             this->speechActSub->connect(capnzero::CommType::UDP, "224.0.0.2:5555");
@@ -31,13 +33,13 @@ namespace srg {
         }
 
         Communication::~Communication() {
-            zmq_ctx_term(this->ctx);
-
             delete this->telegramMessageSub;
             delete this->speechActSub;
         }
 
         void Communication::onTelegramMessage(capnp::FlatArrayMessageReader &msg) {
+            std::cout << "onTelegramMessage called . . .\n";
+            std::cout.flush();
             Message m;
             m.fromCapnp(msg);
             this->wm->rawSensorData.processTelegramMessage(m);
