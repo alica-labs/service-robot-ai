@@ -15,12 +15,18 @@ Concept::Concept(std::string id, std::string term, std::string senseLabel)
 {
 }
 
+void Concept::addEdge(Edge* edge) {
+    if (std::find(this->edges.begin(), this->edges.end(), edge) != this->edges.end()) {
+        return;
+    }
+    this->edges.push_back(edge);
+    edge->getOpposite(this)->addEdge(edge);
+}
+
 void Concept::addEdges(std::vector<srg::conceptnet::Edge*> edges)
 {
     for (Edge* edge : edges) {
-        if (std::find(this->edges.begin(), this->edges.end(), edge) == this->edges.end()) {
-            this->edges.push_back(edge);
-        }
+        this->addEdge(edge);
     }
 }
 
@@ -42,12 +48,7 @@ const std::vector<Concept*> Concept::getConnectedConcepts(std::vector<conceptnet
     for (Edge* edge : this->edges) {
         for (conceptnet::Relation relation : relations) {
             if (edge->relation == relation) {
-                std::cout << "Concept: " << this->id << " " << this << " " << edge->fromConcept->id << " " << edge->fromConcept << std::endl;
-                if (this == edge->fromConcept) {
-                    resultConcepts.push_back(edge->toConcept);
-                } else {
-                    resultConcepts.push_back(edge->fromConcept);
-                }
+                resultConcepts.push_back(edge->getOpposite(this));
             }
         }
     }
@@ -60,11 +61,7 @@ const std::vector<Concept*> Concept::getConnectedConcepts(std::vector<conceptnet
     for (Concept* concept : resultConcepts) {
         for (Edge* edge : concept->edges) {
             if (edge->relation == Relation::Synonym || edge->relation == Relation::InstanceOf || edge->relation == Relation::SimilarTo) {
-                if (concept == edge->fromConcept) {
-                    equivalentConcepts.push_back(edge->toConcept);
-                } else {
-                    equivalentConcepts.push_back(edge->fromConcept);
-                }
+                equivalentConcepts.push_back(edge->getOpposite(concept));
             }
         }
     }

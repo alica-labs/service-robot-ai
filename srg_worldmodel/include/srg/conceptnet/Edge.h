@@ -26,7 +26,9 @@ public:
     double weight;
     std::vector<std::string> sources;
 
-    std::string toString() const;
+    std::string toString(std::string indent = "") const;
+
+    conceptnet::Concept* getOpposite(conceptnet::Concept* concept);
 
     bool operator<(const srg::conceptnet::Edge& another);
 };

@@ -1,10 +1,12 @@
 #include "srg/dialogue/AnswerGraph.h"
 #include "srg/conceptnet/Concept.h"
+#include "srg/conceptnet/ConceptPath.h"
 #include "srg/conceptnet/Edge.h"
 
 #include <gvc.h>
 
 #include <algorithm>
+#include <boost/variant/detail/substitute.hpp>
 #include <iostream>
 #include <sstream>
 #include <stdio.h>
@@ -17,6 +19,7 @@ namespace dialogue
 {
 
 AnswerGraph::AnswerGraph()
+        : utilitiesCalculated(false)
 {
 }
 
@@ -28,10 +31,61 @@ AnswerGraph::~AnswerGraph()
     for (auto conceptEntry : concepts) {
         delete conceptEntry.second;
     }
+    for (auto conceptPath : answerPaths) {
+        delete conceptPath;
+    }
 }
 
-void AnswerGraph::setRoot(srg::conceptnet::Concept *root) {
+void AnswerGraph::setRoot(srg::conceptnet::Concept* root)
+{
     this->root = root;
+}
+
+std::vector<srg::conceptnet::Concept*> AnswerGraph::getBestAnswers(int maxNumberOfAnswers)
+{
+    this->calculateUtilities();
+
+    std::vector<conceptnet::Concept*> bestConcepts;
+    for (auto utilityEntry : this->utilities) {
+        if (bestConcepts.size() < maxNumberOfAnswers) {
+            bestConcepts.push_back(utilityEntry.first);
+            continue;
+        }
+
+        for (int i = 0; i < bestConcepts.size(); i++) {
+            conceptnet::Concept* currentBestConcept = bestConcepts[i];
+            if (this->utilities[currentBestConcept] < utilityEntry.second) {
+                bestConcepts.push_back(utilityEntry.first);
+                bestConcepts.erase(bestConcepts.begin() + i);
+                break;
+            }
+        }
+    }
+
+    std::sort(bestConcepts.begin(), bestConcepts.end(),
+            [this](conceptnet::Concept* a, conceptnet::Concept* b) -> bool { return this->utilities[a] < this->utilities[b]; });
+
+    return bestConcepts;
+}
+
+void AnswerGraph::calculateUtilities()
+{
+    if (utilitiesCalculated) {
+        return;
+    }
+    for (conceptnet::ConceptPath* conceptPath : this->answerPaths) {
+        conceptPath->calculateUtility();
+    }
+
+    for (conceptnet::Concept* concept : this->answerConcepts) {
+        double utility = 0;
+        for (conceptnet::ConceptPath* conceptPath : this->answerPaths) {
+            if (conceptPath->getEnd() == concept) {
+                utility += conceptPath->getUtility();
+            }
+        }
+        this->utilities.emplace(concept, utility);
+    }
 }
 
 std::string AnswerGraph::toString()
@@ -122,7 +176,7 @@ void AnswerGraph::renderDot()
 
     while (!openNodes.empty()) {
         conceptnet::Concept* node = openNodes[0];
-        std::cout << "AnswerGraph:renderDot: " << node->term << " " << node << std::endl;
+        //        std::cout << "AnswerGraph:renderDot: " << node->term << " " << node << std::endl;
         openNodes.erase(openNodes.begin());
         if (std::find(closedNodes.begin(), closedNodes.end(), node) != closedNodes.end()) {
             continue;
@@ -132,7 +186,8 @@ void AnswerGraph::renderDot()
         for (const conceptnet::Edge* edge : node->getEdges()) {
             Agnode_t* to;
             Agnode_t* from;
-            std::cout << "AnswerGraph:rendetDot: " << node->id << " " << node << " " << edge->fromConcept->id << " " << edge->fromConcept << std::endl;
+            //            std::cout << "AnswerGraph:rendetDot: " << node->id << " " << node << " " << edge->fromConcept->id << " " << edge->fromConcept <<
+            //            std::endl;
             if (edge->fromConcept == node) {
                 to = agnode(g, strdup(edge->toConcept->term.c_str()), TRUE);
                 from = agnode(g, strdup(node->term.c_str()), TRUE);
@@ -146,9 +201,12 @@ void AnswerGraph::renderDot()
             agsafeset(ed, "label", strdup(std::string(conceptnet::relations[edge->relation]).append(" / " + std::to_string(edge->weight)).c_str()), "");
         }
     }
-
-    for (conceptnet::Concept* concept : this->answerConcepts) {
+    Agnode_t* node = agnode(g, strdup(this->root->term.c_str()), TRUE);
+    agsafeset(node, "color", "green", "");
+    for (conceptnet::Concept* concept : this->getBestAnswers(5)) {
         Agnode_t* node = agnode(g, strdup(concept->term.c_str()), TRUE);
+        Agnode_t* weightNode = agnode(g, strdup(std::to_string(this->utilities[concept]).c_str()), TRUE);
+        Agedge_t* ed = agedge(g, weightNode, node, "weight", TRUE);
         agsafeset(node, "color", "red", "");
     }
 
@@ -167,8 +225,8 @@ void AnswerGraph::renderDot()
 
     agclose(g);
 
-// call this to translate into ps format and open with evince
-//    dot -Tps ~/test.dot -o outfile.ps
+    // call this to translate into ps format and open with evince
+    //    dot -Tps ~/test.dot -o outfile.ps
 }
 
 conceptnet::Concept* AnswerGraph::getConcept(std::string conceptId) const
@@ -201,8 +259,8 @@ conceptnet::Edge* AnswerGraph::getEdge(std::string edgeId) const
     }
 }
 
-conceptnet::Edge* AnswerGraph::createEdge(std::string edgeId, std::string language, srg::conceptnet::Concept* fromConcept,
-                                                srg::conceptnet::Concept* toConcept, srg::conceptnet::Relation relation, double weight)
+conceptnet::Edge* AnswerGraph::createEdge(std::string edgeId, std::string language, srg::conceptnet::Concept* fromConcept, srg::conceptnet::Concept* toConcept,
+        srg::conceptnet::Relation relation, double weight)
 {
     auto mapEntry = this->edges.find(edgeId);
     if (mapEntry != this->edges.end()) {

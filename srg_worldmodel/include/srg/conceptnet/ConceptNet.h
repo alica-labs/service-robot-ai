@@ -38,7 +38,7 @@ private:
     Relation getRelation(const std::string& relation);
     bool conceptContainsNonASCII(const std::string& concept);
     std::string trimTerm(const std::string& term);
-    void generateEdges(CNManager* cnManager, const std::string& json, std::vector<Edge*>& edges, double minWeight = 1.0);
+    void generateEdges(CNManager* cnManager, const std::string& json, std::vector<Edge*>& edges, int limit, double minWeight = 1.0);
 
     /**
      * Contains the begin of a concept net query url.

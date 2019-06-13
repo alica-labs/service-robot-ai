@@ -4,15 +4,20 @@
 #include "srg/conceptnet/CNManager.h"
 #include "srg/conceptnet/Concept.h"
 #include "srg/conceptnet/ConceptNet.h"
+#include "srg/conceptnet/ConceptPath.h"
 #include "srg/conceptnet/Relations.h"
 #include "srg/dialogue/AnswerGraph.h"
+
+#include <iostream>
+
+#define HUMAN_NEEDS_DEBUG
 
 namespace srg
 {
 namespace dialogue
 {
-const int BasicHumanNeeds::bestWeightedEdges = 5;
-#define HUMAN_NEEDS_DEBUG
+const int BasicHumanNeeds::bestNumberOfElements = 5;
+
 BasicHumanNeeds::BasicHumanNeeds(SRGWorldModel* wm)
         : wm(wm)
 {
@@ -36,108 +41,79 @@ AnswerGraph* BasicHumanNeeds::answerNeed(std::string need)
     answerGraph->setRoot(root);
 
     // 1. ask ConceptNet for MotivatedByGoal(WILDCARD, need) and CausesDesire(need, WILDCARD)
-    root->addEdges(this->cn->getIncomingEdges(answerGraph, conceptnet::MotivatedByGoal, need, bestWeightedEdges));
-    root->addEdges(this->cn->getOutgoingEdges(answerGraph, conceptnet::CausesDesire, need, bestWeightedEdges));
+    root->addEdges(this->cn->getIncomingEdges(answerGraph, conceptnet::MotivatedByGoal, need, bestNumberOfElements));
+    root->addEdges(this->cn->getOutgoingEdges(answerGraph, conceptnet::CausesDesire, need, bestNumberOfElements));
 
     // 2. ask ConceptNet for Synonyms for top bestWeightedEdges results from 1.
     // => Synonym, SimilarTo, InstanceOf
     std::vector<conceptnet::Concept*> connectedConcepts = root->getConnectedConcepts({conceptnet::MotivatedByGoal, conceptnet::CausesDesire}, false);
     for (conceptnet::Concept* concept : connectedConcepts) {
-        concept->addEdges(this->cn->getEquivalentOutgoingEdges(answerGraph, concept, bestWeightedEdges));
+        concept->addEdges(this->cn->getEquivalentOutgoingEdges(answerGraph, concept, bestNumberOfElements));
     }
 
     // 3. ask ConceptNet for UsedFor(WILDCARD, concept)
     connectedConcepts = root->getConnectedConcepts({conceptnet::MotivatedByGoal, conceptnet::CausesDesire}, true); // include synonyms
     for (conceptnet::Concept* concept : connectedConcepts) {
-        concept->addEdges(this->cn->getIncomingEdges(answerGraph, conceptnet::UsedFor, concept->term, bestWeightedEdges));
+        concept->addEdges(this->cn->getIncomingEdges(answerGraph, conceptnet::UsedFor, concept->term, bestNumberOfElements));
     }
 
     for (conceptnet::Concept* concept : connectedConcepts) {
-        std::cout << "BasicHumanNeeds: Concept " << concept->term << std::endl;
+        //        std::cout << "BasicHumanNeeds: Concept " << concept->term << std::endl;
         for (conceptnet::Concept* connectedConcept : concept->getConnectedConcepts(conceptnet::UsedFor, true)) {
-            std::cout << "BasicHumanNeeds: ConnectedConcept " << connectedConcept->term << std::endl;
+            //            std::cout << "BasicHumanNeeds: ConnectedConcept " << connectedConcept->term << std::endl;
             answerGraph->answerConcepts.push_back(connectedConcept);
         }
     }
+    this->createAnswerPaths(answerGraph, root);
+#ifdef HUMAN_NEEDS_DEBUG
+    for (conceptnet::ConceptPath* conceptPath : answerGraph->answerPaths) {
+//        std::cout << "BasicHumanNeeds:" << conceptPath->toString() << std::endl;
+    }
+#endif
 
     answerGraph->renderDot();
-
-//    // 6. return answer graph
-//    std::vector<srg::conceptnet::Edge*> bestAnswers;
-//    for (const conceptnet::Edge* edge1 : root->edges) {
-//        for (const conceptnet::Edge* edge2 : edge1->toConcept->edges) {
-//            for (const conceptnet::Edge* edge3 : edge2->toConcept->edges) {
-//                insertNewEdges(edge3->fromConcept->edges, bestAnswers);
-//            }
-//        }
-//    }
-//    for (const conceptnet::Edge* edge1 : root->edges) {
-//        for (const conceptnet::Edge* edge2 : edge1->fromConcept->edges) {
-//            for (const conceptnet::Edge* edge3 : edge2->toConcept->edges) {
-//                insertNewEdges(edge3->fromConcept->edges, bestAnswers);
-//            }
-//        }
-//    }
-//    std::sort(bestAnswers.begin(), bestAnswers.end(), [](conceptnet::Edge* first, conceptnet::Edge* second) { return first->weight > second->weight; });
-//    //    std::cout << "Best Answers: " << std::endl;
-//    for (size_t i = 0; i < bestAnswers.size(); i++) {
-//        //        std::cout << "\t" << bestAnswers.at(i)->toString() << std::endl;
-//        if (bestAnswers.at(i)->relation == conceptnet::Relation::UsedFor || bestAnswers.at(i)->relation == conceptnet::Relation::IsA) {
-//            insertNewConcepts(bestAnswers.at(i)->fromConcept, answerGraph->answerConcepts);
-//        } else {
-//            insertNewConcepts(bestAnswers.at(i)->toConcept, answerGraph->answerConcepts);
-//        }
-//        if (answerGraph->answerConcepts.size() == this->bestWeightedEdges) {
-//            break;
-//        }
-//    }
-    //    std::cout << "AnswerGraph: " << answerGraph->toString() << std::endl;
-
     return answerGraph;
 }
 
-//void BasicHumanNeeds::getUsedFor(const conceptnet::Concept* current) const
-//{
-//    for (size_t j = 0; j < current->edges.size(); j++) {
-//        std::vector<srg::conceptnet::Edge*> tmp;
-//        if (current->edges.at(j)->relation == conceptnet::Relation::MotivatedByGoal) {
-//            tmp = cn->getIncomingEdges(conceptnet::UsedFor, current->edges.at(j)->fromConcept->term, bestWeightedEdges);
-//        } else {
-//            tmp = cn->getIncomingEdges(conceptnet::UsedFor, current->edges.at(j)->toConcept->term, bestWeightedEdges);
-//        }
-//        insertNewEdges(tmp, current->edges.at(j)->toConcept->edges);
-//        getSynonyms(current->edges.at(j)->toConcept->edges, false);
-//    }
-//}
-
-void BasicHumanNeeds::insertNewEdges(std::vector<conceptnet::Edge*>& from, std::vector<conceptnet::Edge*>& to) const
+void BasicHumanNeeds::createAnswerPaths(AnswerGraph* answerGraph, conceptnet::Concept* start)
 {
-    bool insert;
-    for (conceptnet::Edge* f : from) {
-        insert = true;
-        for (conceptnet::Edge* t : to) {
-            if (&t == &f) {
-                insert = false;
-                break;
+    // init fringe
+    std::vector<conceptnet::ConceptPath*> fringe;
+    for (conceptnet::Edge* edge : start->getEdges()) {
+        conceptnet::ConceptPath* path = new conceptnet::ConceptPath(start);
+        path->addToPath(edge);
+        fringe.push_back(path);
+    }
+
+    while (!fringe.empty()) {
+        conceptnet::ConceptPath* currentPath = fringe[0];
+        fringe.erase(fringe.begin());
+
+        if (std::find(answerGraph->answerConcepts.begin(), answerGraph->answerConcepts.end(), currentPath->getEnd()) != answerGraph->answerConcepts.end()) {
+            answerGraph->answerPaths.push_back(currentPath);
+            continue;
+        }
+
+        bool expanded = false;
+        for (conceptnet::Edge* edge : currentPath->getEnd()->getEdges()) {
+            conceptnet::Concept* otherNode;
+            if (edge->fromConcept == currentPath->getEnd()) {
+                otherNode = edge->toConcept;
+            } else {
+                otherNode = edge->fromConcept;
             }
-        }
-        if (insert) {
-            to.push_back(f);
-        }
-    }
-}
 
-void BasicHumanNeeds::insertNewConcepts(srg::conceptnet::Concept* concept, std::vector<srg::conceptnet::Concept*>& to) const
-{
-    bool insert = true;
-    for (conceptnet::Concept* c : to) {
-        if (c->term == concept->term) {
-            insert = false;
-            break;
+            if (currentPath->containsNode(otherNode)) {
+                continue;
+            }
+            conceptnet::ConceptPath* nextPath = new conceptnet::ConceptPath(*currentPath);
+            nextPath->addToPath(edge);
+            fringe.push_back(nextPath);
+            expanded = true;
         }
-    }
-    if (insert) {
-        to.push_back(concept);
+        if (!expanded) {
+            delete currentPath;
+        }
     }
 }
 

@@ -1,7 +1,7 @@
 #include "srg/conceptnet/ConceptNet.h"
 #include "srg/SRGWorldModel.h"
-#include "srg/conceptnet/Concept.h"
 #include "srg/conceptnet/CNManager.h"
+#include "srg/conceptnet/Concept.h"
 
 #include <curl/curl.h>
 
@@ -13,7 +13,7 @@ namespace conceptnet
 {
 
 /*Use this for the web hosted conceptnet*/
-//const std::string ConceptNet::BASE_URL = "http://api.conceptnet.io";
+// const std::string ConceptNet::BASE_URL = "http://api.conceptnet.io";
 
 /*Use this for the locally hosted conceptnet*/
 const std::string ConceptNet::BASE_URL = "http://api.localhost:8084";
@@ -23,7 +23,7 @@ const std::string ConceptNet::QUERYEND = "/query?end=/c/en/";
 const std::string ConceptNet::QUERYNODE = "/query?node=/c/en/";
 const std::string ConceptNet::QUERYOTHER = "/query?other=/c/en/";
 const std::string ConceptNet::WILDCARD = "wildcard";
-const std::string ConceptNet::LIMIT = "&limit=";
+const std::string ConceptNet::LIMIT = "&limit=1000";
 const std::string ConceptNet::RELATION = "&rel=/r/";
 const std::string ConceptNet::END = "&end=/c/en/";
 const std::string ConceptNet::RELATEDNESS = "/relatedness?";
@@ -44,7 +44,7 @@ Concept* ConceptNet::getConcept(CNManager* cnManager, const std::string& concept
         return nullptr;
     }
     std::string conceptId = node["edges"][0]["start"]["term"].as<std::string>();
-    if(conceptId.find(conceptName) == std::string::npos) {
+    if (conceptId.find(conceptName) == std::string::npos) {
         conceptId = node["edges"][0]["end"]["term"].as<std::string>();
     }
     return cnManager->createConcept(conceptId, this->trimTerm(conceptId), "");
@@ -53,53 +53,56 @@ Concept* ConceptNet::getConcept(CNManager* cnManager, const std::string& concept
 std::vector<Edge*> ConceptNet::getEdges(CNManager* cnManager, const std::string& concept, int limit)
 {
     std::vector<Edge*> edges;
-    std::string json = httpGet(ConceptNet::BASE_URL + ConceptNet::QUERYNODE + concept + ConceptNet::LIMIT + std::to_string(limit));
-    generateEdges(cnManager, json, edges);
+    std::string json = httpGet(ConceptNet::BASE_URL + ConceptNet::QUERYNODE + concept + ConceptNet::LIMIT);
+    generateEdges(cnManager, json, edges, limit);
     return edges;
 }
 
-std::vector<Edge*> ConceptNet::getEdges(CNManager* cnManager, Relation relation, const std::string& concept, int limit) {
+std::vector<Edge*> ConceptNet::getEdges(CNManager* cnManager, Relation relation, const std::string& concept, int limit)
+{
     std::vector<Edge*> edges;
-    std::string json = httpGet(ConceptNet::BASE_URL + ConceptNet::QUERYNODE + concept + ConceptNet::RELATION + relations[relation] + ConceptNet::LIMIT + std::to_string(limit));
-    generateEdges(cnManager, json, edges);
+    std::string json = httpGet(
+            ConceptNet::BASE_URL + ConceptNet::QUERYNODE + concept + ConceptNet::RELATION + relations[relation] + ConceptNet::LIMIT);
+    generateEdges(cnManager, json, edges, limit);
     return edges;
 }
 
 std::vector<Edge*> ConceptNet::getCompleteEdge(CNManager* cnManager, Relation relation, const std::string& fromConcept, const std::string& toConcept, int limit)
 {
     std::vector<Edge*> edges;
-    std::string json = httpGet(ConceptNet::BASE_URL + ConceptNet::QUERYSTART + fromConcept + ConceptNet::RELATION + relations[relation] + END +
-                               toConcept + ConceptNet::LIMIT + std::to_string(limit));
-    generateEdges(cnManager, json, edges);
+    std::string json = httpGet(ConceptNet::BASE_URL + ConceptNet::QUERYSTART + fromConcept + ConceptNet::RELATION + relations[relation] + END + toConcept +
+                               ConceptNet::LIMIT);
+    generateEdges(cnManager, json, edges, limit);
     return edges;
 }
 std::vector<Edge*> ConceptNet::getOutgoingEdges(CNManager* cnManager, Relation relation, const std::string& fromConcept, int limit)
 {
     std::vector<Edge*> edges;
-    std::string json = httpGet(
-            ConceptNet::BASE_URL + ConceptNet::QUERYSTART + fromConcept + ConceptNet::RELATION + relations[relation] + ConceptNet::LIMIT + std::to_string(limit));
-    generateEdges(cnManager, json, edges);
+    std::string json = httpGet(ConceptNet::BASE_URL + ConceptNet::QUERYSTART + fromConcept + ConceptNet::RELATION + relations[relation] + ConceptNet::LIMIT);
+    generateEdges(cnManager, json, edges, limit);
     return edges;
 }
 std::vector<Edge*> ConceptNet::getIncomingEdges(CNManager* cnManager, Relation relation, const std::string& toConcept, int limit)
 {
     std::vector<Edge*> edges;
-    std::string json =
-            httpGet(ConceptNet::BASE_URL + ConceptNet::QUERYEND + toConcept + ConceptNet::RELATION + relations[relation] + ConceptNet::LIMIT + std::to_string(limit));
-    generateEdges(cnManager, json, edges);
+    std::string json = httpGet(
+            ConceptNet::BASE_URL + ConceptNet::QUERYEND + toConcept + ConceptNet::RELATION + relations[relation] + ConceptNet::LIMIT);
+    generateEdges(cnManager, json, edges, limit);
     return edges;
 }
 std::vector<Edge*> ConceptNet::getRelations(CNManager* cnManager, const std::string& concept, const std::string& otherConcept, int limit)
 {
     std::vector<Edge*> edges;
-    std::string json = httpGet(ConceptNet::BASE_URL + ConceptNet::QUERYSTART + concept + ConceptNet::END + otherConcept + ConceptNet::LIMIT + std::to_string(limit));
-    generateEdges(cnManager, json, edges);
+    std::string json =
+            httpGet(ConceptNet::BASE_URL + ConceptNet::QUERYSTART + concept + ConceptNet::END + otherConcept + ConceptNet::LIMIT);
+    generateEdges(cnManager, json, edges, limit);
     return edges;
 }
 
-std::vector<Edge*> ConceptNet::getEquivalentOutgoingEdges(CNManager* cnManager, const conceptnet::Concept* concept, int limit) {
+std::vector<Edge*> ConceptNet::getEquivalentOutgoingEdges(CNManager* cnManager, const conceptnet::Concept* concept, int limit)
+{
     std::vector<Edge*> edges = this->getOutgoingEdges(cnManager, conceptnet::Synonym, concept->term, limit);
-
+    // TODO insert symmetric edge?
     std::vector<Edge*> simirToEdges = this->getOutgoingEdges(cnManager, conceptnet::SimilarTo, concept->term, limit);
     edges.insert(edges.end(), simirToEdges.begin(), simirToEdges.end());
 
@@ -164,7 +167,7 @@ std::string ConceptNet::httpGet(const std::string& url)
     return *httpData;
 }
 
-void ConceptNet::generateEdges(CNManager* cnManager, const std::string& json, std::vector<Edge*>& edges, double minWeight)
+void ConceptNet::generateEdges(CNManager* cnManager, const std::string& json, std::vector<Edge*>& edges, int limit, double minWeight)
 {
     YAML::Node node;
     node = YAML::Load(json);
@@ -175,7 +178,7 @@ void ConceptNet::generateEdges(CNManager* cnManager, const std::string& json, st
     for (size_t i = 0; i < jsonEdges.size(); i++) {
         YAML::Node edge = jsonEdges[i];
         double weight = edge["weight"].as<double>();
-        if(weight < minWeight) {
+        if (weight < minWeight) {
             return;
         }
         // end of edge
@@ -217,9 +220,12 @@ void ConceptNet::generateEdges(CNManager* cnManager, const std::string& json, st
         // create edge
         Concept* fromConcept = cnManager->createConcept(startTerm, trimTerm(startTerm), startSenseLabel);
         Concept* toConcept = cnManager->createConcept(endTerm, trimTerm(endTerm), endSenseLabel);
-        std::string edgeId = "/a["+relation+","+startTerm+","+endTerm+"]"; // dont use cn's edgeId, its evil!
+        std::string edgeId = "/a[" + relation + "," + startTerm + "," + endTerm + "]"; // dont use cn's edgeId, its evil!
         edges.push_back(cnManager->createEdge(edgeId, startLanguage, fromConcept, toConcept, getRelation(relation), weight));
-//        edges.push_back(cnManager->createEdge(edgeId, startLanguage, fromConcept, toConcept, getRelation(relation), weight * edge["sources"].size()));
+        if(edges.size() == limit) {
+            break;
+        }
+        //        edges.push_back(cnManager->createEdge(edgeId, startLanguage, fromConcept, toConcept, getRelation(relation), weight * edge["sources"].size()));
     }
 }
 
@@ -257,6 +263,6 @@ std::string ConceptNet::trimTerm(const std::string& term)
     return term.substr(pos + 1, term.length() - pos - 1);
 }
 
-} // namespace wm
+} // namespace conceptnet
 
 } // namespace srg

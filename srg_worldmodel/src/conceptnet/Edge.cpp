@@ -22,10 +22,20 @@ Edge::Edge(std::string id, std::string language, Concept* fromConcept, Concept* 
 Edge::~Edge() {
 }
 
-std::string Edge::toString() const
+conceptnet::Concept* Edge::getOpposite(srg::conceptnet::Concept *concept) {
+    if (this->fromConcept == concept) {
+        return this->toConcept;
+    } else if (this->toConcept == concept){
+        return this->fromConcept;
+    } else {
+        return nullptr;
+    }
+}
+
+std::string Edge::toString(std::string indent) const
 {
     std::stringstream ss;
-    ss << "Edge with Language: " << this->language << " From Concept: " << this->fromConcept->term << " Sense: " << this->fromConcept->senseLabel
+    ss << indent << "Edge with Language: " << this->language << " From Concept: " << this->fromConcept->term << " Sense: " << this->fromConcept->senseLabel
        << " Relation: " << relations[this->relation] << " to Concept: " << this->toConcept->term << " Sense: " << this->toConcept->senseLabel
        << " Weight: " << this->weight;
     return ss.str();

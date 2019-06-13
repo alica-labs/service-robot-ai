@@ -33,6 +33,7 @@ add_library(srg_worldmodel
         src/conceptnet/Edge.cpp
         src/conceptnet/Concept.cpp
         src/conceptnet/EdgeTranslator.cpp
+        src/conceptnet/ConceptPath.cpp
         src/dialogue/AnswerGraph.cpp
         src/wm/RawSensorData.cpp
         src/wm/Communication.cpp
