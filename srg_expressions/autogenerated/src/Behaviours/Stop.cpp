@@ -28,8 +28,6 @@ void Stop::run(void* msg)
 {
     /*PROTECTED REGION ID(run1555602210283) ENABLED START*/
     std::cout << "Stop is called!" << std::endl;
-
-    this->robot->spawn();
     /*PROTECTED REGION END*/
 }
 void Stop::initialiseParameters()

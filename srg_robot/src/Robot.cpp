@@ -35,8 +35,6 @@ void Robot::spawn() const
     builder:capnp::MallocMessageBuilder msgBuilder;
     srgsim::Command::Builder commandBuilder = msgBuilder.initRoot<srgsim::Command>();
     commandBuilder.setAction(srgsim::Command::Action::SPAWN);
-    commandBuilder.setX(0);
-    commandBuilder.setY(0);
     capnzero::ID::Builder sender = commandBuilder.initSenderId();
     sender.setValue(kj::arrayPtr(this->id->getRaw(), this->id->getSize()));
     commandBuilder.setSenderId(sender);

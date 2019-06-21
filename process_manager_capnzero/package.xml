@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>process_manager_capnzero</name>
+  <version>0.0.0</version>
+  <description>The process_manager package</description>
+
+  <maintainer email="opfer@vs.uni-kassel.de">Stephan Opfer</maintainer>
+
+  <license>MIT</license>
+
+  <author email="opfer@vs.uni-kassel.de">Stephan Opfer</author> -->
+  
+  <depend>system_config</depend>
+  <depend>system_util</depend>
+  <depend>id_manager</depend>
+  <depend>id_capnzero</depend>
+  <depend>capnzero</depend>
+  <depend>roscpp</depend>
+  
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <export>
+  </export>
+</package>

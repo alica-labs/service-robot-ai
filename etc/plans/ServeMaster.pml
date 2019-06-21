@@ -49,7 +49,7 @@
     "abstractPlans" : [ "Behaviours/Spawn.beh#1558533534825" ],
     "variableBindings" : [ ],
     "outTransitions" : [ 1558533494595, 1558533514929 ],
-    "inTransitions" : [ 1558533492085, 1558533519854 ]
+    "inTransitions" : [ 1558533492085 ]
   }, {
     "type" : "State",
     "id" : 1558533461982,
@@ -59,7 +59,7 @@
     "parentPlan" : 1555601736192,
     "abstractPlans" : [ "Behaviours/Test.beh#1559635479527" ],
     "variableBindings" : [ ],
-    "outTransitions" : [ 1558533498560, 1558533519854, 1558533714287 ],
+    "outTransitions" : [ 1558533498560, 1558533714287 ],
     "inTransitions" : [ 1558533498560, 1558533514929 ]
   } ],
   "transitions" : [ {
@@ -73,7 +73,7 @@
       "name" : "1558533620473",
       "comment" : "",
       "enabled" : true,
-      "conditionString" : "Start received",
+      "conditionString" : "Start received!",
       "pluginName" : "DefaultPlugin",
       "variables" : [ ],
       "quantifiers" : [ ]
@@ -115,19 +115,11 @@
       "name" : "1558533667052",
       "comment" : "",
       "enabled" : true,
-      "conditionString" : "Spawn successful",
+      "conditionString" : "Spawn successful (acknowledge through received sim sensor values)",
       "pluginName" : "DefaultPlugin",
       "variables" : [ ],
       "quantifiers" : [ ]
     },
-    "synchronisation" : null
-  }, {
-    "id" : 1558533519854,
-    "name" : "FromServeToSpawn",
-    "comment" : "MISSING_COMMENT",
-    "inState" : 1558533461982,
-    "outState" : 1558533460297,
-    "preCondition" : null,
     "synchronisation" : null
   }, {
     "id" : 1558533714287,
@@ -135,7 +127,16 @@
     "comment" : "MISSING_COMMENT",
     "inState" : 1558533461982,
     "outState" : 1555601748848,
-    "preCondition" : null,
+    "preCondition" : {
+      "id" : 1560934538125,
+      "name" : "1560934538125",
+      "comment" : "",
+      "enabled" : true,
+      "conditionString" : "Stop received!",
+      "pluginName" : "DefaultPlugin",
+      "variables" : [ ],
+      "quantifiers" : [ ]
+    },
     "synchronisation" : null
   } ],
   "synchronisations" : [ ]
