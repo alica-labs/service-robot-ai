@@ -61,7 +61,7 @@ namespace srg {
         srg::SpeechAct::Builder msg = msgBuilder.initRoot<srg::SpeechAct>();
         capnzero::ID::Builder sender = msg.initSenderID();
         sender.setValue(kj::arrayPtr(this->id->getRaw(), this->id->getSize()));
-        sender.setType(capnzero::IDType::UUID);
+        sender.setType(capnzero::ID::UUID);
         msg.setSenderID(sender);
         msg.setSpeechType(speechType);
         msg.setText(text);

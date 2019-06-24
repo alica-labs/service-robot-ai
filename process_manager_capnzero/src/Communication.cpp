@@ -24,7 +24,8 @@ Communication::Communication(ProcessManager* processManager)
     this->processCommandSub->subscribe(&Communication::handleProcessCommand, &(*this));
 
     this->processStatsTopic = (*sc)["ProcessManaging"]->get<std::string>("Topics.processStatsTopic", NULL);
-    this->processStatePub = new capnzero::Publisher(this->ctx, this->processStatsTopic);
+    this->processStatePub = new capnzero::Publisher(this->ctx);
+    this->processStatePub->setDefaultGroup(this->processStatsTopic);
     this->processStatePub->bind(capnzero::CommType::UDP, "224.0.0.2:5555");
 }
 
