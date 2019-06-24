@@ -1,12 +1,10 @@
 #pragma once
 
 #include <alica_msgs/AlicaEngineInfo.h>
-#include <process_manager/ProcessStats.h>
+#include <process_manager/containers/ProcessStats.h>
 #include <process_manager/RobotMetaData.h>
 #include <process_manager/RobotExecutableRegistry.h>
 #include <essentials/Identifier.h>
-
-#include <ros/ros.h>
 
 #include <QFrame>
 #include <chrono>
@@ -16,11 +14,6 @@ namespace Ui
 class RobotProcessesWidget;
 class ControlledRobotWidget;
 } // namespace Ui
-
-namespace ros
-{
-class Publisher;
-}
 
 namespace alica
 {
@@ -36,7 +29,7 @@ namespace robot_control
 {
 class RobotsControl;
 
-class Robot : public QFrame, public essentials::RobotMetaData
+class Robot : public QFrame, public process_manager::RobotMetaData
 {
     Q_OBJECT
 
@@ -75,8 +68,6 @@ class Robot : public QFrame, public essentials::RobotMetaData
     QFrame* frameForPM;
     pm_widget::ControlledRobot* controlledRobotWidget;
     const essentials::Identifier* broadcastId;
-
-    ros::Publisher robotCommandPub;
 };
 
 } /* namespace robot_control */

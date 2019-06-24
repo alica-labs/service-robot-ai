@@ -21,10 +21,10 @@ namespace process_manager {
         uint8_t cmd;
 
         // ReceiverId determines the ProcessManager-Instanz, which is addressed by this message. 0 means every ProcessManager
-        const essentials::Identifier* receiverID;
+        essentials::IdentifierConstPtr receiverID;
 
         // RobotId determines the ROBOT-Environment Variable
-        std::vector<const essentials::Identifier*> robotIDs;
+        std::vector<essentials::IdentifierConstPtr> robotIDs;
 
         // Vector of process IDs from the Processes.conf file.
         std::vector<int32_t> processKeys;

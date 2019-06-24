@@ -22,9 +22,9 @@ using std::vector;
 std::chrono::duration<double> RobotsControl::msgTimeOut = std::chrono::duration<double>(0);
 
 RobotsControl::RobotsControl()
-    : rqt_gui_cpp::Plugin()
-    , widget_(0)
-    , guiUpdateTimer(nullptr)
+        : rqt_gui_cpp::Plugin()
+        , widget_(0)
+        , guiUpdateTimer(nullptr)
 {
     setObjectName("RobotsControl");
     this->sc = essentials::SystemConfig::getInstance();
@@ -65,6 +65,22 @@ RobotsControl::RobotsControl()
     }
 }
 
+const Communication* RobotsControl::getComm()
+{
+    return this->communication;
+}
+
+void RobotsControl::addProcessStats(process_manager::ProcessStats psts)
+{
+    std::lock_guard<mutex> lck(processStatsMsgQueueMutex);
+    this->processStatMsgQueue.emplace(std::chrono::system_clock::now(), psts);
+}
+
+void RobotsControl::addAlicaInfo(alica::AlicaEngineInfo alicaInfo) {
+    std::lock_guard<mutex> lck(alicaInfoMsgQueueMutex);
+    this->alicaInfoMsgQueue.emplace(std::chrono::system_clock::now(), alicaInfo);
+}
+
 void RobotsControl::initPlugin(qt_gui_cpp::PluginContext& context)
 {
     widget_ = new QWidget();
@@ -83,7 +99,7 @@ void RobotsControl::initPlugin(qt_gui_cpp::PluginContext& context)
         this->checkAndInit(robot.second->agentID);
     }
 
-    this->communication = new Communication();
+    this->communication = new Communication(this);
 
     // Initialise the GUI refresh timer
     this->guiUpdateTimer = new QTimer();
@@ -151,8 +167,6 @@ void RobotsControl::updateGUI()
     }
 }
 
-
-
 /**
  * Processes all queued messages from the processStatMsgsQueue and the alicaInfoMsgQueue.
  */
@@ -210,8 +224,6 @@ void RobotsControl::checkAndInit(const essentials::Identifier* robotId)
 
 void RobotsControl::shutdownPlugin()
 {
-    this->processStateSub.shutdown();
-    this->alicaInfoSub.shutdown();
 }
 
 void RobotsControl::saveSettings(qt_gui_cpp::Settings& plugin_settings, qt_gui_cpp::Settings& instance_settings) const {}

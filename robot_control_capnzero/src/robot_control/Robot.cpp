@@ -1,6 +1,6 @@
 #include "robot_control/Robot.h"
 
-#include "robot_control/RobotCommand.h"
+#include "robot_control/containers/RobotCommand.h"
 #include "robot_control/RobotsControl.h"
 #include "ui_ControlledRobot.h"
 
@@ -70,7 +70,6 @@ Robot::Robot(string robotName, const essentials::Identifier* robotId, RobotsCont
     // vBox->addWidget(new QSpacerItem(0,0,QSizePolicy::Expanding, QSizePolicy::Line));
     this->parentRobotsControl->robotControlWidget_.robotControlLayout->addWidget(this);
 
-    this->robotCommandPub = this->parentRobotsControl->rosNode->advertise<robot_control::RobotCommand>("RobotCommand", 5);
 }
 
 Robot::~Robot()
@@ -123,14 +122,7 @@ void Robot::updateGUI(std::chrono::system_clock::time_point now)
 
 void Robot::sendRobotCommand(bool start)
 {
-    RobotCommand rc;
-    rc.receiverId.id = this->agentID->toByteVector();
-    if (start) {
-        rc.cmd = RobotCommand::START;
-    } else {
-        rc.cmd = RobotCommand::STOP;
-    }
-    this->robotCommandPub.publish(rc);
+    this->parentRobotsControl->getComm()->sendRobotCommand(start, this->agentID);
 }
 
 void Robot::toggle()

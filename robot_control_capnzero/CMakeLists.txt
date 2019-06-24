@@ -1,21 +1,20 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(robot_control_capnzero)
 
-# Load catkin and all dependencies required for this package
+add_compile_options(-std=c++11)
+
 find_package(catkin REQUIRED COMPONENTS 
-    rqt_gui 
-    rqt_gui_cpp
-		alica_engine
-    process_manager 
-    system_util
-    id_ros
-    alica_client 
-    pm_control 
-    std_msgs 
-    message_generation 
+	rqt_gui
+	rqt_gui_cpp
+	alica_engine
+	process_manager_capnzero
+	system_util
+	id_capnzero
+	alica_client
+	pm_control
+	capnzero
 )
 
-#find_package(Qt4 COMPONENTS QtCore QtGui QtNetwork REQUIRED)
 find_package(Qt5Core REQUIRED)
 get_target_property(Qt5Core_location Qt5::Core LOCATION)
 find_package(Qt5Gui REQUIRED)
@@ -27,32 +26,12 @@ get_target_property(Qt5Widgets_location Qt5::Widgets LOCATION)
 SET( QT_USE_QTXML TRUE )
 SET( QT_WRAP_CPP TRUE )
 
-## Use c++ 11x std
-set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
-if (${CMAKE_EXTRA_GENERATOR} MATCHES "Eclipse CDT4")
-	set(CMAKE_CXX_COMPILER_ARG1 "-std=c++11" CACHE STRING "C++ version for eclipse" FORCE)
-	set(CMAKE_ECLIPSE_VERSION "4.5" CACHE STRING "Eclipse version" FORCE)
-	add_definitions (-DCMAKE_ECLIPSE_GENERATE_SOURCE_PROJECT=TRUE)
-endif (${CMAKE_EXTRA_GENERATOR} MATCHES "Eclipse CDT4")
-
-catkin_python_setup()
-
-add_message_files(
-  FILES
-  RobotCommand.msg
-)
-
-generate_messages(
-  DEPENDENCIES
-  id_ros
-  std_msgs
-)
-
 set(robot_control_SRCS
   src/robot_control/flowlayout.cpp
   src/robot_control/RobotsControl.cpp
   src/robot_control/Robot.cpp
   src/robot_control/Communication.cpp
+  src/robot_control/ContainerUtils.cpp
 )
 
 set(robot_control_HDRS
@@ -79,7 +58,10 @@ if(NOT EXISTS "${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}")
   file(MAKE_DIRECTORY "${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}")
 endif()
 
-include_directories(${robot_control_INCLUDE_DIRECTORIES} ${catkin_INCLUDE_DIRS})
+include_directories(
+  ${robot_control_INCLUDE_DIRECTORIES}
+  ${catkin_INCLUDE_DIRS}
+)
 
 set(robot_control_RCS
   resources/resources.qrc
@@ -88,10 +70,24 @@ set(robot_control_RCS
 catkin_package(
   INCLUDE_DIRS ${robot_control_INCLUDE_DIRECTORIES}
   LIBRARIES ${PROJECT_NAME}
-  CATKIN_DEPENDS rqt_gui rqt_gui_cpp id_ros alica_msgs
+  CATKIN_DEPENDS rqt_gui rqt_gui_cpp id_capnzero alica_msgs
 )
 
+#### Robot Control MESSAGES
+find_package(CapnProto REQUIRED)
+set(CAPNPC_IMPORT_DIRS "${id_capnzero_SOURCE_PREFIX}/include")# include external capnp message schema files
+set(capnp_msg_folder "${CMAKE_CURRENT_SOURCE_DIR}/include/robot_control")
+file(GLOB_RECURSE capnp_messages ${capnp_msg_folder} *.capnp)
+set(CAPNPC_SRC_PREFIX ${capnp_msg_folder})
+set(CAPNPC_OUTPUT_DIR ${capnp_msg_folder})
+capnp_generate_cpp(CAPNP_SRCS CAPNP_HDRS ${capnp_messages})
 
+add_library(rc_msgs
+	src/robot_control/ContainerUtils.cpp
+	${CAPNP_SRCS}
+)
+
+#### RQT GUI LIBRARY
 QT5_WRAP_CPP(robot_control_MOCS ${robot_control_HDRS})
 QT5_ADD_RESOURCES(robot_control_RESOURCES ${robot_control_RCS}) 
 # ensure generated header files are being created in the devel space
@@ -100,10 +96,19 @@ set(CMAKE_CURRENT_BINARY_DIR "${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DES
 QT5_WRAP_UI(robot_control_UIS_H ${robot_control_UIS})
 set(CMAKE_CURRENT_BINARY_DIR "${_cmake_current_binary_dir}")
 
-add_library(${PROJECT_NAME} ${robot_control_SRCS} ${robot_control_MOCS} ${robot_control_UIS_H} ${robot_control_RESOURCES})
-target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${Qt5Core_location} ${Qt5Gui_location} ${Qt5Network_location})
-
-add_dependencies(${PROJECT_NAME} robot_control_generate_messages_cpp)
+add_library(${PROJECT_NAME}
+	${robot_control_SRCS}
+	${robot_control_MOCS}
+	${robot_control_UIS_H}
+	${robot_control_RESOURCES}
+)
+target_link_libraries(${PROJECT_NAME}
+	${catkin_LIBRARIES}
+	${Qt5Core_location}
+	${Qt5Gui_location}
+	${Qt5Network_location}
+	rc_msgs
+)
 
 find_package(class_loader)
 class_loader_hide_library_symbols(${PROJECT_NAME})

@@ -1,20 +1,14 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(process_manager_capnzero)
- 
-## Use c++ 11x std
-set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
-if (${CMAKE_EXTRA_GENERATOR} MATCHES "Eclipse CDT4")
-	set(CMAKE_CXX_COMPILER_ARG1 "-std=c++11" CACHE STRING "C++ version for eclipse" FORCE)
-	set(CMAKE_ECLIPSE_VERSION "4.5" CACHE STRING "Eclipse version" FORCE)
-	add_definitions (-DCMAKE_ECLIPSE_GENERATE_SOURCE_PROJECT=TRUE)
-endif (${CMAKE_EXTRA_GENERATOR} MATCHES "Eclipse CDT4")
+
+add_compile_options(-std=c++11)
 
 find_package(Threads)
 find_package(catkin REQUIRED id_manager system_config system_util id_capnzero capnzero roscpp)
 
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES robot_executable_meta_data
+  LIBRARIES robot_executable_meta_data pm_msgs
   CATKIN_DEPENDS id_manager system_config system_util id_capnzero
 )
 

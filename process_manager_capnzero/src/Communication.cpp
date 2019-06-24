@@ -7,13 +7,15 @@
 #include <essentials/WildcardID.h>
 #include <process_manager/containers/ContainerUtils.h>
 
+#include <capnzero/CapnZero.h>
+
 namespace process_manager
 {
 Communication::Communication(ProcessManager* processManager)
 {
     this->processManager = processManager;
 
-    // initialise ROS stuff
+    // initialise capnzero stuff
     this->ctx = zmq_ctx_new();
 
     this->processCmdTopic = (*sc)["ProcessManaging"]->get<std::string>("Topics.processCmdTopic", NULL);
@@ -22,9 +24,8 @@ Communication::Communication(ProcessManager* processManager)
     this->processCommandSub->subscribe(&Communication::handleProcessCommand, &(*this));
 
     this->processStatsTopic = (*sc)["ProcessManaging"]->get<std::string>("Topics.processStatsTopic", NULL);
-    this->processStatePub = new capnzero::Publisher(this->ctx);
+    this->processStatePub = new capnzero::Publisher(this->ctx, this->processStatsTopic);
     this->processStatePub->bind(capnzero::CommType::UDP, "224.0.0.2:5555");
-    this->processStatePub->setDefaultGroup(this->processStatsTopic);
 }
 
 /**
@@ -36,7 +37,7 @@ void Communication::handleProcessCommand(capnp::FlatArrayMessageReader& msg)
     std::cout << "Communication: ProcessCommand received..." << std::endl;
     ProcessCommand pc = ContainerUtils::toProcessCommand(msg, this->processManager->getPMRegistry());
     if (pc.receiverID != this->processManager->getOwnID() &&
-        !(this->processManager->getSimMode() && dynamic_cast<const essentials::WildcardID*>(pc.receiverID))) {
+        !(this->processManager->getSimMode() && dynamic_cast<const essentials::WildcardID*>(pc.receiverID.get()))) {
         return;
     }
 

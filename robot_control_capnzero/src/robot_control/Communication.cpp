@@ -1,5 +1,9 @@
 #include "robot_control/Communication.h"
 #include "robot_control/RobotsControl.h"
+#include "robot_control/containers/RobotCommand.h"
+#include "robot_control/containers/ContainerUtils.h"
+
+#include <process_manager/containers/ContainerUtils.h>
 
 #include <SystemConfig.h>
 
@@ -7,32 +11,47 @@ namespace robot_control {
     Communication::Communication(RobotsControl* control) {
         this->control = control;
         this->sc = essentials::SystemConfig::getInstance();
-        std::string middleware = (*sc)["RobotControl"]->tryGet<std::string>("capnzero", "RobotControl.communication", NULL);
-        if (middleware.compare("capnzero")) {
 
-        } else if (middleware.compare("ros")) {
-            // Initialise the ROS Communication
-            rosNode = new ros::NodeHandle();
-            processStateSub = rosNode->subscribe("/process_manager/ProcessStats", 10, &Communication::receiveProcessStats, (Communication*)this);
-            alicaInfoSub = rosNode->subscribe("/AlicaEngine/AlicaEngineInfo", 10, &Communication::receiveAlicaInfo, (Communication*)this);
-        } else {
-            std::cerr << "Communication: Unknown middleware " << middleware << " requested!" << std::endl;
-        }
+        // initialise capnzero stuff
+        this->ctx = zmq_ctx_new();
+        this->processStatsTopic = (*sc)["ProcessManaging"]->get<std::string>("Topics.processStatsTopic", NULL);
+        this->processStatsSub = new capnzero::Subscriber(this->ctx, this->processStatsTopic);
+        this->processStatsSub->connect(capnzero::CommType::UDP, "224.0.0.2:5555");
+        this->processStatsSub->subscribe(&Communication::handleProcessStats, &(*this));
+
+        this->alicaInfoTopic = (*sc)["AlicaCapnzProxy"]->get<std::string>("Topics.alicaEngineInfoTopic", NULL);
+        this->alicaInfoSub = new capnzero::Subscriber(this->ctx, this->alicaInfoTopic);
+        this->alicaInfoSub->connect(capnzero::CommType::UDP, "224.0.0.2:5555");
+        this->alicaInfoSub->subscribe(&Communication::handleAlicaInfo, &(*this));
+
+        this->robotCommandTopic = (*sc)["RobotControl"]->get<std::string>("Topics.robotCommandTopic", NULL);
+        this->robotCommandPub = new capnzero::Publisher(this->ctx, this->robotCommandTopic);
+        this->robotCommandPub->bind(capnzero::CommType::UDP, "224.0.0.2:5555");
     }
 
-    void Communication::receiveProcessStats(process_manager::ProcessStatsConstPtr processStats)
+    void Communication::handleProcessStats(capnp::FlatArrayMessageReader& msg)
     {
-        this->control->addProcessStats();
-
-        std::lock_guard<mutex> lck(processStatsMsgQueueMutex);
-        this->processStatMsgQueue.emplace(std::chrono::system_clock::now(), processStats);
+        this->control->addProcessStats(process_manager::ContainerUtils::toProcessStats(msg));
     }
 
-    void Communication::receiveAlicaInfo(alica_msgs::AlicaEngineInfoConstPtr alicaInfo)
+    void Communication::handleAlicaInfo(capnp::FlatArrayMessageReader& msg)
     {
         this->control->addAlicaInfo();
 
-        lock_guard<mutex> lck(alicaInfoMsgQueueMutex);
-        this->alicaInfoMsgQueue.emplace(std::chrono::system_clock::now(), alicaInfo);
+//        lock_guard<mutex> lck(alicaInfoMsgQueueMutex);
+//        this->alicaInfoMsgQueue.emplace(std::chrono::system_clock::now(), alicaInfo);
+    }
+
+    void Communication::sendRobotCommand(bool start, essentials::IdentifierConstPtr id) {
+        RobotCommand rc;
+        rc.receiverID = id;
+        if (start) {
+            rc.cmd = RobotCommand::START;
+        } else {
+            rc.cmd = RobotCommand::STOP;
+        }
+        capnp::MallocMessageBuilder builder;
+        ContainerUtils::toMsg(rc,builder);
+        this->robotCommandPub->send(builder);
     }
 }

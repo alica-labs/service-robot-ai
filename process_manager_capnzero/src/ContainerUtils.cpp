@@ -15,7 +15,7 @@ ProcessCommand ContainerUtils::toProcessCommand(::capnp::FlatArrayMessageReader&
     process_manager::ProcessCommandMsg::Reader reader = msg.getRoot<process_manager::ProcessCommandMsg>();
     // check whether this message is for me, 0 is a wild card for all ProcessManagers
     essentials::WildcardID wildcardId(nullptr, 0);
-    if ((uint8_t) reader.getSenderID().getType() == essentials::Identifier::WILDCARD_TYPE) {
+    if (reader.getSenderID().getType() == essentials::Identifier::WILDCARD_TYPE) {
         pc.receiverID = &wildcardId;
     } else {
         pc.receiverID = idManager->getIDFromBytes(
