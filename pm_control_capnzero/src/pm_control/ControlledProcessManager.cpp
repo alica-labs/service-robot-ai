@@ -1,8 +1,8 @@
 #include <SystemConfig.h>
 #include <process_manager/RobotExecutableRegistry.h>
 
-#include "pm_widget/ControlledProcessManager.h"
-#include "pm_widget/ControlledRobot.h"
+#include "pm_control/ControlledProcessManager.h"
+#include "pm_control/ControlledRobot.h"
 #include "ui_RobotProcessesWidget.h"
 
 using std::cout;
@@ -10,13 +10,14 @@ using std::endl;
 using std::string;
 using std::chrono::duration;
 
-namespace pm_widget
+namespace pm_control
 {
-ControlledProcessManager::ControlledProcessManager(string processManagerName, const essentials::Identifier* processManagerId, QBoxLayout* parentLayout)
+ControlledProcessManager::ControlledProcessManager(string processManagerName, const essentials::Identifier* processManagerId, QBoxLayout* parentLayout, pm_control::Communication* comm)
         : name(processManagerName)
         , id(processManagerId)
         , pmRegistry(process_manager::RobotExecutableRegistry::get())
         , parentLayout(parentLayout)
+        , comm(comm)
 {
     essentials::SystemConfig* sc = essentials::SystemConfig::getInstance();
     this->msgTimeOut = duration<double>((*sc)["ProcessManaging"]->get<unsigned long>("PMControl.timeLastMsgReceivedTimeOut", NULL));
@@ -52,7 +53,7 @@ ControlledRobot* ControlledProcessManager::getControlledRobot(const essentials::
         if (this->pmRegistry->getRobotName(robotId, robotName)) {
             std::cout << "ControlledPM: Create new ControlledRobot " << robotName << " (ID: " << *robotId << ")" << std::endl;
 
-            ControlledRobot* controlledRobot = new ControlledRobot(robotName, robotId, this->id);
+            ControlledRobot* controlledRobot = new ControlledRobot(robotName, robotId, this->id, this->comm);
             this->controlledRobotsMap.emplace(robotId, controlledRobot);
             this->addRobot(controlledRobot->robotProcessesQFrame);
             return controlledRobot;

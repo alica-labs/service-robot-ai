@@ -22,9 +22,10 @@ namespace process_manager {
 namespace pm_control
 {
 class PMControl;
+class Communication;
 }
 
-namespace pm_widget
+namespace pm_control
 {
 class ControlledRobot;
 
@@ -33,7 +34,7 @@ class ControlledProcessManager : public QObject
     Q_OBJECT
 
 public:
-    ControlledProcessManager(std::string processManagerName, const essentials::Identifier* processManagerId, QBoxLayout* pmHorizontalLayout);
+    ControlledProcessManager(std::string processManagerName, const essentials::Identifier* processManagerId, QBoxLayout* pmHorizontalLayout, pm_control::Communication* comm);
     virtual ~ControlledProcessManager();
 
     void updateGUI(std::chrono::system_clock::time_point now);
@@ -55,6 +56,7 @@ private:
             controlledRobotsMap; /* < The robots, which are controlled by this process manager */
     QBoxLayout* parentLayout;
     ControlledRobot* getControlledRobot(const essentials::Identifier* robotId);
+    pm_control::Communication* comm;
 };
 
 } /* namespace pm_widget */

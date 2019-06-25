@@ -1,23 +1,32 @@
-#include <pluginlib/class_list_macros.h>
-#include <ros/master.h>
+#include "pm_control/PMControl.h"
 
-#include <SystemConfig.h>
-#include <pm_widget/ControlledExecutable.h>
-#include <pm_widget/ControlledProcessManager.h>
+#include "pm_control/Communication.h"
+#include "pm_control/ControlledExecutable.h"
+#include "pm_control/ControlledProcessManager.h"
+
 #include <process_manager/ExecutableMetaData.h>
 #include <process_manager/RobotExecutableRegistry.h>
 
-#include "pm_control/PMControl.h"
+#include <QApplication>
+
+#include <SystemConfig.h>
 
 namespace pm_control
 {
 PMControl::PMControl()
-        : rqt_gui_cpp::Plugin()
-        , widget_(0)
+        : widget_(0)
         , guiUpdateTimer(nullptr)
 {
-    setObjectName("PMControl");
-//    rosNode = new ros::NodeHandle();
+    widget_ = new QWidget();
+    widget_->setAttribute(Qt::WA_AlwaysShowToolTips, true);
+    ui_.setupUi(widget_);
+
+    // Initialise the GUI refresh timer
+    this->guiUpdateTimer = new QTimer();
+    QObject::connect(guiUpdateTimer, SIGNAL(timeout()), this, SLOT(run()));
+    this->guiUpdateTimer->start(200);
+
+    setCentralWidget(widget_);
 
     this->sc = essentials::SystemConfig::getInstance();
 
@@ -41,29 +50,15 @@ PMControl::PMControl()
     for (auto processSectionName : (*processDescriptions)) {
         tmpExecID = this->pmRegistry->addExecutable(processSectionName);
     }
+
+    this->comm = new Communication(this);
 }
 
-void PMControl::initPlugin(qt_gui_cpp::PluginContext& context)
-{
-    widget_ = new QWidget();
-    widget_->setAttribute(Qt::WA_AlwaysShowToolTips, true);
-    ui_.setupUi(widget_);
-
-    if (context.serialNumber() > 1) {
-        widget_->setWindowTitle(widget_->windowTitle() + " (" + QString::number(context.serialNumber()) + ")");
-    }
-    context.addWidget(widget_);
-
-    // Initialise the ROS Communication
-    string statTopic = (*this->sc)["ProcessManaging"]->get<string>("Topics.processStatsTopic", NULL);
-    // TODO
-//    processStateSub = rosNode->subscribe(statTopic, 10, &PMControl::receiveProcessStats, (PMControl*)this);
-
-    // Initialise the GUI refresh timer
-    this->guiUpdateTimer = new QTimer();
-    QObject::connect(guiUpdateTimer, SIGNAL(timeout()), this, SLOT(run()));
-    this->guiUpdateTimer->start(200);
+PMControl::~PMControl() {
+    delete this->comm;
 }
+
+const Communication* PMControl::getComm() { return this->comm; }
 
 /**
  * The worker method of PMControl. It processes the received ROS messages and afterwards updates the GUI.
@@ -109,7 +104,7 @@ void PMControl::handleProcessStats()
         processStatMsgQueue.pop();
 
         // get the corresponding process manager object
-        pm_widget::ControlledProcessManager* controlledPM = this->getControlledProcessManager(timePstsPair.second.ownID);
+        pm_control::ControlledProcessManager* controlledPM = this->getControlledProcessManager(timePstsPair.second.ownID);
         if (controlledPM != nullptr) {
             // hand the message to the process manager, in order to let him update his data structures
             controlledPM->handleProcessStats(timePstsPair);
@@ -126,7 +121,7 @@ void PMControl::handleProcessStats()
  * @return The ControlledProcessManager object, corresponding to the given ID, or nullptr if nothing is found for the
  * given ID.
  */
-pm_widget::ControlledProcessManager* PMControl::getControlledProcessManager(const essentials::Identifier* processManagerId)
+pm_control::ControlledProcessManager* PMControl::getControlledProcessManager(const essentials::Identifier* processManagerId)
 {
     const essentials::Identifier* id = this->pmRegistry->getRobotId(processManagerId->getRaw(), processManagerId->getSize());
     string pmName;
@@ -138,7 +133,7 @@ pm_widget::ControlledProcessManager* PMControl::getControlledProcessManager(cons
     // process manager is not known, so create a corresponding instance
     this->pmRegistry->getRobotName(id, pmName);
     cout << "PMControl: Create new ControlledProcessManager " << pmName << " (ID: " << id << ")" << endl;
-    pm_widget::ControlledProcessManager* controlledPM = new pm_widget::ControlledProcessManager(pmName, id, this->ui_.pmHorizontalLayout);
+    pm_control::ControlledProcessManager* controlledPM = new pm_control::ControlledProcessManager(pmName, id, this->ui_.pmHorizontalLayout, this->comm);
     this->processManagersMap.emplace(id, controlledPM);
     return controlledPM;
 }
@@ -153,15 +148,20 @@ void PMControl::receiveProcessStats(process_manager::ProcessStats psts)
     this->processStatMsgQueue.emplace(chrono::system_clock::now(), psts);
 }
 
-void PMControl::shutdownPlugin()
-{
-//    this->processCommandPub.shutdown();
-//    this->processStateSub.shutdown();
-}
-
-void PMControl::saveSettings(qt_gui_cpp::Settings& plugin_settings, qt_gui_cpp::Settings& instance_settings) const {}
-
-void PMControl::restoreSettings(const qt_gui_cpp::Settings& plugin_settings, const qt_gui_cpp::Settings& instance_settings) {}
 } // namespace pm_control
 
-PLUGINLIB_EXPORT_CLASS(pm_control::PMControl, rqt_gui_cpp::Plugin)
+int main(int argc, char *argv[])
+{
+    Q_INIT_RESOURCE(application);
+
+    QApplication app(argc, argv);
+    QCoreApplication::setOrganizationName("QtProject");
+    QCoreApplication::setApplicationName("Application Example");
+    QCoreApplication::setApplicationVersion(QT_VERSION_STR);
+
+    pm_control::PMControl pmControl;
+    pmControl.show();
+
+    return app.exec();
+}
+

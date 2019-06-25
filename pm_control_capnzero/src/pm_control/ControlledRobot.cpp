@@ -1,6 +1,7 @@
-#include "pm_widget/ControlledRobot.h"
-#include "pm_widget/ControlledExecutable.h"
-#include "pm_widget/ControlledProcessManager.h"
+#include "pm_control/ControlledRobot.h"
+#include "pm_control/ControlledExecutable.h"
+#include "pm_control/ControlledProcessManager.h"
+#include "pm_control/Communication.h"
 #include "ui_ProcessWidget.h"
 #include "ui_RobotProcessesWidget.h"
 
@@ -13,14 +14,15 @@
 
 #include <limits.h>
 #include <ros/ros.h>
-namespace pm_widget
+namespace pm_control
 {
 // Second Constructor is for robot_control
-ControlledRobot::ControlledRobot(string robotName, const essentials::Identifier* robotId, const essentials::Identifier* parentPMid)
+ControlledRobot::ControlledRobot(string robotName, const essentials::Identifier* robotId, const essentials::Identifier* parentPMid, pm_control::Communication* comm)
         : RobotMetaData(robotName, robotId)
         , robotProcessesQFrame(new QFrame())
         , _robotProcessesWidget(new Ui::RobotProcessesWidget())
         , parentPMid(parentPMid)
+        , comm(comm)
 {
     // setup gui stuff
     this->_robotProcessesWidget->setupUi(this->robotProcessesQFrame);
@@ -117,17 +119,10 @@ void ControlledRobot::removeExec(QWidget* exec)
     this->_robotProcessesWidget->verticalLayout->removeWidget(exec);
 }
 
-void ControlledRobot::sendProcessCommand(vector<int> execIds, vector<int> paramSets, int cmd)
+void ControlledRobot::sendProcessCommand(process_manager::ProcessCommand pc)
 {
-    process_manager::ProcessCommand pc;
-    // TODO: implement with communication class
-//    pc.receiver_id.type = this->parentPMid->getType();
-//    pc.receiver_id.id = this->parentPMid->toByteVector();
-//    pc.robot_ids.push_back(process_manager::ProcessCommand::_robot_ids_type::value_type());
-//    pc.robot_ids[0].id = this->agentID->toByteVector();
-//    pc.process_keys = execIds;
-//    pc.param_sets = paramSets;
-//    pc.cmd = cmd;
-//    this->processCommandPub.publish(pc);
+    pc.receiverID = this->parentPMid;
+    pc.robotIDs.push_back(this->agentID);
+    this->comm->sendProcessCommand(pc);
 }
 } /* namespace pm_widget */

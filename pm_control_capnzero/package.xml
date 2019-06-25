@@ -10,10 +10,9 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <depend>rqt_gui</depend>
-  <depend>rqt_gui_cpp</depend>
   <depend>process_manager_capnzero</depend>
   <depend>id_capnzero</depend>
+  <depend>capnzero</depend>
 
   <export>
     <rqt_gui plugin="${prefix}/plugin.xml"/>

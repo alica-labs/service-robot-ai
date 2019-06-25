@@ -14,11 +14,11 @@
 #include "ui_ProcessWidget.h"
 #include "ui_RobotProcessesWidget.h"
 
-#include "pm_widget/ControlledExecutable.h"
-#include "pm_widget/ControlledProcessManager.h"
-#include "pm_widget/ControlledRobot.h"
+#include "pm_control/ControlledExecutable.h"
+#include "pm_control/ControlledProcessManager.h"
+#include "pm_control/ControlledRobot.h"
 
-namespace pm_widget
+namespace pm_control
 {
 
 const string ControlledExecutable::redBackground = "background-color:#FF4719;";
@@ -233,24 +233,26 @@ void ControlledExecutable::handleBundleComboBoxChanged(QString bundle)
 
 void ControlledExecutable::handleCheckBoxStateChanged(int newState)
 {
+    process_manager::ProcessCommand pc;
     switch (newState) {
     case Qt::CheckState::Checked:
-        this->sendProcessCommand(process_manager::ProcessCommand::START);
+        pc.cmd = process_manager::ProcessCommand::START;
         break;
     case Qt::CheckState::Unchecked:
-        this->sendProcessCommand(process_manager::ProcessCommand::STOP);
+        pc.cmd = process_manager::ProcessCommand::STOP;
         break;
     case Qt::CheckState::PartiallyChecked:
+        // should not happen!?
         cerr << "PMControl: What does it mean, that a process is partially checked?!" << endl;
-        break;
+        return;
     default:
         cerr << "PMControl: Unknown new state of a checkbox!" << endl;
+        return;
     }
-}
 
-void ControlledExecutable::sendProcessCommand(int cmd)
-{
-    this->parentRobot->sendProcessCommand(vector<int>{this->metaExec->id}, vector<int>{this->desiredParamSet}, cmd);
+    pc.processKeys.push_back(this->metaExec->id);
+    pc.paramSets.push_back(this->desiredParamSet);
+    this->parentRobot->sendProcessCommand(pc);
 }
 
 } // namespace pm_widget

@@ -1,13 +1,14 @@
 #pragma once
 
+#include <process_manager/containers/ProcessStat.h>
+#include <process_manager/containers/ProcessStats.h>
+#include <process_manager/containers/ProcessCommand.h>
+#include <process_manager/RobotMetaData.h>
+
 #include <QFrame>
 #include <QHBoxLayout>
 #include <QObject>
 #include <chrono>
-#include <process_manager/containers/ProcessStat.h>
-#include <process_manager/containers/ProcessStats.h>
-#include <process_manager/RobotMetaData.h>
-#include <ros/ros.h>
 
 namespace Ui
 {
@@ -19,13 +20,11 @@ namespace essentials
 class RobotExecutableRegistry;
 class Identifier;
 } // namespace  essentials
-
-namespace ros
-{
-class Publisher;
+namespace pm_control {
+    class Communication;
 }
 
-namespace pm_widget
+namespace pm_control
 {
 class ControlledExecutable;
 
@@ -34,18 +33,18 @@ class ControlledRobot : public QObject, public process_manager::RobotMetaData
     Q_OBJECT
 
 public:
-    ControlledRobot(std::string robotName, const essentials::Identifier* robotId, const essentials::Identifier* parentPMid); /*<for robot_control*/
+    ControlledRobot(std::string robotName, const essentials::Identifier* robotId, const essentials::Identifier* parentPMid, pm_control::Communication* comm); /*<for robot_control*/
     virtual ~ControlledRobot();
 
     void handleProcessStat(std::chrono::system_clock::time_point timeMsgReceived, process_manager::ProcessStat ps, const essentials::Identifier* parentPMid);
-    void sendProcessCommand(std::vector<int> execIds, std::vector<int> paramSets, int cmd);
+    void sendProcessCommand(process_manager::ProcessCommand pc);
     void updateGUI(std::chrono::system_clock::time_point now);
     void addExec(QWidget* exec);
     void removeExec(QWidget* exec);
 
     std::chrono::system_clock::time_point timeLastMsgReceived; /* < Time point, when the last message have been received */
     QFrame* robotProcessesQFrame;                              /**< The widget, used to initialise the RobotProcessesWidget */
-                                                               // ControlledProcessManager* parentProcessManager;
+    pm_control::Communication* comm;
 
   public Q_SLOTS:
     void updateBundles(QString text);
@@ -56,7 +55,6 @@ public:
     std::string selectedBundle;
     Ui::RobotProcessesWidget* _robotProcessesWidget;
     std::map<int, ControlledExecutable*> controlledExecMap;
-    ros::Publisher processCommandPub;
     const essentials::Identifier* parentPMid;
 };
 

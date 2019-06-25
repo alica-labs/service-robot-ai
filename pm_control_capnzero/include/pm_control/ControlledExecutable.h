@@ -22,7 +22,7 @@ class RobotExecutableRegistry;
 
 using namespace std;
 
-namespace pm_widget
+namespace pm_control
 {
 class ControlledRobot;
 
