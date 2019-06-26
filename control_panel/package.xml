@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>control_panel</name>
+  <version>0.0.0</version>
+  <description>The control_panel package</description>
+
+  <maintainer email="opfer@vs.uni-kassel.de">Stephan Opfer</maintainer>
+
+  <license>MIT</license>
+
+  <depend>process_manager_capnzero</depend>
+  <depend>capnzero</depend>
+  <depend>alica_engine</depend>
+  <depend>id_manager</depend>
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <export>
+  </export>
+</package>

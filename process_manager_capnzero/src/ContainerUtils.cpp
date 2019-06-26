@@ -40,8 +40,8 @@ void ContainerUtils::toMsg(process_manager::ProcessStats ps, ::capnp::MallocMess
     process_manager::ProcessStatsMsg::Builder msg = builder.getRoot<process_manager::ProcessStatsMsg>();
 
     capnzero::ID::Builder senderID = msg.initSenderID();
-    senderID.setValue(kj::arrayPtr(ps.ownID->getRaw(), (unsigned int) ps.ownID->getSize()));
-    senderID.setType(ps.ownID->getType());
+    senderID.setValue(kj::arrayPtr(ps.senderID->getRaw(), (unsigned int) ps.senderID->getSize()));
+    senderID.setType(ps.senderID->getType());
     msg.setSenderID(senderID);
 
     ::capnp::List<process_manager::ProcessStatMsg>::Builder processStats = msg.initProcessStats(ps.processStats.size());

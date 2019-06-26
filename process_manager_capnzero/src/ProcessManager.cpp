@@ -258,12 +258,12 @@ void ProcessManager::updateTotalCPUTimes()
 void ProcessManager::report()
 {
     process_manager::ProcessStats psts;
-    psts.ownID = this->ownId;
+    psts.senderID = this->ownId;
     for (auto const& mngdRobot : this->robotMap) {
         // cout << "PM: report() We try to add another ProcessStat from " << mngdRobot.second->name << "!" << endl;
         mngdRobot.second->report(psts);
     }
-    // cout << "PM: report() We have " << psts.processStats.size() << " ProcessStats!" << endl;
+     cout << "PM: report() We have " << psts.processStats.size() << " ProcessStats!" << endl;
     this->communication->sendProcessStats(psts);
 }
 

@@ -10,7 +10,7 @@ namespace essentials {
 
 namespace process_manager {
     struct ProcessStats {
-        const essentials::Identifier* ownID;
+        const essentials::Identifier* senderID;
         std::vector<ProcessStat> processStats;
     };
 }

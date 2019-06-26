@@ -34,7 +34,6 @@ add_library(robot_executable_meta_data
   src/RobotExecutableRegistry.cpp
 )
 target_link_libraries(robot_executable_meta_data ${catkin_LIBRARIES})
-set_property(TARGET robot_executable_meta_data PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 add_executable(process_manager 
   src/ProcessManager.cpp
@@ -49,4 +48,3 @@ target_link_libraries(process_manager
 	robot_executable_meta_data
 	pm_msgs
 )
-set_property(TARGET process_manager PROPERTY POSITION_INDEPENDENT_CODE ON)
