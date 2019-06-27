@@ -4,6 +4,7 @@
 #include "control/containers/ContainerUtils.h"
 
 #include <process_manager/containers/ContainerUtils.h>
+#include <process_manager/ProcessStatsMsg.capnp.h>
 
 #include <SystemConfig.h>
 
@@ -43,7 +44,8 @@ namespace control {
 
     void Communication::handleProcessStats(capnp::FlatArrayMessageReader& msg)
     {
-        this->controlPanel->enqueue(process_manager::ContainerUtils::toProcessStats(msg));
+        std::cout << "control::Communication: " << msg.getRoot<process_manager::ProcessStatsMsg>().toString().flatten().cStr() << std::endl;
+        this->controlPanel->enqueue(process_manager::ContainerUtils::toProcessStats(msg, this->controlPanel->getIDManager()));
     }
 
     void Communication::send(process_manager::ProcessCommand pc) {

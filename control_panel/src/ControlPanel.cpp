@@ -53,6 +53,7 @@ void ControlPanel::processMessage()
         auto timePstsPair = processStatsQueue.front();
         processStatsQueue.pop();
         Agent* agent = this->getAgent(timePstsPair.second.senderID);
+        agent->update(timePstsPair);
         std::cout << "ControlPanel: processing Process Stats from " << agent->getID() << std::endl;
     }
 
@@ -76,6 +77,8 @@ Agent* ControlPanel::getAgent(essentials::IdentifierConstPtr id)
         return agentIter.first->second;
     }
 }
+
+essentials::IDManager* ControlPanel::getIDManager() { return this->idManager; }
 
 void ControlPanel::enqueue(process_manager::ProcessStats psts)
 {

@@ -26,6 +26,7 @@ public:
     ControlPanel();
     virtual ~ControlPanel();
 
+    essentials::IDManager* getIDManager();
     void enqueue(process_manager::ProcessStats psts);
     void enqueue(alica::AlicaEngineInfo aei);
 

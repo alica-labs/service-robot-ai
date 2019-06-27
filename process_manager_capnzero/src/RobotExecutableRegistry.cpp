@@ -180,11 +180,6 @@ const essentials::Identifier* RobotExecutableRegistry::addRobot(string agentName
     return agentID;
 }
 
-//const std::map<const essentials::Identifier*, RobotMetaData*, essentials::IdentifierComparator>& RobotExecutableRegistry::getRobots() const
-//{
-//    return this->robotMap;
-//}
-
 bool RobotExecutableRegistry::getExecutableName(int execId, string& execName)
 {
     for (auto execMetaData : this->executableList) {

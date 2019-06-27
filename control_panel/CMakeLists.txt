@@ -3,6 +3,8 @@ project(control_panel)
 
 add_compile_options(-std=c++11)
 
+set(CMAKE_BUILD_TYPE Debug)
+
 find_package(Threads)
 find_package(Qt5 COMPONENTS Core Widgets Gui REQUIRED)
 find_package(catkin REQUIRED process_manager_capnzero capnzero alica_engine id_manager)

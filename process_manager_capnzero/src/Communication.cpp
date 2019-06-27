@@ -6,6 +6,7 @@
 #include <SystemConfig.h>
 #include <essentials/WildcardID.h>
 #include <process_manager/containers/ContainerUtils.h>
+#include <process_manager/ProcessStatsMsg.capnp.h>
 
 #include <capnzero/CapnZero.h>
 
@@ -61,6 +62,7 @@ void Communication::handleProcessCommand(capnp::FlatArrayMessageReader& msg)
 void Communication::sendProcessStats(process_manager::ProcessStats psts)
 {
     ::capnp::MallocMessageBuilder builder;
+    std::cout << "process_manager::Communication: " << *psts.senderID << std::endl;
     ContainerUtils::toMsg(psts, builder);
     this->processStatePub->send(builder);
 }

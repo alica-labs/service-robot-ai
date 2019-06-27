@@ -23,7 +23,6 @@ class RobotExecutableRegistry : public essentials::IDManager
 {
 public:
     static RobotExecutableRegistry* get();
-//    const std::map<const essentials::Identifier*, RobotMetaData*, essentials::IdentifierComparator>& getRobots() const;
     void addRobot(std::string agentName, const essentials::Identifier* agentID);
     const essentials::Identifier* addRobot(std::string agentName);
     std::string addRobot(const essentials::Identifier* agentID);

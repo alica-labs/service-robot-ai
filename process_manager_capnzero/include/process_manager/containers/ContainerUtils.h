@@ -12,9 +12,9 @@ namespace essentials {
 namespace process_manager {
     class ContainerUtils {
     public:
-        static ProcessStats toProcessStats(::capnp::FlatArrayMessageReader& msg);
+        static ProcessStats toProcessStats(::capnp::FlatArrayMessageReader& msg, essentials::IDManager* idManager);
         static ProcessCommand toProcessCommand(::capnp::FlatArrayMessageReader& msg, essentials::IDManager* idManager);
-        static void toMsg(ProcessStats ps, ::capnp::MallocMessageBuilder& builder);
+        static void toMsg(ProcessStats psts, ::capnp::MallocMessageBuilder& builder);
         static void toMsg(ProcessCommand pc, ::capnp::MallocMessageBuilder& builder);
     private:
     private:
