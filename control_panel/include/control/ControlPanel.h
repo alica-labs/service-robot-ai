@@ -17,6 +17,7 @@ namespace essentials {
 
 namespace control
 {
+class ExecutableRegistry;
 class Agent;
 class Communication;
 class ControlPanel : public QMainWindow
@@ -26,6 +27,7 @@ public:
     ControlPanel();
     virtual ~ControlPanel();
 
+    ExecutableRegistry* getExecutableRegistry();
     essentials::IDManager* getIDManager();
     void enqueue(process_manager::ProcessStats psts);
     void enqueue(alica::AlicaEngineInfo aei);
@@ -48,6 +50,7 @@ private:
     std::queue<std::pair<std::chrono::system_clock::time_point, alica::AlicaEngineInfo>> alicaInfosQueue;
 
     essentials::IDManager* idManager;
+    ExecutableRegistry* executableRegistry;
     std::map<essentials::IdentifierConstPtr, Agent*> agents;
 };
 

@@ -2,6 +2,7 @@
 
 #include "control/Agent.h"
 #include "control/Communication.h"
+#include "control/ExecutableRegistry.h"
 
 #include <essentials/IDManager.h>
 
@@ -30,6 +31,7 @@ ControlPanel::ControlPanel()
     this->doWorkTimer->start(200);
 
     this->idManager = new essentials::IDManager();
+    this->executableRegistry = ExecutableRegistry::get();
 }
 
 ControlPanel::~ControlPanel()
@@ -54,18 +56,23 @@ void ControlPanel::processMessage()
         processStatsQueue.pop();
         Agent* agent = this->getAgent(timePstsPair.second.senderID);
         agent->update(timePstsPair);
-        std::cout << "ControlPanel: processing Process Stats from " << agent->getID() << std::endl;
+        std::cout << "ControlPanel: processing Process Stats from " << agent->getAgentID() << std::endl;
     }
 
     while (!this->alicaInfosQueue.empty()) {
         auto timeAlicaInfoPair = alicaInfosQueue.front();
         alicaInfosQueue.pop();
         Agent* agent = this->getAgent(timeAlicaInfoPair.second.senderID);
-        std::cout << "ControlPanel: processing Alica Info from " << agent->getID() << std::endl;
+        std::cout << "ControlPanel: processing Alica Info from " << agent->getAgentID() << std::endl;
     }
 }
 
-void ControlPanel::updateUI() {}
+void ControlPanel::updateUI() {
+    std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+    for (auto agentEntry : this->agents) {
+        agentEntry.second->update(now);
+    }
+}
 
 Agent* ControlPanel::getAgent(essentials::IdentifierConstPtr id)
 {
@@ -73,12 +80,14 @@ Agent* ControlPanel::getAgent(essentials::IdentifierConstPtr id)
     if (agentEntry != this->agents.end()) {
         return agentEntry->second;
     } else {
-        auto agentIter = this->agents.emplace(id, new Agent(id, this->rootWidget_->layout()));
+        auto agentIter = this->agents.emplace(id, new Agent(id, this->rootWidget_->layout(), this->executableRegistry));
         return agentIter.first->second;
     }
 }
 
 essentials::IDManager* ControlPanel::getIDManager() { return this->idManager; }
+
+ExecutableRegistry* ControlPanel::getExecutableRegistry() { return this->executableRegistry; }
 
 void ControlPanel::enqueue(process_manager::ProcessStats psts)
 {

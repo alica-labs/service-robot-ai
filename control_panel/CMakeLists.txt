@@ -22,7 +22,11 @@ include_directories(
   ${Qt5Core_INCLUDE_DIRS}
   ${Qt5Widgets_INCLUDE_DIRS}
   ${Qt5Gui_INCLUDE_DIRS}
+  "${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}"
 )
+if(NOT EXISTS "${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}")
+  file(MAKE_DIRECTORY "${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}")
+endif()
 
 #### CONTROL MESSAGES
 find_package(CapnProto REQUIRED)
@@ -39,12 +43,20 @@ add_library(control_msgs
 )
 
 #### CONTROL
-QT5_WRAP_CPP(control_MOCS include/control/ControlPanel.h)
+QT5_WRAP_CPP(control_MOCS include/control/ControlPanel.h include/control/Process.h)
+# ensure generated header files are being created in the devel space
+set(_cmake_current_binary_dir "${CMAKE_CURRENT_BINARY_DIR}")
+set(CMAKE_CURRENT_BINARY_DIR "${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}")
+QT5_WRAP_UI(control_UIS ui/Agent.ui ui/Process.ui)
+set(CMAKE_CURRENT_BINARY_DIR "${_cmake_current_binary_dir}")
 add_executable(${PROJECT_NAME}
   src/ControlPanel.cpp
   src/Communication.cpp
   src/Agent.cpp
+  src/Process.cpp
+  src/ExecutableRegistry.cpp
   ${control_MOCS}
+  ${control_UIS}
 )
 
 target_link_libraries(${PROJECT_NAME}

@@ -36,7 +36,6 @@ Communication::Communication(ProcessManager* processManager)
  */
 void Communication::handleProcessCommand(capnp::FlatArrayMessageReader& msg)
 {
-    std::cout << "Communication: ProcessCommand received..." << std::endl;
     ProcessCommand pc = ContainerUtils::toProcessCommand(msg, this->processManager->getPMRegistry());
     if (pc.receiverID != this->processManager->getOwnID() &&
         !(this->processManager->getSimMode() && dynamic_cast<const essentials::WildcardID*>(pc.receiverID.get()))) {
@@ -62,7 +61,6 @@ void Communication::handleProcessCommand(capnp::FlatArrayMessageReader& msg)
 void Communication::sendProcessStats(process_manager::ProcessStats psts)
 {
     ::capnp::MallocMessageBuilder builder;
-    std::cout << "process_manager::Communication: " << *psts.senderID << std::endl;
     ContainerUtils::toMsg(psts, builder);
     this->processStatePub->send(builder);
 }
