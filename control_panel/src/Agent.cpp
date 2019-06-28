@@ -3,7 +3,8 @@
 #include "control/ExecutableRegistry.h"
 #include "control/Process.h"
 
-#include "/home/emmeda/Research/dev/rosws/devel/.private/control_panel/include/ui_Agent.h""
+//#include "/home/emmeda/Research/dev/rosws/devel/.private/control_panel/include/ui_Agent.h"
+#include "ui_Agent.h"
 #include <sstream>
 
 namespace control
