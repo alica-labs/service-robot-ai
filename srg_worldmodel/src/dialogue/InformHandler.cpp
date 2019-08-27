@@ -20,7 +20,7 @@ AnswerGraph * InformHandler::answerInform(std::string need) {
     conceptnet::Concept* root = this->cn->getConcept(answerGraph, need);
     answerGraph->setRoot(root);
 
-    root->addEdges(this->cn->getEdges(answerGraph,root->term));
+    root->addEdges(this->cn->getEdges(answerGraph,root->term, -1));
 
     this->cn->findInconsistencies(answerGraph);
     answerGraph->renderDot();

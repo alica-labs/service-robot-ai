@@ -43,7 +43,7 @@ private:
     Relation getRelation(const std::string& relation);
     bool conceptContainsNonASCII(const std::string& concept);
     std::string trimTerm(const std::string& term);
-    void generateEdges(CNManager* cnManager, const std::string& json, std::vector<Edge*>& edges, int limit = -1, double minWeight = 1.0);
+    std::string generateEdges(CNManager* cnManager, const std::string& json, std::vector<Edge*>& edges, int limit = -1, double minWeight = 1.0);
     void collectAntonyms(srg::dialogue::AnswerGraph* answerGraph, int limit=1000);
     std::vector<Concept*> getNewAdjectives(srg::dialogue::AnswerGraph* answerGraph);
 
