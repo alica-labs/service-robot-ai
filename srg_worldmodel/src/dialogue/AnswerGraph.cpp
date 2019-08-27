@@ -96,64 +96,6 @@ std::string AnswerGraph::toString()
     for (conceptnet::Edge* edge : root->getEdges()) {
         ret << "\t" << edge->toString() << std::endl;
     }
-    //    ret << "Synonyms: " << std::endl;
-    //    for (conceptnet::Edge* edge1 : graph->incomingEdges) {
-    //        for (conceptnet::Edge* edge2 : edge1->fromConcept->outgoingEdges) {
-    //            ret << "\t" << edge2->toString() << std::endl;
-    //        }
-    //    }
-    //    ret << "UsedFor: " << std::endl;
-    //    for (conceptnet::Edge* edge1 : graph->incomingEdges) {
-    //        for (conceptnet::Edge* edge2 : edge1->fromConcept->outgoingEdges) {
-    //            for (conceptnet::Edge* edge3 : edge2->toConcept->incomingEdges) {
-    //                ret << "\t" << edge3->toString() << std::endl;
-    //            }
-    //        }
-    //    }
-    //    ret << "Synonyms: " << std::endl;
-    //    for (conceptnet::Edge* edge1 : graph->incomingEdges) {
-    //        for (conceptnet::Edge* edge2 : edge1->fromConcept->outgoingEdges) {
-    //            for (conceptnet::Edge* edge3 : edge2->toConcept->incomingEdges) {
-    //                for (conceptnet::Edge* edge4 : edge3->fromConcept->outgoingEdges) {
-    //                    ret << "\t" << edge4->toString() << std::endl;
-    //                }
-    //            }
-    //        }
-    //    }
-    //    ret << "CausesDesire Branch:" << std::endl;
-    //    ret << "CausesDesire edges: " << std::endl;
-    //    for (conceptnet::Edge* edge : graph->outgoingEdges) {
-    //        ret << "\t" << edge->toString() << std::endl;
-    //    }
-    //    ret << "Synonyms: " << std::endl;
-    //    for (conceptnet::Edge* edge1 : graph->outgoingEdges) {
-    //        for (conceptnet::Edge* edge2 : edge1->toConcept->outgoingEdges) {
-    //            ret << "\t" << edge2->toString() << std::endl;
-    //        }
-    //    }
-    //    ret << "UsedFor: " << std::endl;
-    //    for (conceptnet::Edge* edge1 : graph->outgoingEdges) {
-    //        for (conceptnet::Edge* edge2 : edge1->toConcept->outgoingEdges) {
-    //            for (conceptnet::Edge* edge3 : edge2->toConcept->incomingEdges) {
-    //                ret << "\t" << edge3->toString() << std::endl;
-    //            }
-    //        }
-    //    }
-    //    ret << "Synonyms: " << std::endl;
-    //    for (conceptnet::Edge* edge1 : graph->outgoingEdges) {
-    //        for (conceptnet::Edge* edge2 : edge1->toConcept->outgoingEdges) {
-    //            for (conceptnet::Edge* edge3 : edge2->toConcept->incomingEdges) {
-    //                for (conceptnet::Edge* edge4 : edge3->fromConcept->outgoingEdges) {
-    //                    ret << "\t" << edge4->toString() << std::endl;
-    //                }
-    //            }
-    //        }
-    //    }
-    //
-    //    ret << "Answer Concepts:" << std::endl;
-    //    for (auto& concept : answerConcepts) {
-    //        ret << "\t" << concept->term << std::endl;
-    //    }
     return ret.str();
 }
 
