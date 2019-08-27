@@ -25,6 +25,8 @@ public:
     srg::conceptnet::Concept* root;
     std::vector<srg::conceptnet::Concept*> answerConcepts;
     std::vector<srg::conceptnet::ConceptPath*> answerPaths;
+    std::map<std::string, std::vector<srg::conceptnet::Edge*>> adjectiveAntonymMap;
+    std::map<std::string, std::vector<srg::conceptnet::Edge*>> equivalentAntonyms;
     std::string toString();
     void renderDot();
 
@@ -37,6 +39,9 @@ public:
 
     conceptnet::Edge* getEdge(std::string edgeId) const override;
     conceptnet::Edge* createEdge(std::string edgeId, std::string language, conceptnet::Concept* fromConcept, conceptnet::Concept* toConcept, srg::conceptnet::Relation relation, double weight) override;
+
+    const std::map<std::string, conceptnet::Concept *> &getConcepts() const;
+
 private:
     bool utilitiesCalculated;
     std::map<std::string, conceptnet::Concept*> concepts;

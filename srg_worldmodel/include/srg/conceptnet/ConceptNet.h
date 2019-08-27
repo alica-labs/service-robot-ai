@@ -11,6 +11,10 @@
 namespace srg
 {
 class SRGWorldModel;
+namespace dialogue
+{
+class AnswerGraph;
+}
 namespace conceptnet
 {
 class CNManager;
@@ -21,13 +25,14 @@ public:
     virtual ~ConceptNet() = default;
 
     Concept* getConcept(CNManager* cnManager, const std::string& conceptName);
-    std::vector<Edge*> getEdges(CNManager* cnManager, const std::string& concept, int limit=1000);
-    std::vector<Edge*> getEdges(CNManager* cnManager, Relation relation, const std::string& concept, int limit=1000);
-    std::vector<Edge*> getCompleteEdge(CNManager* cnManager, Relation relation, const std::string& fromConcept, const std::string& toConcept, int limit=1000);
-    std::vector<Edge*> getOutgoingEdges(CNManager* cnManager, Relation relation, const std::string& fromConcept, int limit=1000);
-    std::vector<Edge*> getIncomingEdges(CNManager* cnManager, Relation relation, const std::string& toConcept, int limit=1000);
-    std::vector<Edge*> getRelations(CNManager* cnManager, const std::string& concept, const std::string& otherConcept, int limit=1000);
-    std::vector<Edge*> getEquivalentOutgoingEdges(CNManager* cnManager, const conceptnet::Concept* concept, int limit=1000);
+    std::vector<Edge*> getEdges(CNManager* cnManager, const std::string& concept, int limit = 1000);
+    std::vector<Edge*> getEdges(CNManager* cnManager, Relation relation, const std::string& concept, int limit = 1000);
+    std::vector<Edge*> getCompleteEdge(CNManager* cnManager, Relation relation, const std::string& fromConcept, const std::string& toConcept, int limit = 1000);
+    std::vector<Edge*> getOutgoingEdges(CNManager* cnManager, Relation relation, const std::string& fromConcept, int limit = 1000);
+    std::vector<Edge*> getIncomingEdges(CNManager* cnManager, Relation relation, const std::string& toConcept, int limit = 1000);
+    std::vector<Edge*> getRelations(CNManager* cnManager, const std::string& concept, const std::string& otherConcept, int limit = 1000);
+    std::vector<Edge*> getEquivalentOutgoingEdges(CNManager* cnManager, const conceptnet::Concept* concept, int limit = 1000);
+    void findInconsistencies(srg::dialogue::AnswerGraph* answerGraph, int limit = 1000);
 
     double getRelatedness(const std::string& firstConcept, const std::string& secondConcept);
 
@@ -38,7 +43,9 @@ private:
     Relation getRelation(const std::string& relation);
     bool conceptContainsNonASCII(const std::string& concept);
     std::string trimTerm(const std::string& term);
-    void generateEdges(CNManager* cnManager, const std::string& json, std::vector<Edge*>& edges, int limit, double minWeight = 1.0);
+    void generateEdges(CNManager* cnManager, const std::string& json, std::vector<Edge*>& edges, int limit = -1, double minWeight = 1.0);
+    void collectAntonyms(srg::dialogue::AnswerGraph* answerGraph, int limit=1000);
+    std::vector<Concept*> getNewAdjectives(srg::dialogue::AnswerGraph* answerGraph);
 
     /**
      * Contains the begin of a concept net query url.
@@ -90,5 +97,5 @@ private:
     static const std::string NODE2;
 };
 
-} /* namespace wm */
+} // namespace conceptnet
 } /* namespace srg */

@@ -4,6 +4,7 @@
 #include "srg/dialogue/BasicHumanNeeds.h"
 #include "srg/dialogue/SpeechAct.h"
 #include "srg/dialogue/AnswerGraph.h"
+#include "srg/dialogue/InformHandler.h"
 
 #include <supplementary/InformationElement.h>
 
@@ -15,6 +16,7 @@ DialogueManager::DialogueManager(srg::SRGWorldModel* wm)
         : wm(wm)
 {
     this->basicHumanNeeds = new BasicHumanNeeds(wm);
+    this->informHandler = new InformHandler(wm);
 }
 DialogueManager::~DialogueManager() {
     for(auto pair : actMapping) {
@@ -24,8 +26,13 @@ DialogueManager::~DialogueManager() {
 
 void DialogueManager::processSpeechAct(std::shared_ptr<supplementary::InformationElement<SpeechAct>> speechAct)
 {
-    AnswerGraph* answerGraph = this->basicHumanNeeds->answerNeed(speechAct->getInformation().text);
-    actMapping.emplace(speechAct, answerGraph);
+    if(speechAct->getInformation().type == SpeechType::request) {
+        AnswerGraph* answerGraph = this->basicHumanNeeds->answerNeed(speechAct->getInformation().text);
+        this->actMapping.emplace(speechAct, answerGraph);
+    } else if (speechAct->getInformation().type == SpeechType::inform) {
+        AnswerGraph* answerGraph = this->informHandler->answerInform(speechAct->getInformation().text);
+        this->actMapping.emplace(speechAct, answerGraph);
+    }
 
 }
 } // namespace dialogue

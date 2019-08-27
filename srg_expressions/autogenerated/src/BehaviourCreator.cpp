@@ -11,9 +11,9 @@ BehaviourCreator::BehaviourCreator() {}
 
 BehaviourCreator::~BehaviourCreator() {}
 
-std::shared_ptr<BasicBehaviour> BehaviourCreator::createBehaviour(long behaviourId)
+std::shared_ptr<BasicBehaviour> BehaviourCreator::createBehaviour(long behaviourConfId)
 {
-    switch (behaviourId) {
+    switch (behaviourConfId) {
     case 1555602210283:
         return std::make_shared<Stop>();
         break;
@@ -24,7 +24,7 @@ std::shared_ptr<BasicBehaviour> BehaviourCreator::createBehaviour(long behaviour
         return std::make_shared<Test>();
         break;
     default:
-        std::cerr << "BehaviourCreator: Unknown behaviour requested: " << behaviourId << std::endl;
+        std::cerr << "BehaviourCreator: Unknown behaviour requested: " << behaviourConfId << std::endl;
         throw new std::exception();
         break;
     }

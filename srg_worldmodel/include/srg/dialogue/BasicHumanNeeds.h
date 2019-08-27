@@ -19,7 +19,7 @@ class AnswerGraph;
 class BasicHumanNeeds
 {
 public:
-    BasicHumanNeeds(SRGWorldModel* wm);
+    explicit BasicHumanNeeds(SRGWorldModel* wm);
 
     AnswerGraph* answerNeed(std::string need);
     static const int bestNumberOfElements;

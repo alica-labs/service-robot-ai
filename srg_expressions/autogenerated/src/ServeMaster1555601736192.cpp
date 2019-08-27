@@ -33,7 +33,7 @@ shared_ptr<UtilityFunction> UtilityFunction1555601736192::getUtilityFunction(Pla
 /*
  *
  * Transition:
- *   - Name: 1558533620473, ConditionString: Start received, Comment : MISSING_COMMENT
+ *   - Name: 1558533620473, ConditionString: Start received!, Comment : MISSING_COMMENT
  *
  * Plans in State:
  *
@@ -89,7 +89,7 @@ bool PreCondition1558533654035::evaluate(shared_ptr<RunningPlan> rp)
 /*
  *
  * Transition:
- *   - Name: 1558533667052, ConditionString: Spawn successful, Comment : MISSING_COMMENT
+ *   - Name: 1558533667052, ConditionString: Spawn successful (acknowledge through received sim sensor values), Comment : MISSING_COMMENT
  *
  * Plans in State:
  *
@@ -111,6 +111,33 @@ bool PreCondition1558533667052::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1558533514929) ENABLED START*/
     // TODO implement wm and check whether stop/start message was received
+    return false;
+    /*PROTECTED REGION END*/
+}
+/*
+ *
+ * Transition:
+ *   - Name: 1560934538125, ConditionString: Stop received!, Comment : MISSING_COMMENT
+ *
+ * Plans in State:
+ *
+ *   - Plan - (Name): Test, (PlanID): 1559635479527
+ *
+ * Tasks:
+ *
+ *   - Serve (1555601344076) (Entrypoint: 1555601746711)
+ *
+ * States:
+ *
+ *   - Stop (1555601748848)
+ *   - Spawn (1558533460297)
+ *   - Serve (1558533461982)
+ *
+ * Vars:
+ */
+bool PreCondition1560934538125::evaluate(shared_ptr<RunningPlan> rp)
+{
+    /*PROTECTED REGION ID(1558533714287) ENABLED START*/
     return false;
     /*PROTECTED REGION END*/
 }

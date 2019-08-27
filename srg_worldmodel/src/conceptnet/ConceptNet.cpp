@@ -2,6 +2,8 @@
 #include "srg/SRGWorldModel.h"
 #include "srg/conceptnet/CNManager.h"
 #include "srg/conceptnet/Concept.h"
+#include "srg/conceptnet/Edge.h"
+#include "srg/dialogue/AnswerGraph.h"
 
 #include <curl/curl.h>
 
@@ -61,8 +63,7 @@ std::vector<Edge*> ConceptNet::getEdges(CNManager* cnManager, const std::string&
 std::vector<Edge*> ConceptNet::getEdges(CNManager* cnManager, Relation relation, const std::string& concept, int limit)
 {
     std::vector<Edge*> edges;
-    std::string json = httpGet(
-            ConceptNet::BASE_URL + ConceptNet::QUERYNODE + concept + ConceptNet::RELATION + relations[relation] + ConceptNet::LIMIT);
+    std::string json = httpGet(ConceptNet::BASE_URL + ConceptNet::QUERYNODE + concept + ConceptNet::RELATION + relations[relation] + ConceptNet::LIMIT);
     generateEdges(cnManager, json, edges, limit);
     return edges;
 }
@@ -70,8 +71,8 @@ std::vector<Edge*> ConceptNet::getEdges(CNManager* cnManager, Relation relation,
 std::vector<Edge*> ConceptNet::getCompleteEdge(CNManager* cnManager, Relation relation, const std::string& fromConcept, const std::string& toConcept, int limit)
 {
     std::vector<Edge*> edges;
-    std::string json = httpGet(ConceptNet::BASE_URL + ConceptNet::QUERYSTART + fromConcept + ConceptNet::RELATION + relations[relation] + END + toConcept +
-                               ConceptNet::LIMIT);
+    std::string json = httpGet(
+            ConceptNet::BASE_URL + ConceptNet::QUERYSTART + fromConcept + ConceptNet::RELATION + relations[relation] + END + toConcept + ConceptNet::LIMIT);
     generateEdges(cnManager, json, edges, limit);
     return edges;
 }
@@ -85,16 +86,14 @@ std::vector<Edge*> ConceptNet::getOutgoingEdges(CNManager* cnManager, Relation r
 std::vector<Edge*> ConceptNet::getIncomingEdges(CNManager* cnManager, Relation relation, const std::string& toConcept, int limit)
 {
     std::vector<Edge*> edges;
-    std::string json = httpGet(
-            ConceptNet::BASE_URL + ConceptNet::QUERYEND + toConcept + ConceptNet::RELATION + relations[relation] + ConceptNet::LIMIT);
+    std::string json = httpGet(ConceptNet::BASE_URL + ConceptNet::QUERYEND + toConcept + ConceptNet::RELATION + relations[relation] + ConceptNet::LIMIT);
     generateEdges(cnManager, json, edges, limit);
     return edges;
 }
 std::vector<Edge*> ConceptNet::getRelations(CNManager* cnManager, const std::string& concept, const std::string& otherConcept, int limit)
 {
     std::vector<Edge*> edges;
-    std::string json =
-            httpGet(ConceptNet::BASE_URL + ConceptNet::QUERYSTART + concept + ConceptNet::END + otherConcept + ConceptNet::LIMIT);
+    std::string json = httpGet(ConceptNet::BASE_URL + ConceptNet::QUERYSTART + concept + ConceptNet::END + otherConcept + ConceptNet::LIMIT);
     generateEdges(cnManager, json, edges, limit);
     return edges;
 }
@@ -103,8 +102,8 @@ std::vector<Edge*> ConceptNet::getEquivalentOutgoingEdges(CNManager* cnManager, 
 {
     std::vector<Edge*> edges = this->getOutgoingEdges(cnManager, conceptnet::Synonym, concept->term, limit);
     // TODO insert symmetric edge?
-    std::vector<Edge*> simirToEdges = this->getOutgoingEdges(cnManager, conceptnet::SimilarTo, concept->term, limit);
-    edges.insert(edges.end(), simirToEdges.begin(), simirToEdges.end());
+    std::vector<Edge*> similarToEdges = this->getOutgoingEdges(cnManager, conceptnet::SimilarTo, concept->term, limit);
+    edges.insert(edges.end(), similarToEdges.begin(), similarToEdges.end());
 
     std::vector<Edge*> instanceOfEdges = this->getOutgoingEdges(cnManager, conceptnet::InstanceOf, concept->term, limit);
     edges.insert(edges.end(), instanceOfEdges.begin(), instanceOfEdges.end());
@@ -183,6 +182,9 @@ void ConceptNet::generateEdges(CNManager* cnManager, const std::string& json, st
         }
         // end of edge
         YAML::Node end = edge["end"];
+        if (!end["language"]) {
+            continue;
+        }
         std::string endLanguage = end["language"].as<std::string>();
         // skip non English
         if (endLanguage != "en") {
@@ -190,7 +192,7 @@ void ConceptNet::generateEdges(CNManager* cnManager, const std::string& json, st
         }
         std::string endTerm = end["term"].as<std::string>();
         if (std::isdigit(endTerm.at(0)) || this->conceptContainsNonASCII(endTerm)) {
-            std::cout << "ConceptNetQueryCommand: Skipping Concept:" << endTerm << std::endl;
+            std::cout << "ConceptNet: Skipping Concept:" << endTerm << std::endl;
             continue;
         }
         std::string endSenseLabel = "";
@@ -200,6 +202,9 @@ void ConceptNet::generateEdges(CNManager* cnManager, const std::string& json, st
         std::string endID = end["@id"].as<std::string>();
         // start of edge
         YAML::Node start = edge["start"];
+        if (!start["language"]) {
+            continue;
+        }
         std::string startLanguage = start["language"].as<std::string>();
         // skip non English
         if (startLanguage != "en") {
@@ -222,9 +227,12 @@ void ConceptNet::generateEdges(CNManager* cnManager, const std::string& json, st
         Concept* toConcept = cnManager->createConcept(endTerm, trimTerm(endTerm), endSenseLabel);
         std::string edgeId = "/a[" + relation + "," + startTerm + "," + endTerm + "]"; // dont use cn's edgeId, its evil!
         edges.push_back(cnManager->createEdge(edgeId, startLanguage, fromConcept, toConcept, getRelation(relation), weight));
-        if(edges.size() == limit) {
+        if (limit != -1 && edges.size() == limit) {
             break;
         }
+        //TODO think about using [nextPage] to get more than the first 1000 entries
+        // if [nextPage] is not present stop
+
         //        edges.push_back(cnManager->createEdge(edgeId, startLanguage, fromConcept, toConcept, getRelation(relation), weight * edge["sources"].size()));
     }
 }
@@ -263,6 +271,70 @@ std::string ConceptNet::trimTerm(const std::string& term)
     return term.substr(pos + 1, term.length() - pos - 1);
 }
 
+void ConceptNet::findInconsistencies(srg::dialogue::AnswerGraph* answerGraph, int limit)
+{
+    collectAntonyms(answerGraph, limit);
+    for (auto pair : answerGraph->adjectiveAntonymMap) {
+        if (pair.second.empty()) {
+            continue;
+        }
+        std::cout << "ConceptNet: Concept: " << pair.first << std::endl;
+        for (auto edge : pair.second) {
+            std::cout << "\tConceptNet Antonym edge: " << edge->toString() << std::endl;
+        }
+    }
+    std::vector<Concept*> newAntonyms = getNewAdjectives(answerGraph);
+    for (auto concept : newAntonyms) {
+        std::cout << "\tConceptNet: Antonym : " << concept->term << std::endl;
+        std::vector<Edge*> equivalent = this->getEquivalentOutgoingEdges(answerGraph, concept, limit);
+        answerGraph->equivalentAntonyms.emplace(concept->term, equivalent);
+        concept->addEdges(equivalent);
+    }
+
+    for (auto pair : answerGraph->equivalentAntonyms) {
+        if (pair.second.empty()) {
+            continue;
+        }
+        std::cout << "ConceptNet: Concept: " << pair.first << std::endl;
+        for (auto edge : pair.second) {
+            std::cout << "\tConceptNet Antonym edge: " << edge->toString() << std::endl;
+        }
+    }
+}
+
+std::vector<Concept*> ConceptNet::getNewAdjectives(srg::dialogue::AnswerGraph* answerGraph)
+{
+    std::vector<Concept*> ret;
+    for (auto pair : answerGraph->adjectiveAntonymMap) {
+        for (srg::conceptnet::Edge* edge : pair.second) {
+            if (edge->fromConcept->term != answerGraph->root->term) {
+                if (std::find(ret.begin(), ret.end(), edge->fromConcept) != ret.end()) {
+                    continue;
+                }
+                ret.push_back(edge->fromConcept);
+            }
+            if (edge->toConcept->term != answerGraph->root->term) {
+                if (std::find(ret.begin(), ret.end(), edge->toConcept) != ret.end()) {
+                    continue;
+                }
+                ret.push_back(edge->toConcept);
+            }
+        }
+    }
+    return ret;
+}
+
+void ConceptNet::collectAntonyms(srg::dialogue::AnswerGraph* answerGraph, int limit)
+{
+    for (auto concept : answerGraph->getConcepts()) {
+        if (concept.second->senseLabel.compare("a") != 0) {
+            continue;
+        }
+        std::vector<Edge*> edges = this->getEdges(answerGraph, Relation::Antonym, concept.second->term, limit);
+        answerGraph->adjectiveAntonymMap.emplace(concept.second->term, edges);
+        concept.second->addEdges(edges);
+    }
+}
 } // namespace conceptnet
 
 } // namespace srg

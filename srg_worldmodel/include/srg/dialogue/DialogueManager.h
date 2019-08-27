@@ -15,17 +15,19 @@ namespace dialogue
 {
 class AnswerGraph;
 class SpeechAct;
+class InformHandler;
 class BasicHumanNeeds;
 
 class DialogueManager
 {
 public:
-    DialogueManager(SRGWorldModel* wm);
+    explicit DialogueManager(SRGWorldModel* wm);
     ~DialogueManager();
     void processSpeechAct(std::shared_ptr<supplementary::InformationElement<SpeechAct>> speechAct);
 private:
     srg::SRGWorldModel* wm;
     BasicHumanNeeds* basicHumanNeeds;
+    InformHandler* informHandler;
     std::map <std::shared_ptr<supplementary::InformationElement<SpeechAct>>, AnswerGraph*> actMapping;
 };
 } // namespace dialogue

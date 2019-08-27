@@ -40,7 +40,7 @@ add_library(srg_worldmodel
         src/dialogue/BasicHumanNeeds.cpp
         src/dialogue/SpeechAct.cpp
         src/dialogue/DialogueManager.cpp
-)
+        src/dialogue/InformHandler.cpp include/srg/dialogue/InformHandler.h)
 
 target_link_libraries(srg_worldmodel
   ${catkin_LIBRARIES}

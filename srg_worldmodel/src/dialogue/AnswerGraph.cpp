@@ -118,7 +118,7 @@ void AnswerGraph::renderDot()
 
     while (!openNodes.empty()) {
         conceptnet::Concept* node = openNodes[0];
-        //        std::cout << "AnswerGraph:renderDot: " << node->term << " " << node << std::endl;
+        //std::cout << "AnswerGraph:renderDot: " << node->term << " " << node << std::endl;
         openNodes.erase(openNodes.begin());
         if (std::find(closedNodes.begin(), closedNodes.end(), node) != closedNodes.end()) {
             continue;
@@ -210,6 +210,11 @@ conceptnet::Edge* AnswerGraph::createEdge(std::string edgeId, std::string langua
     } else {
         return this->edges.emplace(edgeId, new conceptnet::Edge(edgeId, language, fromConcept, toConcept, relation, weight)).first->second;
     }
+}
+
+const std::map<std::string, conceptnet::Concept*>& AnswerGraph::getConcepts() const
+{
+    return this->concepts;
 }
 
 } // namespace dialogue
