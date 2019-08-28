@@ -23,7 +23,7 @@ AnswerGraph * InformHandler::answerInform(std::string need) {
     root->addEdges(this->cn->getEdges(answerGraph,root->term, -1));
 
     this->cn->findInconsistencies(answerGraph);
-    answerGraph->renderDot();
+    answerGraph->renderDot(true);
     return answerGraph;
 }
 } // namespace dialogue

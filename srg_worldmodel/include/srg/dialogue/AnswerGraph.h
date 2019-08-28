@@ -28,7 +28,7 @@ public:
     std::map<std::string, std::vector<srg::conceptnet::Edge*>> adjectiveAntonymMap;
     std::map<std::string, std::vector<srg::conceptnet::Edge*>> equivalentAntonyms;
     std::string toString();
-    void renderDot();
+    void renderDot(bool markInconsistencies = false);
 
     void calculateUtilities();
     std::vector<srg::conceptnet::Concept*> getBestAnswers(int maxNumberOfAnswers);

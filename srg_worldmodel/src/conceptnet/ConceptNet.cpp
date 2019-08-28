@@ -202,6 +202,7 @@ std::string ConceptNet::generateEdges(CNManager* cnManager, const std::string& j
         YAML::Node edge = jsonEdges[i];
         double weight = edge["weight"].as<double>();
         if (weight < minWeight) {
+            std::cout << "ConceptNet: below min weight" << std::endl;
             return "";
         }
         // end of edge
@@ -255,12 +256,12 @@ std::string ConceptNet::generateEdges(CNManager* cnManager, const std::string& j
             break;
         }
     }
-    if(!node["nextPage"]) {
+    if(!node["view"] && !node["view"]["nextPage"]) {
         return "";
     }
     if(limit == -1) {
-        std::cout << "ConceptNet: nextPage: " << node["nextPage"].as<std::string>() << std::endl;
-        return node["nextPage"].as<std::string>();
+        std::cout << "ConceptNet: nextPage: " << node["view"]["nextPage"].as<std::string>() << std::endl;
+        return node["view"]["nextPage"].as<std::string>();
     } else {
         return "";
     }

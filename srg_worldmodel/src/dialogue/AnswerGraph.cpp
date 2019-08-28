@@ -99,7 +99,7 @@ std::string AnswerGraph::toString()
     return ret.str();
 }
 
-void AnswerGraph::renderDot()
+void AnswerGraph::renderDot(bool markInconsistencies)
 {
     Agraph_t* g;
     std::vector<conceptnet::Concept*> openNodes;
@@ -118,7 +118,7 @@ void AnswerGraph::renderDot()
 
     while (!openNodes.empty()) {
         conceptnet::Concept* node = openNodes[0];
-        //std::cout << "AnswerGraph:renderDot: " << node->term << " " << node << std::endl;
+        // std::cout << "AnswerGraph:renderDot: " << node->term << " " << node << std::endl;
         openNodes.erase(openNodes.begin());
         if (std::find(closedNodes.begin(), closedNodes.end(), node) != closedNodes.end()) {
             continue;
@@ -150,6 +150,27 @@ void AnswerGraph::renderDot()
         Agnode_t* weightNode = agnode(g, strdup(std::to_string(this->utilities[concept]).c_str()), TRUE);
         Agedge_t* ed = agedge(g, weightNode, node, "weight", TRUE);
         agsafeset(node, "color", "red", "");
+    }
+
+    if (markInconsistencies) {
+        for (auto pair : this->adjectiveAntonymMap) {
+            Agnode_t* node = agnode(g, strdup(pair.first.c_str()), TRUE);
+            if (pair.second.empty()) {
+                agsafeset(node, "color", "blue", "");
+            } else {
+                agsafeset(node, "color", "red", "");
+            }
+        }
+        for (auto pair : this->equivalentAntonyms) {
+            Agnode_t* node = agnode(g, strdup(pair.first.c_str()), TRUE);
+            agsafeset(node, "color", "red", "");
+            for (srg::conceptnet::Edge* edge : pair.second) {
+                Agnode_t* node = agnode(g, strdup(edge->toConcept->term.c_str()), TRUE);
+                agsafeset(node, "color", "red", "");
+                node = agnode(g, strdup(edge->fromConcept->term.c_str()), TRUE);
+                agsafeset(node, "color", "red", "");
+            }
+        }
     }
 
     /* Set an attribute - in this case one that affects the visible rendering */
