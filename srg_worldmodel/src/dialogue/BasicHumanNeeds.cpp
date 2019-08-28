@@ -71,7 +71,8 @@ AnswerGraph* BasicHumanNeeds::answerNeed(std::string need)
     }
 #endif
 
-    answerGraph->renderDot();
+//TODO add again later
+    //answerGraph->renderDot();
     return answerGraph;
 }
 

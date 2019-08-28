@@ -99,21 +99,11 @@ std::string AnswerGraph::toString()
     return ret.str();
 }
 
-void AnswerGraph::renderDot(bool markInconsistencies)
+void AnswerGraph::renderDot(Agraph_t* g, bool markInconsistencies)
 {
-    Agraph_t* g;
     std::vector<conceptnet::Concept*> openNodes;
     std::vector<conceptnet::Concept*> closedNodes;
 
-    /* set up a graphviz context - but only once even for multiple graphs */
-    static GVC_t* gvc;
-
-    if (!gvc)
-        gvc = gvContext();
-
-    /* Create a simple digraph */
-    g = agopen("g", Agdirected, NULL);
-    agsafeset(g, "rankdir", "RL", "");
     openNodes.push_back(this->root);
 
     while (!openNodes.empty()) {
@@ -143,8 +133,10 @@ void AnswerGraph::renderDot(bool markInconsistencies)
             agsafeset(ed, "label", strdup(std::string(conceptnet::relations[edge->relation]).append(" / " + std::to_string(edge->weight)).c_str()), "");
         }
     }
+
     Agnode_t* node = agnode(g, strdup(this->root->term.c_str()), TRUE);
     agsafeset(node, "color", "green", "");
+
     for (conceptnet::Concept* concept : this->getBestAnswers(5)) {
         Agnode_t* node = agnode(g, strdup(concept->term.c_str()), TRUE);
         Agnode_t* weightNode = agnode(g, strdup(std::to_string(this->utilities[concept]).c_str()), TRUE);
@@ -173,23 +165,6 @@ void AnswerGraph::renderDot(bool markInconsistencies)
         }
     }
 
-    /* Set an attribute - in this case one that affects the visible rendering */
-
-    /* Use the directed graph layout engine */
-    gvLayout(gvc, g, "dot");
-
-    /* Output in .dot format */
-    FILE* fptr;
-    fptr = fopen("test.dot", "w");
-    gvRender(gvc, g, "dot", fptr);
-    fclose(fptr);
-
-    gvFreeLayout(gvc, g);
-
-    agclose(g);
-
-    // call this to translate into ps format and open with evince
-    //    dot -Tps ~/test.dot -o outfile.ps
 }
 
 conceptnet::Concept* AnswerGraph::getConcept(std::string conceptId) const

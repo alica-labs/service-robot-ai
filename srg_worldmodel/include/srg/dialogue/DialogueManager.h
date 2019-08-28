@@ -24,11 +24,14 @@ public:
     explicit DialogueManager(SRGWorldModel* wm);
     ~DialogueManager();
     void processSpeechAct(std::shared_ptr<supplementary::InformationElement<SpeechAct>> speechAct);
+
 private:
     srg::SRGWorldModel* wm;
     BasicHumanNeeds* basicHumanNeeds;
     InformHandler* informHandler;
     std::map <std::shared_ptr<supplementary::InformationElement<SpeechAct>>, AnswerGraph*> actMapping;
+
+    void renderDot() const;
 };
 } // namespace dialogue
 } // namespace srg

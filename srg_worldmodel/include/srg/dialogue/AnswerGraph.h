@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <cgraph.h>
 
 namespace srg
 {
@@ -28,7 +29,7 @@ public:
     std::map<std::string, std::vector<srg::conceptnet::Edge*>> adjectiveAntonymMap;
     std::map<std::string, std::vector<srg::conceptnet::Edge*>> equivalentAntonyms;
     std::string toString();
-    void renderDot(bool markInconsistencies = false);
+    void renderDot(Agraph_t* g, bool markInconsistencies = false);
 
     void calculateUtilities();
     std::vector<srg::conceptnet::Concept*> getBestAnswers(int maxNumberOfAnswers);
