@@ -42,6 +42,7 @@ public:
     conceptnet::Edge* createEdge(std::string edgeId, std::string language, conceptnet::Concept* fromConcept, conceptnet::Concept* toConcept, srg::conceptnet::Relation relation, double weight) override;
 
     const std::map<std::string, conceptnet::Concept *> &getConcepts() const;
+    const std::map<std::string, conceptnet::Edge *> &getEdges() const;
 
 private:
     bool utilitiesCalculated;

@@ -133,8 +133,8 @@ void AnswerGraph::renderDot(Agraph_t* g, bool markInconsistencies)
 
     } else {
         for (auto pair : this->adjectiveAntonymMap) {
-            for(srg::conceptnet::Edge* edge : this->root->getEdges()) {
-                if(edge->fromConcept->term == pair.first || edge->toConcept->term == pair.first) {
+            for (srg::conceptnet::Edge* edge : this->root->getEdges()) {
+                if (edge->fromConcept->term == pair.first || edge->toConcept->term == pair.first) {
                     generateEdge(g, openNodes, this->root->term, edge);
                 }
             }
@@ -144,7 +144,7 @@ void AnswerGraph::renderDot(Agraph_t* g, bool markInconsistencies)
             } else {
                 agsafeset(node, "color", "red", "");
             }
-            for(srg::conceptnet::Edge* edge : pair.second) {
+            for (srg::conceptnet::Edge* edge : pair.second) {
                 generateEdge(g, openNodes, pair.first, edge);
             }
         }
@@ -225,6 +225,11 @@ conceptnet::Edge* AnswerGraph::createEdge(std::string edgeId, std::string langua
 const std::map<std::string, conceptnet::Concept*>& AnswerGraph::getConcepts() const
 {
     return this->concepts;
+}
+
+const std::map<std::string, conceptnet::Edge*>& AnswerGraph::getEdges() const
+{
+    return this->edges;
 }
 
 } // namespace dialogue
