@@ -45,23 +45,19 @@ void DialogueManager::renderDot() const
     Agraph_t* g;
     /* set up a graphviz context - but only once even for multiple graphs */
     static GVC_t* gvc;
-    std::cout << 1 << std::endl;
     if (!gvc) {
         gvc = gvContext();
     }
     /* Create a simple digraph */
     g = agopen("g", Agdirected, NULL);
     agsafeset(g, "rankdir", "RL", "");
-    std::cout << 1 << std::endl;
     for (auto pair : actMapping) {
         pair.second->renderDot(g, true);
     }
-    std::cout << 1 << std::endl;
     /* Set an attribute - in this case one that affects the visible rendering */
 
     /* Use the directed graph layout engine */
     gvLayout(gvc, g, "dot");
-    std::cout << 1 << std::endl;
     /* Output in .dot format */
     FILE* fptr;
     fptr = fopen("test.dot", "w");
@@ -70,7 +66,6 @@ void DialogueManager::renderDot() const
     fclose(fptr);
 
     gvFreeLayout(gvc, g);
-    std::cout << 1 << std::endl;
     agclose(g);
 
     // call this to translate into ps format and open with evince

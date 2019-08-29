@@ -104,53 +104,44 @@ void AnswerGraph::renderDot(Agraph_t* g, bool markInconsistencies)
     std::vector<conceptnet::Concept*> openNodes;
     std::vector<conceptnet::Concept*> closedNodes;
 
-    openNodes.push_back(this->root);
-
-    while (!openNodes.empty()) {
-        conceptnet::Concept* node = openNodes[0];
-        // std::cout << "AnswerGraph:renderDot: " << node->term << " " << node << std::endl;
-        openNodes.erase(openNodes.begin());
-        if (std::find(closedNodes.begin(), closedNodes.end(), node) != closedNodes.end()) {
-            continue;
-        }
-        closedNodes.push_back(node);
-
-        for (const conceptnet::Edge* edge : node->getEdges()) {
-            Agnode_t* to;
-            Agnode_t* from;
-            //            std::cout << "AnswerGraph:rendetDot: " << node->id << " " << node << " " << edge->fromConcept->id << " " << edge->fromConcept <<
-            //            std::endl;
-            if (edge->fromConcept == node) {
-                to = agnode(g, strdup(edge->toConcept->term.c_str()), TRUE);
-                from = agnode(g, strdup(node->term.c_str()), TRUE);
-                openNodes.push_back(edge->toConcept);
-            } else {
-                to = agnode(g, strdup(node->term.c_str()), TRUE);
-                from = agnode(g, strdup(edge->fromConcept->term.c_str()), TRUE);
-                openNodes.push_back(edge->fromConcept);
-            }
-            Agedge_t* ed = agedge(g, from, to, strdup(conceptnet::relations[edge->relation]), TRUE);
-            agsafeset(ed, "label", strdup(std::string(conceptnet::relations[edge->relation]).append(" / " + std::to_string(edge->weight)).c_str()), "");
-        }
-    }
-
     Agnode_t* node = agnode(g, strdup(this->root->term.c_str()), TRUE);
     agsafeset(node, "color", "green", "");
 
-    for (conceptnet::Concept* concept : this->getBestAnswers(5)) {
-        Agnode_t* node = agnode(g, strdup(concept->term.c_str()), TRUE);
-        Agnode_t* weightNode = agnode(g, strdup(std::to_string(this->utilities[concept]).c_str()), TRUE);
-        Agedge_t* ed = agedge(g, weightNode, node, "weight", TRUE);
-        agsafeset(node, "color", "red", "");
-    }
+    openNodes.push_back(this->root);
 
-    if (markInconsistencies) {
+    if (!markInconsistencies) {
+        while (!openNodes.empty()) {
+            conceptnet::Concept* node = openNodes[0];
+            // std::cout << "AnswerGraph:renderDot: " << node->term << " " << node << std::endl;
+            openNodes.erase(openNodes.begin());
+            if (std::find(closedNodes.begin(), closedNodes.end(), node) != closedNodes.end()) {
+                continue;
+            }
+            closedNodes.push_back(node);
+
+            for (const conceptnet::Edge* edge : node->getEdges()) {
+                generateEdge(g, openNodes, node->term, edge);
+            }
+        }
+
+        for (conceptnet::Concept* concept : this->getBestAnswers(5)) {
+            Agnode_t* node = agnode(g, strdup(concept->term.c_str()), TRUE);
+            Agnode_t* weightNode = agnode(g, strdup(std::to_string(this->utilities[concept]).c_str()), TRUE);
+            Agedge_t* ed = agedge(g, weightNode, node, "weight", TRUE);
+            agsafeset(node, "color", "red", "");
+        }
+
+    } else {
         for (auto pair : this->adjectiveAntonymMap) {
+            //TODO connect to root
             Agnode_t* node = agnode(g, strdup(pair.first.c_str()), TRUE);
             if (pair.second.empty()) {
                 agsafeset(node, "color", "blue", "");
             } else {
                 agsafeset(node, "color", "red", "");
+            }
+            for(srg::conceptnet::Edge* edge : pair.second) {
+                generateEdge(g, openNodes, pair.first, edge);
             }
         }
         for (auto pair : this->equivalentAntonyms) {
@@ -161,10 +152,29 @@ void AnswerGraph::renderDot(Agraph_t* g, bool markInconsistencies)
                 agsafeset(node, "color", "red", "");
                 node = agnode(g, strdup(edge->fromConcept->term.c_str()), TRUE);
                 agsafeset(node, "color", "red", "");
+                generateEdge(g, openNodes, pair.first, edge);
             }
         }
     }
+}
 
+void AnswerGraph::generateEdge(Agraph_t* g, std::vector<conceptnet::Concept*>& openNodes, std::string term, const conceptnet::Edge* edge)
+{
+    Agnode_t* to;
+    Agnode_t* from;
+    //            std::cout << "AnswerGraph:rendetDot: " << node->id << " " << node << " " << edge->fromConcept->id << " " << edge->fromConcept <<
+    //            std::endl;
+    if (edge->fromConcept->term == term) {
+        to = agnode(g, strdup(edge->toConcept->term.c_str()), TRUE);
+        from = agnode(g, strdup(term.c_str()), TRUE);
+        openNodes.push_back(edge->toConcept);
+    } else {
+        to = agnode(g, strdup(term.c_str()), TRUE);
+        from = agnode(g, strdup(edge->fromConcept->term.c_str()), TRUE);
+        openNodes.push_back(edge->fromConcept);
+    }
+    Agedge_t* ed = agedge(g, from, to, strdup(conceptnet::relations[edge->relation]), TRUE);
+    agsafeset(ed, "label", strdup(std::string(conceptnet::relations[edge->relation]).append(" / " + std::to_string(edge->weight)).c_str()), "");
 }
 
 conceptnet::Concept* AnswerGraph::getConcept(std::string conceptId) const

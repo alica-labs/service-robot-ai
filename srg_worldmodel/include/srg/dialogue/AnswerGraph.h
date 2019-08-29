@@ -48,6 +48,9 @@ private:
     std::map<std::string, conceptnet::Concept*> concepts;
     std::map<std::string, conceptnet::Edge*> edges;
     std::map<conceptnet::Concept*, double> utilities;
+
+    void generateEdge(Agraph_t *g, std::vector<conceptnet::Concept *> &openNodes,
+                                   std::string term, const conceptnet::Edge *edge);
 };
 } // namespace dialogue
 } // namespace srg
