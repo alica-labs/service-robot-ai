@@ -133,7 +133,11 @@ void AnswerGraph::renderDot(Agraph_t* g, bool markInconsistencies)
 
     } else {
         for (auto pair : this->adjectiveAntonymMap) {
-            //TODO connect to root
+            for(srg::conceptnet::Edge* edge : this->root->getEdges()) {
+                if(edge->fromConcept->term == pair.first || edge->toConcept->term == pair.first) {
+                    generateEdge(g, openNodes, this->root->term, edge);
+                }
+            }
             Agnode_t* node = agnode(g, strdup(pair.first.c_str()), TRUE);
             if (pair.second.empty()) {
                 agsafeset(node, "color", "blue", "");
