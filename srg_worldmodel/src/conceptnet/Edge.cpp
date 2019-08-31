@@ -37,7 +37,7 @@ std::string Edge::toString(std::string indent) const
     std::stringstream ss;
     ss << indent << "Edge with Language: " << this->language << " From Concept: " << this->fromConcept->term << " Sense: " << this->fromConcept->senseLabel
        << " Relation: " << relations[this->relation] << " to Concept: " << this->toConcept->term << " Sense: " << this->toConcept->senseLabel
-       << " Weight: " << this->weight;
+       << " Weight: " << this->weight << " Causes Inconsistency: " << (this->causesInconsistency ? "\033[1;31mtrue\033[0m" : "false");
     return ss.str();
 }
 

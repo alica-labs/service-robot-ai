@@ -5,6 +5,7 @@
 
 namespace srg
 {
+class SRGWorldModel;
 namespace conceptnet
 {
 class Edge;
@@ -19,17 +20,27 @@ namespace asp
 class ASPTranslator
 {
 public:
-    void extractASPProgram(srg::dialogue::AnswerGraph* answerGraph);
+    enum InconsistencyRemoval
+    {
+        None,
+        KeepHighestWeight,
+        External
+    };
+
+    ASPTranslator(srg::SRGWorldModel* wm);
+    std::string extractASPProgram(srg::dialogue::AnswerGraph* answerGraph, InconsistencyRemoval inconsistencyRemoval = InconsistencyRemoval::None);
 
 private:
     std::string expandConceptNetPredicate(std::string predicate);
-    std::string createASPPredicates(srg::dialogue::AnswerGraph* answerGraph);
+    std::string createASPPredicates(srg::dialogue::AnswerGraph* answerGraph, InconsistencyRemoval inconsistencyRemoval = InconsistencyRemoval::None);
     std::string conceptToASPPredicate(std::string concept);
 
-    std::map<std::string, std::string> extractBackgroundKnowledgePrograms(srg::dialogue::AnswerGraph* answerGraph);
+    std::map<std::string, std::string> extractBackgroundKnowledgePrograms(
+            srg::dialogue::AnswerGraph* answerGraph, InconsistencyRemoval inconsistencyRemoval = InconsistencyRemoval::None);
     std::string createBackgroundKnowledgeRule(std::string relation, srg::conceptnet::Edge* edge);
 
     static const std::string CONCEPTNET_PREFIX;
+    srg::SRGWorldModel* wm;
 };
 
 } // namespace asp

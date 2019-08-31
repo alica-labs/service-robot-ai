@@ -28,6 +28,10 @@ class Solver;
 
 namespace srg
 {
+namespace asp
+{
+class ASPTranslator;
+}
 
 namespace conceptnet
 {
@@ -56,6 +60,7 @@ public:
     wm::RawSensorData rawSensorData;
     wm::Communication* communication;
     knowledge_manager::ASPKnowledgeManager knowledgeManager;
+    srg::asp::ASPTranslator* aspTranslator;
 
 private:
     SRGWorldModel(); /**< Private Singleton Constructor */

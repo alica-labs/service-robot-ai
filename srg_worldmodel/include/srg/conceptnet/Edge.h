@@ -24,6 +24,7 @@ public:
     Concept* toConcept;
     srg::conceptnet::Relation relation;
     double weight;
+    bool causesInconsistency = false;
     std::vector<std::string> sources;
 
     std::string toString(std::string indent = "") const;

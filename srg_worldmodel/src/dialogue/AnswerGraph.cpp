@@ -88,6 +88,97 @@ void AnswerGraph::calculateUtilities()
     }
 }
 
+void AnswerGraph::markInconsistentEdges()
+{
+    for (auto pair : this->adjectiveAntonymMap) {
+        if (pair.second.empty()) {
+            continue;
+        }
+        std::cout << "markInconsistentEdges: adj " << pair.first << std::endl;
+        conceptnet::Concept* adjective = this->getConcept("/c/en/" + pair.first);
+        std::vector<conceptnet::Concept*> closed;
+        for (conceptnet::Edge* edge : pair.second) {
+            conceptnet::Concept* antonym;
+            if (edge->fromConcept == adjective) {
+                antonym = edge->toConcept;
+            } else {
+                antonym = edge->fromConcept;
+            }
+            if (std::find(closed.begin(), closed.end(), antonym) != closed.end()) {
+                continue;
+            }
+            std::vector<conceptnet::Edge*> adjectiveEdges = this->getEdges(this->root, adjective);
+            double adjectiveWeight = 0;
+            for (conceptnet::Edge* edge : adjectiveEdges) {
+                if(edge->causesInconsistency) {
+                    continue;
+                }
+                adjectiveWeight += edge->weight;
+            }
+            std::vector<conceptnet::Edge*> antonymEdges = this->getEdges(this->root, antonym);
+            double antonymWeight = 0;
+            for (conceptnet::Edge* edge : antonymEdges) {
+                if(edge->causesInconsistency) {
+                    continue;
+                }
+                antonymWeight += edge->weight;
+            }
+            std::cout << "markInconsistentEdges: adj weight " << adjectiveWeight << " antonym weight " << antonymWeight << std::endl;
+            if (adjectiveWeight >= antonymWeight) {
+                for (conceptnet::Edge* edge : antonymEdges) {
+                    std::cout << "markInconsistentEdges: " << edge->toString() << std::endl;
+                    edge->causesInconsistency = true;
+                }
+            } else {
+                for (conceptnet::Edge* edge : adjectiveEdges) {
+                    std::cout << "markInconsistentEdges: " << edge->toString() << std::endl;
+                    edge->causesInconsistency = true;
+                }
+            }
+            closed.push_back(antonym);
+        }
+    }
+}
+
+/*
+ *  std::map<QString, std::vector<QString>>::iterator it;
+    bool conceptDeleted = false;
+    for (it = this->adjectiveAntonymMap.begin(); it != this->adjectiveAntonymMap.end();) {
+        if (this->adjectiveAntonymMap.find(it->first) == this->adjectiveAntonymMap.end()) {
+            it++;
+            continue;
+        }
+        for (auto gathered : this->gatherMap) {
+            for (auto concept : *gathered.second) {
+                if (std::find(it->second.begin(), it->second.end(), concept) != it->second.end()) {
+                    if (this->connectedConcepts.find(gathered.first) == this->connectedConcepts.end()) {
+                        continue;
+                    }
+                    if (this->connectedConcepts.at(it->first)->weight < this->connectedConcepts.at(gathered.first)->weight) {
+                        auto iterator = this->connectedConcepts.find(it->first);
+                        if (iterator != this->connectedConcepts.end()) {
+                            this->connectedConcepts.erase(it->first);
+                            this->adjectiveAntonymMap.erase(it->first);
+                            conceptDeleted = true;
+                        }
+                    } else {
+                        auto iterator = this->connectedConcepts.find(gathered.first);
+                        if (iterator != this->connectedConcepts.end()) {
+                            this->connectedConcepts.erase(gathered.first);
+                            this->adjectiveAntonymMap.erase(gathered.first);
+                            conceptDeleted = true;
+                        }
+                    }
+                }
+            }
+        }
+        if (!conceptDeleted) {
+            it++;
+        } else {
+            conceptDeleted = false;
+        }
+ */
+
 std::string AnswerGraph::toString()
 {
     std::stringstream ret;
@@ -148,7 +239,7 @@ void AnswerGraph::renderDot(Agraph_t* g, bool markInconsistencies)
                 generateEdge(g, openNodes, pair.first, edge);
             }
         }
-        for (auto pair : this->equivalentAntonyms) {
+        /*for (auto pair : this->adjectiveAntonymMap) {
             Agnode_t* node = agnode(g, strdup(pair.first.c_str()), TRUE);
             agsafeset(node, "color", "red", "");
             for (srg::conceptnet::Edge* edge : pair.second) {
@@ -158,7 +249,7 @@ void AnswerGraph::renderDot(Agraph_t* g, bool markInconsistencies)
                 agsafeset(node, "color", "red", "");
                 generateEdge(g, openNodes, pair.first, edge);
             }
-        }
+        }*/
     }
 }
 
@@ -209,6 +300,20 @@ conceptnet::Edge* AnswerGraph::getEdge(std::string edgeId) const
     } else {
         return nullptr;
     }
+}
+
+std::vector<conceptnet::Edge*> AnswerGraph::getEdges(conceptnet::Concept* firstConcept, conceptnet::Concept* secondConcept)
+{
+    std::vector<conceptnet::Edge*> edges;
+    for (auto pair : this->edges) {
+        if (pair.second->fromConcept == firstConcept && pair.second->toConcept == secondConcept) {
+            edges.push_back(pair.second);
+        }
+        if (pair.second->toConcept == firstConcept && pair.second->fromConcept == secondConcept) {
+            edges.push_back(pair.second);
+        }
+    }
+    return edges;
 }
 
 conceptnet::Edge* AnswerGraph::createEdge(std::string edgeId, std::string language, srg::conceptnet::Concept* fromConcept, srg::conceptnet::Concept* toConcept,

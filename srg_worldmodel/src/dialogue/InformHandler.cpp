@@ -3,6 +3,7 @@
 #include "srg/conceptnet/Concept.h"
 #include "srg/conceptnet/ConceptNet.h"
 #include "srg/dialogue/AnswerGraph.h"
+#include "srg/asp/ASPTranslator.h"
 
 #include "srg/SRGWorldModel.h"
 
@@ -24,6 +25,11 @@ AnswerGraph * InformHandler::answerInform(std::string need) {
 
     this->cn->findInconsistencies(answerGraph);
     //answerGraph->renderDot(true);
+    std::ofstream file;
+    file.open ("example.lp");
+    file << this->wm->aspTranslator->extractASPProgram(answerGraph, asp::ASPTranslator::InconsistencyRemoval::KeepHighestWeight);
+    file.close();
+    std::cout << answerGraph->toString() << std::endl;
     return answerGraph;
 }
 } // namespace dialogue

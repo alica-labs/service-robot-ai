@@ -241,7 +241,7 @@ std::string ConceptNet::generateEdges(CNManager* cnManager, const std::string& j
             continue;
         }
         std::string startSenseLabel = "";
-        if (start["sense_label"]) {
+        if (start["sense_label"].IsDefined()) {
             startSenseLabel = start["sense_label"].as<std::string>();
         }
         std::string startID = start["@id"].as<std::string>();
@@ -256,7 +256,7 @@ std::string ConceptNet::generateEdges(CNManager* cnManager, const std::string& j
             break;
         }
     }
-    if(!node["view"] && !node["view"]["nextPage"]) {
+    if(!node["view"].IsDefined() && !node["view"]["nextPage"].IsDefined()) {
         return "";
     }
     if(limit == -1) {
@@ -304,24 +304,14 @@ std::string ConceptNet::trimTerm(const std::string& term)
 void ConceptNet::findInconsistencies(srg::dialogue::AnswerGraph* answerGraph, int limit)
 {
     collectAntonyms(answerGraph, limit);
-    for (auto pair : answerGraph->adjectiveAntonymMap) {
-        if (pair.second.empty()) {
-            continue;
-        }
-        std::cout << "ConceptNet: Concept: " << pair.first << std::endl;
-        for (auto edge : pair.second) {
-            std::cout << "\tConceptNet Antonym edge: " << edge->toString() << std::endl;
-        }
-    }
     std::vector<Concept*> newAntonyms = getNewAdjectives(answerGraph);
     for (auto concept : newAntonyms) {
-        std::cout << "\tConceptNet: Antonym : " << concept->term << std::endl;
         std::vector<Edge*> equivalent = this->getEquivalentOutgoingEdges(answerGraph, concept, limit);
-        answerGraph->equivalentAntonyms.emplace(concept->term, equivalent);
+        answerGraph->adjectiveAntonymMap.emplace(concept->term, equivalent);
         concept->addEdges(equivalent);
     }
 
-    for (auto pair : answerGraph->equivalentAntonyms) {
+    for (auto pair : answerGraph->adjectiveAntonymMap) {
         if (pair.second.empty()) {
             continue;
         }
@@ -361,6 +351,7 @@ void ConceptNet::collectAntonyms(srg::dialogue::AnswerGraph* answerGraph, int li
             continue;
         }
         std::vector<Edge*> edges = this->getEdges(answerGraph, Relation::Antonym, concept.second->term, limit);
+        std::cout << "collectAntonyms: " << concept.second->term << std::endl;
         answerGraph->adjectiveAntonymMap.emplace(concept.second->term, edges);
         concept.second->addEdges(edges);
     }

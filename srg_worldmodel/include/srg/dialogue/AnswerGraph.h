@@ -27,7 +27,6 @@ public:
     std::vector<srg::conceptnet::Concept*> answerConcepts;
     std::vector<srg::conceptnet::ConceptPath*> answerPaths;
     std::map<std::string, std::vector<srg::conceptnet::Edge*>> adjectiveAntonymMap;
-    std::map<std::string, std::vector<srg::conceptnet::Edge*>> equivalentAntonyms;
     std::string toString();
     void renderDot(Agraph_t* g, bool markInconsistencies = false);
 
@@ -39,10 +38,13 @@ public:
     conceptnet::Concept* createConcept(std::string conceptId, std::string term, std::string senseLabel) override;
 
     conceptnet::Edge* getEdge(std::string edgeId) const override;
+    std::vector<conceptnet::Edge*> getEdges(conceptnet::Concept* firstConcept, conceptnet::Concept* secondConcept);
     conceptnet::Edge* createEdge(std::string edgeId, std::string language, conceptnet::Concept* fromConcept, conceptnet::Concept* toConcept, srg::conceptnet::Relation relation, double weight) override;
 
     const std::map<std::string, conceptnet::Concept *> &getConcepts() const;
     const std::map<std::string, conceptnet::Edge *> &getEdges() const;
+
+    void markInconsistentEdges();
 
 private:
     bool utilitiesCalculated;
