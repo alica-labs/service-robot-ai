@@ -140,45 +140,6 @@ void AnswerGraph::markInconsistentEdges()
     }
 }
 
-/*
- *  std::map<QString, std::vector<QString>>::iterator it;
-    bool conceptDeleted = false;
-    for (it = this->adjectiveAntonymMap.begin(); it != this->adjectiveAntonymMap.end();) {
-        if (this->adjectiveAntonymMap.find(it->first) == this->adjectiveAntonymMap.end()) {
-            it++;
-            continue;
-        }
-        for (auto gathered : this->gatherMap) {
-            for (auto concept : *gathered.second) {
-                if (std::find(it->second.begin(), it->second.end(), concept) != it->second.end()) {
-                    if (this->connectedConcepts.find(gathered.first) == this->connectedConcepts.end()) {
-                        continue;
-                    }
-                    if (this->connectedConcepts.at(it->first)->weight < this->connectedConcepts.at(gathered.first)->weight) {
-                        auto iterator = this->connectedConcepts.find(it->first);
-                        if (iterator != this->connectedConcepts.end()) {
-                            this->connectedConcepts.erase(it->first);
-                            this->adjectiveAntonymMap.erase(it->first);
-                            conceptDeleted = true;
-                        }
-                    } else {
-                        auto iterator = this->connectedConcepts.find(gathered.first);
-                        if (iterator != this->connectedConcepts.end()) {
-                            this->connectedConcepts.erase(gathered.first);
-                            this->adjectiveAntonymMap.erase(gathered.first);
-                            conceptDeleted = true;
-                        }
-                    }
-                }
-            }
-        }
-        if (!conceptDeleted) {
-            it++;
-        } else {
-            conceptDeleted = false;
-        }
- */
-
 std::string AnswerGraph::toString()
 {
     std::stringstream ret;

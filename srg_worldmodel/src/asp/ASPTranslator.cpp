@@ -54,8 +54,8 @@ std::string ASPTranslator::createASPPredicates(srg::dialogue::AnswerGraph* answe
 {
     std::string ret = "";
     for (auto pair : answerGraph->getEdges()) {
-        if(inconsistencyRemoval == InconsistencyRemoval::KeepHighestWeight) {
-            if(pair.second->causesInconsistency) {
+        if (inconsistencyRemoval == InconsistencyRemoval::KeepHighestWeight) {
+            if (pair.second->causesInconsistency) {
                 continue;
             }
         }
@@ -81,8 +81,8 @@ std::map<std::string, std::string> ASPTranslator::extractBackgroundKnowledgeProg
     std::map<std::string, std::string> ret;
     std::vector<std::string> addedRelations;
     for (auto pair : answerGraph->getEdges()) {
-        if(inconsistencyRemoval == InconsistencyRemoval::KeepHighestWeight) {
-            if(pair.second->causesInconsistency) {
+        if (inconsistencyRemoval == InconsistencyRemoval::KeepHighestWeight) {
+            if (pair.second->causesInconsistency) {
                 continue;
             }
         }
@@ -99,32 +99,42 @@ std::map<std::string, std::string> ASPTranslator::extractBackgroundKnowledgeProg
             ret.at(tmpRel).append(createBackgroundKnowledgeRule(tmpRel, pair.second));
         }
     }
+    if (inconsistencyRemoval == InconsistencyRemoval::External) {
+        //TODO iterate over antonymMap
+        // create external like #external -propertyOf(plant1, cn5_evergreen).
+        //create rule for every adjective antonym pair
+    }
+    return ret;
+}
+
+std::string ASPTranslator::createInconsistencyBackgroundKnowledgeRule(std::string relation, std::string adjective, std::string antonym)
+{
+    adjective = conceptToASPPredicate(adjective);
+    antonym = conceptToASPPredicate(antonym);
+    std::string capitalRelation = relation;
+    capitalRelation[0] = std::toupper(capitalRelation[0]);
+    std::string ret = "";
+    ret.append("propertyOf(n, " + ASPTranslator::CONCEPTNET_PREFIX + adjective + ", W) ")
+            .append(":- not -propertyOf(n, " + ASPTranslator::CONCEPTNET_PREFIX + adjective + "), ")
+            .append("typeOf(n, " + ASPTranslator::CONCEPTNET_PREFIX + adjective + "), ")
+            .append(ASPTranslator::CONCEPTNET_PREFIX + capitalRelation + "(" + ASPTranslator::CONCEPTNET_PREFIX + adjective + ", " +
+                    ASPTranslator::CONCEPTNET_PREFIX + antonym + ", W), ")
+            .append("-propertyOf(n, " + ASPTranslator::CONCEPTNET_PREFIX + antonym + ").\n");
     return ret;
 }
 
 std::string ASPTranslator::createBackgroundKnowledgeRule(std::string relation, srg::conceptnet::Edge* edge)
 {
-    std::string ret = relation;
     std::string capitalRelation = relation;
     capitalRelation[0] = std::toupper(capitalRelation[0]);
-    ret.append("(n, m, W) :- not -")
-            .append(relation)
-            .append("(n, m), typeOf(n, ")
-            .append(ASPTranslator::CONCEPTNET_PREFIX)
-            .append(conceptToASPPredicate(edge->fromConcept->term))
-            .append("), typeOf(m, ")
-            .append(ASPTranslator::CONCEPTNET_PREFIX)
-            .append(conceptToASPPredicate(edge->toConcept->term))
-            .append("), ")
-            .append(ASPTranslator::CONCEPTNET_PREFIX)
-            .append(capitalRelation)
-            .append("(")
-            .append(ASPTranslator::CONCEPTNET_PREFIX)
-            .append(conceptToASPPredicate(edge->fromConcept->term))
-            .append(",")
-            .append(ASPTranslator::CONCEPTNET_PREFIX)
-            .append(conceptToASPPredicate(edge->toConcept->term))
-            .append(", W).\n");
+    std::string ret = "";
+    ret.append(relation + "(n, m, W)")
+            .append(" :- not -" + relation + "(n, m),")
+            .append(" typeOf(n, " + ASPTranslator::CONCEPTNET_PREFIX + conceptToASPPredicate(edge->fromConcept->term) + "), ")
+            .append("typeOf(m, " + ASPTranslator::CONCEPTNET_PREFIX + conceptToASPPredicate(edge->toConcept->term) + "), ")
+            .append(ASPTranslator::CONCEPTNET_PREFIX + capitalRelation + "(" + ASPTranslator::CONCEPTNET_PREFIX +
+                    conceptToASPPredicate(edge->fromConcept->term) + "," + ASPTranslator::CONCEPTNET_PREFIX + conceptToASPPredicate(edge->toConcept->term) +
+                    ", W).\n");
     return ret;
 }
 

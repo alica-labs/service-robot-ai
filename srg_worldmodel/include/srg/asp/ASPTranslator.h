@@ -38,6 +38,7 @@ private:
     std::map<std::string, std::string> extractBackgroundKnowledgePrograms(
             srg::dialogue::AnswerGraph* answerGraph, InconsistencyRemoval inconsistencyRemoval = InconsistencyRemoval::None);
     std::string createBackgroundKnowledgeRule(std::string relation, srg::conceptnet::Edge* edge);
+    std::string createInconsistencyBackgroundKnowledgeRule(std::string relation, std::string adjective, std::string antonym);
 
     static const std::string CONCEPTNET_PREFIX;
     srg::SRGWorldModel* wm;
