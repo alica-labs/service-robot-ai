@@ -16,14 +16,14 @@ namespace control {
         // initialise capnzero stuff
         this->ctx = zmq_ctx_new();
         this->processStatsTopic = (*sc)["ProcessManaging"]->get<std::string>("Topics.processStatsTopic", NULL);
-        this->processStatsSub = new capnzero::Subscriber(this->ctx, this->processStatsTopic);
-        this->processStatsSub->connect(capnzero::CommType::UDP, "224.0.0.2:5555");
-        this->processStatsSub->subscribe(&Communication::handleProcessStats, &(*this));
+        this->processStatsSub = new capnzero::Subscriber(this->ctx, this->processStatsTopic, &Communication::handleProcessStats, &(*this));
+        this->processStatsSub->addAddress(capnzero::CommType::UDP, "224.0.0.2:5555");
+        this->processStatsSub->connect();
 
         this->alicaInfoTopic = (*sc)["AlicaCapnzProxy"]->get<std::string>("Topics.alicaEngineInfoTopic", NULL);
-        this->alicaInfoSub = new capnzero::Subscriber(this->ctx, this->alicaInfoTopic);
-        this->alicaInfoSub->connect(capnzero::CommType::UDP, "224.0.0.2:5555");
-        this->alicaInfoSub->subscribe(&Communication::handleAlicaInfo, &(*this));
+        this->alicaInfoSub = new capnzero::Subscriber(this->ctx, this->alicaInfoTopic, &Communication::handleAlicaInfo, &(*this));
+        this->alicaInfoSub->addAddress(capnzero::CommType::UDP, "224.0.0.2:5555");
+        this->alicaInfoSub->connect();
 
         this->processCommandTopic = (*sc)["RobotControl"]->get<std::string>("Topics.robotCommandTopic", NULL);
         this->processCommandPub = new capnzero::Publisher(this->ctx);

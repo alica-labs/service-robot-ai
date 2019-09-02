@@ -14,9 +14,9 @@ namespace pm_control {
         // initialise capnzero stuff
         this->ctx = zmq_ctx_new();
         this->processStatsTopic = (*sc)["ProcessManaging"]->get<std::string>("Topics.processStatsTopic", NULL);
-        this->processStatsSub = new capnzero::Subscriber(this->ctx, this->processStatsTopic);
-        this->processStatsSub->connect(capnzero::CommType::UDP, "224.0.0.2:5555");
-        this->processStatsSub->subscribe(&Communication::handleProcessStats, &(*this));
+        this->processStatsSub = new capnzero::Subscriber(this->ctx, this->processStatsTopic, &Communication::handleProcessStats, &(*this));
+        this->processStatsSub->addAddress(capnzero::CommType::UDP, "224.0.0.2:5555");
+        this->processStatsSub->connect();
 
         this->processCommandTopic = (*sc)["RobotControl"]->get<std::string>("Topics.robotCommandTopic", NULL);
         this->processCommandPub = new capnzero::Publisher(this->ctx);
