@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <srg/conceptnet/Concept.h>
 #include <string>
 
 namespace srg
@@ -9,7 +10,8 @@ class SRGWorldModel;
 namespace conceptnet
 {
 class Edge;
-}
+class Concept;
+} // namespace conceptnet
 namespace dialogue
 {
 class AnswerGraph;
@@ -24,7 +26,7 @@ public:
     {
         None,
         KeepHighestWeight,
-        External
+        UseExternals
     };
 
     ASPTranslator(srg::SRGWorldModel* wm);
@@ -38,7 +40,7 @@ private:
     std::map<std::string, std::string> extractBackgroundKnowledgePrograms(
             srg::dialogue::AnswerGraph* answerGraph, InconsistencyRemoval inconsistencyRemoval = InconsistencyRemoval::None);
     std::string createBackgroundKnowledgeRule(std::string relation, srg::conceptnet::Edge* edge);
-    std::string createInconsistencyBackgroundKnowledgeRule(std::string relation, std::string adjective, std::string antonym);
+    std::string createInconsistencyBackgroundKnowledgeRule(srg::conceptnet::Concept* adjective, std::string antonym, srg::conceptnet::Edge* edge);
 
     static const std::string CONCEPTNET_PREFIX;
     srg::SRGWorldModel* wm;

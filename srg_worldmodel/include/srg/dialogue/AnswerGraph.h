@@ -26,7 +26,7 @@ public:
     srg::conceptnet::Concept* root;
     std::vector<srg::conceptnet::Concept*> answerConcepts;
     std::vector<srg::conceptnet::ConceptPath*> answerPaths;
-    std::map<std::string, std::vector<srg::conceptnet::Edge*>> adjectiveAntonymMap;
+    std::map<srg::conceptnet::Concept*, std::vector<srg::conceptnet::Edge*>> adjectiveAntonymMap;
     std::string toString();
     void renderDot(Agraph_t* g, bool markInconsistencies = false);
 

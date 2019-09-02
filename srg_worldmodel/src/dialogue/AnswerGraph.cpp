@@ -95,7 +95,7 @@ void AnswerGraph::markInconsistentEdges()
             continue;
         }
         std::cout << "markInconsistentEdges: adj " << pair.first << std::endl;
-        conceptnet::Concept* adjective = this->getConcept("/c/en/" + pair.first);
+        conceptnet::Concept* adjective = this->getConcept("/c/en/" + pair.first->term);
         std::vector<conceptnet::Concept*> closed;
         for (conceptnet::Edge* edge : pair.second) {
             conceptnet::Concept* antonym;
@@ -186,18 +186,18 @@ void AnswerGraph::renderDot(Agraph_t* g, bool markInconsistencies)
     } else {
         for (auto pair : this->adjectiveAntonymMap) {
             for (srg::conceptnet::Edge* edge : this->root->getEdges()) {
-                if (edge->fromConcept->term == pair.first || edge->toConcept->term == pair.first) {
+                if (edge->fromConcept == pair.first || edge->toConcept == pair.first) {
                     generateEdge(g, openNodes, this->root->term, edge);
                 }
             }
-            Agnode_t* node = agnode(g, strdup(pair.first.c_str()), TRUE);
+            Agnode_t* node = agnode(g, strdup(pair.first->term.c_str()), TRUE);
             if (pair.second.empty()) {
                 agsafeset(node, "color", "blue", "");
             } else {
                 agsafeset(node, "color", "red", "");
             }
             for (srg::conceptnet::Edge* edge : pair.second) {
-                generateEdge(g, openNodes, pair.first, edge);
+                generateEdge(g, openNodes, pair.first->term, edge);
             }
         }
         /*for (auto pair : this->adjectiveAntonymMap) {

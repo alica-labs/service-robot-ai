@@ -27,7 +27,7 @@ AnswerGraph * InformHandler::answerInform(std::string need) {
     //answerGraph->renderDot(true);
     std::ofstream file;
     file.open ("example.lp");
-    file << this->wm->aspTranslator->extractASPProgram(answerGraph, asp::ASPTranslator::InconsistencyRemoval::KeepHighestWeight);
+    file << this->wm->aspTranslator->extractASPProgram(answerGraph, asp::ASPTranslator::InconsistencyRemoval::UseExternals);
     file.close();
     std::cout << answerGraph->toString() << std::endl;
     return answerGraph;
