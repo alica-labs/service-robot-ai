@@ -121,7 +121,7 @@ std::map<std::string, std::string> ASPTranslator::extractBackgroundKnowledgeProg
     if (inconsistencyRemoval == InconsistencyRemoval::UseExternals) {
         for (auto pair : answerGraph->adjectiveAntonymMap) {
             std::vector<std::string> closed;
-            std::cout << "getting edges: " << answerGraph->root->term << " " << pair.first->term << std::endl;
+            //std::cout << "getting edges: " << answerGraph->root->term << " " << pair.first->term << std::endl;
             std::vector<srg::conceptnet::Edge*> edges = answerGraph->getEdges(answerGraph->root, pair.first);
             if (edges.empty()) {
                 continue;
