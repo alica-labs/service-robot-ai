@@ -5,8 +5,10 @@
 #include "srg/conceptnet/Edge.h"
 #include "srg/conceptnet/Relations.h"
 #include "srg/dialogue/AnswerGraph.h"
+#include <knowledge_manager/ASPKnowledgeManager.h>
 
 #include <algorithm>
+#include <sstream>
 #include <vector>
 
 namespace srg
@@ -34,10 +36,27 @@ std::string ASPTranslator::extractASPProgram(srg::dialogue::AnswerGraph* answerG
     program.append(tmp);
 
     program.append("\n");
+
+    auto indexLeft = programSection.find("(");
+    auto indexRight = programSection.find(")");
+    if (indexLeft != std::string::npos && indexRight != std::string::npos) {
+        auto tmp = programSection.substr(indexLeft + 1, indexRight - indexLeft - 1);
+        programSection = programSection.substr(0, indexLeft);
+        auto symVec = Clingo::SymbolVector();
+        auto paramList = split(tmp);
+        for (auto it : paramList) {
+            symVec.push_back(this->wm->knowledgeManager.parseValue(it.c_str()));
+        }
+        this->wm->knowledgeManager.ground({{programSection.c_str(), symVec}}, nullptr);
+    } else {
+        this->wm->knowledgeManager.ground({{programSection.c_str(), {}}}, nullptr);
+    }
+    this->wm->knowledgeManager.solve();
+
     auto pgmMap = extractBackgroundKnowledgePrograms(answerGraph, inconsistencyRemoval);
     for (auto pair : pgmMap) {
         program.append(pair.second).append("\n");
-        // this->gui->getSolver()->add(programSection.toStdString().c_str(), {}, pair.second.toStdString().c_str());
+        this->wm->knowledgeManager.add(programSection.c_str(), {}, pair.second.c_str());
     }
     return program;
 }
@@ -110,7 +129,7 @@ std::map<std::string, std::string> ASPTranslator::extractBackgroundKnowledgeProg
             std::string pgm = "#program cn5_situationalKnowledge(n).\n";
             pgm.append("#external -").append("propertyOf").append("(n, ").append(ASPTranslator::CONCEPTNET_PREFIX + pair.first->term + ").\n");
             if (pair.second.empty()) {
-                pgm.append(createInconsistencyBackgroundKnowledgeRule(pair.first, "",edges.at(0)));
+                pgm.append(createInconsistencyBackgroundKnowledgeRule(pair.first, "", edges.at(0)));
             }
             for (srg::conceptnet::Edge* edge : pair.second) {
                 std::string antonym;
@@ -179,6 +198,34 @@ std::string ASPTranslator::expandConceptNetPredicate(std::string predicate)
     std::string ret = "";
     ret.append(predicate).append(" :- not ").append("-").append(predicate).append(".\n");
     return ret;
+}
+
+std::vector<std::string> ASPTranslator::split(std::string toSplit)
+{
+    std::stringstream stream;
+    stream << toSplit;
+    std::string segment;
+    std::vector<std::string> seglist;
+
+    while (std::getline(stream, segment, ',')) {
+        seglist.push_back(trim(segment));
+    }
+    return seglist;
+}
+
+std::string ASPTranslator::trim(const std::string& s)
+{
+    auto start = s.begin();
+    while (start != s.end() && std::isspace(*start)) {
+        start++;
+    }
+
+    auto end = s.end();
+    do {
+        end--;
+    } while (std::distance(start, end) > 0 && std::isspace(*end));
+
+    return std::string(start, end + 1);
 }
 
 } // namespace asp

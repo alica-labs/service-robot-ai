@@ -42,6 +42,9 @@ private:
     std::string createBackgroundKnowledgeRule(std::string relation, srg::conceptnet::Edge* edge);
     std::string createInconsistencyBackgroundKnowledgeRule(srg::conceptnet::Concept* adjective, std::string antonym, srg::conceptnet::Edge* edge);
 
+    std::vector<std::string> split(std::string toSplit);
+    std::string trim(const std::string& s);
+
     static const std::string CONCEPTNET_PREFIX;
     srg::SRGWorldModel* wm;
 };
