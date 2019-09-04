@@ -216,7 +216,7 @@ std::string ConceptNet::generateEdges(CNManager* cnManager, const std::string& j
             continue;
         }
         std::string endTerm = end["term"].as<std::string>();
-        if (std::isdigit(endTerm.at(0)) || this->conceptContainsNonASCII(endTerm)) {
+        if (this->conceptContainsNonASCII(endTerm)) {
             std::cout << "ConceptNet: Skipping Concept:" << endTerm << std::endl;
             continue;
         }
@@ -236,8 +236,8 @@ std::string ConceptNet::generateEdges(CNManager* cnManager, const std::string& j
             continue;
         }
         std::string startTerm = start["term"].as<std::string>();
-        if (std::isdigit(startTerm.at(0)) || this->conceptContainsNonASCII(startTerm)) {
-            std::cout << "ConceptNetQueryCommand: Skipping concept:" << startTerm << std::endl;
+        if (this->conceptContainsNonASCII(startTerm)) {
+            std::cout << "ConceptNet: Skipping concept:" << startTerm << std::endl;
             continue;
         }
         std::string startSenseLabel = "";
@@ -248,8 +248,19 @@ std::string ConceptNet::generateEdges(CNManager* cnManager, const std::string& j
         std::string relation = edge["rel"]["@id"].as<std::string>();
         relation = trimTerm(relation); //.right(relation.size() - relation.lastIndexOf('/') - 1);
         // create edge
-        Concept* fromConcept = cnManager->createConcept(startTerm, trimTerm(startTerm), startSenseLabel);
-        Concept* toConcept = cnManager->createConcept(endTerm, trimTerm(endTerm), endSenseLabel);
+        std::string trimmedStartTerm = trimTerm(startTerm);
+        std::string trimmedEndTerm = trimTerm(endTerm);
+        if(std::isdigit(trimmedStartTerm[0])) {
+            std::cout << "ConceptNet: Skipping concept:" << startTerm << std::endl;
+            continue;
+        }
+        if(std::isdigit(trimmedEndTerm[0])) {
+            std::cout << "ConceptNet: Skipping concept:" << endTerm << std::endl;
+            continue;
+        }
+
+        Concept* fromConcept = cnManager->createConcept(startTerm, trimmedStartTerm, startSenseLabel);
+        Concept* toConcept = cnManager->createConcept(endTerm, trimmedEndTerm, endSenseLabel);
         std::string edgeId = "/a[" + relation + "," + startTerm + "," + endTerm + "]"; // dont use cn's edgeId, its evil!
         edges.push_back(cnManager->createEdge(edgeId, startLanguage, fromConcept, toConcept, getRelation(relation), weight));
         if (limit != -1 && edges.size() == limit) {

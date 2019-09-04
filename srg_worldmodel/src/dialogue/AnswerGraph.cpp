@@ -185,18 +185,26 @@ void AnswerGraph::renderDot(Agraph_t* g, bool markInconsistencies)
 
     } else {
         for (auto pair : this->adjectiveAntonymMap) {
+            if(pair.second.empty()) {
+                continue;
+            }
             for (srg::conceptnet::Edge* edge : this->root->getEdges()) {
                 if (edge->fromConcept == pair.first || edge->toConcept == pair.first) {
                     generateEdge(g, openNodes, this->root->term, edge);
                 }
             }
             Agnode_t* node = agnode(g, strdup(pair.first->term.c_str()), TRUE);
-            if (pair.second.empty()) {
-                agsafeset(node, "color", "blue", "");
-            } else {
+            if (!pair.second.empty()) {
                 agsafeset(node, "color", "red", "");
             }
+            /*else {
+                 agsafeset(node, "color", "blue", "");
+            }*/
+
             for (srg::conceptnet::Edge* edge : pair.second) {
+                if(adjectiveAntonymMap.find(edge->fromConcept) == adjectiveAntonymMap.end() || adjectiveAntonymMap.find(edge->toConcept) == adjectiveAntonymMap.end()) {
+                    continue;
+                }
                 generateEdge(g, openNodes, pair.first->term, edge);
             }
         }
