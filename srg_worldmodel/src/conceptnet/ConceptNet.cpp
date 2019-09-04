@@ -256,10 +256,10 @@ std::string ConceptNet::generateEdges(CNManager* cnManager, const std::string& j
             break;
         }
     }
-    if(!node["view"].IsDefined() && !node["view"]["nextPage"].IsDefined()) {
+    if (!node["view"].IsDefined() && !node["view"]["nextPage"].IsDefined()) {
         return "";
     }
-    if(limit == -1) {
+    if (limit == -1) {
         std::cout << "ConceptNet: nextPage: " << node["view"]["nextPage"].as<std::string>() << std::endl;
         return node["view"]["nextPage"].as<std::string>();
     } else {
@@ -346,14 +346,27 @@ std::vector<Concept*> ConceptNet::getNewAdjectives(srg::dialogue::AnswerGraph* a
 
 void ConceptNet::collectAntonyms(srg::dialogue::AnswerGraph* answerGraph, int limit)
 {
-    for (auto concept : answerGraph->getConcepts()) {
-        if (concept.second->senseLabel.compare("a") != 0) {
+    for (auto pair : answerGraph->getEdges()) {
+        /*if (pair.second->relation != srg::conceptnet::Relation::HasContext && pair.second->relation != srg::conceptnet::Relation::HasProperty &&
+                pair.second->relation != srg::conceptnet::Relation::RelatedTo) {
+            continue;
+        }*/
+
+        srg::conceptnet::Concept* concept;
+        if(pair.second->fromConcept == answerGraph->root) {
+            concept = pair.second->toConcept;
+        } else {
+            concept = pair.second->fromConcept;
+        }
+
+        if (concept->senseLabel.compare("a") != 0) {
             continue;
         }
-        std::vector<Edge*> edges = this->getEdges(answerGraph, Relation::Antonym, concept.second->term, limit);
-        std::cout << "collectAntonyms: " << concept.second->term << std::endl;
-        answerGraph->adjectiveAntonymMap.emplace(concept.second, edges);
-        concept.second->addEdges(edges);
+
+        std::vector<Edge*> edges = this->getEdges(answerGraph, Relation::Antonym, concept->term, limit);
+        std::cout << "collectAntonyms: " << concept->term << std::endl;
+        answerGraph->adjectiveAntonymMap.emplace(concept, edges);
+        concept->addEdges(edges);
     }
 }
 } // namespace conceptnet
