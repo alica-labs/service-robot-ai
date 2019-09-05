@@ -50,7 +50,7 @@ void DialogueManager::renderDot() const
     }
     /* Create a simple digraph */
     g = agopen("g", Agdirected, NULL);
-    agsafeset(g, "rankdir", "RL", "");
+    agsafeset(g, "rankdir", "TB", "");
     for (auto pair : actMapping) {
         pair.second->renderDot(g, true);
     }
