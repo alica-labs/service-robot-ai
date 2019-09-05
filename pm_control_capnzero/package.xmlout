@@ -1,0 +1,20 @@
+<package format="2">
+  <name>pm_control_capnzero</name>
+  <version>0.0.1</version>
+  <description>pm_control_capnzero provides a GUI plugin sending process_manager Commands.</description>
+  <maintainer email="opfer@vs.uni-kassel.de">Stephan Opfer</maintainer>
+
+  <license>MIT</license>
+
+  <author>Stephan Opfer</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>process_manager_capnzero</depend>
+  <depend>id_capnzero</depend>
+  <depend>capnzero</depend>
+
+  <export>
+    <rqt_gui plugin="${prefix}/plugin.xml"/>
+  </export>
+</package>
