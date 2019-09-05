@@ -21,15 +21,17 @@ namespace srg {
 
             std::cout << "Telegram Message: ";
             std::string telegramMessageTopic = (*sc)["SRGWorldModel"]->get<std::string>("Data.Telegram.Topic", NULL);
-            this->telegramMessageSub = new capnzero::Subscriber(this->ctx, telegramMessageTopic, &Communication::onTelegramMessage, &(*this));
-            this->telegramMessageSub->addAddress(capnzero::CommType::INT, (*sc)["SRGWorldModel"]->get<std::string>("Data.Telegram.Address", NULL));
-            this->telegramMessageSub->connect();
+            this->telegramMessageSub = new capnzero::Subscriber(this->ctx, capnzero::Protocol::UDP);
+            this->telegramMessageSub->setTopic(telegramMessageTopic);
+            this->telegramMessageSub->addAddress((*sc)["SRGWorldModel"]->get<std::string>("Data.Telegram.Address", NULL));
+            this->telegramMessageSub->subscribe(&Communication::onTelegramMessage, &(*this));
 
             std::cout << "Speech act: ";
             std::string speechActTopic = (*sc)["SRGWorldModel"]->get<std::string>("Data.SpeechAct.Topic", NULL);
-            this->speechActSub = new capnzero::Subscriber(this->ctx, speechActTopic, &Communication::onSpeechAct, &(*this));
-            this->speechActSub->addAddress(capnzero::CommType::UDP, "224.0.0.2:5555");
-            this->speechActSub->connect();
+            this->speechActSub = new capnzero::Subscriber(this->ctx,capnzero::Protocol::UDP);
+            this->speechActSub->setTopic(speechActTopic);
+            this->speechActSub->addAddress((*sc)["SRGWorldModel"]->get<std::string>("Data.SpeechAct.Address", NULL));
+            this->speechActSub->subscribe(&Communication::onSpeechAct, &(*this));
         }
 
         Communication::~Communication() {

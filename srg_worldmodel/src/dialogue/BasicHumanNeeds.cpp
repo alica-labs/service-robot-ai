@@ -66,9 +66,9 @@ AnswerGraph* BasicHumanNeeds::answerNeed(std::string need)
     }
     this->createAnswerPaths(answerGraph, root);
 #ifdef HUMAN_NEEDS_DEBUG
-    for (conceptnet::ConceptPath* conceptPath : answerGraph->answerPaths) {
+//    for (conceptnet::ConceptPath* conceptPath : answerGraph->answerPaths) {
 //        std::cout << "BasicHumanNeeds:" << conceptPath->toString() << std::endl;
-    }
+//    }
 #endif
 
 //TODO add again later

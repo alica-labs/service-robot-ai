@@ -22,7 +22,7 @@ class AnswerGraph : public conceptnet::CNManager
 {
 public:
     AnswerGraph();
-    ~AnswerGraph();
+    virtual ~AnswerGraph();
     srg::conceptnet::Concept* root;
     std::vector<srg::conceptnet::Concept*> answerConcepts;
     std::vector<srg::conceptnet::ConceptPath*> answerPaths;

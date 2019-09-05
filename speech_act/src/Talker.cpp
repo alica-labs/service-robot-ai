@@ -27,13 +27,13 @@ namespace srg {
         this->id = this->idManager->getID<int64_t>(id);
 
         this->ctx = zmq_ctx_new();
-        this->speechActPublisher = new capnzero::Publisher(this->ctx);
+        this->speechActPublisher = new capnzero::Publisher(this->ctx, capnzero::Protocol::UDP);
 
         this->topic = (*sc)["SRGWorldModel"]->get<std::string>("Data.SpeechAct.Topic", NULL);
-        this->speechActPublisher->setDefaultGroup(this->topic);
+        this->speechActPublisher->setDefaultTopic(this->topic);
 
         this->url = (*sc)["Talker"]->get<std::string>("Communication.URL", NULL);
-        this->speechActPublisher->bind(capnzero::CommType::UDP, this->url);
+        this->speechActPublisher->addAddress(this->url);
     }
 
     Talker::~Talker() {
