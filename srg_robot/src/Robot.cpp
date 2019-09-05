@@ -20,9 +20,9 @@ Robot::Robot(srg::SRGWorldModel* wm) : wm(wm)
     this->simAddress = (*sc)["SRGSim"]->get<std::string>("SRGSim.Communication.address", NULL);
 
     this->capnzeroContext = zmq_ctx_new();
-    this->simPub = new capnzero::Publisher(this->capnzeroContext);
-    this->simPub->setDefaultGroup(this->simCmdTopic);
-    this->simPub->bind(capnzero::CommType::UDP, simAddress);
+    this->simPub = new capnzero::Publisher(this->capnzeroContext, capnzero::Protocol::UDP);
+    this->simPub->setDefaultTopic(this->simCmdTopic);
+    this->simPub->addAddress(simAddress);
 }
 
 Robot::~Robot()
@@ -32,7 +32,7 @@ Robot::~Robot()
 
 void Robot::spawn() const
 {
-    builder:capnp::MallocMessageBuilder msgBuilder;
+    capnp::MallocMessageBuilder msgBuilder;
     srgsim::Command::Builder commandBuilder = msgBuilder.initRoot<srgsim::Command>();
     commandBuilder.setAction(srgsim::Command::Action::SPAWN);
     capnzero::ID::Builder sender = commandBuilder.initSenderId();

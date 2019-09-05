@@ -16,24 +16,26 @@ namespace control {
         // initialise capnzero stuff
         this->ctx = zmq_ctx_new();
         this->processStatsTopic = (*sc)["ProcessManaging"]->get<std::string>("Topics.processStatsTopic", NULL);
-        this->processStatsSub = new capnzero::Subscriber(this->ctx, this->processStatsTopic, &Communication::handleProcessStats, &(*this));
-        this->processStatsSub->addAddress(capnzero::CommType::UDP, "224.0.0.2:5555");
-        this->processStatsSub->connect();
+        this->processStatsSub = new capnzero::Subscriber(this->ctx,capnzero::Protocol::UDP);
+        this->processStatsSub->setTopic(this->processStatsTopic);
+        this->processStatsSub->addAddress("224.0.0.2:5555");
+        this->processStatsSub->subscribe(&Communication::handleProcessStats, &(*this));
 
         this->alicaInfoTopic = (*sc)["AlicaCapnzProxy"]->get<std::string>("Topics.alicaEngineInfoTopic", NULL);
-        this->alicaInfoSub = new capnzero::Subscriber(this->ctx, this->alicaInfoTopic, &Communication::handleAlicaInfo, &(*this));
-        this->alicaInfoSub->addAddress(capnzero::CommType::UDP, "224.0.0.2:5555");
-        this->alicaInfoSub->connect();
+        this->alicaInfoSub = new capnzero::Subscriber(this->ctx, capnzero::Protocol::UDP);
+        this->alicaInfoSub->setTopic(this->alicaInfoTopic);
+        this->alicaInfoSub->addAddress("224.0.0.2:5555");
+        this->alicaInfoSub->subscribe(&Communication::handleAlicaInfo, &(*this));
 
         this->processCommandTopic = (*sc)["RobotControl"]->get<std::string>("Topics.robotCommandTopic", NULL);
-        this->processCommandPub = new capnzero::Publisher(this->ctx);
-        this->processCommandPub->setDefaultGroup(this->processCommandTopic);
-        this->processCommandPub->bind(capnzero::CommType::UDP, "224.0.0.2:5555");
+        this->processCommandPub = new capnzero::Publisher(this->ctx, capnzero::Protocol::UDP);
+        this->processCommandPub->setDefaultTopic(this->processCommandTopic);
+        this->processCommandPub->addAddress("224.0.0.2:5555");
 
         this->agentCommandTopic = (*sc)["RobotControl"]->get<std::string>("Topics.robotCommandTopic", NULL);
-        this->agentCommandPub = new capnzero::Publisher(this->ctx);
-        this->agentCommandPub->setDefaultGroup(this->agentCommandTopic);
-        this->agentCommandPub->bind(capnzero::CommType::UDP, "224.0.0.2:5555");
+        this->agentCommandPub = new capnzero::Publisher(this->ctx, capnzero::Protocol::UDP);
+        this->agentCommandPub->setDefaultTopic(this->agentCommandTopic);
+        this->agentCommandPub->addAddress("224.0.0.2:5555");
     }
 
     void Communication::handleAlicaInfo(capnp::FlatArrayMessageReader& msg)
