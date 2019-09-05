@@ -41,7 +41,7 @@ private:
     std::string httpGet(const std::string& url);
     bool isValid(const YAML::Node& node);
     Relation getRelation(const std::string& relation);
-    bool conceptContainsNonASCII(const std::string& concept);
+    bool conceptContainsForbiddenCharacter(const std::string& concept);
     std::string trimTerm(const std::string& term);
     std::string generateEdges(CNManager* cnManager, const std::string& json, std::vector<Edge*>& edges, int limit = -1, double minWeight = 1.0);
     void collectAntonyms(srg::dialogue::AnswerGraph* answerGraph, int limit=1000);

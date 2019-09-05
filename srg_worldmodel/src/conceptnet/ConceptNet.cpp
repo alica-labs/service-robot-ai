@@ -216,7 +216,7 @@ std::string ConceptNet::generateEdges(CNManager* cnManager, const std::string& j
             continue;
         }
         std::string endTerm = end["term"].as<std::string>();
-        if (this->conceptContainsNonASCII(endTerm)) {
+        if (this->conceptContainsForbiddenCharacter(endTerm)) {
             std::cout << "ConceptNet: Skipping Concept:" << endTerm << std::endl;
             continue;
         }
@@ -236,7 +236,7 @@ std::string ConceptNet::generateEdges(CNManager* cnManager, const std::string& j
             continue;
         }
         std::string startTerm = start["term"].as<std::string>();
-        if (this->conceptContainsNonASCII(startTerm)) {
+        if (this->conceptContainsForbiddenCharacter(startTerm)) {
             std::cout << "ConceptNet: Skipping concept:" << startTerm << std::endl;
             continue;
         }
@@ -250,11 +250,11 @@ std::string ConceptNet::generateEdges(CNManager* cnManager, const std::string& j
         // create edge
         std::string trimmedStartTerm = trimTerm(startTerm);
         std::string trimmedEndTerm = trimTerm(endTerm);
-        if(std::isdigit(trimmedStartTerm[0])) {
+        if (std::isdigit(trimmedStartTerm[0])) {
             std::cout << "ConceptNet: Skipping concept:" << startTerm << std::endl;
             continue;
         }
-        if(std::isdigit(trimmedEndTerm[0])) {
+        if (std::isdigit(trimmedEndTerm[0])) {
             std::cout << "ConceptNet: Skipping concept:" << endTerm << std::endl;
             continue;
         }
@@ -296,12 +296,18 @@ Relation ConceptNet::getRelation(const std::string& relation)
     return Relation::UNDEFINED;
 }
 
-bool ConceptNet::conceptContainsNonASCII(const std::string& concept)
+bool ConceptNet::conceptContainsForbiddenCharacter(const std::string& concept)
 {
     for (size_t i = 0; i < concept.length(); i++) {
         if (!isascii(concept.at(i))) {
             return true;
         }
+    }
+    if (concept.find(":") != std::string::npos || concept.find("!") != std::string::npos) {
+        return true;
+    }
+    if (trimTerm(concept) == "not") {
+        return true;
     }
     return false;
 }
@@ -364,7 +370,7 @@ void ConceptNet::collectAntonyms(srg::dialogue::AnswerGraph* answerGraph, int li
         }*/
 
         srg::conceptnet::Concept* concept;
-        if(pair.second->fromConcept == answerGraph->root) {
+        if (pair.second->fromConcept == answerGraph->root) {
             concept = pair.second->toConcept;
         } else {
             concept = pair.second->fromConcept;

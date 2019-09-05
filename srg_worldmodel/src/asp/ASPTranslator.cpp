@@ -25,7 +25,9 @@ ASPTranslator::ASPTranslator(srg::SRGWorldModel* wm)
 
 std::string ASPTranslator::extractASPProgram(srg::dialogue::AnswerGraph* answerGraph, InconsistencyRemoval inconsistencyRemoval)
 {
-
+    if(answerGraph->getEdges().empty()) {
+        return "";
+    }
     std::string programSection = "#program commonsenseKnowledge";
     if (inconsistencyRemoval == InconsistencyRemoval::KeepHighestWeight) {
         answerGraph->markInconsistentEdges();
