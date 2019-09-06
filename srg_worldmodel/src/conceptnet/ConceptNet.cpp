@@ -369,6 +369,10 @@ void ConceptNet::collectAntonyms(srg::dialogue::AnswerGraph* answerGraph, int li
             continue;
         }*/
 
+        if ( pair.second->relation != srg::conceptnet::Relation::HasProperty) {
+            continue;
+        }
+
         srg::conceptnet::Concept* concept;
         if (pair.second->fromConcept == answerGraph->root) {
             concept = pair.second->toConcept;
@@ -376,9 +380,9 @@ void ConceptNet::collectAntonyms(srg::dialogue::AnswerGraph* answerGraph, int li
             concept = pair.second->fromConcept;
         }
 
-        if (concept->senseLabel.compare("a") != 0) {
+        /*if (concept->senseLabel.compare("a") != 0) {
             continue;
-        }
+        }*/
 
         std::vector<Edge*> edges = this->getEdges(answerGraph, Relation::Antonym, concept->term, limit);
         std::cout << "collectAntonyms: " << concept->term << std::endl;
