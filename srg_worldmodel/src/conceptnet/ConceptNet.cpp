@@ -46,7 +46,7 @@ Concept* ConceptNet::getConcept(CNManager* cnManager, const std::string& concept
         return nullptr;
     }
     std::string conceptId = node["edges"][0]["start"]["term"].as<std::string>();
-    if (conceptId.find(conceptName) == std::string::npos) {
+    if (conceptId.find("/c/en") == std::string::npos || conceptId.find(conceptName) == std::string::npos) {
         conceptId = node["edges"][0]["end"]["term"].as<std::string>();
     }
     return cnManager->createConcept(conceptId, this->trimTerm(conceptId), "");
@@ -56,6 +56,11 @@ std::vector<Edge*> ConceptNet::getEdges(CNManager* cnManager, const std::string&
 {
     std::vector<Edge*> edges;
     std::string json = httpGet(ConceptNet::BASE_URL + ConceptNet::QUERYNODE + concept + ConceptNet::LIMIT);
+    YAML::Node node;
+    node = YAML::Load(json);
+    if (!isValid(node)) {
+        return edges;
+    }
     std::string nextPage = generateEdges(cnManager, json, edges, limit);
     while (!nextPage.empty()) {
         json = httpGet(ConceptNet::BASE_URL + nextPage);
@@ -303,7 +308,7 @@ bool ConceptNet::conceptContainsForbiddenCharacter(const std::string& concept)
             return true;
         }
     }
-    if (concept.find(":") != std::string::npos || concept.find("!") != std::string::npos) {
+    if (concept.find_first_of(":!@") != std::string::npos) {
         return true;
     }
     if (trimTerm(concept) == "not") {

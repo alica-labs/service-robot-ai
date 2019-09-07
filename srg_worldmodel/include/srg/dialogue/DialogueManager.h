@@ -31,7 +31,8 @@ private:
     InformHandler* informHandler;
     std::map <std::shared_ptr<supplementary::InformationElement<SpeechAct>>, AnswerGraph*> actMapping;
 
-    void renderDot() const;
+    int counter;
+    void renderDot(AnswerGraph* anserGraph);
 };
 } // namespace dialogue
 } // namespace srg

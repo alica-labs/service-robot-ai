@@ -38,7 +38,7 @@ std::string ASPTranslator::extractASPProgram(srg::dialogue::AnswerGraph* answerG
     program.append(tmp);
 
     program.append("\n");
-
+std::cout << program << std::endl;
     auto indexLeft = programSection.find("(");
     auto indexRight = programSection.find(")");
     if (indexLeft != std::string::npos && indexRight != std::string::npos) {
@@ -58,6 +58,7 @@ std::string ASPTranslator::extractASPProgram(srg::dialogue::AnswerGraph* answerG
     auto pgmMap = extractBackgroundKnowledgePrograms(answerGraph, inconsistencyRemoval);
     for (auto pair : pgmMap) {
         program.append(pair.second).append("\n");
+        std::cout << pair.second << std::endl;
         this->wm->knowledgeManager.add(programSection.c_str(), {}, pair.second.c_str());
     }
     return program;
