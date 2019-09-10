@@ -46,7 +46,7 @@ namespace control {
 
     void Communication::handleProcessStats(capnp::FlatArrayMessageReader& msg)
     {
-        std::cout << "control::Communication: " << msg.getRoot<process_manager::ProcessStatsMsg>().toString().flatten().cStr() << std::endl;
+        std::cout << "Communication::handleProcessStats: " << msg.getRoot<process_manager::ProcessStatsMsg>().toString().flatten().cStr() << std::endl;
         this->controlPanel->enqueue(process_manager::ContainerUtils::toProcessStats(msg, this->controlPanel->getIDManager()));
     }
 

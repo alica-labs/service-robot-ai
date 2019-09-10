@@ -9,7 +9,7 @@ namespace essentials {
 namespace process_manager {
     struct ProcessStat {
         static const uint8_t PUBLISHING_OFF = 0;
-        static const uint8_t PUBLISHING_ON = 0;
+        static const uint8_t PUBLISHING_ON = 1;
 
         const essentials::Identifier* robotID;
         int32_t  processKey;

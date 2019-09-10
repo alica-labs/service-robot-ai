@@ -42,9 +42,9 @@ void ExecutableMetaData::addParameterSet(int paramSetId, vector<char*> paramSetV
  */
 bool ExecutableMetaData::matchSplittedCmdLine(vector<string>& splittedCmdLine)
 {
-    // check for prefixCmd, e.g., for roslaunch stuff
+    // check for prefixCmd, e.g., for roslaunch <ros-package> stuff
     int checkIdx = 0;
-    if (this->prefixCmd != "NOT-FOUND") {
+    if (this->prefixCmd.compare("NOT-FOUND") != 0) {
         if (splittedCmdLine[checkIdx].find(this->prefixCmd) == string::npos) {
             return false;
         } else {
@@ -65,7 +65,7 @@ bool ExecutableMetaData::matchSplittedCmdLine(vector<string>& splittedCmdLine)
     size_t lastSlashIdx = splittedCmdLine[checkIdx].find_last_of('/');
     string execNameWithoutPath = splittedCmdLine[checkIdx].substr(lastSlashIdx + 1, splittedCmdLine[checkIdx].length());
 
-    // cout << "ExecMD: execNameWithoutPath: " << execNameWithoutPath << endl;
+//    std::cout << "ExecMD: execNameWithoutPath: " << execNameWithoutPath << std::endl;
     if (execNameWithoutPath.find(this->execName) == string::npos) {
         return false;
     }
@@ -95,6 +95,19 @@ ExecutableMetaData::~ExecutableMetaData()
             delete[] paramMapEntry.second[i];
         }
     }
+}
+
+std::string ExecutableMetaData::toString() const {
+    std::ostringstream resultStream;
+    resultStream << "ExecutableMetaData: " << this->name << "(" << this->id << ")\n\tAbsExecName:\t" << this->absExecName << "\n\tMode:\t\t" << this->mode << std::endl;
+    for (auto paramEntry : this->parameterMap) {
+        resultStream << "\tParamSet " << paramEntry.first << ": ";
+        for (char* param : paramEntry.second) {
+            resultStream << "\t'" << param << "' ";
+        }
+        resultStream << std::endl;
+    }
+    return resultStream.str();
 }
 
 } /* namespace  essentials */

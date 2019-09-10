@@ -13,6 +13,7 @@
 
 namespace essentials {
     class IDManager;
+    class SystemConfig;
 }
 
 namespace control
@@ -41,6 +42,7 @@ private:
     void processMessage();
     void updateUI();
     Agent* getAgent(essentials::IdentifierConstPtr id);
+    essentials::SystemConfig* sc;
 
     QTimer* doWorkTimer;
 

@@ -15,6 +15,7 @@ namespace control
 {
 
 ControlPanel::ControlPanel()
+        : sc(essentials::SystemConfig::getInstance())
 {
     // COMMUNICATION
     this->comm = new Communication(this);
@@ -32,6 +33,12 @@ ControlPanel::ControlPanel()
 
     this->idManager = new essentials::IDManager();
     this->executableRegistry = ExecutableRegistry::get();
+
+    // Register executables from ProcessManaging.conf
+    auto processDescriptions = (*this->sc)["ProcessManaging"]->getSections("Processes.ProcessDescriptions", NULL);
+    for (auto processSectionName : (*processDescriptions)) {
+        this->executableRegistry->addExecutable(processSectionName);
+    }
 }
 
 ControlPanel::~ControlPanel()

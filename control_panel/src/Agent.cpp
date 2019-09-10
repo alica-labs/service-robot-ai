@@ -72,6 +72,6 @@ void Agent::update(std::pair<std::chrono::system_clock::time_point, process_mana
 
 void Agent::addExec(QWidget* exec)
 {
-    this->uiAgent->verticalLayout->insertWidget(0, exec);
+    this->uiAgent->verticalLayout->insertWidget(this->uiAgent->verticalLayout->count()-1, exec);
 }
 } // namespace control
