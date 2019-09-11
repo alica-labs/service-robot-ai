@@ -34,3 +34,5 @@
 # clion stuff
 .idea/
 cmake-build-debug/
+
+doc/latex/build
