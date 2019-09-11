@@ -1,9 +1,0 @@
-[0] Config.pm:302> INFO - This is Biber 2.9
-[0] Config.pm:305> INFO - Logfile is 'build/Software_Reference_Book.blg'
-[14] biber:313> INFO - === Mi Sep 11, 2019, 09:42:54
-[25] Biber.pm:371> INFO - Reading 'build/Software_Reference_Book.bcf'
-[59] Biber.pm:857> INFO - Found 0 citekeys in bib section 0
-[62] Utils.pm:169> WARN - The file 'build/Software_Reference_Book.bcf' does not contain any citations!
-[66] bbl.pm:617> INFO - Writing 'build/Software_Reference_Book.bbl' with encoding 'ascii'
-[66] bbl.pm:720> INFO - Output to build/Software_Reference_Book.bbl
-[66] Biber.pm:110> INFO - WARNINGS: 1
