@@ -85,6 +85,7 @@ The development environment recommended to develop software for the TurtleBots o
 	\begin{itemize}
 		\item \verb#cd ~/rosws/src#
 		\item \verb#git clone git@github.com:dasys-lab/alica.git#
+		\item \verb#git clone git@github.com:dasys-lab/alica-plan-designer-fx.git#
 		\item \verb#git clone git@github.com:dasys-lab/alica-supplementary.git#
 		\item \verb#git clone git@github.com:dasys-lab/essentials.git#
 		\item \verb#git clone git@github.com:dasys-lab/aspsuite.git#
@@ -113,13 +114,14 @@ The development environment recommended to develop software for the TurtleBots o
 	\item[11. Switch Repository Branches] During the lecture, we are working on the following branches of the corresponding GIT repositories:
 	\begin{itemize}
 		\item alica - newPD
-		\item alica-supplementary - master
-		\item cnc-turtlebots - conversion2newPD
-		\item turtlebot - pkvr
+		\item alica-plan-designer-fx - behaviourCodeGen
+		\item alica-supplementary - CapnZero
 		\item telegram-client - master
-		\item essentials - ttb\_dev
+		\item essentials - CapnZero
 		\item capnzero - master
 		\item aspsuite - asp\_dev
+		\item service-robot-ai - capnzero
+		\item service-robot-grid-simulation - master
 	\end{itemize}
 	The main work will take place within service-robot-ai, supplementary, and service-robot-grid-simulation. That is why the master branch (incl. branch protection) for alica and clingo are ok for us. In order to switch a branch execute\\\verb#git checkout <branch name># within the repositories root folder.
 	\item[12. Compile Workspace] Within the 'rosws/src' folder execute \verb#catkin build#.
