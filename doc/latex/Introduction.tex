@@ -10,12 +10,12 @@ Maybe you ask: "What is wrong with Powerpoint?"
 
 A Powerpoint presentation should aid a presenter in presenting a certain message or information to his audience. The slides alone often miss critical parts (that couldn't easily condensed into bullet points) and are unclear without the corresponding vocal line of the presenter. Nevertheless, students end up alone with the slides trying to prepare their examinations.
 
-Apart from that, try to google topics like "disadvantages of powerpoint" or "why we should ban Powerpoint" and you will find interesting articles that connect Powerpoint and the Accident of the Columbia Space Shuttle [\href{http://www.nytimes.com/2003/12/14/magazine/2003-the-3rd-annual-year-in-ideas-powerpoint-makes-you-dumb.html}{1}] [\href{http://www.edwardtufte.com/bboard/q-and-a-fetch-msg?msg_id=0001yB&topic_id=1&topic=Ask+E%2eT%2e}{2}].
+Apart from that, try to google topics like "disadvantages of powerpoint" or "why we should ban Powerpoint" and you will find interesting articles that connect Powerpoint and the accident of the Columbia Space Shuttle [\href{http://www.nytimes.com/2003/12/14/magazine/2003-the-3rd-annual-year-in-ideas-powerpoint-makes-you-dumb.html}{1}] [\href{http://www.edwardtufte.com/bboard/q-and-a-fetch-msg?msg_id=0001yB&topic_id=1&topic=Ask+E%2eT%2e}{2}].
 
 \section{How to Contribute to this Document?}
 \label{sec:Contribute}
 
-Basically there are two aspects. At first you need to get the \LaTeX\  source code of this document from our \href{https://github.com/carpe-noctem-cassel/cnc-turtlebots}{cnc-turtlebots GitHub Repository}. It is located in the folder \verb#doc/latex#. Anybody can download it, but for making changes to it you need to have an GitHub-Account which was given the corresponding privileges. That is typically arranged during the first session of this course. 
+Basically there are two aspects. At first you need to get the \LaTeX\  source code of this document from our \href{https://github.com/dasys-lab/service-robot-ai}{service-robot-ai GitHub Repository}. It is located in the folder \verb#doc/latex#. Anybody can download it, but for making changes to it you need to have an GitHub-Account which was given the corresponding privileges. That is typically arranged during the first session of this course. 
 
 This leaves us with the requirements, that you are able to write \LaTeX\ and know how to use GIT in combination with GitHub. Regarding GIT and GitHub we recommend to read Section~\ref{sec:Git}. 
 
@@ -67,8 +67,8 @@ The development environment recommended to develop software for the TurtleBots o
   	\verb#cmake ..#\\
   	\verb#make#\\
   	\verb#sudo make install#\\
-	\item[5. Install ROS Desktop Full] The currently used ROS version is ROS Melodic Morenia with all available updates installed. Like Ubuntu 18.04 it is also a long-term support version. The instructions for installing ROS under Ubuntu can be found on the corresponding \href{http://wiki.ros.org/melodic/Installation/Ubuntu}{ROS Wikipage}.
-	\item[6. Install ROS - Extra Packages] Simply install the package with the following command: \verb#sudo apt install ros-melodic-costmap-2d ros-melodic-urg-node #\\\verb#ros-melodic-base-local-planner ros-melodic-nav-core#\\\verb#ros-melodic-kobuki-msgs ros-melodic-joy ros-melodic-ar-track-alvar#\\\verb#ros-melodic-move-base-msgs ros-melodic-sound-play#\\\verb#ros-melodic-ecl-geometry ros-melodic-kobuki-dock-drive#\\\verb#python-catkin-tools#
+	\item[5. Install ROS Desktop] The currently used ROS version is ROS Melodic Morenia with all available updates installed. Like Ubuntu 18.04 it is also a long-term support version. The instructions for installing ROS under Ubuntu can be found on the corresponding \href{http://wiki.ros.org/melodic/Installation/Ubuntu}{ROS Wikipage}.
+	\item[6. Install ROS - Extra Packages] Simply install the package(s) with the following command: \verb#sudo apt install python-catkin-tools#
 	\item[7. Create ROS Workspace] We recommend to follow this folder structure, as things can get complicated otherwise. 
 	\begin{itemize}
 		\item \verb#cd#
@@ -89,8 +89,8 @@ The development environment recommended to develop software for the TurtleBots o
 		\item \verb#git clone git@github.com:dasys-lab/essentials.git#
 		\item \verb#git clone git@github.com:dasys-lab/aspsuite.git#
 		\item \verb#git clone git@github.com:dasys-lab/capnzero.git#
-		\item \verb#git clone git@github.com:dasys-lab/turtlebot.git#
-		\item \verb#git clone git@github.com:dasys-lab/cnc-turtlebots.git#
+		\item \verb#git clone git@github.com:dasys-lab/service-robot-ai.git#
+		\item \verb#git clone git@github.com:dasys-lab/service-robot-grid-simulation.git#
 		\item \verb#git clone git@github.com:dasys-lab/telegram-client.git#
 		\item \verb#git clone git@github.com:dasys-lab/tgbot-cpp.git#
 	\end{itemize}
@@ -121,9 +121,9 @@ The development environment recommended to develop software for the TurtleBots o
 		\item capnzero - master
 		\item aspsuite - asp\_dev
 	\end{itemize}
-	The main work will take place within cnc-turtlebots, supplementary, turtlebot, and symrock. That is why the master branch (incl. branch protection) for alica and clingo are ok for us. In order to switch a branch execute\\\verb#git checkout <branch name># within the repositories root folder.
+	The main work will take place within service-robot-ai, supplementary, and service-robot-grid-simulation. That is why the master branch (incl. branch protection) for alica and clingo are ok for us. In order to switch a branch execute\\\verb#git checkout <branch name># within the repositories root folder.
 	\item[12. Compile Workspace] Within the 'rosws/src' folder execute \verb#catkin build#.
-	\item[13. Setup CLion]
+	\item[13. Setup CLion] Download CLion from Jetbrain's \href{https://www.jetbrains.com/clion/download/}{Download Page}. Get a student license via this \href{https://www.jetbrains.com/student/}{application}. It works quite fast. In order to open any ros-package in CLion, just let CLion open the corresponding CMakeLists.txt file and choose to open it as project, if you are asked to.
 \end{description}
 
 \section{Unix Basics}
