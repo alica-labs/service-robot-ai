@@ -28,7 +28,7 @@ AnswerGraph * InformHandler::answerInform(std::string need) {
     file.open ("example.lp");
     file << this->wm->aspTranslator->extractASPProgram(answerGraph, asp::ASPTranslator::InconsistencyRemoval::UseExternals);
     file.close();
-    std::cout << answerGraph->toString() << std::endl;
+    //std::cout << answerGraph->toString() << std::endl;
     return answerGraph;
 }
 } // namespace dialogue

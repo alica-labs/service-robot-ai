@@ -31,6 +31,7 @@ const std::string ConceptNet::END = "&end=/c/en/";
 const std::string ConceptNet::RELATEDNESS = "/relatedness?";
 const std::string ConceptNet::NODE1 = "node1=/c/en/";
 const std::string ConceptNet::NODE2 = "&node2=/c/en/";
+const int ConceptNet::SYNONYMDEPTH = 1;
 
 ConceptNet::ConceptNet(SRGWorldModel* wm)
 {
@@ -326,12 +327,25 @@ std::string ConceptNet::trimTerm(const std::string& term)
 void ConceptNet::findInconsistencies(srg::dialogue::AnswerGraph* answerGraph, int limit)
 {
     collectAntonyms(answerGraph, limit);
-    std::vector<Concept*> newAntonyms = getNewAdjectives(answerGraph);
-    for (auto concept : newAntonyms) {
-        std::vector<Edge*> equivalent = this->getEquivalentOutgoingEdges(answerGraph, concept, limit);
-        answerGraph->adjectiveAntonymMap.emplace(concept, equivalent);
-        concept->addEdges(equivalent);
+    std::vector<Concept*> newAntonyms;
+    for(int i = 0; i < ConceptNet::SYNONYMDEPTH; i++) {
+        newAntonyms = getNewAdjectives(answerGraph);
+        for (auto concept : newAntonyms) {
+            std::vector<Edge *> equivalent = this->getEquivalentOutgoingEdges(answerGraph, concept, limit);
+            if (answerGraph->adjectiveAntonymMap.find(concept) == answerGraph->adjectiveAntonymMap.end()) {
+                answerGraph->adjectiveAntonymMap.emplace(concept, equivalent);
+            } else {
+                for (Edge *edge : equivalent) {
+                    auto tmp = answerGraph->adjectiveAntonymMap.at(concept);
+                    if (std::find(tmp.begin(), tmp.end(), edge) == tmp.end()) {
+                        answerGraph->adjectiveAntonymMap.at(concept).push_back(edge);
+                    }
+                }
+            }
+            concept->addEdges(equivalent);
+        }
     }
+
 
     for (auto pair : answerGraph->adjectiveAntonymMap) {
         if (pair.second.empty()) {
@@ -342,6 +356,7 @@ void ConceptNet::findInconsistencies(srg::dialogue::AnswerGraph* answerGraph, in
             std::cout << "\tConceptNet Antonym edge: " << edge->toString() << std::endl;
         }
     }
+    std::cout << "################# map size: " << answerGraph->adjectiveAntonymMap.size() << std::endl;
 }
 
 std::vector<Concept*> ConceptNet::getNewAdjectives(srg::dialogue::AnswerGraph* answerGraph)
@@ -349,17 +364,17 @@ std::vector<Concept*> ConceptNet::getNewAdjectives(srg::dialogue::AnswerGraph* a
     std::vector<Concept*> ret;
     for (auto pair : answerGraph->adjectiveAntonymMap) {
         for (srg::conceptnet::Edge* edge : pair.second) {
-            if (edge->fromConcept != answerGraph->root) {
-                if (std::find(ret.begin(), ret.end(), edge->fromConcept) != ret.end()) {
-                    continue;
+            if (answerGraph->closedProperties.find(edge->fromConcept) == answerGraph->closedProperties.end()) {
+                if (std::find(ret.begin(), ret.end(), edge->fromConcept) == ret.end()) {
+                    ret.push_back(edge->fromConcept);
+                    answerGraph->closedProperties.insert(edge->fromConcept);
                 }
-                ret.push_back(edge->fromConcept);
             }
-            if (edge->toConcept != answerGraph->root) {
-                if (std::find(ret.begin(), ret.end(), edge->toConcept) != ret.end()) {
-                    continue;
+            if (answerGraph->closedProperties.find(edge->toConcept) == answerGraph->closedProperties.end()) {
+                if (std::find(ret.begin(), ret.end(), edge->toConcept) == ret.end()) {
+                    ret.push_back(edge->toConcept);
+                    answerGraph->closedProperties.insert(edge->toConcept);
                 }
-                ret.push_back(edge->toConcept);
             }
         }
     }
@@ -374,7 +389,7 @@ void ConceptNet::collectAntonyms(srg::dialogue::AnswerGraph* answerGraph, int li
             continue;
         }*/
 
-        if ( pair.second->relation != srg::conceptnet::Relation::HasProperty) {
+        if (pair.second->relation != srg::conceptnet::Relation::HasProperty) {
             continue;
         }
 
@@ -384,7 +399,6 @@ void ConceptNet::collectAntonyms(srg::dialogue::AnswerGraph* answerGraph, int li
         } else {
             concept = pair.second->fromConcept;
         }
-
         /*if (concept->senseLabel.compare("a") != 0) {
             continue;
         }*/

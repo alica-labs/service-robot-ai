@@ -95,6 +95,8 @@ private:
      * Node2 part
      */
     static const std::string NODE2;
+
+    static const int SYNONYMDEPTH;
 };
 
 } // namespace conceptnet
