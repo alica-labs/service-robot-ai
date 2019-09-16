@@ -86,8 +86,10 @@ void Agent::handleAgentCommandBtnClicked(bool checked)
     ac.receiverID = this->getAgentID();
     if (checked) {
         ac.cmd = AgentCommand::START;
+        this->uiAgent->agentCommandBtn->setText(QString("Stop"));
     } else {
         ac.cmd = AgentCommand::STOP;
+        this->uiAgent->agentCommandBtn->setText(QString("Start"));
     }
     this->controlPanel->getCommunication()->send(ac);
 }

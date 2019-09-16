@@ -22,9 +22,11 @@ private:
     void* ctx;
     capnzero::Subscriber* telegramMessageSub;
     capnzero::Subscriber* speechActSub;
+    capnzero::Subscriber* agentCommandSub;
 
     void onTelegramMessage(capnp::FlatArrayMessageReader& msg);
     void onSpeechAct(capnp::FlatArrayMessageReader& msg);
+    void onAgentCmd(capnp::FlatArrayMessageReader& msg);
 };
 } // namespace wm
 } // namespace srg

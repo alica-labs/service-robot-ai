@@ -7,7 +7,7 @@ set(CMAKE_BUILD_TYPE Debug)
 
 find_package(Threads)
 find_package(Qt5 COMPONENTS Core Widgets Gui REQUIRED)
-find_package(catkin REQUIRED process_manager_capnzero capnzero alica_engine id_manager)
+find_package(catkin REQUIRED process_manager_capnzero capnzero alica_engine id_manager id_capnzero)
 
 catkin_package(
   INCLUDE_DIRS include
@@ -40,6 +40,9 @@ capnp_generate_cpp(CAPNP_SRCS CAPNP_HDRS ${capnp_messages})
 add_library(control_msgs
   src/ContainerUtils.cpp
   ${CAPNP_SRCS}
+)
+target_link_libraries(control_msgs
+  ${catkin_LIBRARIES}
 )
 
 #### CONTROL

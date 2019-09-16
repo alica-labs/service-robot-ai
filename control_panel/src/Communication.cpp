@@ -32,10 +32,10 @@ namespace control {
         this->processCommandPub->setDefaultTopic(this->processCommandTopic);
         this->processCommandPub->addAddress("224.0.0.2:5555");
 
-        this->agentCommandTopic = (*sc)["ControlPanel"]->get<std::string>("Topics.agentCmdTopic", NULL);
+        this->agentCommandTopic = (*sc)["ControlPanel"]->get<std::string>("AgentCmd.topic", NULL);
         this->agentCommandPub = new capnzero::Publisher(this->ctx, capnzero::Protocol::UDP);
         this->agentCommandPub->setDefaultTopic(this->agentCommandTopic);
-        this->agentCommandPub->addAddress("224.0.0.2:5555");
+        this->agentCommandPub->addAddress((*sc)["ControlPanel"]->get<std::string>("AgentCmd.address", NULL));
     }
 
     void Communication::handleAlicaInfo(capnp::FlatArrayMessageReader& msg)
