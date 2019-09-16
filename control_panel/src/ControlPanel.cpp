@@ -63,7 +63,6 @@ void ControlPanel::processMessage()
         processStatsQueue.pop();
         Agent* agent = this->getAgent(timePstsPair.second.senderID);
         agent->update(timePstsPair);
-        std::cout << "ControlPanel: processing Process Stats from " << agent->getAgentID() << std::endl;
     }
 
     while (!this->alicaInfosQueue.empty()) {
@@ -87,7 +86,7 @@ Agent* ControlPanel::getAgent(essentials::IdentifierConstPtr id)
     if (agentEntry != this->agents.end()) {
         return agentEntry->second;
     } else {
-        auto agentIter = this->agents.emplace(id, new Agent(id, this->rootWidget_->layout(), this->executableRegistry));
+        auto agentIter = this->agents.emplace(id, new Agent(id, this));
         return agentIter.first->second;
     }
 }
@@ -95,6 +94,8 @@ Agent* ControlPanel::getAgent(essentials::IdentifierConstPtr id)
 essentials::IDManager* ControlPanel::getIDManager() { return this->idManager; }
 
 ExecutableRegistry* ControlPanel::getExecutableRegistry() { return this->executableRegistry; }
+
+Communication* ControlPanel::getCommunication() { return this->comm; }
 
 void ControlPanel::enqueue(process_manager::ProcessStats psts)
 {

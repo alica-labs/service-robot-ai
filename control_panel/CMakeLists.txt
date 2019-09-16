@@ -43,7 +43,7 @@ add_library(control_msgs
 )
 
 #### CONTROL
-QT5_WRAP_CPP(control_MOCS include/control/ControlPanel.h include/control/Process.h)
+QT5_WRAP_CPP(control_MOCS include/control/ControlPanel.h include/control/Process.h include/control/Agent.h)
 # ensure generated header files are being created in the devel space
 set(_cmake_current_binary_dir "${CMAKE_CURRENT_BINARY_DIR}")
 set(CMAKE_CURRENT_BINARY_DIR "${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}")

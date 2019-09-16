@@ -27,12 +27,12 @@ namespace control {
         this->alicaInfoSub->addAddress("224.0.0.2:5555");
         this->alicaInfoSub->subscribe(&Communication::handleAlicaInfo, &(*this));
 
-        this->processCommandTopic = (*sc)["RobotControl"]->get<std::string>("Topics.robotCommandTopic", NULL);
+        this->processCommandTopic = (*sc)["ProcessManaging"]->get<std::string>("Topics.processCmdTopic", NULL);
         this->processCommandPub = new capnzero::Publisher(this->ctx, capnzero::Protocol::UDP);
         this->processCommandPub->setDefaultTopic(this->processCommandTopic);
         this->processCommandPub->addAddress("224.0.0.2:5555");
 
-        this->agentCommandTopic = (*sc)["RobotControl"]->get<std::string>("Topics.robotCommandTopic", NULL);
+        this->agentCommandTopic = (*sc)["ControlPanel"]->get<std::string>("Topics.agentCmdTopic", NULL);
         this->agentCommandPub = new capnzero::Publisher(this->ctx, capnzero::Protocol::UDP);
         this->agentCommandPub->setDefaultTopic(this->agentCommandTopic);
         this->agentCommandPub->addAddress("224.0.0.2:5555");
@@ -46,7 +46,6 @@ namespace control {
 
     void Communication::handleProcessStats(capnp::FlatArrayMessageReader& msg)
     {
-        std::cout << "Communication::handleProcessStats: " << msg.getRoot<process_manager::ProcessStatsMsg>().toString().flatten().cStr() << std::endl;
         this->controlPanel->enqueue(process_manager::ContainerUtils::toProcessStats(msg, this->controlPanel->getIDManager()));
     }
 

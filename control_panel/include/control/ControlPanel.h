@@ -28,6 +28,7 @@ public:
     ControlPanel();
     virtual ~ControlPanel();
 
+    Communication* getCommunication();
     ExecutableRegistry* getExecutableRegistry();
     essentials::IDManager* getIDManager();
     void enqueue(process_manager::ProcessStats psts);
