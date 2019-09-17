@@ -38,10 +38,12 @@ public:
 
 public Q_SLOTS:
     void run();
+    void showContextMenu(const QPoint& pos);
 
 private:
     void processMessage();
     void updateUI();
+
     Agent* getAgent(essentials::IdentifierConstPtr id);
     essentials::SystemConfig* sc;
 
