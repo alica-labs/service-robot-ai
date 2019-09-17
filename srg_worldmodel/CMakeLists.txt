@@ -9,7 +9,7 @@ set(CMAKE_CXX_FLAGS "-rdynamic -fnon-call-exceptions -ggdb ${CMAKE_CXX_FLAGS}")
 
 ##Yaml
 find_package(yaml-cpp REQUIRED)
-find_package(catkin REQUIRED COMPONENTS system_config event_handling alica_engine world_model asp_solver_wrapper asp_solver telegram-client id_manager srg_msgs knowledge_manager)
+find_package(catkin REQUIRED COMPONENTS system_config event_handling alica_engine world_model asp_solver_wrapper asp_solver telegram-client id_manager srg_msgs knowledge_manager control_panel)
 
 INCLUDE(FindPkgConfig)
 PKG_SEARCH_MODULE(gvc REQUIRED libgvc libcgraph libcdt)
@@ -17,7 +17,7 @@ PKG_SEARCH_MODULE(gvc REQUIRED libgvc libcgraph libcdt)
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES srg_worldmodel
-  CATKIN_DEPENDS system_config event_handling world_model asp_solver_wrapper asp_solver telegram-client id_manager srg_msgs knowledge_manager
+  CATKIN_DEPENDS system_config event_handling world_model asp_solver_wrapper asp_solver telegram-client id_manager srg_msgs knowledge_manager control_panel
 )
 
 include_directories(include

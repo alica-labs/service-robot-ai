@@ -8,7 +8,6 @@
 #include <supplementary/InfoBuffer.h>
 
 #include <memory>
-#include <utility>
 
 namespace srg
 {
@@ -24,6 +23,9 @@ RawSensorData::RawSensorData(srg::SRGWorldModel* wm)
 
     this->speechActValidityDuration = alica::AlicaTime::nanoseconds((*sc)["SRGWorldModel"]->get<int>("Data.SpeechAct.ValidityDuration", NULL));
     this->speechActBuffer = new supplementary::InfoBuffer<srg::dialogue::SpeechAct>((*sc)["SRGWorldModel"]->get<int>("Data.SpeechAct.BufferLength", NULL));
+
+    this->agentCmdValidityDuration = alica::AlicaTime::nanoseconds((*sc)["SRGWorldModel"]->get<int>("Data.AgentCmd.ValidityDuration", NULL));
+    this->agentCmdBuffer = new supplementary::InfoBuffer<control::AgentCommand>((*sc)["SRGWorldModel"]->get<int>("Data.AgentCmd.BufferLength", NULL));
 }
 
 RawSensorData::~RawSensorData() {}
@@ -44,5 +46,13 @@ void RawSensorData::processSpeechAct(srg::dialogue::SpeechAct act)
 
     this->wm->dialogueManager.processSpeechAct(speechActInfo);
 }
+
+void RawSensorData::processAgentCmd(control::AgentCommand agentCmd) {
+    std::cout << "RawSensorData: processAgentCmd called" << std::endl;
+    auto agentCmdInfo = std::make_shared<supplementary::InformationElement<control::AgentCommand>>(agentCmd, wm->getTime(), agentCmdValidityDuration, 1.0);
+    agentCmdBuffer->add(agentCmdInfo);
+}
+
+
 } // namespace wm
 } // namespace srg

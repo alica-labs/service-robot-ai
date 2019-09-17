@@ -15,10 +15,14 @@ namespace Ui
 
 namespace control {
     class Process;
+    class ControlPanel;
     class ExecutableRegistry;
-    class Agent {
+    class Agent : public QObject
+    {
+    Q_OBJECT
+
     public:
-        Agent(essentials::IdentifierConstPtr id, QLayout* parent, ExecutableRegistry* executableRegistry);
+        Agent(essentials::IdentifierConstPtr id, ControlPanel* controlPanel);
         virtual ~Agent();
 
 
@@ -26,9 +30,15 @@ namespace control {
         void update(std::chrono::system_clock::time_point now);
         void update(std::pair<std::chrono::system_clock::time_point, process_manager::ProcessStats> timePstsPair);
         void addExec(QWidget* exec);
+
+    public Q_SLOTS:
+        void handleAgentCommandBtnClicked(bool checked);
+
     private:
         void updateName();
 
+
+        ControlPanel* controlPanel;
         std::chrono::duration<double> msgTimeOut;
         essentials::IdentifierConstPtr hostID;
         essentials::IdentifierConstPtr agentID;
@@ -36,7 +46,6 @@ namespace control {
         Ui::Agent* uiAgent;
         std::chrono::system_clock::time_point timeLastMsgReceived;
         std::map<int, Process*> processes;
-        ExecutableRegistry* executableRegistry;
     };
 }
 
