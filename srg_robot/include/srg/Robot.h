@@ -24,12 +24,14 @@ class Robot
 {
 
 public:
-    Robot(srg::SRGWorldModel* wm);
+    static Robot* getInstance(); /**< Singleton Getter */
     virtual ~Robot();
 
+    // methods for doing something
     void spawn() const;
 
 private:
+    Robot(srg::SRGWorldModel* wm);  /**< Private Singleton Constructor */
     essentials::SystemConfig* sc;
 
     std::string simCmdTopic;
