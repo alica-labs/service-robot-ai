@@ -55,6 +55,7 @@ bool PreCondition1558533620473::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1558533492085) ENABLED START*/
     // TODO implement wm and check whether stop/start message was received
+    this->wm->rawSensorData;
     return false;
     /*PROTECTED REGION END*/
 }

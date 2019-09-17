@@ -1,5 +1,8 @@
 #include "ConstraintCreator.h"
 
+#include "Behaviours/constraints/Spawn1558533534825Constraints.h"
+#include "Behaviours/constraints/Stop1555602210283Constraints.h"
+#include "Behaviours/constraints/Test1559635479527Constraints.h"
 #include "constraints/ServeMaster1555601736192Constraints.h"
 
 #include <iostream>
