@@ -6,8 +6,6 @@
 
 #include <Message.h>
 #include <srg/SpeechAct.capnp.h>
-#include <control/AgentCommandMsg.capnp.h>
-#include <control/containers/AgentCommand.h>
 #include <control/containers/ContainerUtils.h>
 
 #include <engine/AlicaEngine.h>
@@ -54,7 +52,6 @@ namespace srg {
         }
 
         void Communication::onSpeechAct(capnp::FlatArrayMessageReader &msg) {
-            std::cout << "Communication: SpeechAct received..." << std::endl;
             srg::SpeechAct::Reader reader = msg.getRoot<srg::SpeechAct>();
 
             // fill container
@@ -80,7 +77,6 @@ namespace srg {
         }
 
         void Communication::onAgentCmd(capnp::FlatArrayMessageReader &msg) {
-            std::cout << "Communication: AgentCmd received..." << std::endl;
             this->wm->rawSensorData.processAgentCmd(control::ContainerUtils::toAgentCommand(msg, this->wm->getEngine()->getIdManager()));
         }
     }

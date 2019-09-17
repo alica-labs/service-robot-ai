@@ -19,6 +19,11 @@ namespace srg {
             RawSensorData(srg::SRGWorldModel* wm);
             virtual ~RawSensorData();
 
+            // Methods for accessing the buffers
+            const supplementary::InfoBuffer<Message>& getTelegramMessageBuffer();
+            const supplementary::InfoBuffer<control::AgentCommand>& getAgentCmdBuffer();
+            const supplementary::InfoBuffer<srg::dialogue::SpeechAct>& getSpeechActBuffer();
+
             // Methods for processing Messages
             void processTelegramMessage(Message message);
             void processSpeechAct(srg::dialogue::SpeechAct act);

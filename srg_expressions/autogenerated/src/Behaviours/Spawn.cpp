@@ -27,6 +27,7 @@ Spawn::~Spawn()
 void Spawn::run(void* msg)
 {
     /*PROTECTED REGION ID(run1558533534825) ENABLED START*/
+    std::cout << "Spawn is called!" << std::endl;
     this->robot->spawn();
     /*PROTECTED REGION END*/
 }
