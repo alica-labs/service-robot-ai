@@ -14,6 +14,7 @@ namespace srg
 Robot::Robot(srg::SRGWorldModel* wm) : wm(wm)
 {
     this->id = this->wm->getEngine()->getTeamManager()->getLocalAgentID();
+    std::cout << "Local id: " << this->id << std::endl;
 
     this->sc = essentials::SystemConfig::getInstance();
     this->simCmdTopic = (*sc)["SRGSim"]->get<std::string>("SRGSim.Communication.cmdTopic", NULL);
@@ -36,8 +37,9 @@ void Robot::spawn() const
     srgsim::Command::Builder commandBuilder = msgBuilder.initRoot<srgsim::Command>();
     commandBuilder.setAction(srgsim::Command::Action::SPAWN);
     capnzero::ID::Builder sender = commandBuilder.initSenderId();
+//    std::cout << "SenderID: " << this->id->getRaw() << std::endl;
     sender.setValue(kj::arrayPtr(this->id->getRaw(), this->id->getSize()));
-    commandBuilder.setSenderId(sender);
+//    std::cout << commandBuilder.toString().flatten().cStr() << std::endl;
     this->simPub->send(msgBuilder);
 }
 } // namespace srg
