@@ -1,6 +1,6 @@
 #pragma once
 
-#include <srgsim/Command.capnp.h>
+#include <srgsim/SimCommandMsg.capnp.h>
 #include <essentials/IdentifierConstPtr.h>
 
 #include <string>
