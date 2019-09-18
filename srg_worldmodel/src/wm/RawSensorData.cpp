@@ -8,6 +8,7 @@
 #include <supplementary/InfoBuffer.h>
 
 #include <memory>
+#include <srgsim/containers/SimPerceptions.h>
 
 namespace srg
 {
@@ -25,6 +26,9 @@ RawSensorData::RawSensorData(srg::SRGWorldModel* wm)
 
     this->agentCmdValidityDuration = alica::AlicaTime::nanoseconds((*sc)["SRGWorldModel"]->get<int>("Data.AgentCmd.ValidityDuration", NULL));
     this->agentCmdBuffer = new supplementary::InfoBuffer<control::AgentCommand>((*sc)["SRGWorldModel"]->get<int>("Data.AgentCmd.BufferLength", NULL));
+
+    this->perceptionsValidityDuration = alica::AlicaTime::nanoseconds((*sc)["SRGWorldModel"]->get<int>("Data.Perception.ValidityDuration", NULL));
+    this->perceptionsBuffer = new supplementary::InfoBuffer<srgsim::SimPerceptions>((*sc)["SRGWorldModel"]->get<int>("Data.Perception.BufferLength", NULL));
 }
 
 RawSensorData::~RawSensorData() {}
@@ -42,6 +46,11 @@ const supplementary::InfoBuffer<control::AgentCommand>& RawSensorData::getAgentC
 const supplementary::InfoBuffer<srg::dialogue::SpeechAct>& RawSensorData::getSpeechActBuffer()
 {
     return *this->speechActBuffer;
+}
+
+const supplementary::InfoBuffer<srgsim::SimPerceptions>& RawSensorData::getPerceptionsBuffer()
+{
+    return *this->perceptionsBuffer;
 }
 
 void RawSensorData::processTelegramMessage(Message message)
@@ -62,6 +71,13 @@ void RawSensorData::processAgentCmd(control::AgentCommand agentCmd)
 {
     auto agentCmdInfo = std::make_shared<supplementary::InformationElement<control::AgentCommand>>(agentCmd, wm->getTime(), agentCmdValidityDuration, 1.0);
     agentCmdBuffer->add(agentCmdInfo);
+}
+
+void RawSensorData::processSimPerceptions(srgsim::SimPerceptions simPerceptions)
+{
+    std::cout << "RawSensorData: processSimPerceptions called" << std::endl;
+    auto perceptionsInfo = std::make_shared<supplementary::InformationElement<srgsim::SimPerceptions>>(simPerceptions, wm->getTime(), perceptionsValidityDuration, 1.0);
+    perceptionsBuffer->add(perceptionsInfo);
 }
 
 } // namespace wm

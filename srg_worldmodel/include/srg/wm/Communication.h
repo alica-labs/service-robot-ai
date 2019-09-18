@@ -27,6 +27,7 @@ private:
     void onTelegramMessage(capnp::FlatArrayMessageReader& msg);
     void onSpeechAct(capnp::FlatArrayMessageReader& msg);
     void onAgentCmd(capnp::FlatArrayMessageReader& msg);
+    void onSimPerceptions(capnp::FlatArrayMessageReader& msg);
 };
 } // namespace wm
 } // namespace srg

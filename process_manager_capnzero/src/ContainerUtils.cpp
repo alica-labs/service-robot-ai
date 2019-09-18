@@ -73,8 +73,6 @@ void ContainerUtils::toMsg(process_manager::ProcessStats psts, ::capnp::MallocMe
         robotID.setType(psts.processStats[i].robotID->getType());
         robotID.setValue(::capnp::Data::Reader(psts.processStats[i].robotID->getRaw(), psts.processStats[i].robotID->getSize()));
     }
-
-
 }
 
 void ContainerUtils::toMsg(process_manager::ProcessCommand pc, ::capnp::MallocMessageBuilder& builder)
