@@ -3,15 +3,13 @@
 #include <engine/IConstraintCreator.h>
 #include <memory>
 
-namespace alica
-{
+namespace alica {
 
-class ConstraintCreator : public IConstraintCreator
-{
+class ConstraintCreator : public IConstraintCreator {
 public:
-    ConstraintCreator();
-    virtual ~ConstraintCreator();
-    std::shared_ptr<BasicConstraint> createConstraint(long constraintConfId);
+  ConstraintCreator();
+  virtual ~ConstraintCreator();
+  std::shared_ptr<BasicConstraint> createConstraint(long constraintConfId);
 };
 
 } /* namespace alica */

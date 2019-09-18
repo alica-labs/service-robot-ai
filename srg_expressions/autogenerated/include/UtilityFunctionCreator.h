@@ -3,15 +3,14 @@
 #include <engine/IUtilityCreator.h>
 #include <memory>
 
-namespace alica
-{
+namespace alica {
 
-class UtilityFunctionCreator : public IUtilityCreator
-{
+class UtilityFunctionCreator : public IUtilityCreator {
 public:
-    virtual ~UtilityFunctionCreator();
-    UtilityFunctionCreator();
-    std::shared_ptr<BasicUtilityFunction> createUtility(long utilityfunctionConfId);
+  virtual ~UtilityFunctionCreator();
+  UtilityFunctionCreator();
+  std::shared_ptr<BasicUtilityFunction>
+  createUtility(long utilityfunctionConfId);
 };
 
 } /* namespace alica */
