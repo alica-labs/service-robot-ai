@@ -7,6 +7,8 @@
 
 #include "ui_Agent.h"
 
+#include <essentials/IDManager.h>
+
 #include <sstream>
 
 namespace control
@@ -16,27 +18,34 @@ Agent::Agent(essentials::IdentifierConstPtr agentID, control::ControlPanel* cont
         , controlPanel(controlPanel)
         , uiAgent(new Ui::Agent())
         , agentGroupBox(new QGroupBox())
+        , shown(false)
 {
     // add agent to parent gui object
     this->uiAgent->setupUi(this->agentGroupBox);
+    if (!shown) {
+        this->agentGroupBox->hide();
+    }
     this->controlPanel->rootWidget_->layout()->addWidget(this->agentGroupBox);
+
+    // set agentName to string version of ID
+    std::stringstream ss;
+    ss << (*agentID.get());
+    this->agentName = ss.str();
 
     essentials::SystemConfig* sc = essentials::SystemConfig::getInstance();
     this->msgTimeOut = std::chrono::duration<double>((*sc)["ProcessManaging"]->get<unsigned long>("Control.timeLastMsgReceivedTimeOut", NULL));
     QObject::connect(this->uiAgent->agentCommandBtn, SIGNAL(clicked(bool)), this, SLOT(handleAgentCommandBtnClicked(bool)), Qt::DirectConnection);
 }
 
+Agent::Agent(essentials::IdentifierConstPtr id, std::string agentName, control::ControlPanel *controlPanel) : Agent(id, controlPanel){
+    this->agentName = agentName;
+}
+
 Agent::~Agent() {}
 
-void Agent::updateName()
+std::string Agent::getName()
 {
-    std::stringstream ss;
-    if (hostID.get() != nullptr) {
-        ss << (*agentID.get()) << " on " << (*hostID.get());
-    } else {
-        ss << (*agentID.get());
-    }
-    this->agentGroupBox->setTitle(QString(ss.str().c_str()));
+    return this->agentName;
 }
 
 essentials::IdentifierConstPtr Agent::getAgentID()
@@ -44,17 +53,26 @@ essentials::IdentifierConstPtr Agent::getAgentID()
     return this->agentID;
 }
 
-void Agent::update(std::chrono::system_clock::time_point now)
+void Agent::updateGUI(std::chrono::system_clock::time_point now)
 {
-    if ((now - this->timeLastMsgReceived) > this->msgTimeOut) {
-        this->agentGroupBox->hide();
-    } else {
-        this->agentGroupBox->show();
-    }
+//    if ((now - this->timeLastMsgReceived) > this->msgTimeOut) {
+//        this->agentGroupBox->hide();
+//    } else {
+//        this->agentGroupBox->show();
+//    }
 
     for (auto procEntry : this->processes) {
         procEntry.second->update(now);
     }
+
+    std::stringstream ss;
+    if (hostID.get() != nullptr) {
+        ss << this->agentName << " on " << (*hostID.get());
+    } else {
+        ss << this->agentName;
+    }
+
+    this->agentGroupBox->setTitle(QString(ss.str().c_str()));
 }
 
 void Agent::update(std::pair<std::chrono::system_clock::time_point, process_manager::ProcessStats> timePstsPair)
@@ -72,7 +90,6 @@ void Agent::update(std::pair<std::chrono::system_clock::time_point, process_mana
         }
         proc->update(this->timeLastMsgReceived, ps);
     }
-    updateName();
 }
 
 void Agent::addExec(QWidget* exec)
@@ -92,5 +109,31 @@ void Agent::handleAgentCommandBtnClicked(bool checked)
         this->uiAgent->agentCommandBtn->setText(QString("Start"));
     }
     this->controlPanel->getCommunication()->send(ac);
+}
+
+void Agent::toggle()
+{
+    if (shown) {
+        this->hide();
+    } else {
+        this->show();
+    }
+}
+
+bool Agent::isShown()
+{
+    return this->shown;
+}
+
+void Agent::show()
+{
+    this->shown = true;
+    this->agentGroupBox->show();
+}
+
+void Agent::hide()
+{
+    this->shown = false;
+    this->agentGroupBox->hide();
 }
 } // namespace control

@@ -23,25 +23,36 @@ namespace control {
 
     public:
         Agent(essentials::IdentifierConstPtr id, ControlPanel* controlPanel);
+        Agent(essentials::IdentifierConstPtr id, std::string agentName, ControlPanel* controlPanel);
         virtual ~Agent();
 
 
-        essentials::IdentifierConstPtr getAgentID();
-        void update(std::chrono::system_clock::time_point now);
+
         void update(std::pair<std::chrono::system_clock::time_point, process_manager::ProcessStats> timePstsPair);
         void addExec(QWidget* exec);
+
+        essentials::IdentifierConstPtr getAgentID();
+        std::string getName();
+
+        // GUI Methods and Members
+        void updateGUI(std::chrono::system_clock::time_point now);
+        void toggle();
+        bool isShown();
+        void show();
+        void hide();
 
     public Q_SLOTS:
         void handleAgentCommandBtnClicked(bool checked);
 
     private:
-        void updateName();
+        void updateGUI();
 
-
+        bool shown;
         ControlPanel* controlPanel;
         std::chrono::duration<double> msgTimeOut;
         essentials::IdentifierConstPtr hostID;
         essentials::IdentifierConstPtr agentID;
+        std::string agentName;
         QGroupBox* agentGroupBox;
         Ui::Agent* uiAgent;
         std::chrono::system_clock::time_point timeLastMsgReceived;

@@ -2,29 +2,31 @@
 
 #include <engine/BasicCondition.h>
 /*PROTECTED REGION ID(domainHeaderAdditional) ENABLED START*/
-// Add additional options here
+#include <srg/SRGWorldModel.h>
 /*PROTECTED REGION END*/
 
-namespace alica {
-class DomainCondition : public BasicCondition {
+namespace alica
+{
+class DomainCondition : public BasicCondition
+{
 public:
-  DomainCondition();
-  virtual ~DomainCondition();
+    DomainCondition();
+    virtual ~DomainCondition();
 
-  /*PROTECTED REGION ID(domainHeader) ENABLED START*/
-  // Add additional options here
-
-  /*PROTECTED REGION END*/
+    /*PROTECTED REGION ID(domainHeader) ENABLED START*/
+    // Add additional options here
+    srg::SRGWorldModel* wm = srg::SRGWorldModel::getInstance();
+    /*PROTECTED REGION END*/
 
 protected:
-  /*PROTECTED REGION ID(protectedDomainHeader) ENABLED START*/
-  // Add additional options here
+    /*PROTECTED REGION ID(protectedDomainHeader) ENABLED START*/
+    // Add additional options here
 
-  /*PROTECTED REGION END*/
+    /*PROTECTED REGION END*/
 
 private:
-  /*PROTECTED REGION ID(privateDomainHeader) ENABLED START*/
-  // Add additional options here
-  /*PROTECTED REGION END*/
+    /*PROTECTED REGION ID(privateDomainHeader) ENABLED START*/
+    // Add additional options here
+    /*PROTECTED REGION END*/
 };
 } /* namespace alica */
