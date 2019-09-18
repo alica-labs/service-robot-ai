@@ -24,12 +24,14 @@ SRGSimData::~SRGSimData() {}
 void SRGSimData::processPerception(srgsim::SimPerceptions simPerceptions) {
 
     for(srgsim::Perception perception : simPerceptions.perceptions) {
+
         switch(perception.type) {
-            case srgsim::Type::Robot:
-                // TODO
-                break;
+            case srgsim::Type::Robot: {
+                srgsim::Object *robot = this->world->addObject(perception.objectID, perception.type);
+                this->world->placeObject(robot, srgsim::Coordinate(perception.x, perception.y));
+            }   break;
             default:
-                std::cerr << "SRGSimData::processPerception(): Unknown perception received!" << std:endl;
+                std::cerr << "SRGSimData::processPerception(): Unknown perception received!" << std::endl;
         }
     }
 }
