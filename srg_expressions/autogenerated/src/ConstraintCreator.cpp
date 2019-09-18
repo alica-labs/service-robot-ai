@@ -1,5 +1,13 @@
 #include "ConstraintCreator.h"
 
+#include "Behaviours/constraints/Close1568801712239Constraints.h"
+#include "Behaviours/constraints/Godown1568801657637Constraints.h"
+#include "Behaviours/constraints/Goleft1568801601566Constraints.h"
+#include "Behaviours/constraints/Goright1568801619244Constraints.h"
+#include "Behaviours/constraints/Goup1568801639189Constraints.h"
+#include "Behaviours/constraints/Open1568801700485Constraints.h"
+#include "Behaviours/constraints/Pickup1568801673599Constraints.h"
+#include "Behaviours/constraints/Putdown1568801687587Constraints.h"
 #include "Behaviours/constraints/Spawn1558533534825Constraints.h"
 #include "Behaviours/constraints/Stop1555602210283Constraints.h"
 #include "Behaviours/constraints/Test1559635479527Constraints.h"
