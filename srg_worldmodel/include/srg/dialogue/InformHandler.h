@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <memory>
 
 namespace srg
 {
@@ -11,13 +12,13 @@ class ConceptNet;
 }
 namespace dialogue
 {
-class AnswerGraph;
+class SpeechAct;
 class InformHandler
 {
 public:
     explicit InformHandler(SRGWorldModel* wm);
 
-    AnswerGraph* answerInform(std::string need);
+    std::shared_ptr<SpeechAct> answerInform(const SpeechAct informAct);
 
 private:
     srg::SRGWorldModel* wm;

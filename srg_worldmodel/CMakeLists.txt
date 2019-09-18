@@ -27,22 +27,23 @@ include_directories(include
 )
 
 add_library(srg_worldmodel
-        src/SRGWorldModel.cpp
-        src/wm/SRGSimData.cpp
-        src/conceptnet/ConceptNet.cpp
-        src/conceptnet/Edge.cpp
-        src/conceptnet/Concept.cpp
-        src/conceptnet/EdgeTranslator.cpp
-        src/conceptnet/ConceptPath.cpp
-        src/dialogue/AnswerGraph.cpp
-        src/wm/RawSensorData.cpp
-        src/wm/Communication.cpp
-        src/dialogue/BasicHumanNeeds.cpp
-        src/dialogue/SpeechAct.cpp
-        src/dialogue/DialogueManager.cpp
-        src/dialogue/InformHandler.cpp
-        src/asp/ASPTranslator.cpp
-        )
+  src/SRGWorldModel.cpp
+  src/wm/SRGSimData.cpp
+  src/conceptnet/ConceptNet.cpp
+  src/conceptnet/Edge.cpp
+  src/conceptnet/Concept.cpp
+  src/conceptnet/EdgeTranslator.cpp
+  src/conceptnet/ConceptPath.cpp
+  src/dialogue/AnswerGraph.cpp
+  src/wm/RawSensorData.cpp
+  src/wm/Communication.cpp
+  src/dialogue/BasicHumanNeeds.cpp
+  src/dialogue/SpeechAct.cpp
+  src/dialogue/DialogueManager.cpp
+  src/dialogue/InformHandler.cpp
+  src/dialogue/CommandHandler.cpp
+  src/asp/ASPTranslator.cpp
+)
 
 target_link_libraries(srg_worldmodel
   ${catkin_LIBRARIES}

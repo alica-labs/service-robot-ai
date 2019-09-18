@@ -4,6 +4,7 @@
 #include "srg/dialogue/AnswerGraph.h"
 #include "srg/dialogue/BasicHumanNeeds.h"
 #include "srg/dialogue/InformHandler.h"
+#include "srg/dialogue/CommandHandler.h"
 #include "srg/dialogue/SpeechAct.h"
 
 #include <gvc.h>
@@ -19,24 +20,23 @@ DialogueManager::DialogueManager(srg::SRGWorldModel* wm)
 {
     this->basicHumanNeeds = new BasicHumanNeeds(wm);
     this->informHandler = new InformHandler(wm);
+    this->commandHandler = new CommandHandler(wm);
 }
 DialogueManager::~DialogueManager()
 {
-    for (auto pair : actMapping) {
-        delete pair.second;
-    }
 }
 
 void DialogueManager::processSpeechAct(std::shared_ptr<supplementary::InformationElement<SpeechAct>> speechAct)
 {
     if (speechAct->getInformation().type == SpeechType::request) {
-        AnswerGraph* answerGraph = this->basicHumanNeeds->answerNeed(speechAct->getInformation().text);
-        this->actMapping.emplace(speechAct, answerGraph);
+        this->speechActs.push_back(this->basicHumanNeeds->answerNeed(speechAct->getInformation()));
     } else if (speechAct->getInformation().type == SpeechType::inform) {
-        AnswerGraph* answerGraph = this->informHandler->answerInform(speechAct->getInformation().text);
-        this->actMapping.emplace(speechAct, answerGraph);
+        this->speechActs.push_back(this->informHandler->answerInform(speechAct->getInformation()));
+    } else if (speechAct->getInformation().type == SpeechType::command) {
+        this->commandHandler->processCommandAct(speechAct);
     }
 
+    // just for evaluation
     renderDot();
 }
 
@@ -51,8 +51,8 @@ void DialogueManager::renderDot() const
     /* Create a simple digraph */
     g = agopen("g", Agdirected, NULL);
     agsafeset(g, "rankdir", "RL", "");
-    for (auto pair : actMapping) {
-        pair.second->renderDot(g, true);
+    for (auto pair : speechActs) {
+        pair->answerGraph->renderDot(g, true);
     }
     /* Set an attribute - in this case one that affects the visible rendering */
 

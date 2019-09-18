@@ -25,7 +25,7 @@
     "minCardinality" : 0,
     "maxCardinality" : 20,
     "task" : "ServiceRobotsTasks.tsk#1555601344076",
-    "state" : 1558533460297,
+    "state" : 1555601748848,
     "plan" : 1555601736192
   } ],
   "states" : [ {
@@ -33,7 +33,7 @@
     "id" : 1555601748848,
     "name" : "Stop",
     "comment" : "",
-    "entryPoint" : null,
+    "entryPoint" : 1555601746711,
     "parentPlan" : 1555601736192,
     "abstractPlans" : [ "Behaviours/Stop.beh#1555602210283" ],
     "variableBindings" : [ ],
@@ -44,7 +44,7 @@
     "id" : 1558533460297,
     "name" : "Spawn",
     "comment" : "",
-    "entryPoint" : 1555601746711,
+    "entryPoint" : null,
     "parentPlan" : 1555601736192,
     "abstractPlans" : [ "Behaviours/Spawn.beh#1558533534825" ],
     "variableBindings" : [ ],
@@ -57,7 +57,7 @@
     "comment" : "",
     "entryPoint" : null,
     "parentPlan" : 1555601736192,
-    "abstractPlans" : [ "Behaviours/Test.beh#1559635479527" ],
+    "abstractPlans" : [ "Serve.pml#1568825275605" ],
     "variableBindings" : [ ],
     "outTransitions" : [ 1558533498560, 1558533714287 ],
     "inTransitions" : [ 1558533498560, 1558533514929 ]

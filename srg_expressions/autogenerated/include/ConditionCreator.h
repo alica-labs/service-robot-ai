@@ -4,14 +4,16 @@
 #include <iostream>
 #include <memory>
 
-namespace alica {
+namespace alica
+{
 class BasicCondition;
 
-class ConditionCreator : public IConditionCreator {
+class ConditionCreator : public IConditionCreator
+{
 public:
-  ConditionCreator();
-  virtual ~ConditionCreator();
-  std::shared_ptr<BasicCondition> createConditions(long conditionConfId);
+    ConditionCreator();
+    virtual ~ConditionCreator();
+    std::shared_ptr<BasicCondition> createConditions(long conditionConfId);
 };
 
 } /* namespace alica */

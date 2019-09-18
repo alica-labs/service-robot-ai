@@ -3,19 +3,22 @@
 #include <engine/BasicBehaviour.h>
 #include <string>
 /*PROTECTED REGION ID(domainBehaviourHeaderHead) ENABLED START*/
-namespace srg {
+namespace srg
+{
 class Robot;
 }
 /*PROTECTED REGION END*/
 
-namespace alica {
-class DomainBehaviour : public BasicBehaviour {
+namespace alica
+{
+class DomainBehaviour : public BasicBehaviour
+{
 public:
-  DomainBehaviour(std::string name);
-  virtual ~DomainBehaviour();
+    DomainBehaviour(std::string name);
+    virtual ~DomainBehaviour();
 
-  /*PROTECTED REGION ID(domainBehaviourClassDecl) ENABLED START*/
-  srg::Robot *robot;
-  /*PROTECTED REGION END*/
+    /*PROTECTED REGION ID(domainBehaviourClassDecl) ENABLED START*/
+    srg::Robot* robot;
+    /*PROTECTED REGION END*/
 };
 } /* namespace alica */

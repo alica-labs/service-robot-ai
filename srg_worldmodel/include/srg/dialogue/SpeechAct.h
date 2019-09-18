@@ -4,13 +4,10 @@
 
 namespace srg
 {
-namespace conceptnet
-{
-class AnswerGraph;
-}
 
 namespace dialogue
 {
+class AnswerGraph;
 enum SpeechType
 {
     inform,
@@ -28,7 +25,7 @@ public:
 
     SpeechType type;
     std::string text;
-    conceptnet::AnswerGraph* answerGraph;
+    srg::dialogue::AnswerGraph* answerGraph;
 };
 } // namespace wm
 } // namespace srg
