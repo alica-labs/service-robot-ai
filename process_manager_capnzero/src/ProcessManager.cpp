@@ -6,18 +6,13 @@
 #include "process_manager/Communication.h"
 #include "process_manager/containers/ProcessStats.h"
 
-#include <Logging.h>
-
 #include <cstdlib>
 #include <dirent.h>
 #include <iostream>
-#include <map>
 #include <signal.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <string>
-#include <sys/types.h>
 #include <sys/wait.h>
 #include <thread>
 #include <unistd.h>

@@ -8,6 +8,8 @@
 #include "srg/conceptnet/Relations.h"
 #include "srg/dialogue/AnswerGraph.h"
 
+#include <engine/AlicaEngine.h>
+
 #include <iostream>
 
 #define HUMAN_NEEDS_DEBUG
@@ -24,7 +26,7 @@ BasicHumanNeeds::BasicHumanNeeds(SRGWorldModel* wm)
     this->cn = this->wm->conceptNet;
 }
 
-AnswerGraph* BasicHumanNeeds::answerNeed(std::string need)
+std::shared_ptr<SpeechAct> BasicHumanNeeds::answerNeed(const SpeechAct needAct)
 {
     /**
      *  1. ask ConceptNet for MotivatedByGoal(WILDCARD, need) and CausesDesire(need, WILDCARD)
@@ -37,12 +39,12 @@ AnswerGraph* BasicHumanNeeds::answerNeed(std::string need)
      *  6. return answer graph
      */
     srg::dialogue::AnswerGraph* answerGraph = new srg::dialogue::AnswerGraph();
-    conceptnet::Concept* root = this->cn->getConcept(answerGraph, need);
+    conceptnet::Concept* root = this->cn->getConcept(answerGraph, needAct.text);
     answerGraph->setRoot(root);
 
     // 1. ask ConceptNet for MotivatedByGoal(WILDCARD, need) and CausesDesire(need, WILDCARD)
-    root->addEdges(this->cn->getIncomingEdges(answerGraph, conceptnet::MotivatedByGoal, need, bestNumberOfElements));
-    root->addEdges(this->cn->getOutgoingEdges(answerGraph, conceptnet::CausesDesire, need, bestNumberOfElements));
+    root->addEdges(this->cn->getIncomingEdges(answerGraph, conceptnet::MotivatedByGoal, needAct.text, bestNumberOfElements));
+    root->addEdges(this->cn->getOutgoingEdges(answerGraph, conceptnet::CausesDesire, needAct.text, bestNumberOfElements));
 
     // 2. ask ConceptNet for Synonyms for top bestWeightedEdges results from 1.
     // => Synonym, SimilarTo, InstanceOf
@@ -66,14 +68,22 @@ AnswerGraph* BasicHumanNeeds::answerNeed(std::string need)
     }
     this->createAnswerPaths(answerGraph, root);
 #ifdef HUMAN_NEEDS_DEBUG
-    for (conceptnet::ConceptPath* conceptPath : answerGraph->answerPaths) {
+//    for (conceptnet::ConceptPath* conceptPath : answerGraph->answerPaths) {
 //        std::cout << "BasicHumanNeeds:" << conceptPath->toString() << std::endl;
-    }
+//    }
 #endif
 
-//TODO add again later
+    //TODO add again later
     //answerGraph->renderDot();
-    return answerGraph;
+
+    std::shared_ptr<SpeechAct> answerSpeechAct = std::make_shared<SpeechAct>();
+    answerSpeechAct->text = "";
+    answerSpeechAct->answerGraph = answerGraph;
+    answerSpeechAct->type = SpeechType::request;
+    answerSpeechAct->previousActID = needAct.actID;
+    answerSpeechAct->actID = this->wm->getEngine()->getIdManager()->generateID();
+    answerSpeechAct->senderID = this->wm->getOwnId();
+    return answerSpeechAct;
 }
 
 void BasicHumanNeeds::createAnswerPaths(AnswerGraph* answerGraph, conceptnet::Concept* start)

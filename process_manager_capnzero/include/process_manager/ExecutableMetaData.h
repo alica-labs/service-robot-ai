@@ -19,6 +19,7 @@ public:
 
     bool matchSplittedCmdLine(std::vector<std::string>& cmdline);
     void addParameterSet(int paramSetId, std::vector<char*> paramSetValues);
+    std::string toString() const;
 
     static const long NOTHING_MANAGED = -1;
     static const int UNKNOWN_PARAMS = -1;
@@ -36,15 +37,5 @@ public:
 
 inline std::ostream& operator<<(std::ostream& strm, const process_manager::ExecutableMetaData& a)
 {
-    std::ostringstream resultStream;
-    resultStream << "ExecutableMetaData: " << a.name << "(" << a.id << ")\n\tAbsExecName:\t" << a.absExecName << "\n\tMode:\t\t" << a.mode << std::endl;
-    for (auto paramEntry : a.parameterMap) {
-        resultStream << "\tParamSet " << paramEntry.first << ": ";
-        for (char* param : paramEntry.second) {
-            resultStream << "\t'" << param << "' ";
-        }
-        resultStream << std::endl;
-    }
-    strm << resultStream.str();
-    return strm;
+    return strm << a.toString();
 }

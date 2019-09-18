@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <map>
+#include <vector>
 
 namespace supplementary {
     template<typename>
@@ -16,6 +17,7 @@ namespace dialogue
 class AnswerGraph;
 class SpeechAct;
 class InformHandler;
+class CommandHandler;
 class BasicHumanNeeds;
 
 class DialogueManager
@@ -29,10 +31,9 @@ private:
     srg::SRGWorldModel* wm;
     BasicHumanNeeds* basicHumanNeeds;
     InformHandler* informHandler;
-    std::map <std::shared_ptr<supplementary::InformationElement<SpeechAct>>, AnswerGraph*> actMapping;
-
-    int counter;
-    void renderDot(AnswerGraph* anserGraph);
+    CommandHandler* commandHandler;
+    std::vector<std::shared_ptr<SpeechAct>> speechActs;
+    void renderDot() const;
 };
 } // namespace dialogue
 } // namespace srg

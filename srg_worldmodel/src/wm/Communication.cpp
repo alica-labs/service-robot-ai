@@ -6,6 +6,8 @@
 
 #include <Message.h>
 #include <srg/SpeechAct.capnp.h>
+#include <control/containers/ContainerUtils.h>
+#include <srgsim/containers/ContainerUtils.h>
 
 #include <engine/AlicaEngine.h>
 
@@ -19,17 +21,29 @@ namespace srg {
             this->ctx = zmq_ctx_new();
             this->sc = essentials::SystemConfig::getInstance();
 
-            std::cout << "Telegram Message: ";
             std::string telegramMessageTopic = (*sc)["SRGWorldModel"]->get<std::string>("Data.Telegram.Topic", NULL);
-            this->telegramMessageSub = new capnzero::Subscriber(this->ctx, telegramMessageTopic);
-            this->telegramMessageSub->connect(capnzero::CommType::INT, (*sc)["SRGWorldModel"]->get<std::string>("Data.Telegram.Address", NULL));
+            this->telegramMessageSub = new capnzero::Subscriber(this->ctx, capnzero::Protocol::UDP);
+            this->telegramMessageSub->setTopic(telegramMessageTopic);
+            this->telegramMessageSub->addAddress((*sc)["SRGWorldModel"]->get<std::string>("Data.Telegram.Address", NULL));
             this->telegramMessageSub->subscribe(&Communication::onTelegramMessage, &(*this));
 
-            std::cout << "Speech act: ";
             std::string speechActTopic = (*sc)["SRGWorldModel"]->get<std::string>("Data.SpeechAct.Topic", NULL);
-            this->speechActSub = new capnzero::Subscriber(this->ctx, speechActTopic);
-            this->speechActSub->connect(capnzero::CommType::UDP, "224.0.0.2:5555");
+            this->speechActSub = new capnzero::Subscriber(this->ctx,capnzero::Protocol::UDP);
+            this->speechActSub->setTopic(speechActTopic);
+            this->speechActSub->addAddress((*sc)["SRGWorldModel"]->get<std::string>("Data.SpeechAct.Address", NULL));
             this->speechActSub->subscribe(&Communication::onSpeechAct, &(*this));
+
+            std::string agendCmdTopic = (*sc)["ControlPanel"]->get<std::string>("AgentCmd.topic", NULL);
+            this->agentCommandSub = new capnzero::Subscriber(this->ctx,capnzero::Protocol::UDP);
+            this->agentCommandSub->setTopic(agendCmdTopic);
+            this->agentCommandSub->addAddress((*sc)["ControlPanel"]->get<std::string>("AgentCmd.address", NULL));
+            this->agentCommandSub->subscribe(&Communication::onAgentCmd, &(*this));
+
+            std::string perceptionTopic = (*sc)["SRGSim"]->get<std::string>("SRGSim.Communication.perceptionsTopic", NULL);
+            this->agentCommandSub = new capnzero::Subscriber(this->ctx,capnzero::Protocol::UDP);
+            this->agentCommandSub->setTopic(perceptionTopic);
+            this->agentCommandSub->addAddress((*sc)["SRGSim"]->get<std::string>("SRGSim.Communication.address", NULL));
+            this->agentCommandSub->subscribe(&Communication::onSimPerceptions, &(*this));
         }
 
         Communication::~Communication() {
@@ -38,15 +52,13 @@ namespace srg {
         }
 
         void Communication::onTelegramMessage(capnp::FlatArrayMessageReader &msg) {
-            std::cout << "onTelegramMessage called . . .\n";
-            std::cout.flush();
+            std::cout << "onTelegramMessage called..." << std::endl;
             Message m;
             m.fromCapnp(msg);
             this->wm->rawSensorData.processTelegramMessage(m);
         }
 
         void Communication::onSpeechAct(capnp::FlatArrayMessageReader &msg) {
-            std::cout << "Communication: SpeechAct received..." << std::endl;
             srg::SpeechAct::Reader reader = msg.getRoot<srg::SpeechAct>();
 
             // fill container
@@ -69,6 +81,17 @@ namespace srg {
             }
 
             this->wm->rawSensorData.processSpeechAct(speechAct);
+        }
+
+        void Communication::onAgentCmd(capnp::FlatArrayMessageReader &msg) {
+            this->wm->rawSensorData.processAgentCmd(control::ContainerUtils::toAgentCommand(msg, this->wm->getEngine()->getIdManager()));
+        }
+
+        void Communication::onSimPerceptions(capnp::FlatArrayMessageReader &msg) {
+            auto simPerceptions = srgsim::ContainerUtils::toSimPerceptions(msg, this->wm->getEngine()->getIdManager());
+            if (simPerceptions.receiverID == this->wm->getOwnId()) {
+                this->wm->rawSensorData.processSimPerceptions(simPerceptions);
+            }
         }
     }
 }

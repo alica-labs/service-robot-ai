@@ -12,6 +12,7 @@
   <depend>capnzero</depend>
   <depend>alica_engine</depend>
   <depend>id_manager</depend>
+  <depend>id_capnzero</depend>
   <buildtool_depend>catkin</buildtool_depend>
 
   <export>

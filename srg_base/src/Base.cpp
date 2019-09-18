@@ -61,14 +61,11 @@ void Base::start()
 Base::~Base()
 {
     ae->shutdown();
-    delete ae->getAlicaClock();
-    delete ae->getCommunicator();
     delete ae;
     delete cc;
     delete bc;
     delete uc;
     delete crc;
-    delete wm;
 }
 
 bool Base::isRunning()

@@ -10,14 +10,13 @@ DomainBehaviour::DomainBehaviour(std::string name)
         : BasicBehaviour(name)
 {
     /*PROTECTED REGION ID(domainBehaviourConstructor) ENABLED START*/
-    this->robot = new srg::Robot(srg::SRGWorldModel::getInstance());
+    this->robot = srg::Robot::getInstance();
     /*PROTECTED REGION END*/
 }
 
 DomainBehaviour::~DomainBehaviour()
 {
     /*PROTECTED REGION ID(domainBehaviourDestructor) ENABLED START*/
-    delete this->robot;
     /*PROTECTED REGION END*/
 }
 

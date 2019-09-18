@@ -1,0 +1,28 @@
+\appendix
+\chapter{Appendix}
+\label{chap:Appendix}
+
+\begin{landscape}
+  \section{.bashrc}
+  \label{sec:bashrc}
+  \begin{figure}[htbp]
+    \begin{verbatim}
+# ROS
+source /opt/ros/melodic/setup.bash
+
+# ROS WS
+export ROS_WORKSPACE=${HOME}/rosws
+source ${ROS_WORKSPACE}/devel/setup.bash
+
+# DOMAIN
+export DOMAIN_FOLDER=${ROS_WORKSPACE}/src/service-robot-ai/
+export DOMAIN_CONFIG_FOLDER=${DOMAIN_FOLDER}/etc
+
+# PROMPT
+export PS1='\[\033[01;32m\]\u@\h\[\033[01;34m\] \w \[\033[01;31m\]$(__git_ps1 "[%s]")\[\033[01;34m\]\$\[\033[00m\] '
+
+    \end{verbatim}
+    \caption{Template for your .bashrc}
+    \label{fig:template_bashrc}
+  \end{figure}
+\end{landscape}

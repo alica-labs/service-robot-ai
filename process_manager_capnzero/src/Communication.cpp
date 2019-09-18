@@ -20,14 +20,15 @@ Communication::Communication(ProcessManager* processManager)
     this->ctx = zmq_ctx_new();
 
     this->processCmdTopic = (*sc)["ProcessManaging"]->get<std::string>("Topics.processCmdTopic", NULL);
-    this->processCommandSub = new capnzero::Subscriber(this->ctx, this->processCmdTopic);
-    this->processCommandSub->connect(capnzero::CommType::UDP, "224.0.0.2:5555");
+    this->processCommandSub = new capnzero::Subscriber(this->ctx, capnzero::Protocol::UDP);
+    this->processCommandSub->setTopic(this->processCmdTopic);
+    this->processCommandSub->addAddress("224.0.0.2:5555");
     this->processCommandSub->subscribe(&Communication::handleProcessCommand, &(*this));
 
     this->processStatsTopic = (*sc)["ProcessManaging"]->get<std::string>("Topics.processStatsTopic", NULL);
-    this->processStatePub = new capnzero::Publisher(this->ctx);
-    this->processStatePub->setDefaultGroup(this->processStatsTopic);
-    this->processStatePub->bind(capnzero::CommType::UDP, "224.0.0.2:5555");
+    this->processStatePub = new capnzero::Publisher(this->ctx, capnzero::Protocol::UDP);
+    this->processStatePub->setDefaultTopic(this->processStatsTopic);
+    this->processStatePub->addAddress("224.0.0.2:5555");
 }
 
 /**

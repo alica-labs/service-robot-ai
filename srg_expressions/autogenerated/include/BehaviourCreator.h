@@ -14,7 +14,7 @@ class BehaviourCreator : public IBehaviourCreator
 public:
     BehaviourCreator();
     virtual ~BehaviourCreator();
-    virtual std::shared_ptr<BasicBehaviour> createBehaviour(long behaviourConfId);
+    virtual std::shared_ptr<BasicBehaviour> createBehaviour(long behaviourId);
 };
 
 } /* namespace alica */

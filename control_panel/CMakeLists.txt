@@ -7,7 +7,7 @@ set(CMAKE_BUILD_TYPE Debug)
 
 find_package(Threads)
 find_package(Qt5 COMPONENTS Core Widgets Gui REQUIRED)
-find_package(catkin REQUIRED process_manager_capnzero capnzero alica_engine id_manager)
+find_package(catkin REQUIRED process_manager_capnzero capnzero alica_engine id_manager id_capnzero)
 
 catkin_package(
   INCLUDE_DIRS include
@@ -41,9 +41,12 @@ add_library(control_msgs
   src/ContainerUtils.cpp
   ${CAPNP_SRCS}
 )
+target_link_libraries(control_msgs
+  ${catkin_LIBRARIES}
+)
 
 #### CONTROL
-QT5_WRAP_CPP(control_MOCS include/control/ControlPanel.h include/control/Process.h)
+QT5_WRAP_CPP(control_MOCS include/control/ControlPanel.h include/control/Process.h include/control/Agent.h)
 # ensure generated header files are being created in the devel space
 set(_cmake_current_binary_dir "${CMAKE_CURRENT_BINARY_DIR}")
 set(CMAKE_CURRENT_BINARY_DIR "${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}")

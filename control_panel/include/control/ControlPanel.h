@@ -13,6 +13,7 @@
 
 namespace essentials {
     class IDManager;
+    class SystemConfig;
 }
 
 namespace control
@@ -27,6 +28,7 @@ public:
     ControlPanel();
     virtual ~ControlPanel();
 
+    Communication* getCommunication();
     ExecutableRegistry* getExecutableRegistry();
     essentials::IDManager* getIDManager();
     void enqueue(process_manager::ProcessStats psts);
@@ -36,11 +38,14 @@ public:
 
 public Q_SLOTS:
     void run();
+    void showContextMenu(const QPoint& pos);
 
 private:
     void processMessage();
     void updateUI();
+
     Agent* getAgent(essentials::IdentifierConstPtr id);
+    essentials::SystemConfig* sc;
 
     QTimer* doWorkTimer;
 
