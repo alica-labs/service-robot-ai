@@ -7,6 +7,7 @@
 #include <Message.h>
 #include <srg/SpeechAct.capnp.h>
 #include <control/containers/ContainerUtils.h>
+#include <srgsim/containers/ContainerUtils.h>
 
 #include <engine/AlicaEngine.h>
 
@@ -37,6 +38,12 @@ namespace srg {
             this->agentCommandSub->setTopic(agendCmdTopic);
             this->agentCommandSub->addAddress((*sc)["ControlPanel"]->get<std::string>("AgentCmd.address", NULL));
             this->agentCommandSub->subscribe(&Communication::onAgentCmd, &(*this));
+
+            std::string perceptionTopic = (*sc)["SRGSim"]->get<std::string>("SRGSim.Communication.perceptionsTopic", NULL);
+            this->agentCommandSub = new capnzero::Subscriber(this->ctx,capnzero::Protocol::UDP);
+            this->agentCommandSub->setTopic(perceptionTopic);
+            this->agentCommandSub->addAddress((*sc)["SRGSim"]->get<std::string>("SRGSim.Communication.address", NULL));
+            this->agentCommandSub->subscribe(&Communication::onSimPerceptions, &(*this));
         }
 
         Communication::~Communication() {
@@ -78,6 +85,13 @@ namespace srg {
 
         void Communication::onAgentCmd(capnp::FlatArrayMessageReader &msg) {
             this->wm->rawSensorData.processAgentCmd(control::ContainerUtils::toAgentCommand(msg, this->wm->getEngine()->getIdManager()));
+        }
+
+        void Communication::onSimPerceptions(capnp::FlatArrayMessageReader &msg) {
+            auto simPerceptions = srgsim::ContainerUtils::toSimPerceptions(msg, this->wm->getEngine()->getIdManager());
+            if (simPerceptions.receiverID == this->wm->getOwnId()) {
+                this->wm->rawSensorData.processSimPerceptions(simPerceptions);
+            }
         }
     }
 }

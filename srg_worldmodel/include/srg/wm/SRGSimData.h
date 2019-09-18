@@ -3,6 +3,7 @@
 #include <engine/AlicaClock.h>
 #include <supplementary/InfoBuffer.h>
 #include <supplementary/InformationElement.h>
+#include <srgsim/containers/SimPerceptions.h>
 
 #include <vector>
 namespace essentials
@@ -10,6 +11,10 @@ namespace essentials
 class SystemConfig;
 }
 
+namespace srgsim
+{
+class World;
+}
 
 namespace alica
 {
@@ -27,16 +32,12 @@ class SRGSimData
 public:
     SRGSimData(SRGWorldModel* wm);
     virtual ~SRGSimData();
-
-    // methods for processing messages from SRG Sim
- 
-
-    // data access through public buffers
-   
+    void processPerception(srgsim::SimPerceptions simPerceptions);
 
 private:
     SRGWorldModel* wm;
     essentials::SystemConfig* sc;
+    srgsim::World* world;
 };
 } /* namespace wm */
 } /* namespace srg */

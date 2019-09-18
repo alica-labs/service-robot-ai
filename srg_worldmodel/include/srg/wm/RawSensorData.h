@@ -2,6 +2,8 @@
 
 #include "srg/dialogue/SpeechAct.h"
 
+#include <srgsim/containers/SimPerceptions.h>
+
 #include <Message.h>
 #include <control/containers/AgentCommand.h>
 #include <supplementary/InformationElement.h>
@@ -23,11 +25,13 @@ namespace srg {
             const supplementary::InfoBuffer<Message>& getTelegramMessageBuffer();
             const supplementary::InfoBuffer<control::AgentCommand>& getAgentCmdBuffer();
             const supplementary::InfoBuffer<srg::dialogue::SpeechAct>& getSpeechActBuffer();
+            const supplementary::InfoBuffer<srgsim::SimPerceptions>& getPerceptionsBuffer();
 
             // Methods for processing Messages
             void processTelegramMessage(Message message);
             void processSpeechAct(srg::dialogue::SpeechAct act);
             void processAgentCmd(control::AgentCommand agentCmd);
+            void processSimPerceptions(srgsim::SimPerceptions perceptions);
 
         private:
             SRGWorldModel* wm;
@@ -40,6 +44,9 @@ namespace srg {
 
             alica::AlicaTime speechActValidityDuration;
             supplementary::InfoBuffer<srg::dialogue::SpeechAct>* speechActBuffer;
+
+            alica::AlicaTime perceptionsValidityDuration;
+            supplementary::InfoBuffer<srgsim::SimPerceptions>* perceptionsBuffer;
         };
     }
 }
