@@ -88,7 +88,10 @@ namespace srg {
         }
 
         void Communication::onSimPerceptions(capnp::FlatArrayMessageReader &msg) {
-            this->wm->rawSensorData.processSimPerceptions(srgsim::ContainerUtils::toSimPerceptions(msg, this->wm->getEngine()->getIdManager()));
+            auto simPerceptions = srgsim::ContainerUtils::toSimPerceptions(msg, this->wm->getEngine()->getIdManager());
+            if (simPerceptions.receiverID == this->wm->getOwnId()) {
+                this->wm->rawSensorData.processSimPerceptions(simPerceptions);
+            }
         }
     }
 }

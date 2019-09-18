@@ -55,7 +55,6 @@ const supplementary::InfoBuffer<srgsim::SimPerceptions>& RawSensorData::getPerce
 
 void RawSensorData::processTelegramMessage(Message message)
 {
-    std::cout << "RawSensorData: processTelegramMessage called" << std::endl;
     auto messageInfo = std::make_shared<supplementary::InformationElement<Message>>(message, wm->getTime(), telegramMessageValidityDuration, 1.0);
     telegramMessageBuffer->add(messageInfo);
 }
@@ -64,6 +63,8 @@ void RawSensorData::processSpeechAct(srg::dialogue::SpeechAct act)
 {
     auto speechActInfo = std::make_shared<supplementary::InformationElement<srg::dialogue::SpeechAct>>(act, wm->getTime(), speechActValidityDuration, 1.0);
     speechActBuffer->add(speechActInfo);
+
+    // further processing
     this->wm->dialogueManager.processSpeechAct(speechActInfo);
 }
 
@@ -75,9 +76,11 @@ void RawSensorData::processAgentCmd(control::AgentCommand agentCmd)
 
 void RawSensorData::processSimPerceptions(srgsim::SimPerceptions simPerceptions)
 {
-    std::cout << "RawSensorData: processSimPerceptions called" << std::endl;
     auto perceptionsInfo = std::make_shared<supplementary::InformationElement<srgsim::SimPerceptions>>(simPerceptions, wm->getTime(), perceptionsValidityDuration, 1.0);
     perceptionsBuffer->add(perceptionsInfo);
+
+    // further processing
+    this->wm->sRGSimData.processPerception(perceptionsInfo->getInformation());
 }
 
 } // namespace wm

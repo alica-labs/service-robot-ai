@@ -24,9 +24,7 @@ SRGSimData::SRGSimData(SRGWorldModel* wm)
 SRGSimData::~SRGSimData() {}
 
 void SRGSimData::processPerception(srgsim::SimPerceptions simPerceptions) {
-
     for(srgsim::Perception perception : simPerceptions.perceptions) {
-
         switch(perception.type) {
             case srgsim::Type::Robot: {
                 srgsim::Object *robot = this->world->addObject(perception.objectID, perception.type);
