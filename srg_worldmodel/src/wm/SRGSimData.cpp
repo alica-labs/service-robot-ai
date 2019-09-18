@@ -2,6 +2,8 @@
 
 #include "srg/SRGWorldModel.h"
 #include "srgsim/World.h"
+#include "srgsim/Object.h"
+#include "srgsim/ServiceRobot.h"
 #include "srgsim/SRGEnums.h"
 
 namespace srg
@@ -28,7 +30,9 @@ void SRGSimData::processPerception(srgsim::SimPerceptions simPerceptions) {
         switch(perception.type) {
             case srgsim::Type::Robot: {
                 srgsim::Object *robot = this->world->addObject(perception.objectID, perception.type);
-                this->world->placeObject(robot, srgsim::Coordinate(perception.x, perception.y));
+                if (this->world->placeObject(robot, srgsim::Coordinate(perception.x, perception.y))) {
+                    this->world->addRobot(static_cast<srgsim::ServiceRobot*>(robot));
+                }
             }   break;
             default:
                 std::cerr << "SRGSimData::processPerception(): Unknown perception received!" << std::endl;
