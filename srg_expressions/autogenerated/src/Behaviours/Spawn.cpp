@@ -2,7 +2,7 @@
 #include <memory>
 
 /*PROTECTED REGION ID(inccpp1558533534825) ENABLED START*/
-// Add additional includes here
+#include <srg/Robot.h>
 /*PROTECTED REGION END*/
 
 namespace alica {
@@ -22,7 +22,7 @@ Spawn::~Spawn() {
 }
 void Spawn::run(void *msg) {
   /*PROTECTED REGION ID(run1558533534825) ENABLED START*/
-  // Add additional options here
+ this->robot->spawn();
   /*PROTECTED REGION END*/
 }
 void Spawn::initialiseParameters() {
