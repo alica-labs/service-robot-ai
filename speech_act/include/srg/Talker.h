@@ -1,7 +1,8 @@
 #pragma once
 
 #include <essentials/IdentifierConstPtr.h>
-#include <srg/SpeechAct.capnp.h>
+#include <srg/SpeechActMsg.capnp.h>
+#include <srg/containers/SpeechAct.h>
 
 #include <essentials/Worker.h>
 

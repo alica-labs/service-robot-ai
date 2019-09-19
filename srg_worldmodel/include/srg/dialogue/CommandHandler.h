@@ -1,7 +1,7 @@
 #pragma once
 
 #include "srg/SRGWorldModel.h"
-#include "srg/dialogue/SpeechAct.h"
+#include "srg/containers/SpeechAct.h"
 
 namespace essentials{
     class SystemConfig;
@@ -14,13 +14,13 @@ namespace srg {
             CommandHandler(SRGWorldModel* wm);
 
             void processCommandAct(std::shared_ptr<supplementary::InformationElement<SpeechAct>> commandAct);
-            const supplementary::InfoBuffer<srg::dialogue::SpeechAct>& getCommandActBuffer();
+            const supplementary::InfoBuffer<srg::SpeechAct>& getCommandActBuffer();
 
         private:
             srg::SRGWorldModel* wm;
             essentials::SystemConfig* sc;
             alica::AlicaTime commandActValidityDuration;
-            supplementary::InfoBuffer<srg::dialogue::SpeechAct>* commandActBuffer;
+            supplementary::InfoBuffer<srg::SpeechAct>* commandActBuffer;
         };
     }
 }

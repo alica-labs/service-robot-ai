@@ -52,13 +52,13 @@ namespace srg {
         std::string input;
         std::getline(std::cin, input);
         std::cout << "Talker: Input was: '" << input << "'" << std::endl;
-        this->send(srg::SpeechType::INFORM, input);
+        this->send(srg::SpeechType::inform, input);
     }
 
     void Talker::send(srg::SpeechType speechType, const std::string& text) const
     {
         ::capnp::MallocMessageBuilder msgBuilder;
-        srg::SpeechAct::Builder msg = msgBuilder.initRoot<srg::SpeechAct>();
+        srg::SpeechActMsg::Builder msg = msgBuilder.initRoot<srg::SpeechActMsg>();
         capnzero::ID::Builder sender = msg.initSenderID();
         sender.setValue(kj::arrayPtr(this->id->getRaw(), this->id->getSize()));
         sender.setType(capnzero::ID::UUID);

@@ -11,6 +11,9 @@
   <depend>event_handling</depend>
   <depend>system_config</depend>
   <depend>id_manager</depend>
+  <depend>srg_worldmodel</depend>
+
+
   <license>MIT</license>
 
   <buildtool_depend>catkin</buildtool_depend>

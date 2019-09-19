@@ -8,7 +8,8 @@ namespace srg
 namespace dialogue
 {
 class AnswerGraph;
-enum SpeechType
+}
+enum SpeechType : uint16_t
 {
     inform,
     request,
@@ -18,14 +19,12 @@ enum SpeechType
 class SpeechAct
 {
 public:
-    SpeechAct();
     essentials::IdentifierConstPtr senderID;
     essentials::IdentifierConstPtr actID;
     essentials::IdentifierConstPtr previousActID;
 
     SpeechType type;
     std::string text;
-    srg::dialogue::AnswerGraph* answerGraph;
+    dialogue::AnswerGraph* answerGraph;
 };
-} // namespace wm
 } // namespace srg

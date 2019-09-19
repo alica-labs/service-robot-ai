@@ -5,7 +5,7 @@
 #include "srg/dialogue/BasicHumanNeeds.h"
 #include "srg/dialogue/InformHandler.h"
 #include "srg/dialogue/CommandHandler.h"
-#include "srg/dialogue/SpeechAct.h"
+#include "srg/containers/SpeechAct.h"
 
 #include <gvc.h>
 #include <gvcext.h>
@@ -26,7 +26,7 @@ DialogueManager::~DialogueManager()
 {
 }
 
-void DialogueManager::processSpeechAct(std::shared_ptr<supplementary::InformationElement<SpeechAct>> speechAct)
+void DialogueManager::processSpeechAct(std::shared_ptr<supplementary::InformationElement<srg::SpeechAct>> speechAct)
 {
     if (speechAct->getInformation().type == SpeechType::request) {
         this->speechActs.push_back(this->basicHumanNeeds->answerNeed(speechAct->getInformation()));

@@ -18,7 +18,7 @@ InformHandler::InformHandler(SRGWorldModel* wm) : wm(wm) {
     this->cn = this->wm->conceptNet;
 }
 
-    std::shared_ptr<SpeechAct> InformHandler::answerInform(const SpeechAct informAct) {
+    std::shared_ptr<srg::SpeechAct> InformHandler::answerInform(const srg::SpeechAct informAct) {
     srg::dialogue::AnswerGraph* answerGraph = new srg::dialogue::AnswerGraph();
     conceptnet::Concept* root = this->cn->getConcept(answerGraph, informAct.text);
     answerGraph->setRoot(root);

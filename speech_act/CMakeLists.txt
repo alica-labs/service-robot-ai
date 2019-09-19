@@ -3,13 +3,13 @@ project(speech_act)
 
 add_compile_options(-std=c++11)
 
-find_package(catkin REQUIRED capnzero srg_msgs id_manager event_handling system_config)
+find_package(catkin REQUIRED capnzero srg_msgs id_manager event_handling system_config srg_worldmodel)
 
 find_package(Threads)
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
-#  CATKIN_DEPENDS capnzero srg_msgs id_manager
+  CATKIN_DEPENDS capnzero srg_msgs id_manager event_handling system_config srg_worldmodel
 #  DEPENDS system_lib
 )
 

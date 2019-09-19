@@ -35,10 +35,10 @@ add_library(srg_worldmodel
   src/conceptnet/EdgeTranslator.cpp
   src/conceptnet/ConceptPath.cpp
   src/dialogue/AnswerGraph.cpp
+  src/containers/ContainerUtils.cpp
   src/wm/RawSensorData.cpp
   src/wm/Communication.cpp
   src/dialogue/BasicHumanNeeds.cpp
-  src/dialogue/SpeechAct.cpp
   src/dialogue/DialogueManager.cpp
   src/dialogue/InformHandler.cpp
   src/dialogue/CommandHandler.cpp

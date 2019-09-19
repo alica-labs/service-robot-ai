@@ -1,13 +1,12 @@
 #include "srg/wm/Communication.h"
 
-#include "srg/dialogue/SpeechAct.h"
-
 #include <srg/SRGWorldModel.h>
 
 #include <Message.h>
-#include <srg/SpeechAct.capnp.h>
+#include <srg/SpeechActMsg.capnp.h>
 #include <control/containers/ContainerUtils.h>
 #include <srgsim/containers/ContainerUtils.h>
+#include <srg/containers/ContainerUtils.h>
 
 #include <engine/AlicaEngine.h>
 
@@ -52,35 +51,13 @@ namespace srg {
         }
 
         void Communication::onTelegramMessage(capnp::FlatArrayMessageReader &msg) {
-            std::cout << "onTelegramMessage called..." << std::endl;
             Message m;
             m.fromCapnp(msg);
             this->wm->rawSensorData.processTelegramMessage(m);
         }
 
         void Communication::onSpeechAct(capnp::FlatArrayMessageReader &msg) {
-            srg::SpeechAct::Reader reader = msg.getRoot<srg::SpeechAct>();
-
-            // fill container
-            srg::dialogue::SpeechAct speechAct;
-            speechAct.senderID = this->wm->getEngine()->getIDFromBytes(
-                    reader.getSenderID().getValue().asBytes().begin(), reader.getSenderID().getValue().size(), (uint8_t) reader.getSenderID().getType());
-            speechAct.text = std::string(reader.getText().cStr());
-            switch(reader.getSpeechType()) {
-                case srg::SpeechType::INFORM:
-                    speechAct.type = srg::dialogue::SpeechType::inform;
-                    break;
-                case srg::SpeechType::COMMAND:
-                    speechAct.type = srg::dialogue::SpeechType::command;
-                    break;
-                case srg::SpeechType::REQUEST:
-                    speechAct.type = srg::dialogue::SpeechType::request;
-                    break;
-                default:
-                    std::cerr << "Communication: Unknown speach act type received!" << std::endl;
-            }
-
-            this->wm->rawSensorData.processSpeechAct(speechAct);
+            this->wm->rawSensorData.processSpeechAct(srg::ContainerUtils::toSpeechAct(msg, this->wm->getEngine()->getIdManager()));
         }
 
         void Communication::onAgentCmd(capnp::FlatArrayMessageReader &msg) {
