@@ -6,8 +6,24 @@
   "variables" : [ ],
   "frequency" : 0,
   "deferring" : 0,
-  "preCondition" : null,
-  "runtimeCondition" : null,
+  "preCondition" : {
+    "id" : 1568105583307,
+    "name" : "1568105583307",
+    "comment" : "test",
+    "enabled" : true,
+    "conditionString" : null,
+    "pluginName" : "DefaultPlugin",
+    "variables" : [ ]
+  },
+  "runtimeCondition" : {
+    "id" : 1568119815697,
+    "name" : "1568119815697",
+    "comment" : "",
+    "enabled" : true,
+    "conditionString" : null,
+    "pluginName" : "DefaultPlugin",
+    "variables" : [ ]
+  },
   "postCondition" : null,
   "parameters" : {
     "D" : "3",

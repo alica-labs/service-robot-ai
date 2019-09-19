@@ -44,5 +44,10 @@ void RawSensorData::processSpeechAct(srg::dialogue::SpeechAct act)
 
     this->wm->dialogueManager.processSpeechAct(speechActInfo);
 }
+
+const supplementary::InfoBuffer<srg::dialogue::SpeechAct> &RawSensorData::getSpeechActBuffer()
+{
+    return *this->speechActBuffer;
+}
 } // namespace wm
 } // namespace srg

@@ -22,6 +22,8 @@ namespace srg {
             void processTelegramMessage(Message message);
             void processSpeechAct(srg::dialogue::SpeechAct act);
 
+            const supplementary::InfoBuffer<srg::dialogue::SpeechAct>& getSpeechActBuffer();
+
         private:
             SRGWorldModel* wm;
 
