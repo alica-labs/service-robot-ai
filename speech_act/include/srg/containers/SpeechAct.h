@@ -20,6 +20,7 @@ class SpeechAct
 {
 public:
     essentials::IdentifierConstPtr senderID;
+    essentials::IdentifierConstPtr receiverID;
     essentials::IdentifierConstPtr actID;
     essentials::IdentifierConstPtr previousActID;
 

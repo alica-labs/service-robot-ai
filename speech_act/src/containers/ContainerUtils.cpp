@@ -14,6 +14,8 @@ namespace srg
         srg::SpeechActMsg::Reader reader = msg.getRoot<srg::SpeechActMsg>();
         speechAct.senderID = idManager->getIDFromBytes(
                 reader.getSenderID().getValue().asBytes().begin(), reader.getSenderID().getValue().size(), (uint8_t) reader.getSenderID().getType());
+        speechAct.receiverID = idManager->getIDFromBytes(
+                reader.getReceiverID().getValue().asBytes().begin(), reader.getReceiverID().getValue().size(), (uint8_t) reader.getReceiverID().getType());
         speechAct.actID = idManager->getIDFromBytes(
                 reader.getActID().getValue().asBytes().begin(), reader.getActID().getValue().size(), (uint8_t) reader.getActID().getType());
         speechAct.previousActID = idManager->getIDFromBytes(
@@ -31,6 +33,10 @@ namespace srg
         capnzero::ID::Builder senderID = msg.initSenderID();
         senderID.setValue(kj::arrayPtr(speechAct.senderID->getRaw(), (unsigned int) speechAct.senderID->getSize()));
         senderID.setType(speechAct.senderID->getType());
+
+        capnzero::ID::Builder receiverID = msg.initReceiverID();
+        receiverID.setValue(kj::arrayPtr(speechAct.receiverID->getRaw(), (unsigned int) speechAct.receiverID->getSize()));
+        receiverID.setType(speechAct.receiverID->getType());
 
         capnzero::ID::Builder actID = msg.initActID();
         actID.setValue(kj::arrayPtr(speechAct.actID->getRaw(), (unsigned int) speechAct.actID->getSize()));

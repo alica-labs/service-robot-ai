@@ -1,6 +1,6 @@
 #include "Serve1568825275605.h"
 /*PROTECTED REGION ID(eph1568825275605) ENABLED START*/
-// Add additional options here
+#include <srg/dialogue/CommandHandler.h>
 /*PROTECTED REGION END*/
 
 using namespace alica;
@@ -41,9 +41,8 @@ shared_ptr<UtilityFunction> UtilityFunction1568825275605::getUtilityFunction(Pla
 bool PreCondition1568825457853::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1568825336792) ENABLED START*/
-    // TODO
-//    return this->wm->dialogueManager.getTaskBuffer().getLastValidContent().type == srgsim::TaskType::Movement);
-    return false;
+    // TODO extend speechAct to contain different kind of commands
+    return this->wm->dialogueManager.commandHandler->getCommandActBuffer().getLastValidContent()->type == srg::SpeechType::command;
     /*PROTECTED REGION END*/
 }
 /*

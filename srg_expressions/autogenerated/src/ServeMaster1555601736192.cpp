@@ -110,8 +110,7 @@ bool PreCondition1558533654035::evaluate(shared_ptr<RunningPlan> rp)
 bool PreCondition1558533667052::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1558533514929) ENABLED START*/
-    // TODO implement wm and check whether stop/start message was received
-    return false;
+    return this->wm->sRGSimData.isLocalised();
     /*PROTECTED REGION END*/
 }
 /*

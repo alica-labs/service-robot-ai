@@ -28,6 +28,7 @@ namespace srg {
     private:
         SpeechAct* parseInput(std::string input);
         void send(SpeechAct* speechAct) const;
+        std::vector<std::string> split(std::string input);
 
         essentials::SystemConfig* sc;
         essentials::IDManager* idManager;

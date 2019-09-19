@@ -14,7 +14,7 @@ public:
     virtual ~Move();
     virtual void run(void* msg);
     /*PROTECTED REGION ID(pub1568825137528) ENABLED START*/
-    // Add additional protected methods here
+    int counter;
     /*PROTECTED REGION END*/
 protected:
     virtual void initialiseParameters();
