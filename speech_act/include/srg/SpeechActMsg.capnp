@@ -6,9 +6,10 @@ using IDMsg = import "/capnzero/ID.capnp";
 
 struct SpeechActMsg {
   senderID @0 :IDMsg.ID;
-  actID @1 :IDMsg.ID;
-  previousActID @2 :IDMsg.ID;
-  text @3 :Text;
-  speechType @4 :UInt16;
+  receiverID @1 :IDMsg.ID;
+  actID @2 :IDMsg.ID;
+  previousActID @3 :IDMsg.ID;
+  text @4 :Text;
+  speechType @5 :UInt16;
 }
 

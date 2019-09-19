@@ -1,7 +1,6 @@
 #include "srg/dialogue/InformHandler.h"
 
 #include "srg/conceptnet/Concept.h"
-#include "srg/conceptnet/ConceptNet.h"
 #include "srg/dialogue/AnswerGraph.h"
 #include "srg/asp/ASPTranslator.h"
 

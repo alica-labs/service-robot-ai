@@ -6,13 +6,11 @@
 
   <maintainer email="opfer@vs.uni-kassel.de">Stephan Opfer</maintainer>
 
-  <depend>srg_msgs</depend>
   <depend>capnzero</depend>
+  <depend>id_capnzero</depend>
   <depend>event_handling</depend>
   <depend>system_config</depend>
   <depend>id_manager</depend>
-  <depend>srg_worldmodel</depend>
-
 
   <license>MIT</license>
 

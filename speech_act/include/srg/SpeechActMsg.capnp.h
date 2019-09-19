@@ -30,7 +30,7 @@ struct SpeechActMsg {
   class Pipeline;
 
   struct _capnpPrivate {
-    CAPNP_DECLARE_STRUCT_HEADER(fef39a4d8b9203e5, 1, 4)
+    CAPNP_DECLARE_STRUCT_HEADER(fef39a4d8b9203e5, 1, 5)
     #if !CAPNP_LITE
     static constexpr ::capnp::_::RawBrandedSchema const* brand() { return &schema->defaultBrand; }
     #endif  // !CAPNP_LITE
@@ -58,6 +58,9 @@ public:
 
   inline bool hasSenderID() const;
   inline  ::capnzero::ID::Reader getSenderID() const;
+
+  inline bool hasReceiverID() const;
+  inline  ::capnzero::ID::Reader getReceiverID() const;
 
   inline bool hasActID() const;
   inline  ::capnzero::ID::Reader getActID() const;
@@ -105,6 +108,13 @@ public:
   inline void adoptSenderID(::capnp::Orphan< ::capnzero::ID>&& value);
   inline ::capnp::Orphan< ::capnzero::ID> disownSenderID();
 
+  inline bool hasReceiverID();
+  inline  ::capnzero::ID::Builder getReceiverID();
+  inline void setReceiverID( ::capnzero::ID::Reader value);
+  inline  ::capnzero::ID::Builder initReceiverID();
+  inline void adoptReceiverID(::capnp::Orphan< ::capnzero::ID>&& value);
+  inline ::capnp::Orphan< ::capnzero::ID> disownReceiverID();
+
   inline bool hasActID();
   inline  ::capnzero::ID::Builder getActID();
   inline void setActID( ::capnzero::ID::Reader value);
@@ -148,6 +158,7 @@ public:
       : _typeless(kj::mv(typeless)) {}
 
   inline  ::capnzero::ID::Pipeline getSenderID();
+  inline  ::capnzero::ID::Pipeline getReceiverID();
   inline  ::capnzero::ID::Pipeline getActID();
   inline  ::capnzero::ID::Pipeline getPreviousActID();
 private:
@@ -199,116 +210,155 @@ inline ::capnp::Orphan< ::capnzero::ID> SpeechActMsg::Builder::disownSenderID() 
       ::capnp::bounded<0>() * ::capnp::POINTERS));
 }
 
-inline bool SpeechActMsg::Reader::hasActID() const {
+inline bool SpeechActMsg::Reader::hasReceiverID() const {
   return !_reader.getPointerField(
       ::capnp::bounded<1>() * ::capnp::POINTERS).isNull();
 }
-inline bool SpeechActMsg::Builder::hasActID() {
+inline bool SpeechActMsg::Builder::hasReceiverID() {
   return !_builder.getPointerField(
       ::capnp::bounded<1>() * ::capnp::POINTERS).isNull();
 }
-inline  ::capnzero::ID::Reader SpeechActMsg::Reader::getActID() const {
+inline  ::capnzero::ID::Reader SpeechActMsg::Reader::getReceiverID() const {
   return ::capnp::_::PointerHelpers< ::capnzero::ID>::get(_reader.getPointerField(
       ::capnp::bounded<1>() * ::capnp::POINTERS));
 }
-inline  ::capnzero::ID::Builder SpeechActMsg::Builder::getActID() {
+inline  ::capnzero::ID::Builder SpeechActMsg::Builder::getReceiverID() {
   return ::capnp::_::PointerHelpers< ::capnzero::ID>::get(_builder.getPointerField(
       ::capnp::bounded<1>() * ::capnp::POINTERS));
 }
 #if !CAPNP_LITE
-inline  ::capnzero::ID::Pipeline SpeechActMsg::Pipeline::getActID() {
+inline  ::capnzero::ID::Pipeline SpeechActMsg::Pipeline::getReceiverID() {
   return  ::capnzero::ID::Pipeline(_typeless.getPointerField(1));
 }
 #endif  // !CAPNP_LITE
-inline void SpeechActMsg::Builder::setActID( ::capnzero::ID::Reader value) {
+inline void SpeechActMsg::Builder::setReceiverID( ::capnzero::ID::Reader value) {
   ::capnp::_::PointerHelpers< ::capnzero::ID>::set(_builder.getPointerField(
       ::capnp::bounded<1>() * ::capnp::POINTERS), value);
 }
-inline  ::capnzero::ID::Builder SpeechActMsg::Builder::initActID() {
+inline  ::capnzero::ID::Builder SpeechActMsg::Builder::initReceiverID() {
   return ::capnp::_::PointerHelpers< ::capnzero::ID>::init(_builder.getPointerField(
       ::capnp::bounded<1>() * ::capnp::POINTERS));
 }
-inline void SpeechActMsg::Builder::adoptActID(
+inline void SpeechActMsg::Builder::adoptReceiverID(
     ::capnp::Orphan< ::capnzero::ID>&& value) {
   ::capnp::_::PointerHelpers< ::capnzero::ID>::adopt(_builder.getPointerField(
       ::capnp::bounded<1>() * ::capnp::POINTERS), kj::mv(value));
 }
-inline ::capnp::Orphan< ::capnzero::ID> SpeechActMsg::Builder::disownActID() {
+inline ::capnp::Orphan< ::capnzero::ID> SpeechActMsg::Builder::disownReceiverID() {
   return ::capnp::_::PointerHelpers< ::capnzero::ID>::disown(_builder.getPointerField(
       ::capnp::bounded<1>() * ::capnp::POINTERS));
 }
 
-inline bool SpeechActMsg::Reader::hasPreviousActID() const {
+inline bool SpeechActMsg::Reader::hasActID() const {
   return !_reader.getPointerField(
       ::capnp::bounded<2>() * ::capnp::POINTERS).isNull();
 }
-inline bool SpeechActMsg::Builder::hasPreviousActID() {
+inline bool SpeechActMsg::Builder::hasActID() {
   return !_builder.getPointerField(
       ::capnp::bounded<2>() * ::capnp::POINTERS).isNull();
 }
-inline  ::capnzero::ID::Reader SpeechActMsg::Reader::getPreviousActID() const {
+inline  ::capnzero::ID::Reader SpeechActMsg::Reader::getActID() const {
   return ::capnp::_::PointerHelpers< ::capnzero::ID>::get(_reader.getPointerField(
       ::capnp::bounded<2>() * ::capnp::POINTERS));
 }
-inline  ::capnzero::ID::Builder SpeechActMsg::Builder::getPreviousActID() {
+inline  ::capnzero::ID::Builder SpeechActMsg::Builder::getActID() {
   return ::capnp::_::PointerHelpers< ::capnzero::ID>::get(_builder.getPointerField(
       ::capnp::bounded<2>() * ::capnp::POINTERS));
 }
 #if !CAPNP_LITE
-inline  ::capnzero::ID::Pipeline SpeechActMsg::Pipeline::getPreviousActID() {
+inline  ::capnzero::ID::Pipeline SpeechActMsg::Pipeline::getActID() {
   return  ::capnzero::ID::Pipeline(_typeless.getPointerField(2));
 }
 #endif  // !CAPNP_LITE
-inline void SpeechActMsg::Builder::setPreviousActID( ::capnzero::ID::Reader value) {
+inline void SpeechActMsg::Builder::setActID( ::capnzero::ID::Reader value) {
   ::capnp::_::PointerHelpers< ::capnzero::ID>::set(_builder.getPointerField(
       ::capnp::bounded<2>() * ::capnp::POINTERS), value);
 }
-inline  ::capnzero::ID::Builder SpeechActMsg::Builder::initPreviousActID() {
+inline  ::capnzero::ID::Builder SpeechActMsg::Builder::initActID() {
   return ::capnp::_::PointerHelpers< ::capnzero::ID>::init(_builder.getPointerField(
       ::capnp::bounded<2>() * ::capnp::POINTERS));
 }
-inline void SpeechActMsg::Builder::adoptPreviousActID(
+inline void SpeechActMsg::Builder::adoptActID(
     ::capnp::Orphan< ::capnzero::ID>&& value) {
   ::capnp::_::PointerHelpers< ::capnzero::ID>::adopt(_builder.getPointerField(
       ::capnp::bounded<2>() * ::capnp::POINTERS), kj::mv(value));
 }
-inline ::capnp::Orphan< ::capnzero::ID> SpeechActMsg::Builder::disownPreviousActID() {
+inline ::capnp::Orphan< ::capnzero::ID> SpeechActMsg::Builder::disownActID() {
   return ::capnp::_::PointerHelpers< ::capnzero::ID>::disown(_builder.getPointerField(
       ::capnp::bounded<2>() * ::capnp::POINTERS));
 }
 
-inline bool SpeechActMsg::Reader::hasText() const {
+inline bool SpeechActMsg::Reader::hasPreviousActID() const {
   return !_reader.getPointerField(
       ::capnp::bounded<3>() * ::capnp::POINTERS).isNull();
 }
-inline bool SpeechActMsg::Builder::hasText() {
+inline bool SpeechActMsg::Builder::hasPreviousActID() {
   return !_builder.getPointerField(
       ::capnp::bounded<3>() * ::capnp::POINTERS).isNull();
 }
+inline  ::capnzero::ID::Reader SpeechActMsg::Reader::getPreviousActID() const {
+  return ::capnp::_::PointerHelpers< ::capnzero::ID>::get(_reader.getPointerField(
+      ::capnp::bounded<3>() * ::capnp::POINTERS));
+}
+inline  ::capnzero::ID::Builder SpeechActMsg::Builder::getPreviousActID() {
+  return ::capnp::_::PointerHelpers< ::capnzero::ID>::get(_builder.getPointerField(
+      ::capnp::bounded<3>() * ::capnp::POINTERS));
+}
+#if !CAPNP_LITE
+inline  ::capnzero::ID::Pipeline SpeechActMsg::Pipeline::getPreviousActID() {
+  return  ::capnzero::ID::Pipeline(_typeless.getPointerField(3));
+}
+#endif  // !CAPNP_LITE
+inline void SpeechActMsg::Builder::setPreviousActID( ::capnzero::ID::Reader value) {
+  ::capnp::_::PointerHelpers< ::capnzero::ID>::set(_builder.getPointerField(
+      ::capnp::bounded<3>() * ::capnp::POINTERS), value);
+}
+inline  ::capnzero::ID::Builder SpeechActMsg::Builder::initPreviousActID() {
+  return ::capnp::_::PointerHelpers< ::capnzero::ID>::init(_builder.getPointerField(
+      ::capnp::bounded<3>() * ::capnp::POINTERS));
+}
+inline void SpeechActMsg::Builder::adoptPreviousActID(
+    ::capnp::Orphan< ::capnzero::ID>&& value) {
+  ::capnp::_::PointerHelpers< ::capnzero::ID>::adopt(_builder.getPointerField(
+      ::capnp::bounded<3>() * ::capnp::POINTERS), kj::mv(value));
+}
+inline ::capnp::Orphan< ::capnzero::ID> SpeechActMsg::Builder::disownPreviousActID() {
+  return ::capnp::_::PointerHelpers< ::capnzero::ID>::disown(_builder.getPointerField(
+      ::capnp::bounded<3>() * ::capnp::POINTERS));
+}
+
+inline bool SpeechActMsg::Reader::hasText() const {
+  return !_reader.getPointerField(
+      ::capnp::bounded<4>() * ::capnp::POINTERS).isNull();
+}
+inline bool SpeechActMsg::Builder::hasText() {
+  return !_builder.getPointerField(
+      ::capnp::bounded<4>() * ::capnp::POINTERS).isNull();
+}
 inline  ::capnp::Text::Reader SpeechActMsg::Reader::getText() const {
   return ::capnp::_::PointerHelpers< ::capnp::Text>::get(_reader.getPointerField(
-      ::capnp::bounded<3>() * ::capnp::POINTERS));
+      ::capnp::bounded<4>() * ::capnp::POINTERS));
 }
 inline  ::capnp::Text::Builder SpeechActMsg::Builder::getText() {
   return ::capnp::_::PointerHelpers< ::capnp::Text>::get(_builder.getPointerField(
-      ::capnp::bounded<3>() * ::capnp::POINTERS));
+      ::capnp::bounded<4>() * ::capnp::POINTERS));
 }
 inline void SpeechActMsg::Builder::setText( ::capnp::Text::Reader value) {
   ::capnp::_::PointerHelpers< ::capnp::Text>::set(_builder.getPointerField(
-      ::capnp::bounded<3>() * ::capnp::POINTERS), value);
+      ::capnp::bounded<4>() * ::capnp::POINTERS), value);
 }
 inline  ::capnp::Text::Builder SpeechActMsg::Builder::initText(unsigned int size) {
   return ::capnp::_::PointerHelpers< ::capnp::Text>::init(_builder.getPointerField(
-      ::capnp::bounded<3>() * ::capnp::POINTERS), size);
+      ::capnp::bounded<4>() * ::capnp::POINTERS), size);
 }
 inline void SpeechActMsg::Builder::adoptText(
     ::capnp::Orphan< ::capnp::Text>&& value) {
   ::capnp::_::PointerHelpers< ::capnp::Text>::adopt(_builder.getPointerField(
-      ::capnp::bounded<3>() * ::capnp::POINTERS), kj::mv(value));
+      ::capnp::bounded<4>() * ::capnp::POINTERS), kj::mv(value));
 }
 inline ::capnp::Orphan< ::capnp::Text> SpeechActMsg::Builder::disownText() {
   return ::capnp::_::PointerHelpers< ::capnp::Text>::disown(_builder.getPointerField(
-      ::capnp::bounded<3>() * ::capnp::POINTERS));
+      ::capnp::bounded<4>() * ::capnp::POINTERS));
 }
 
 inline  ::uint16_t SpeechActMsg::Reader::getSpeechType() const {
