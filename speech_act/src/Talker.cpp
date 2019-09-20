@@ -61,9 +61,7 @@ SpeechAct* Talker::parseInput(std::string input)
 {
     std::cout << "Talker::parseInput(): Input was: '" << input << "'" << std::endl;
     std::vector<std::string> splittedInput = this->split(input);
-    for (std::string splitPart : splittedInput) {
-        std::cout << "Talker::parseInput(): Part: '" << splitPart << "'" << std::endl;
-    }
+
 
     SpeechAct* speechAct = nullptr;
     if (splittedInput[0].compare("i") == 0) {
@@ -101,14 +99,22 @@ void Talker::onSpeechAct(capnp::FlatArrayMessageReader& msg)
 std::vector<std::string> Talker::split(std::string input) {
     std::vector<std::string> splittedInput;
     size_t lastIdx = 0;
-    size_t curIdx = input.find(' ', lastIdx);
-    while(curIdx != std::string::npos) {
-        splittedInput.push_back(input.substr(lastIdx,curIdx-lastIdx));
-        lastIdx = curIdx+1;
+    size_t curIdx = 0;
+
+    while (splittedInput.size() < 2 && lastIdx < input.size()) {
         curIdx = input.find(' ', lastIdx);
+        std::cout << curIdx << std::endl;
+        splittedInput.push_back(input.substr(lastIdx, curIdx - lastIdx));
+        lastIdx = curIdx + 1;
     }
-    splittedInput.push_back(input.substr(lastIdx,curIdx-lastIdx));
-    return splittedInput;
+    splittedInput.push_back(input.substr(lastIdx));
+    
+    if (splittedInput.size() != 3) {
+        std::cerr << "Talker::split(): Wrong input! Usage is '[i|r|c] <receiver-id> <arbitrary strings>'" << std::endl;
+        return std::vector<std::string>();
+    } else {
+        return splittedInput;
+    }
 }
 } // namespace srg
 
