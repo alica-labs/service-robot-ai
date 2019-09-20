@@ -12,10 +12,10 @@ namespace supplementary {
 namespace srg
 {
 class SRGWorldModel;
+class SpeechAct;
 namespace dialogue
 {
 class AnswerGraph;
-class SpeechAct;
 class InformHandler;
 class CommandHandler;
 class BasicHumanNeeds;

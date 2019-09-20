@@ -1,6 +1,6 @@
 #pragma once
 
-#include "srg/dialogue/SpeechAct.h"
+#include "srg/containers/SpeechAct.h"
 
 #include <srgsim/containers/SimPerceptions.h>
 
@@ -24,12 +24,12 @@ namespace srg {
             // Methods for accessing the buffers
             const supplementary::InfoBuffer<Message>& getTelegramMessageBuffer();
             const supplementary::InfoBuffer<control::AgentCommand>& getAgentCmdBuffer();
-            const supplementary::InfoBuffer<srg::dialogue::SpeechAct>& getSpeechActBuffer();
+            const supplementary::InfoBuffer<srg::SpeechAct>& getSpeechActBuffer();
             const supplementary::InfoBuffer<srgsim::SimPerceptions>& getPerceptionsBuffer();
 
             // Methods for processing Messages
             void processTelegramMessage(Message message);
-            void processSpeechAct(srg::dialogue::SpeechAct act);
+            void processSpeechAct(srg::SpeechAct act);
             void processAgentCmd(control::AgentCommand agentCmd);
             void processSimPerceptions(srgsim::SimPerceptions perceptions);
 
@@ -43,7 +43,7 @@ namespace srg {
             supplementary::InfoBuffer<control::AgentCommand>* agentCmdBuffer;
 
             alica::AlicaTime speechActValidityDuration;
-            supplementary::InfoBuffer<srg::dialogue::SpeechAct>* speechActBuffer;
+            supplementary::InfoBuffer<srg::SpeechAct>* speechActBuffer;
 
             alica::AlicaTime perceptionsValidityDuration;
             supplementary::InfoBuffer<srgsim::SimPerceptions>* perceptionsBuffer;

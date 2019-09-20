@@ -33,6 +33,7 @@ public:
     SRGSimData(SRGWorldModel* wm);
     virtual ~SRGSimData();
     void processPerception(srgsim::SimPerceptions simPerceptions);
+    bool isLocalised();
 
 private:
     SRGWorldModel* wm;

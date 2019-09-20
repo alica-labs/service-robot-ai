@@ -4,14 +4,12 @@ $Cxx.namespace("srg");
 
 using IDMsg = import "/capnzero/ID.capnp";
 
-struct SpeechAct {
+struct SpeechActMsg {
   senderID @0 :IDMsg.ID;
-  text @1 :Text;
-  speechType @2 :SpeechType;
+  receiverID @1 :IDMsg.ID;
+  actID @2 :IDMsg.ID;
+  previousActID @3 :IDMsg.ID;
+  text @4 :Text;
+  speechType @5 :UInt16;
 }
 
-enum SpeechType {
-  inform @0;
-  request @1;
-  command @2;
-}

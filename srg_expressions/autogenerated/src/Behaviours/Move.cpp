@@ -27,13 +27,16 @@ Move::~Move()
 void Move::run(void* msg)
 {
     /*PROTECTED REGION ID(run1568825137528) ENABLED START*/
-    // Add additional options here
+    std::cout << "Move::run() called!" << std::endl;
+    if(counter++ > 3) {
+        this->setSuccess();
+    }
     /*PROTECTED REGION END*/
 }
 void Move::initialiseParameters()
 {
     /*PROTECTED REGION ID(initialiseParameters1568825137528) ENABLED START*/
-    // Add additional options here
+    this->counter = 0;
 
     /*PROTECTED REGION END*/
 }

@@ -1,9 +1,11 @@
 #pragma once
 
 #include <essentials/IdentifierConstPtr.h>
-#include <srg/SpeechAct.capnp.h>
+#include <srg/SpeechActMsg.capnp.h>
+#include <srg/containers/SpeechAct.h>
 
 #include <essentials/Worker.h>
+#include <capnzero/Subscriber.h>
 
 namespace capnzero {
     class Publisher;
@@ -21,20 +23,19 @@ namespace srg {
         ~Talker();
 
         void run();
-        void send(srg::SpeechType speechType, const std::string& text) const;
-
-        static void s_signal_handler(int signal_value);
-        static bool operating;
+        void onSpeechAct(capnp::FlatArrayMessageReader &msg);
 
     private:
+        SpeechAct* parseInput(std::string input);
+        void send(SpeechAct* speechAct) const;
+        std::vector<std::string> split(std::string input);
 
         essentials::SystemConfig* sc;
         essentials::IDManager* idManager;
         essentials::IdentifierConstPtr id;
 
         void* ctx;
-        std::string url;
-        std::string topic;
         capnzero::Publisher* speechActPublisher;
+        capnzero::Subscriber* speechActSubscriber;
     };
 }

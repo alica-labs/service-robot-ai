@@ -13,14 +13,8 @@ ProcessCommand ContainerUtils::toProcessCommand(::capnp::FlatArrayMessageReader&
 {
     ProcessCommand pc;
     process_manager::ProcessCommandMsg::Reader reader = msg.getRoot<process_manager::ProcessCommandMsg>();
-    essentials::WildcardID wildcardId(nullptr, 0);
-    if (reader.getSenderID().getType() == essentials::Identifier::WILDCARD_TYPE) {
-        pc.receiverID = &wildcardId;
-    } else {
-        pc.receiverID = idManager->getIDFromBytes(
-                reader.getSenderID().getValue().asBytes().begin(), reader.getSenderID().getValue().size(), reader.getSenderID().getType());
-    }
-
+    pc.receiverID = idManager->getIDFromBytes(
+            reader.getSenderID().getValue().asBytes().begin(), reader.getSenderID().getValue().size(), reader.getSenderID().getType());
     pc.cmd = reader.getCmd();
     for (::capnzero::ID::Reader id : reader.getRobotIds()) {
         pc.robotIDs.push_back(idManager->getIDFromBytes(id.getValue().asBytes().begin(), id.getValue().size(), id.getType()));

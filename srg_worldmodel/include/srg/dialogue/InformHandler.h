@@ -5,6 +5,7 @@
 
 namespace srg
 {
+class SpeechAct;
 class SRGWorldModel;
 namespace conceptnet
 {
@@ -12,13 +13,12 @@ class ConceptNet;
 }
 namespace dialogue
 {
-class SpeechAct;
 class InformHandler
 {
 public:
     explicit InformHandler(SRGWorldModel* wm);
 
-    std::shared_ptr<SpeechAct> answerInform(const SpeechAct informAct);
+    std::shared_ptr<srg::SpeechAct> answerInform(const srg::SpeechAct informAct);
 
 private:
     srg::SRGWorldModel* wm;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "srg/conceptnet/Edge.h"
-#include "srg/dialogue/SpeechAct.h"
+#include "srg/containers/SpeechAct.h"
 
 #include <string>
 #include <vector>

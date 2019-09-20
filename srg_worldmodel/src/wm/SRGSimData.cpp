@@ -39,5 +39,10 @@ void SRGSimData::processPerception(srgsim::SimPerceptions simPerceptions)
     }
 }
 
+bool SRGSimData::isLocalised() {
+    const srgsim::Object* robot = this->world->getObject(this->wm->getOwnId());
+    return (robot && ((srgsim::ServiceRobot*) robot)->getCell());
+}
+
 } // namespace wm
 } /* namespace srg */
