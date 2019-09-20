@@ -72,10 +72,6 @@ std::string EdgeTranslator::createASPPredicates(std::vector<srg::conceptnet::Edg
 {
     std::string ret;
     for (const auto& edge : edges) {
-        // TODO value in config file ?
-        /*if (edge->weight < this->gui->modelSettingsDialog->getMinCn5Weight()) {
-            continue;
-        }*/
         std::string tmp;
         std::string rel = srg::conceptnet::relations[edge.relation];
         std::transform(rel.begin(), rel.begin() + 1, rel.begin(), [](unsigned char c) -> unsigned char { return std::tolower(c); });

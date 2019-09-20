@@ -38,7 +38,6 @@ std::string ASPTranslator::extractASPProgram(srg::dialogue::AnswerGraph* answerG
     program.append(tmp);
 
     program.append("\n");
-    //std::cout << program << std::endl;
     auto indexLeft = programSection.find("(");
     auto indexRight = programSection.find(")");
     if (indexLeft != std::string::npos && indexRight != std::string::npos) {
@@ -58,7 +57,6 @@ std::string ASPTranslator::extractASPProgram(srg::dialogue::AnswerGraph* answerG
     auto pgmMap = extractBackgroundKnowledgePrograms(answerGraph, inconsistencyRemoval);
     for (auto pair : pgmMap) {
         program.append(pair.second).append("\n");
-        //std::cout << pair.second << std::endl;
         this->wm->knowledgeManager.add(programSection.c_str(), {}, pair.second.c_str());
     }
     return program;
@@ -84,10 +82,8 @@ std::string ASPTranslator::createASPPredicates(srg::dialogue::AnswerGraph* answe
         std::string tmp = "";
         tmp.append(ASPTranslator::CONCEPTNET_PREFIX).append(srg::conceptnet::relations[pair.second->relation]);
         tmp.append("(")
-                //.append(ASPTranslator::CONCEPTNET_PREFIX)
                 .append(conceptToASPPredicate(pair.second->fromConcept->term))
                 .append(", ")
-                //.append(ASPTranslator::CONCEPTNET_PREFIX)
                 .append(conceptToASPPredicate(pair.second->toConcept->term))
                 .append(", ")
                 .append(std::to_string((int) (pair.second->weight * 100)))

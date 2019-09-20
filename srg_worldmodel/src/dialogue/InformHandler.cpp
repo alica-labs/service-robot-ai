@@ -29,7 +29,6 @@ std::shared_ptr<SpeechAct> InformHandler::answerInform(const SpeechAct informAct
     root->addEdges(this->cn->getEdges(answerGraph, root->term, -1));
 
     this->cn->findInconsistencies(answerGraph);
-    // answerGraph->renderDot(true);
     std::ofstream file;
     file.open("example.lp");
     file << this->wm->aspTranslator->extractASPProgram(answerGraph, asp::ASPTranslator::InconsistencyRemoval::UseExternals);

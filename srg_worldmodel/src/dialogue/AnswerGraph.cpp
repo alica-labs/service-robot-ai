@@ -197,9 +197,6 @@ void AnswerGraph::renderDot(Agraph_t* g, bool markInconsistencies)
             if (!pair.second.empty()) {
                 agsafeset(node, "color", "red", "");
             }
-            /*else {
-                 agsafeset(node, "color", "blue", "");
-            }*/
 
             for (srg::conceptnet::Edge* edge : pair.second) {
                 if(adjectiveAntonymMap.find(edge->fromConcept) == adjectiveAntonymMap.end() || adjectiveAntonymMap.find(edge->toConcept) == adjectiveAntonymMap.end()) {
@@ -208,17 +205,6 @@ void AnswerGraph::renderDot(Agraph_t* g, bool markInconsistencies)
                 generateEdge(g, openNodes, pair.first->term, edge);
             }
         }
-        /*for (auto pair : this->adjectiveAntonymMap) {
-            Agnode_t* node = agnode(g, strdup(pair.first.c_str()), TRUE);
-            agsafeset(node, "color", "red", "");
-            for (srg::conceptnet::Edge* edge : pair.second) {
-                Agnode_t* node = agnode(g, strdup(edge->toConcept->term.c_str()), TRUE);
-                agsafeset(node, "color", "red", "");
-                node = agnode(g, strdup(edge->fromConcept->term.c_str()), TRUE);
-                agsafeset(node, "color", "red", "");
-                generateEdge(g, openNodes, pair.first, edge);
-            }
-        }*/
     }
 }
 
@@ -226,8 +212,6 @@ void AnswerGraph::generateEdge(Agraph_t* g, std::vector<conceptnet::Concept*>& o
 {
     Agnode_t* to;
     Agnode_t* from;
-    //            std::cout << "AnswerGraph:rendetDot: " << node->id << " " << node << " " << edge->fromConcept->id << " " << edge->fromConcept <<
-    //            std::endl;
     if (edge->fromConcept->term == term) {
         to = agnode(g, strdup(edge->toConcept->term.c_str()), TRUE);
         from = agnode(g, strdup(term.c_str()), TRUE);

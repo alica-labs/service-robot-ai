@@ -252,7 +252,7 @@ std::string ConceptNet::generateEdges(CNManager* cnManager, const std::string& j
         }
         std::string startID = start["@id"].as<std::string>();
         std::string relation = edge["rel"]["@id"].as<std::string>();
-        relation = trimTerm(relation); //.right(relation.size() - relation.lastIndexOf('/') - 1);
+        relation = trimTerm(relation);
         // create edge
         std::string trimmedStartTerm = trimTerm(startTerm);
         std::string trimmedEndTerm = trimTerm(endTerm);
@@ -384,11 +384,6 @@ std::vector<Concept*> ConceptNet::getNewAdjectives(srg::dialogue::AnswerGraph* a
 void ConceptNet::collectAntonyms(srg::dialogue::AnswerGraph* answerGraph, int limit)
 {
     for (auto pair : answerGraph->getEdges()) {
-        /*if (pair.second->relation != srg::conceptnet::Relation::HasContext && pair.second->relation != srg::conceptnet::Relation::HasProperty &&
-                pair.second->relation != srg::conceptnet::Relation::RelatedTo) {
-            continue;
-        }*/
-
         if (pair.second->relation != srg::conceptnet::Relation::HasProperty) {
             continue;
         }
@@ -399,9 +394,6 @@ void ConceptNet::collectAntonyms(srg::dialogue::AnswerGraph* answerGraph, int li
         } else {
             concept = pair.second->fromConcept;
         }
-        /*if (concept->senseLabel.compare("a") != 0) {
-            continue;
-        }*/
 
         std::vector<Edge*> edges = this->getEdges(answerGraph, Relation::Antonym, concept->term, limit);
         std::cout << "collectAntonyms: " << concept->term << std::endl;

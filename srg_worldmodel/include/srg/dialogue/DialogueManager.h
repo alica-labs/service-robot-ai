@@ -20,6 +20,7 @@ class InformHandler;
 class CommandHandler;
 class BasicHumanNeeds;
 
+#define inconsistency_eval
 class DialogueManager
 {
 public:

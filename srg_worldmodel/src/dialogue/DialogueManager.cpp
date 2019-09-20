@@ -35,8 +35,9 @@ void DialogueManager::processSpeechAct(std::shared_ptr<supplementary::Informatio
         this->speechActs.push_back(this->informHandler->answerInform(speechAct->getInformation()));
     }
 
-    // just for evaluation
+#ifdef inconsistency_eval
     renderDot();
+#endif
 }
 
 void DialogueManager::renderDot() const
