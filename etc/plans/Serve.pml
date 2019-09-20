@@ -53,7 +53,7 @@
       "name" : "1568825457853",
       "comment" : "",
       "enabled" : true,
-      "conditionString" : "MovingTask received",
+      "conditionString" : "MovingTask received!",
       "pluginName" : "DefaultPlugin",
       "variables" : [ ],
       "quantifiers" : [ ]

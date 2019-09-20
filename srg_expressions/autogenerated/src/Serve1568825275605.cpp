@@ -21,7 +21,7 @@ shared_ptr<UtilityFunction> UtilityFunction1568825275605::getUtilityFunction(Pla
 /*
  *
  * Transition:
- *   - Name: 1568825457853, ConditionString: MovingTask received, Comment : MISSING_COMMENT
+ *   - Name: 1568825457853, ConditionString: MovingTask received!, Comment : MISSING_COMMENT
  *
  * Plans in State:
  *

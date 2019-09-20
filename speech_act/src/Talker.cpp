@@ -108,7 +108,7 @@ std::vector<std::string> Talker::split(std::string input) {
         lastIdx = curIdx + 1;
     }
     splittedInput.push_back(input.substr(lastIdx));
-    
+
     if (splittedInput.size() != 3) {
         std::cerr << "Talker::split(): Wrong input! Usage is '[i|r|c] <receiver-id> <arbitrary strings>'" << std::endl;
         return std::vector<std::string>();
