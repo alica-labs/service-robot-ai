@@ -28,11 +28,11 @@ public:
     ~DialogueManager();
     void processSpeechAct(std::shared_ptr<supplementary::InformationElement<SpeechAct>> speechAct);
 
-private:
     srg::SRGWorldModel* wm;
     BasicHumanNeeds* basicHumanNeeds;
     InformHandler* informHandler;
     CommandHandler* commandHandler;
+private:
     std::vector<std::shared_ptr<SpeechAct>> speechActs;
     void renderDot() const;
 };
