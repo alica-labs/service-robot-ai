@@ -7,6 +7,7 @@
 #include <QLayout>
 
 #include<chrono>
+#include <engine/containers/AlicaEngineInfo.h>
 
 namespace Ui
 {
@@ -29,6 +30,7 @@ namespace control {
 
 
         void update(std::pair<std::chrono::system_clock::time_point, process_manager::ProcessStats> timePstsPair);
+        void update(std::pair<std::chrono::system_clock::time_point, alica::AlicaEngineInfo> timePstsPair);
         void addExec(QWidget* exec);
 
         essentials::IdentifierConstPtr getAgentID();

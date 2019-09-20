@@ -7,12 +7,12 @@ set(CMAKE_BUILD_TYPE Debug)
 
 find_package(Threads)
 find_package(Qt5 COMPONENTS Core Widgets Gui REQUIRED)
-find_package(catkin REQUIRED process_manager_capnzero capnzero alica_engine id_manager id_capnzero)
+find_package(catkin REQUIRED process_manager_capnzero capnzero alica_engine id_manager id_capnzero alica_capnzero_proxy)
 
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES control_msgs
-#  CATKIN_DEPENDS other_catkin_pkg
+  CATKIN_DEPENDS process_manager_capnzero capnzero alica_engine id_manager id_capnzero alica_capnzero_proxy
 #  DEPENDS system_lib
 )
 

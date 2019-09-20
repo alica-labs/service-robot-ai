@@ -50,50 +50,50 @@ void Talker::run()
 {
     std::string input;
     std::getline(std::cin, input);
-    SpeechAct* speechAct = parseInput(input);
-    if (speechAct) {
+    SpeechAct speechAct;
+    if (parseInput(input, speechAct)) {
         this->send(speechAct);
-        delete speechAct;
     }
 }
 
-SpeechAct* Talker::parseInput(std::string input)
+bool Talker::parseInput(std::string input, SpeechAct& speechAct)
 {
     std::cout << "Talker::parseInput(): Input was: '" << input << "'" << std::endl;
     std::vector<std::string> splittedInput = this->split(input);
 
-
-    SpeechAct* speechAct = nullptr;
     if (splittedInput[0].compare("i") == 0) {
-        speechAct->type = SpeechType::inform;
+        speechAct.type = SpeechType::inform;
     } else if (splittedInput[0].compare("r") == 0) {
-        speechAct->type = SpeechType::request;
+        speechAct.type = SpeechType::request;
     } else if (splittedInput[0].compare("c") == 0) {
-        speechAct->type = SpeechType::command;
+        speechAct.type = SpeechType::command;
     } else {
-        return nullptr;
+        return false;
     }
-    speechAct->senderID = this->id;
+
+    speechAct.senderID = this->id;
     int receiverID = std::stoi(splittedInput[1]);
-    speechAct->receiverID = this->idManager->getID(receiverID);
-    speechAct->text = splittedInput[2];
-    speechAct->actID = this->idManager->generateID();
-    return speechAct;
+    speechAct.receiverID = this->idManager->getID(receiverID);
+    speechAct.text = splittedInput[2];
+    speechAct.actID = this->idManager->generateID(4);
+    speechAct.previousActID = this->idManager->getWildcardID();
+
+    return true;
 }
 
-void Talker::send(SpeechAct* speechAct) const
+void Talker::send(SpeechAct speechAct) const
 {
     ::capnp::MallocMessageBuilder msgBuilder;
-    srg::ContainerUtils::toMsg(*speechAct, msgBuilder);
+    srg::ContainerUtils::toMsg(speechAct, msgBuilder);
     if (this->isRunning()) {
-        std::cout << "Talker: sending msg '" << msgBuilder.getRoot<srg::SpeechActMsg>().toString().flatten().cStr() << "'" << std::endl;
+        std::cout << "Talker::send() sending msg '" << msgBuilder.getRoot<srg::SpeechActMsg>().toString().flatten().cStr() << "'" << std::endl;
         this->speechActPublisher->send(msgBuilder);
     }
 }
 
 void Talker::onSpeechAct(capnp::FlatArrayMessageReader& msg)
 {
-    std::cout << "Talker:: receiving msg '" << msg.getRoot<srg::SpeechActMsg>().toString().flatten().cStr() << "'" << std::endl;
+    std::cout << "Talker::onSpeechAct(): receiving msg '" << msg.getRoot<srg::SpeechActMsg>().toString().flatten().cStr() << "'" << std::endl;
 }
 
 std::vector<std::string> Talker::split(std::string input) {
@@ -103,7 +103,6 @@ std::vector<std::string> Talker::split(std::string input) {
 
     while (splittedInput.size() < 2 && lastIdx < input.size()) {
         curIdx = input.find(' ', lastIdx);
-        std::cout << curIdx << std::endl;
         splittedInput.push_back(input.substr(lastIdx, curIdx - lastIdx));
         lastIdx = curIdx + 1;
     }

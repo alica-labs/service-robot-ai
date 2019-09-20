@@ -5,6 +5,8 @@
 
 #include <process_manager/containers/ContainerUtils.h>
 #include <process_manager/ProcessStatsMsg.capnp.h>
+#include <alica_capnzero_proxy/ContainerUtils.h>
+#include <engine/containers/AlicaEngineInfo.h>
 
 #include <SystemConfig.h>
 
@@ -40,8 +42,7 @@ namespace control {
 
     void Communication::handleAlicaInfo(capnp::FlatArrayMessageReader& msg)
     {
-        // TODO container utils for alica info container in alica capnzero proxy
-//        this->controlPanel->enqueue(alica::ContainerUtils::(msg));
+        this->controlPanel->enqueue(alica_capnzero_proxy::ContainerUtils::toAlicaEngineInfo(msg, this->controlPanel->getIDManager()));
     }
 
     void Communication::handleProcessStats(capnp::FlatArrayMessageReader& msg)

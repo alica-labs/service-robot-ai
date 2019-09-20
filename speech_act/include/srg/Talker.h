@@ -26,8 +26,8 @@ namespace srg {
         void onSpeechAct(capnp::FlatArrayMessageReader &msg);
 
     private:
-        SpeechAct* parseInput(std::string input);
-        void send(SpeechAct* speechAct) const;
+        bool parseInput(std::string input, SpeechAct& speechAct);
+        void send(SpeechAct speechAct) const;
         std::vector<std::string> split(std::string input);
 
         essentials::SystemConfig* sc;
