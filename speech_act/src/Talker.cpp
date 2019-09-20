@@ -42,6 +42,7 @@ Talker::Talker()
 Talker::~Talker()
 {
     delete this->speechActPublisher;
+    delete this->speechActSubscriber;
     zmq_ctx_term(this->ctx);
 }
 
@@ -100,11 +101,11 @@ void Talker::onSpeechAct(capnp::FlatArrayMessageReader& msg)
 std::vector<std::string> Talker::split(std::string input) {
     std::vector<std::string> splittedInput;
     size_t lastIdx = 0;
-    size_t curIdx = input.find(" ", lastIdx, input.size()-lastIdx);
+    size_t curIdx = input.find(' ', lastIdx);
     while(curIdx != std::string::npos) {
         splittedInput.push_back(input.substr(lastIdx,curIdx-lastIdx));
-        lastIdx = curIdx;
-        curIdx = input.find(" ", lastIdx, input.size()-lastIdx);
+        lastIdx = curIdx+1;
+        curIdx = input.find(' ', lastIdx);
     }
     splittedInput.push_back(input.substr(lastIdx,curIdx-lastIdx));
     return splittedInput;
