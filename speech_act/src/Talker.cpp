@@ -65,7 +65,6 @@ SpeechAct* Talker::parseInput(std::string input)
     }
 
     SpeechAct* speechAct = nullptr;
-    speechAct->senderID = this->id;
     if (splittedInput[0].compare("i") == 0) {
         speechAct->type = SpeechType::inform;
     } else if (splittedInput[0].compare("r") == 0) {
@@ -75,6 +74,7 @@ SpeechAct* Talker::parseInput(std::string input)
     } else {
         return nullptr;
     }
+    speechAct->senderID = this->id;
     int receiverID = std::stoi(splittedInput[1]);
     speechAct->receiverID = this->idManager->getID(receiverID);
     speechAct->text = splittedInput[2];
