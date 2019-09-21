@@ -105,6 +105,11 @@ std::map<std::string, std::string> ASPTranslator::extractBackgroundKnowledgeProg
             }
         }
         std::string tmpRel = srg::conceptnet::relations[pair.second->relation];
+        if(inconsistencyRemoval == InconsistencyRemoval::UseExternals) {
+            if(pair.second->relation == srg::conceptnet::Relation::HasProperty) {
+                continue;
+            }
+        }
         tmpRel[0] = std::tolower(tmpRel[0]);
         auto it = std::find(addedRelations.begin(), addedRelations.end(), tmpRel);
         if (it == addedRelations.end()) {
@@ -119,9 +124,6 @@ std::map<std::string, std::string> ASPTranslator::extractBackgroundKnowledgeProg
     }
     if (inconsistencyRemoval == InconsistencyRemoval::UseExternals) {
         for (auto pair : answerGraph->adjectiveAntonymMap) {
-            if (pair.second.empty()) {
-                continue;
-            }
             std::vector<std::string> closed;
             // std::cout << "getting edges: " << answerGraph->root->term << " " << pair.first->term << std::endl;
             std::vector<srg::conceptnet::Edge*> edges = answerGraph->getEdges(answerGraph->root, pair.first);
@@ -133,6 +135,9 @@ std::map<std::string, std::string> ASPTranslator::extractBackgroundKnowledgeProg
                 std::string relation = srg::conceptnet::relations[edge->relation];
                 relation[0] = std::tolower(relation[0]);
                 pgm.append("#external -" + relation + "(n, " + pair.first->term + ").\n");
+                if(pair.second.empty()) {
+                    pgm.append(createPropertyBackgroundKnowledgeRule(answerGraph->root, pair.first, relation));
+                }
                 for (srg::conceptnet::Edge *edge : pair.second) {
                     std::string antonym;
                     if (edge->fromConcept == pair.first) {
@@ -164,13 +169,39 @@ std::string ASPTranslator::createInconsistencyBackgroundKnowledgeRule(
     capitalRelation[0] = std::toupper(capitalRelation[0]);
     std::string ret = "";
     ret.append(relation + "(n, " + adj + ", W) ")
-            .append(":- not -" + relation + "(n, " + adj + "), ")
-            .append(ASPTranslator::CONCEPTNET_PREFIX + capitalRelation + "(n, " + adj + ", W), ")
+            .append(":- not is(n, -" + adj + "), ")
+            .append(ASPTranslator::CONCEPTNET_PREFIX + capitalRelation + "(" + root->term + ", " + adj + ", W), ")
+            .append("is(n, " + adj + "), ")
             .append("is(n, " + root->term + "), ")
-            .append("-" + relation + "(n, " + antonym + ") : " + ASPTranslator::CONCEPTNET_PREFIX + antonymRelation + "(" + adj + ", " + antonym +
-                    ", W).\n");
+            .append("not " + relation + "(n, " + antonym + ") : " + ASPTranslator::CONCEPTNET_PREFIX + antonymRelation + "(" + adj + ", " + antonym +
+                    ", _).\n");
+    ret.append("-" + relation + "(n, " + adj + ", W) ")
+            .append(":- not is(n, -" + adj + "), ")
+            .append(ASPTranslator::CONCEPTNET_PREFIX + capitalRelation + "(" + root->term + ", " + adj + ", W), ")
+            .append("is(n, -" + adj + "), ")
+            .append("is(n, " + root->term + ").\n");
     return ret;
 }
+
+    std::string ASPTranslator::createPropertyBackgroundKnowledgeRule(
+            srg::conceptnet::Concept* root, srg::conceptnet::Concept* adjective, std::string relation)
+    {
+        std::string adj = conceptToASPPredicate(adjective->term);
+        std::string capitalRelation = relation;
+        capitalRelation[0] = std::toupper(capitalRelation[0]);
+        std::string ret = "";
+        ret.append(relation + "(n, " + adj + ", W) ")
+                .append(":- not is(n, -" + adj + "), ")
+                .append(ASPTranslator::CONCEPTNET_PREFIX + capitalRelation + "(" + root->term + ", " + adj + ", W), ")
+                .append("is(n, " + adj + "), ")
+                .append("is(n, " + root->term + ").\n");
+        ret.append("-" + relation + "(n, " + adj + ", W) ")
+                .append(":- not is(n, -" + adj + "), ")
+                .append(ASPTranslator::CONCEPTNET_PREFIX + capitalRelation + "(" + root->term + ", " + adj + ", W), ")
+                .append("is(n, -" + adj + "), ")
+                .append("is(n, " + root->term + ").\n");
+        return ret;
+    }
 
 std::string ASPTranslator::createBackgroundKnowledgeRule(std::string relation, srg::conceptnet::Edge* edge)
 {

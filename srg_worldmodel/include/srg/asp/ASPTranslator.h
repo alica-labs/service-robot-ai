@@ -40,7 +40,9 @@ private:
     std::map<std::string, std::string> extractBackgroundKnowledgePrograms(
             srg::dialogue::AnswerGraph* answerGraph, InconsistencyRemoval inconsistencyRemoval = InconsistencyRemoval::None);
     std::string createBackgroundKnowledgeRule(std::string relation, srg::conceptnet::Edge* edge);
-    std::string createInconsistencyBackgroundKnowledgeRule(srg::conceptnet::Concept* root, srg::conceptnet::Concept* adjective, std::string antonym, std::string relation);
+    std::string createInconsistencyBackgroundKnowledgeRule(
+            srg::conceptnet::Concept* root, srg::conceptnet::Concept* adjective, std::string antonym, std::string relation);
+    std::string createPropertyBackgroundKnowledgeRule(srg::conceptnet::Concept* root, srg::conceptnet::Concept* adjective, std::string relation);
 
     std::vector<std::string> split(std::string toSplit);
     std::string trim(const std::string& s);
