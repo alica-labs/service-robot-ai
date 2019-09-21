@@ -1,10 +1,11 @@
 #include "srg/wm/SRGSimData.h"
 
 #include "srg/SRGWorldModel.h"
-#include "srgsim/Object.h"
+#include "srgsim/world/Object.h"
 #include "srgsim/SRGEnums.h"
-#include "srgsim/ServiceRobot.h"
-#include "srgsim/World.h"
+#include "srgsim/world/ServiceRobot.h"
+#include "srgsim/world/World.h"
+#include "srgsim/world/Cell.h"
 
 namespace srg
 {
@@ -19,9 +20,16 @@ SRGSimData::SRGSimData(SRGWorldModel* wm)
     // ATTENTION: This path/file is not the same as the simulator
     // is starting, please make sure that both files have the same content!
     this->world = new srgsim::World((*sc).getConfigPath() + "/textures/Department.tmx");
+
+    this->ownPositionValidityDuration = alica::AlicaTime::nanoseconds((*sc)["SRGWorldModel"]->get<int>("Data.Perception.ValidityDuration", NULL));
+    this->ownPositionBuffer = new supplementary::InfoBuffer<srgsim::Coordinate>((*sc)["SRGWorldModel"]->get<int>("Data.Perception.BufferLength", NULL));
 }
 
 SRGSimData::~SRGSimData() {}
+
+const srgsim::World* SRGSimData::getWorld() {
+    return this->world;
+}
 
 void SRGSimData::processPerception(srgsim::SimPerceptions simPerceptions)
 {
@@ -32,6 +40,8 @@ void SRGSimData::processPerception(srgsim::SimPerceptions simPerceptions)
             if (this->world->placeObject(robot, srgsim::Coordinate(perception.x, perception.y))) {
                 this->world->addRobot(static_cast<srgsim::ServiceRobot*>(robot));
             }
+            auto ownPositionInfo = std::make_shared<supplementary::InformationElement<srgsim::Coordinate>>(robot->getCell()->coordinate, wm->getTime(), ownPositionValidityDuration, 1.0);
+            this->ownPositionBuffer->add(ownPositionInfo);
         } break;
         default:
             std::cerr << "SRGSimData::processPerception(): Unknown perception received!" << std::endl;
@@ -39,9 +49,15 @@ void SRGSimData::processPerception(srgsim::SimPerceptions simPerceptions)
     }
 }
 
-bool SRGSimData::isLocalised() {
+bool SRGSimData::isLocalised()
+{
     const srgsim::Object* robot = this->world->getObject(this->wm->getOwnId());
     return (robot && ((srgsim::ServiceRobot*) robot)->getCell());
+}
+
+const supplementary::InfoBuffer<srgsim::Coordinate>& SRGSimData::getOwnPositionBuffer() const
+{
+    return *this->ownPositionBuffer;
 }
 
 } // namespace wm
