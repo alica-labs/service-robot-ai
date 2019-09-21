@@ -1,6 +1,7 @@
 #pragma once
 
-#include <srgsim/SimCommandMsg.capnp.h>
+#include <srgsim/containers/SimCommand.h>
+#include <srgsim/containers/Coordinate.h>
 #include <essentials/IdentifierConstPtr.h>
 
 #include <string>
@@ -20,6 +21,10 @@ namespace srg
 
 class SRGWorldModel;
 
+namespace robot {
+    class Movement;
+}
+
 class Robot
 {
 
@@ -29,18 +34,22 @@ public:
 
     // methods for doing something
     void spawn() const;
+    void move(srgsim::Coordinate goal) const;
+    void manipulate(essentials::IdentifierConstPtr objectID, srgsim::SimCommand::Action action) const;
 
 private:
     Robot(srg::SRGWorldModel* wm);  /**< Private Singleton Constructor */
-    essentials::SystemConfig* sc;
+    void send(srgsim::SimCommand sc) const;
 
+    essentials::SystemConfig* sc;
     std::string simCmdTopic;
     std::string simAddress;
-
     capnzero::Publisher* simPub;
     void* capnzeroContext;
-    essentials::IdentifierConstPtr id;
 
     srg::SRGWorldModel* wm;
+    essentials::IdentifierConstPtr id;
+    srg::robot::Movement* movement;
+
 };
 } // namespace srg

@@ -11,6 +11,7 @@ DomainBehaviour::DomainBehaviour(std::string name)
 {
     /*PROTECTED REGION ID(domainBehaviourConstructor) ENABLED START*/
     this->robot = srg::Robot::getInstance();
+    this->wm = srg::SRGWorldModel::getInstance();
     /*PROTECTED REGION END*/
 }
 

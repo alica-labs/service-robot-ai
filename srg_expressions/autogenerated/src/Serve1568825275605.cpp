@@ -21,7 +21,7 @@ shared_ptr<UtilityFunction> UtilityFunction1568825275605::getUtilityFunction(Pla
 /*
  *
  * Transition:
- *   - Name: 1568825457853, ConditionString: MovingTask received, Comment : MISSING_COMMENT
+ *   - Name: 1568825457853, ConditionString: MovingTask received!, Comment : MISSING_COMMENT
  *
  * Plans in State:
  *
@@ -41,8 +41,8 @@ shared_ptr<UtilityFunction> UtilityFunction1568825275605::getUtilityFunction(Pla
 bool PreCondition1568825457853::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1568825336792) ENABLED START*/
-    // TODO extend speechAct to contain different kind of commands
-    return this->wm->dialogueManager.commandHandler->getCommandActBuffer().getLastValidContent()->type == srg::SpeechType::command;
+    auto lastSpeechAct = this->wm->dialogueManager.commandHandler->getCommandActBuffer().getLastValidContent();
+    return lastSpeechAct.has_value() && lastSpeechAct->type == srg::SpeechType::command;
     /*PROTECTED REGION END*/
 }
 /*

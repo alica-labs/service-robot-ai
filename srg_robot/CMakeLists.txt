@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(srg_robot)
 
+set(CMAKE_BUILD_TYPE Debug)
+
 add_compile_options(-std=c++11)
 
 find_package(catkin REQUIRED srg_worldmodel capnzero grid_sim id_capnzero)
@@ -19,6 +21,8 @@ include_directories(
 
 add_library(${PROJECT_NAME}
   src/Robot.cpp
+  src/Path.cpp
+  src/Movement.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}

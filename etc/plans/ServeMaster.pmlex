@@ -79,15 +79,6 @@
       "y" : 0,
       "visible" : false,
       "bendPoints" : [ ]
-    },
-    "1558533498560" : {
-      "id" : 1568204724600,
-      "name" : "1568204724600",
-      "comment" : "",
-      "x" : 0,
-      "y" : 0,
-      "visible" : false,
-      "bendPoints" : [ ]
     }
   }
 }

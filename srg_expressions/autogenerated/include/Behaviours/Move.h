@@ -1,5 +1,7 @@
 #pragma once
 
+#include <srgsim/containers/Coordinate.h>
+#include <nonstd/optional.hpp>
 #include "DomainBehaviour.h"
 /*PROTECTED REGION ID(inc1568825137528) ENABLED START*/
 // Add additional includes here
@@ -23,7 +25,8 @@ protected:
     /*PROTECTED REGION END*/
 private:
     /*PROTECTED REGION ID(prv1568825137528) ENABLED START*/
-    // Add additional private methods here
+    nonstd::optional<srgsim::Coordinate> startCoordinate;
+    bool firstRun;
     /*PROTECTED REGION END*/
 };
 } /* namespace alica */

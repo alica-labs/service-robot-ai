@@ -33,6 +33,8 @@ void DialogueManager::processSpeechAct(std::shared_ptr<supplementary::Informatio
         this->speechActs.push_back(this->basicHumanNeeds->answerNeed(speechAct->getInformation()));
     } else if (speechAct->getInformation().type == SpeechType::inform) {
         this->speechActs.push_back(this->informHandler->answerInform(speechAct->getInformation()));
+    } else if (speechAct->getInformation().type == SpeechType::command) {
+        this->commandHandler->processCommandAct(speechAct);
     }
 
 #ifdef inconsistency_eval

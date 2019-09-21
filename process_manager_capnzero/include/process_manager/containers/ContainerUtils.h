@@ -17,7 +17,6 @@ namespace process_manager {
         static void toMsg(ProcessStats psts, ::capnp::MallocMessageBuilder& builder);
         static void toMsg(ProcessCommand pc, ::capnp::MallocMessageBuilder& builder);
     private:
-    private:
         ContainerUtils() = delete;
     };
 }

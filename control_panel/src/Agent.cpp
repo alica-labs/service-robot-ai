@@ -92,9 +92,32 @@ void Agent::update(std::pair<std::chrono::system_clock::time_point, process_mana
     }
 }
 
+void Agent::update(std::pair<std::chrono::system_clock::time_point, alica::AlicaEngineInfo> timePstsPair) {
+    this->timeLastMsgReceived = timePstsPair.first;
+    this->hostID = timePstsPair.second.senderID;
+    timePstsPair.second;
+
+    uiAgent->planVal->setText(QString(timePstsPair.second.currentPlan.c_str()));
+    uiAgent->roleVal->setText(QString(timePstsPair.second.currentRole.c_str()));
+    uiAgent->taskVal->setText(QString(timePstsPair.second.currentTask.c_str()));
+    uiAgent->masterPlanVal->setText(QString(timePstsPair.second.masterPlan.c_str()));
+
+    std::stringstream ss;
+    ss << timePstsPair.second.currentState << " (";
+    if (timePstsPair.second.robotIDsWithMe.size() > 0) {
+        for (int i = 0; i < timePstsPair.second.robotIDsWithMe.size() - 1; i++) {
+            ss << timePstsPair.second.robotIDsWithMe[i] << ", ";
+        }
+        ss << timePstsPair.second.robotIDsWithMe[timePstsPair.second.robotIDsWithMe.size() - 1];
+    }
+    ss << ")";
+
+    uiAgent->stateVal->setText(QString(ss.str().c_str()));
+}
+
 void Agent::addExec(QWidget* exec)
 {
-    this->uiAgent->verticalLayout->insertWidget(this->uiAgent->verticalLayout->count() - 1, exec);
+    this->uiAgent->processesVLayout->insertWidget(this->uiAgent->processesVLayout->count() - 1, exec);
 }
 
 void Agent::handleAgentCommandBtnClicked(bool checked)

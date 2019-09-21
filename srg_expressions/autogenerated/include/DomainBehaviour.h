@@ -6,6 +6,7 @@
 namespace srg
 {
 class Robot;
+class SRGWorldModel;
 }
 /*PROTECTED REGION END*/
 
@@ -19,6 +20,7 @@ public:
 
     /*PROTECTED REGION ID(domainBehaviourClassDecl) ENABLED START*/
     srg::Robot* robot;
+    srg::SRGWorldModel* wm;
     /*PROTECTED REGION END*/
 };
 } /* namespace alica */

@@ -105,7 +105,7 @@ void ControlPanel::processMessage()
         auto timeAlicaInfoPair = alicaInfosQueue.front();
         alicaInfosQueue.pop();
         Agent* agent = this->getAgent(timeAlicaInfoPair.second.senderID);
-        std::cout << "ControlPanel: processing Alica Info from " << agent->getAgentID() << std::endl;
+        agent->update(timeAlicaInfoPair);
     }
 }
 

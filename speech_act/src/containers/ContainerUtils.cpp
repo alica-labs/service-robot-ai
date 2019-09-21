@@ -42,7 +42,7 @@ namespace srg
         actID.setValue(kj::arrayPtr(speechAct.actID->getRaw(), (unsigned int) speechAct.actID->getSize()));
         actID.setType(speechAct.actID->getType());
 
-        capnzero::ID::Builder previousID = msg.initActID();
+        capnzero::ID::Builder previousID = msg.initPreviousActID();
         previousID.setValue(kj::arrayPtr(speechAct.previousActID->getRaw(), (unsigned int) speechAct.previousActID->getSize()));
         previousID.setType(speechAct.previousActID->getType());
 
