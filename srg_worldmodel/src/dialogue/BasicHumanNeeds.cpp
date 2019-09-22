@@ -26,7 +26,7 @@ BasicHumanNeeds::BasicHumanNeeds(SRGWorldModel* wm)
     this->cn = this->wm->conceptNet;
 }
 
-std::shared_ptr<SpeechAct> BasicHumanNeeds::answerNeed(const SpeechAct needAct)
+std::shared_ptr<control::SpeechAct> BasicHumanNeeds::answerNeed(const control::SpeechAct needAct)
 {
     /**
      *  1. ask ConceptNet for MotivatedByGoal(WILDCARD, need) and CausesDesire(need, WILDCARD)
@@ -76,10 +76,10 @@ std::shared_ptr<SpeechAct> BasicHumanNeeds::answerNeed(const SpeechAct needAct)
     //TODO add again later
     //answerGraph->renderDot();
 
-    std::shared_ptr<SpeechAct> answerSpeechAct = std::make_shared<SpeechAct>();
+    std::shared_ptr<control::SpeechAct> answerSpeechAct = std::make_shared<control::SpeechAct>();
     answerSpeechAct->text = "";
     answerSpeechAct->answerGraph = answerGraph;
-    answerSpeechAct->type = SpeechType::request;
+    answerSpeechAct->type = control::SpeechType::request;
     answerSpeechAct->previousActID = needAct.actID;
     answerSpeechAct->actID = this->wm->getEngine()->getIdManager()->generateID();
     answerSpeechAct->senderID = this->wm->getOwnId();

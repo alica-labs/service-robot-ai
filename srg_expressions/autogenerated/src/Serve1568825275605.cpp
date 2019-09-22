@@ -42,7 +42,7 @@ bool PreCondition1568825457853::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1568825336792) ENABLED START*/
     auto lastSpeechAct = this->wm->dialogueManager.commandHandler->getCommandActBuffer().getLastValidContent();
-    return lastSpeechAct.has_value() && lastSpeechAct->type == srg::SpeechType::command;
+    return lastSpeechAct.has_value() && lastSpeechAct->type == control::SpeechType::command;
     /*PROTECTED REGION END*/
 }
 /*

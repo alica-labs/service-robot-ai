@@ -2,7 +2,7 @@
 
 #include "srg/SRGWorldModel.h"
 
-#include "srg/containers/SpeechAct.h"
+#include <control/containers/SpeechAct.h>
 
 #include <SystemConfig.h>
 #include <supplementary/InfoBuffer.h>
@@ -22,7 +22,7 @@ RawSensorData::RawSensorData(srg::SRGWorldModel* wm)
     this->telegramMessageBuffer = new supplementary::InfoBuffer<Message>((*sc)["SRGWorldModel"]->get<int>("Data.Telegram.BufferLength", NULL));
 
     this->speechActValidityDuration = alica::AlicaTime::nanoseconds((*sc)["SRGWorldModel"]->get<int>("Data.SpeechAct.ValidityDuration", NULL));
-    this->speechActBuffer = new supplementary::InfoBuffer<srg::SpeechAct>((*sc)["SRGWorldModel"]->get<int>("Data.SpeechAct.BufferLength", NULL));
+    this->speechActBuffer = new supplementary::InfoBuffer<control::SpeechAct>((*sc)["SRGWorldModel"]->get<int>("Data.SpeechAct.BufferLength", NULL));
 
     this->agentCmdValidityDuration = alica::AlicaTime::nanoseconds((*sc)["SRGWorldModel"]->get<int>("Data.AgentCmd.ValidityDuration", NULL));
     this->agentCmdBuffer = new supplementary::InfoBuffer<control::AgentCommand>((*sc)["SRGWorldModel"]->get<int>("Data.AgentCmd.BufferLength", NULL));
@@ -43,7 +43,7 @@ const supplementary::InfoBuffer<control::AgentCommand>& RawSensorData::getAgentC
     return *this->agentCmdBuffer;
 }
 
-const supplementary::InfoBuffer<srg::SpeechAct>& RawSensorData::getSpeechActBuffer()
+const supplementary::InfoBuffer<control::SpeechAct>& RawSensorData::getSpeechActBuffer()
 {
     return *this->speechActBuffer;
 }
@@ -59,9 +59,9 @@ void RawSensorData::processTelegramMessage(Message message)
     telegramMessageBuffer->add(messageInfo);
 }
 
-void RawSensorData::processSpeechAct(srg::SpeechAct act)
+void RawSensorData::processSpeechAct(control::SpeechAct act)
 {
-    auto speechActInfo = std::make_shared<supplementary::InformationElement<srg::SpeechAct>>(act, wm->getTime(), speechActValidityDuration, 1.0);
+    auto speechActInfo = std::make_shared<supplementary::InformationElement<control::SpeechAct>>(act, wm->getTime(), speechActValidityDuration, 1.0);
     speechActBuffer->add(speechActInfo);
 
     // further processing

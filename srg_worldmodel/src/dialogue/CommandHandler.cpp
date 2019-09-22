@@ -11,15 +11,15 @@ CommandHandler::CommandHandler(SRGWorldModel* wm)
 {
     auto sc = essentials::SystemConfig::getInstance();
     this->commandActValidityDuration = alica::AlicaTime::nanoseconds((*sc)["SRGWorldModel"]->get<int>("Data.CommandAct.ValidityDuration", NULL));
-    this->commandActBuffer = new supplementary::InfoBuffer<srg::SpeechAct>((*sc)["SRGWorldModel"]->get<int>("Data.CommandAct.BufferLength", NULL));
+    this->commandActBuffer = new supplementary::InfoBuffer<control::SpeechAct>((*sc)["SRGWorldModel"]->get<int>("Data.CommandAct.BufferLength", NULL));
 }
 
-void CommandHandler::processCommandAct(std::shared_ptr<supplementary::InformationElement<SpeechAct>> commandAct)
+void CommandHandler::processCommandAct(std::shared_ptr<supplementary::InformationElement<control::SpeechAct>> commandAct)
 {
     this->commandActBuffer->add(commandAct);
 }
 
-const supplementary::InfoBuffer<srg::SpeechAct>& CommandHandler::getCommandActBuffer()
+const supplementary::InfoBuffer<control::SpeechAct>& CommandHandler::getCommandActBuffer()
 {
     return *this->commandActBuffer;
 }

@@ -6,8 +6,8 @@
 #include <control/containers/ContainerUtils.h>
 #include <srgsim/containers/ContainerUtils.h>
 
-#include <srg/SpeechActMsg.capnp.h>
-#include <srg/containers/ContainerUtils.h>
+#include <control/SpeechActMsg.capnp.h>
+#include <control/containers/ContainerUtils.h>
 
 #include <engine/AlicaEngine.h>
 
@@ -65,7 +65,7 @@ void Communication::onTelegramMessage(capnp::FlatArrayMessageReader& msg)
 
 void Communication::onSpeechAct(capnp::FlatArrayMessageReader& msg)
 {
-    SpeechAct speechAct = srg::ContainerUtils::toSpeechAct(msg, this->wm->getEngine()->getIdManager());
+    control::SpeechAct speechAct = control::ContainerUtils::toSpeechAct(msg, this->wm->getEngine()->getIdManager());
     if (speechAct.receiverID == this->wm->getOwnId() || speechAct.receiverID.get()->getType() == essentials::Identifier::WILDCARD_TYPE) {
         this->wm->rawSensorData.processSpeechAct(speechAct);
     }

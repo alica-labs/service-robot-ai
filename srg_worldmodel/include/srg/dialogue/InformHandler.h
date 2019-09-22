@@ -3,9 +3,11 @@
 #include <string>
 #include <memory>
 
+namespace control {
+    class SpeechAct;
+}
 namespace srg
 {
-class SpeechAct;
 class SRGWorldModel;
 namespace conceptnet
 {
@@ -18,7 +20,7 @@ class InformHandler
 public:
     explicit InformHandler(SRGWorldModel* wm);
 
-    std::shared_ptr<srg::SpeechAct> answerInform(const srg::SpeechAct informAct);
+    std::shared_ptr<control::SpeechAct> answerInform(const control::SpeechAct informAct);
 
 private:
     srg::SRGWorldModel* wm;

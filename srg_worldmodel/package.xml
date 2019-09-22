@@ -25,7 +25,6 @@
   <depend>knowledge_manager</depend>
   <depend>control_panel</depend>
   <depend>grid_sim</depend>
-  <depend>speech_act</depend>
 
   <export>
   </export>

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "srg/conceptnet/Edge.h"
-#include "srg/containers/SpeechAct.h"
+#include <control/containers/SpeechAct.h>
 
 #include <string>
 #include <vector>
@@ -23,7 +23,7 @@ class BasicHumanNeeds
 public:
     explicit BasicHumanNeeds(SRGWorldModel* wm);
 
-    std::shared_ptr<SpeechAct> answerNeed(const SpeechAct needAct);
+    std::shared_ptr<control::SpeechAct> answerNeed(const control::SpeechAct needAct);
     static const int bestNumberOfElements;
 
 private:

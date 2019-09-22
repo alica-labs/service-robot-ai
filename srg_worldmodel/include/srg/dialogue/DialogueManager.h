@@ -9,10 +9,13 @@ namespace supplementary {
     class InformationElement;
 }
 
+namespace control {
+    class SpeechAct;
+}
+
 namespace srg
 {
 class SRGWorldModel;
-class SpeechAct;
 namespace dialogue
 {
 class AnswerGraph;
@@ -26,7 +29,7 @@ class DialogueManager
 public:
     explicit DialogueManager(SRGWorldModel* wm);
     ~DialogueManager();
-    void processSpeechAct(std::shared_ptr<supplementary::InformationElement<SpeechAct>> speechAct);
+    void processSpeechAct(std::shared_ptr<supplementary::InformationElement<control::SpeechAct>> speechAct);
 
     BasicHumanNeeds* basicHumanNeeds;
     InformHandler* informHandler;
@@ -34,7 +37,7 @@ public:
 
 private:
     srg::SRGWorldModel* wm;
-    std::vector<std::shared_ptr<SpeechAct>> speechActs;
+    std::vector<std::shared_ptr<control::SpeechAct>> speechActs;
     void renderDot() const;
 };
 } // namespace dialogue
