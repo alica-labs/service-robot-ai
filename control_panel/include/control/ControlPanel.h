@@ -16,11 +16,16 @@ namespace essentials {
     class SystemConfig;
 }
 
+namespace Ui {
+    class ControlPanel;
+}
+
 namespace control
 {
 class ExecutableRegistry;
 class Agent;
 class Communication;
+class Talker;
 class ControlPanel : public QMainWindow
 {
     Q_OBJECT
@@ -34,7 +39,8 @@ public:
     void enqueue(process_manager::ProcessStats psts);
     void enqueue(alica::AlicaEngineInfo aei);
 
-    QWidget* rootWidget_;
+    QWidget* controlPanelQWidget;
+    Ui::ControlPanel* uiControlPanel;
 
 public Q_SLOTS:
     void run();
@@ -57,6 +63,9 @@ private:
     essentials::IDManager* idManager;
     ExecutableRegistry* executableRegistry;
     std::map<essentials::IdentifierConstPtr, Agent*> agents;
+    Talker* talker;
+
+
 };
 
 } // namespace control

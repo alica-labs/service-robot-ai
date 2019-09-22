@@ -1,6 +1,8 @@
 #include "control/ControlPanel.h"
 
+#include "ui_ControlPanel.h"
 #include "control/Agent.h"
+#include "control/Talker.h"
 #include "control/Communication.h"
 #include "control/ExecutableRegistry.h"
 
@@ -16,17 +18,24 @@ namespace control
 
 ControlPanel::ControlPanel()
         : sc(essentials::SystemConfig::getInstance())
+        , uiControlPanel(new Ui::ControlPanel())
+        , controlPanelQWidget(new QWidget())
 {
+
+
+
     // COMMUNICATION
     this->comm = new Communication(this);
 
     // UI
-    this->rootWidget_ = new QWidget();
-    this->rootWidget_->setAttribute(Qt::WA_AlwaysShowToolTips, true);
-    this->rootWidget_->setLayout(new QHBoxLayout());
-    this->rootWidget_->setContextMenuPolicy(Qt::ContextMenuPolicy::CustomContextMenu);
-    QObject::connect(this->rootWidget_, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenu(const QPoint&)));
-    setCentralWidget(this->rootWidget_);
+    this->uiControlPanel->setupUi(this->controlPanelQWidget);
+    this->controlPanelQWidget->setAttribute(Qt::WA_AlwaysShowToolTips, true);
+    this->controlPanelQWidget->setContextMenuPolicy(Qt::ContextMenuPolicy::CustomContextMenu);
+    QObject::connect(this->controlPanelQWidget, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenu(const QPoint&)));
+    setCentralWidget(this->controlPanelQWidget);
+
+    // Create Talker
+    this->talker = new Talker(this);
 
     // Register robots from Globals.conf
     this->idManager = new essentials::IDManager();
@@ -86,7 +95,7 @@ void ControlPanel::showContextMenu(const QPoint& pos)
     /* HINT: remember, if there are some problems that way:
      * For QAbstractScrollArea and derived classes you would use:
      * QPoint globalPos = myWidget->viewport()->mapToGlobal(pos); */
-    QPoint globalPos = this->rootWidget_->mapToGlobal(pos);
+    QPoint globalPos = this->controlPanelQWidget->mapToGlobal(pos);
     myMenu.exec(globalPos);
 }
 

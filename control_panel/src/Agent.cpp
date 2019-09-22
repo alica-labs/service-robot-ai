@@ -1,5 +1,6 @@
 #include "control/Agent.h"
 
+#include "ui_ControlPanel.h"
 #include "control/Communication.h"
 #include "control/ControlPanel.h"
 #include "control/ExecutableRegistry.h"
@@ -25,7 +26,7 @@ Agent::Agent(essentials::IdentifierConstPtr agentID, control::ControlPanel* cont
     if (!shown) {
         this->agentGroupBox->hide();
     }
-    this->controlPanel->rootWidget_->layout()->addWidget(this->agentGroupBox);
+    this->controlPanel->uiControlPanel->agentsHLayout->addWidget(this->agentGroupBox);
 
     // set agentName to string version of ID
     std::stringstream ss;
@@ -95,7 +96,6 @@ void Agent::update(std::pair<std::chrono::system_clock::time_point, process_mana
 void Agent::update(std::pair<std::chrono::system_clock::time_point, alica::AlicaEngineInfo> timePstsPair) {
     this->timeLastMsgReceived = timePstsPair.first;
     this->hostID = timePstsPair.second.senderID;
-    timePstsPair.second;
 
     uiAgent->planVal->setText(QString(timePstsPair.second.currentPlan.c_str()));
     uiAgent->roleVal->setText(QString(timePstsPair.second.currentRole.c_str()));
@@ -105,7 +105,7 @@ void Agent::update(std::pair<std::chrono::system_clock::time_point, alica::Alica
     std::stringstream ss;
     ss << timePstsPair.second.currentState << " (";
     if (timePstsPair.second.robotIDsWithMe.size() > 0) {
-        for (int i = 0; i < timePstsPair.second.robotIDsWithMe.size() - 1; i++) {
+        for (unsigned int i = 0; i < timePstsPair.second.robotIDsWithMe.size() - 1; i++) {
             ss << timePstsPair.second.robotIDsWithMe[i] << ", ";
         }
         ss << timePstsPair.second.robotIDsWithMe[timePstsPair.second.robotIDsWithMe.size() - 1];

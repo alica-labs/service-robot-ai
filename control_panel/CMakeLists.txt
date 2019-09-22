@@ -46,17 +46,23 @@ target_link_libraries(control_msgs
 )
 
 #### CONTROL
-QT5_WRAP_CPP(control_MOCS include/control/ControlPanel.h include/control/Process.h include/control/Agent.h)
+QT5_WRAP_CPP(control_MOCS
+        include/control/ControlPanel.h
+        include/control/Process.h
+        include/control/Agent.h
+        include/control/Talker.h
+)
 # ensure generated header files are being created in the devel space
 set(_cmake_current_binary_dir "${CMAKE_CURRENT_BINARY_DIR}")
 set(CMAKE_CURRENT_BINARY_DIR "${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}")
-QT5_WRAP_UI(control_UIS ui/Agent.ui ui/Process.ui)
+QT5_WRAP_UI(control_UIS ui/Agent.ui ui/Process.ui ui/ControlPanel.ui)
 set(CMAKE_CURRENT_BINARY_DIR "${_cmake_current_binary_dir}")
 add_executable(${PROJECT_NAME}
   src/ControlPanel.cpp
   src/Communication.cpp
   src/Agent.cpp
   src/Process.cpp
+  src/Talker.cpp
   src/ExecutableRegistry.cpp
   ${control_MOCS}
   ${control_UIS}
