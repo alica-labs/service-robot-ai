@@ -31,6 +31,7 @@ const std::string ConceptNet::END = "&end=/c/en/";
 const std::string ConceptNet::RELATEDNESS = "/relatedness?";
 const std::string ConceptNet::NODE1 = "node1=/c/en/";
 const std::string ConceptNet::NODE2 = "&node2=/c/en/";
+const int ConceptNet::SYNONYMDEPTH = 1;
 
 ConceptNet::ConceptNet(SRGWorldModel* wm)
 {
@@ -46,7 +47,7 @@ Concept* ConceptNet::getConcept(CNManager* cnManager, const std::string& concept
         return nullptr;
     }
     std::string conceptId = node["edges"][0]["start"]["term"].as<std::string>();
-    if (conceptId.find(conceptName) == std::string::npos) {
+    if (conceptId.find("/c/en") == std::string::npos || conceptId.find(conceptName) == std::string::npos) {
         conceptId = node["edges"][0]["end"]["term"].as<std::string>();
     }
     return cnManager->createConcept(conceptId, this->trimTerm(conceptId), "");
@@ -56,6 +57,11 @@ std::vector<Edge*> ConceptNet::getEdges(CNManager* cnManager, const std::string&
 {
     std::vector<Edge*> edges;
     std::string json = httpGet(ConceptNet::BASE_URL + ConceptNet::QUERYNODE + concept + ConceptNet::LIMIT);
+    YAML::Node node;
+    node = YAML::Load(json);
+    if (!isValid(node)) {
+        return edges;
+    }
     std::string nextPage = generateEdges(cnManager, json, edges, limit);
     while (!nextPage.empty()) {
         json = httpGet(ConceptNet::BASE_URL + nextPage);
@@ -216,7 +222,7 @@ std::string ConceptNet::generateEdges(CNManager* cnManager, const std::string& j
             continue;
         }
         std::string endTerm = end["term"].as<std::string>();
-        if (std::isdigit(endTerm.at(0)) || this->conceptContainsNonASCII(endTerm)) {
+        if (this->conceptContainsForbiddenCharacter(endTerm)) {
             std::cout << "ConceptNet: Skipping Concept:" << endTerm << std::endl;
             continue;
         }
@@ -236,8 +242,8 @@ std::string ConceptNet::generateEdges(CNManager* cnManager, const std::string& j
             continue;
         }
         std::string startTerm = start["term"].as<std::string>();
-        if (std::isdigit(startTerm.at(0)) || this->conceptContainsNonASCII(startTerm)) {
-            std::cout << "ConceptNetQueryCommand: Skipping concept:" << startTerm << std::endl;
+        if (this->conceptContainsForbiddenCharacter(startTerm)) {
+            std::cout << "ConceptNet: Skipping concept:" << startTerm << std::endl;
             continue;
         }
         std::string startSenseLabel = "";
@@ -246,20 +252,31 @@ std::string ConceptNet::generateEdges(CNManager* cnManager, const std::string& j
         }
         std::string startID = start["@id"].as<std::string>();
         std::string relation = edge["rel"]["@id"].as<std::string>();
-        relation = trimTerm(relation); //.right(relation.size() - relation.lastIndexOf('/') - 1);
+        relation = trimTerm(relation);
         // create edge
-        Concept* fromConcept = cnManager->createConcept(startTerm, trimTerm(startTerm), startSenseLabel);
-        Concept* toConcept = cnManager->createConcept(endTerm, trimTerm(endTerm), endSenseLabel);
+        std::string trimmedStartTerm = trimTerm(startTerm);
+        std::string trimmedEndTerm = trimTerm(endTerm);
+        if (std::isdigit(trimmedStartTerm[0])) {
+            std::cout << "ConceptNet: Skipping concept:" << startTerm << std::endl;
+            continue;
+        }
+        if (std::isdigit(trimmedEndTerm[0])) {
+            std::cout << "ConceptNet: Skipping concept:" << endTerm << std::endl;
+            continue;
+        }
+
+        Concept* fromConcept = cnManager->createConcept(startTerm, trimmedStartTerm, startSenseLabel);
+        Concept* toConcept = cnManager->createConcept(endTerm, trimmedEndTerm, endSenseLabel);
         std::string edgeId = "/a[" + relation + "," + startTerm + "," + endTerm + "]"; // dont use cn's edgeId, its evil!
         edges.push_back(cnManager->createEdge(edgeId, startLanguage, fromConcept, toConcept, getRelation(relation), weight));
         if (limit != -1 && edges.size() == limit) {
             break;
         }
     }
-    if(!node["view"].IsDefined() && !node["view"]["nextPage"].IsDefined()) {
+    if (!node["view"].IsDefined() && !node["view"]["nextPage"].IsDefined()) {
         return "";
     }
-    if(limit == -1) {
+    if (limit == -1) {
         std::cout << "ConceptNet: nextPage: " << node["view"]["nextPage"].as<std::string>() << std::endl;
         return node["view"]["nextPage"].as<std::string>();
     } else {
@@ -285,12 +302,18 @@ Relation ConceptNet::getRelation(const std::string& relation)
     return Relation::UNDEFINED;
 }
 
-bool ConceptNet::conceptContainsNonASCII(const std::string& concept)
+bool ConceptNet::conceptContainsForbiddenCharacter(const std::string& concept)
 {
     for (size_t i = 0; i < concept.length(); i++) {
         if (!isascii(concept.at(i))) {
             return true;
         }
+    }
+    if (concept.find_first_of(":!@") != std::string::npos) {
+        return true;
+    }
+    if (trimTerm(concept) == "not") {
+        return true;
     }
     return false;
 }
@@ -304,12 +327,25 @@ std::string ConceptNet::trimTerm(const std::string& term)
 void ConceptNet::findInconsistencies(srg::dialogue::AnswerGraph* answerGraph, int limit)
 {
     collectAntonyms(answerGraph, limit);
-    std::vector<Concept*> newAntonyms = getNewAdjectives(answerGraph);
-    for (auto concept : newAntonyms) {
-        std::vector<Edge*> equivalent = this->getEquivalentOutgoingEdges(answerGraph, concept, limit);
-        answerGraph->adjectiveAntonymMap.emplace(concept, equivalent);
-        concept->addEdges(equivalent);
+    std::vector<Concept*> newAntonyms;
+    for(int i = 0; i < ConceptNet::SYNONYMDEPTH; i++) {
+        newAntonyms = getNewAdjectives(answerGraph);
+        for (auto concept : newAntonyms) {
+            std::vector<Edge *> equivalent = this->getEquivalentOutgoingEdges(answerGraph, concept, limit);
+            if (answerGraph->adjectiveAntonymMap.find(concept) == answerGraph->adjectiveAntonymMap.end()) {
+                answerGraph->adjectiveAntonymMap.emplace(concept, equivalent);
+            } else {
+                for (Edge *edge : equivalent) {
+                    auto tmp = answerGraph->adjectiveAntonymMap.at(concept);
+                    if (std::find(tmp.begin(), tmp.end(), edge) == tmp.end()) {
+                        answerGraph->adjectiveAntonymMap.at(concept).push_back(edge);
+                    }
+                }
+            }
+            concept->addEdges(equivalent);
+        }
     }
+
 
     for (auto pair : answerGraph->adjectiveAntonymMap) {
         if (pair.second.empty()) {
@@ -320,6 +356,7 @@ void ConceptNet::findInconsistencies(srg::dialogue::AnswerGraph* answerGraph, in
             std::cout << "\tConceptNet Antonym edge: " << edge->toString() << std::endl;
         }
     }
+    std::cout << "################# map size: " << answerGraph->adjectiveAntonymMap.size() << std::endl;
 }
 
 std::vector<Concept*> ConceptNet::getNewAdjectives(srg::dialogue::AnswerGraph* answerGraph)
@@ -327,17 +364,17 @@ std::vector<Concept*> ConceptNet::getNewAdjectives(srg::dialogue::AnswerGraph* a
     std::vector<Concept*> ret;
     for (auto pair : answerGraph->adjectiveAntonymMap) {
         for (srg::conceptnet::Edge* edge : pair.second) {
-            if (edge->fromConcept != answerGraph->root) {
-                if (std::find(ret.begin(), ret.end(), edge->fromConcept) != ret.end()) {
-                    continue;
+            if (answerGraph->closedProperties.find(edge->fromConcept) == answerGraph->closedProperties.end()) {
+                if (std::find(ret.begin(), ret.end(), edge->fromConcept) == ret.end()) {
+                    ret.push_back(edge->fromConcept);
+                    answerGraph->closedProperties.insert(edge->fromConcept);
                 }
-                ret.push_back(edge->fromConcept);
             }
-            if (edge->toConcept != answerGraph->root) {
-                if (std::find(ret.begin(), ret.end(), edge->toConcept) != ret.end()) {
-                    continue;
+            if (answerGraph->closedProperties.find(edge->toConcept) == answerGraph->closedProperties.end()) {
+                if (std::find(ret.begin(), ret.end(), edge->toConcept) == ret.end()) {
+                    ret.push_back(edge->toConcept);
+                    answerGraph->closedProperties.insert(edge->toConcept);
                 }
-                ret.push_back(edge->toConcept);
             }
         }
     }
@@ -346,14 +383,22 @@ std::vector<Concept*> ConceptNet::getNewAdjectives(srg::dialogue::AnswerGraph* a
 
 void ConceptNet::collectAntonyms(srg::dialogue::AnswerGraph* answerGraph, int limit)
 {
-    for (auto concept : answerGraph->getConcepts()) {
-        if (concept.second->senseLabel.compare("a") != 0) {
+    for (auto pair : answerGraph->getEdges()) {
+        if (pair.second->relation != srg::conceptnet::Relation::HasProperty) {
             continue;
         }
-        std::vector<Edge*> edges = this->getEdges(answerGraph, Relation::Antonym, concept.second->term, limit);
-        std::cout << "collectAntonyms: " << concept.second->term << std::endl;
-        answerGraph->adjectiveAntonymMap.emplace(concept.second, edges);
-        concept.second->addEdges(edges);
+
+        srg::conceptnet::Concept* concept;
+        if (pair.second->fromConcept == answerGraph->root) {
+            concept = pair.second->toConcept;
+        } else {
+            concept = pair.second->fromConcept;
+        }
+
+        std::vector<Edge*> edges = this->getEdges(answerGraph, Relation::Antonym, concept->term, limit);
+        std::cout << "collectAntonyms: " << concept->term << std::endl;
+        answerGraph->adjectiveAntonymMap.emplace(concept, edges);
+        concept->addEdges(edges);
     }
 }
 } // namespace conceptnet

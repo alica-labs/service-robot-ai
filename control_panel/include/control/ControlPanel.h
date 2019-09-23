@@ -13,6 +13,11 @@
 
 namespace essentials {
     class IDManager;
+    class SystemConfig;
+}
+
+namespace Ui {
+    class ControlPanel;
 }
 
 namespace control
@@ -20,6 +25,7 @@ namespace control
 class ExecutableRegistry;
 class Agent;
 class Communication;
+class Talker;
 class ControlPanel : public QMainWindow
 {
     Q_OBJECT
@@ -27,20 +33,25 @@ public:
     ControlPanel();
     virtual ~ControlPanel();
 
+    Communication* getCommunication();
     ExecutableRegistry* getExecutableRegistry();
     essentials::IDManager* getIDManager();
     void enqueue(process_manager::ProcessStats psts);
     void enqueue(alica::AlicaEngineInfo aei);
 
-    QWidget* rootWidget_;
+    QWidget* controlPanelQWidget;
+    Ui::ControlPanel* uiControlPanel;
 
 public Q_SLOTS:
     void run();
+    void showContextMenu(const QPoint& pos);
 
 private:
     void processMessage();
     void updateUI();
+
     Agent* getAgent(essentials::IdentifierConstPtr id);
+    essentials::SystemConfig* sc;
 
     QTimer* doWorkTimer;
 
@@ -52,6 +63,9 @@ private:
     essentials::IDManager* idManager;
     ExecutableRegistry* executableRegistry;
     std::map<essentials::IdentifierConstPtr, Agent*> agents;
+    Talker* talker;
+
+
 };
 
 } // namespace control

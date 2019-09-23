@@ -57,10 +57,10 @@
     "comment" : "",
     "entryPoint" : null,
     "parentPlan" : 1555601736192,
-    "abstractPlans" : [ "Behaviours/Test.beh#1559635479527" ],
+    "abstractPlans" : [ "Serve.pml#1568825275605" ],
     "variableBindings" : [ ],
-    "outTransitions" : [ 1558533498560, 1558533714287 ],
-    "inTransitions" : [ 1558533498560, 1558533514929 ]
+    "outTransitions" : [ 1558533714287 ],
+    "inTransitions" : [ 1558533514929 ]
   } ],
   "transitions" : [ {
     "id" : 1558533492085,
@@ -95,14 +95,6 @@
       "variables" : [ ],
       "quantifiers" : [ ]
     },
-    "synchronisation" : null
-  }, {
-    "id" : 1558533498560,
-    "name" : "FromServeToServe",
-    "comment" : "MISSING_COMMENT",
-    "inState" : 1558533461982,
-    "outState" : 1558533461982,
-    "preCondition" : null,
     "synchronisation" : null
   }, {
     "id" : 1558533514929,

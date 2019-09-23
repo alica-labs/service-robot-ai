@@ -15,6 +15,7 @@
   <depend>asp_solver_wrapper</depend>
   <depend>asp_solver</depend>
   <depend>telegram-client</depend>
+  <depend>id_capnzero</depend>
 
   <buildtool_depend>catkin</buildtool_depend>
 

@@ -3,6 +3,7 @@
 #include "srg/conceptnet/Concept.h"
 
 #include <sstream>
+#include <iostream>
 
 namespace srg
 {
@@ -28,6 +29,7 @@ conceptnet::Concept* Edge::getOpposite(srg::conceptnet::Concept *concept) {
     } else if (this->toConcept == concept){
         return this->fromConcept;
     } else {
+        std::cout << "Edge::getOpposite returned null" << fromConcept->term << " " << toConcept->term << " " << concept->term << std::endl;
         return nullptr;
     }
 }

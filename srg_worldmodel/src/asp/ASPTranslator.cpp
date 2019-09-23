@@ -5,8 +5,10 @@
 #include "srg/conceptnet/Edge.h"
 #include "srg/conceptnet/Relations.h"
 #include "srg/dialogue/AnswerGraph.h"
+#include <knowledge_manager/ASPKnowledgeManager.h>
 
 #include <algorithm>
+#include <sstream>
 #include <vector>
 
 namespace srg
@@ -14,7 +16,7 @@ namespace srg
 namespace asp
 {
 
-const std::string ASPTranslator::CONCEPTNET_PREFIX = "cn5_";
+const std::string ASPTranslator::CONCEPTNET_PREFIX = "cs_";
 
 ASPTranslator::ASPTranslator(srg::SRGWorldModel* wm)
         : wm(wm)
@@ -23,8 +25,10 @@ ASPTranslator::ASPTranslator(srg::SRGWorldModel* wm)
 
 std::string ASPTranslator::extractASPProgram(srg::dialogue::AnswerGraph* answerGraph, InconsistencyRemoval inconsistencyRemoval)
 {
-
-    std::string programSection = "#program cn5_commonsenseKnowledge";
+    if(answerGraph->getEdges().empty()) {
+        return "";
+    }
+    std::string programSection = "#program commonsenseKnowledge";
     if (inconsistencyRemoval == InconsistencyRemoval::KeepHighestWeight) {
         answerGraph->markInconsistentEdges();
     }
@@ -34,10 +38,26 @@ std::string ASPTranslator::extractASPProgram(srg::dialogue::AnswerGraph* answerG
     program.append(tmp);
 
     program.append("\n");
+    auto indexLeft = programSection.find("(");
+    auto indexRight = programSection.find(")");
+    if (indexLeft != std::string::npos && indexRight != std::string::npos) {
+        auto tmp = programSection.substr(indexLeft + 1, indexRight - indexLeft - 1);
+        programSection = programSection.substr(0, indexLeft);
+        auto symVec = Clingo::SymbolVector();
+        auto paramList = split(tmp);
+        for (auto it : paramList) {
+            symVec.push_back(this->wm->knowledgeManager.parseValue(it.c_str()));
+        }
+        this->wm->knowledgeManager.ground({{programSection.c_str(), symVec}}, nullptr);
+    } else {
+        this->wm->knowledgeManager.ground({{programSection.c_str(), {}}}, nullptr);
+    }
+    this->wm->knowledgeManager.solve();
+
     auto pgmMap = extractBackgroundKnowledgePrograms(answerGraph, inconsistencyRemoval);
     for (auto pair : pgmMap) {
         program.append(pair.second).append("\n");
-        // this->gui->getSolver()->add(programSection.toStdString().c_str(), {}, pair.second.toStdString().c_str());
+        this->wm->knowledgeManager.add(programSection.c_str(), {}, pair.second.c_str());
     }
     return program;
 }
@@ -62,10 +82,8 @@ std::string ASPTranslator::createASPPredicates(srg::dialogue::AnswerGraph* answe
         std::string tmp = "";
         tmp.append(ASPTranslator::CONCEPTNET_PREFIX).append(srg::conceptnet::relations[pair.second->relation]);
         tmp.append("(")
-                .append(ASPTranslator::CONCEPTNET_PREFIX)
                 .append(conceptToASPPredicate(pair.second->fromConcept->term))
                 .append(", ")
-                .append(ASPTranslator::CONCEPTNET_PREFIX)
                 .append(conceptToASPPredicate(pair.second->toConcept->term))
                 .append(", ")
                 .append(std::to_string((int) (pair.second->weight * 100)))
@@ -91,7 +109,7 @@ std::map<std::string, std::string> ASPTranslator::extractBackgroundKnowledgeProg
         auto it = std::find(addedRelations.begin(), addedRelations.end(), tmpRel);
         if (it == addedRelations.end()) {
             addedRelations.push_back(tmpRel);
-            std::string pgm = "#program cn5_situationalKnowledge(n,m).\n";
+            std::string pgm = "#program situationalKnowledge(n,m).\n";
             pgm.append("#external -").append(tmpRel).append("(n, m).\n");
             pgm.append(createBackgroundKnowledgeRule(tmpRel, pair.second));
             ret.emplace(tmpRel, pgm);
@@ -101,76 +119,70 @@ std::map<std::string, std::string> ASPTranslator::extractBackgroundKnowledgeProg
     }
     if (inconsistencyRemoval == InconsistencyRemoval::UseExternals) {
         for (auto pair : answerGraph->adjectiveAntonymMap) {
+            if (pair.second.empty()) {
+                continue;
+            }
             std::vector<std::string> closed;
-            std::cout << "getting edges: " << answerGraph->root->term << " " << pair.first->term << std::endl;
+            // std::cout << "getting edges: " << answerGraph->root->term << " " << pair.first->term << std::endl;
             std::vector<srg::conceptnet::Edge*> edges = answerGraph->getEdges(answerGraph->root, pair.first);
             if (edges.empty()) {
                 continue;
             }
-            std::string pgm = "#program cn5_situationalKnowledge(n).\n";
-            pgm.append("#external -").append("propertyOf").append("(n, ").append(ASPTranslator::CONCEPTNET_PREFIX + pair.first->term + ").\n");
-            if (pair.second.empty()) {
-                pgm.append(createInconsistencyBackgroundKnowledgeRule(pair.first, "",edges.at(0)));
-            }
-            for (srg::conceptnet::Edge* edge : pair.second) {
-                std::string antonym;
-                if (edge->fromConcept == pair.first) {
-                    antonym = edge->toConcept->term;
-                } else {
-                    antonym = edge->fromConcept->term;
+            std::string pgm = "#program situationalKnowledge(n).\n";
+            for (srg::conceptnet::Edge* edge : edges) {
+                std::string relation = srg::conceptnet::relations[edge->relation];
+                relation[0] = std::tolower(relation[0]);
+                pgm.append("#external -" + relation + "(n, " + pair.first->term + ").\n");
+                for (srg::conceptnet::Edge *edge : pair.second) {
+                    std::string antonym;
+                    if (edge->fromConcept == pair.first) {
+                        antonym = edge->toConcept->term;
+                    } else {
+                        antonym = edge->fromConcept->term;
+                    }
+                    if (std::find(closed.begin(), closed.end(), antonym) != closed.end()) {
+                        continue;
+                    }
+                    pgm.append(
+                            createInconsistencyBackgroundKnowledgeRule(answerGraph->root, pair.first, antonym, relation));
+                    closed.push_back(antonym);
                 }
-                if (std::find(closed.begin(), closed.end(), antonym) != closed.end()) {
-                    continue;
-                }
-                pgm.append(createInconsistencyBackgroundKnowledgeRule(pair.first, antonym, nullptr));
-                closed.push_back(antonym);
+                ret.emplace(pair.first->term, pgm);
             }
-            ret.emplace(pair.first->term, pgm);
         }
     }
     return ret;
 }
 
-std::string ASPTranslator::createInconsistencyBackgroundKnowledgeRule(srg::conceptnet::Concept* adjective, std::string antonym, srg::conceptnet::Edge* edge)
+std::string ASPTranslator::createInconsistencyBackgroundKnowledgeRule(
+        srg::conceptnet::Concept* root, srg::conceptnet::Concept* adjective, std::string antonym, std::string relation)
 {
     std::string adj = conceptToASPPredicate(adjective->term);
     antonym = conceptToASPPredicate(antonym);
-    std::string capitalAntonymRelation = srg::conceptnet::relations[srg::conceptnet::Relation::Antonym];
-    capitalAntonymRelation[0] = std::toupper(capitalAntonymRelation[0]);
+    std::string antonymRelation = srg::conceptnet::relations[srg::conceptnet::Relation::Antonym];
+    std::string capitalRelation = relation;
+    capitalRelation[0] = std::toupper(capitalRelation[0]);
     std::string ret = "";
-    ret.append("propertyOf(n, " + ASPTranslator::CONCEPTNET_PREFIX + adj + ", W) ")
-            .append(":- not -propertyOf(n, " + ASPTranslator::CONCEPTNET_PREFIX + adj + "), ")
-            .append("is(n, " + ASPTranslator::CONCEPTNET_PREFIX + adj + ")");
-    if (!antonym.empty()) {
-        ret.append(", " + ASPTranslator::CONCEPTNET_PREFIX + capitalAntonymRelation + "(" + ASPTranslator::CONCEPTNET_PREFIX + adj + ", " +
-                   ASPTranslator::CONCEPTNET_PREFIX + antonym + ", W), ")
-                .append("-propertyOf(n, " + ASPTranslator::CONCEPTNET_PREFIX + antonym + ")");
-    } else {
-        std::cout << 3 << std::endl;
-        std::cout << edge->relation << std::endl;
-        std::string capitalRelation = srg::conceptnet::relations[edge->relation];
-        std::cout << capitalRelation << std::endl;
-        capitalRelation[0] = std::toupper(capitalRelation[0]);
-        ret.append(", " + ASPTranslator::CONCEPTNET_PREFIX + capitalRelation + "(" + ASPTranslator::CONCEPTNET_PREFIX +
-                   conceptToASPPredicate(edge->fromConcept->term) + ", " + ASPTranslator::CONCEPTNET_PREFIX + conceptToASPPredicate(edge->toConcept->term) +
-                   ", W)");
-    }
-    ret.append(".\n");
+    ret.append(relation + "(n, " + adj + ", W) ")
+            .append(":- not -" + relation + "(n, " + adj + "), ")
+            .append(ASPTranslator::CONCEPTNET_PREFIX + capitalRelation + "(n, " + adj + ", W), ")
+            .append("is(n, " + root->term + "), ")
+            .append("-" + relation + "(n, " + antonym + ") : " + ASPTranslator::CONCEPTNET_PREFIX + antonymRelation + "(" + adj + ", " + antonym +
+                    ", W).\n");
     return ret;
 }
 
 std::string ASPTranslator::createBackgroundKnowledgeRule(std::string relation, srg::conceptnet::Edge* edge)
 {
-    std::string capitalRelation = relation;
-    capitalRelation[0] = std::toupper(capitalRelation[0]);
+    std::string lowerRelation = relation;
+    lowerRelation[0] = std::tolower(lowerRelation[0]);
     std::string ret = "";
-    ret.append(relation + "(n, m, W)")
-            .append(" :- not -" + relation + "(n, m),")
-            .append(" is(n, " + ASPTranslator::CONCEPTNET_PREFIX + conceptToASPPredicate(edge->fromConcept->term) + "), ")
-            .append("is(m, " + ASPTranslator::CONCEPTNET_PREFIX + conceptToASPPredicate(edge->toConcept->term) + "), ")
-            .append(ASPTranslator::CONCEPTNET_PREFIX + capitalRelation + "(" + ASPTranslator::CONCEPTNET_PREFIX +
-                    conceptToASPPredicate(edge->fromConcept->term) + "," + ASPTranslator::CONCEPTNET_PREFIX + conceptToASPPredicate(edge->toConcept->term) +
-                    ", W).\n");
+    ret.append(lowerRelation + "(n, m, W)")
+            .append(" :- not -" + lowerRelation + "(n, m),")
+            .append(" is(n, " + conceptToASPPredicate(edge->fromConcept->term) + "), ")
+            .append("is(m, " + conceptToASPPredicate(edge->toConcept->term) + "), ")
+            .append(ASPTranslator::CONCEPTNET_PREFIX + relation + "(" + conceptToASPPredicate(edge->fromConcept->term) + ", " +
+                    conceptToASPPredicate(edge->toConcept->term) + ", W).\n");
     return ret;
 }
 
@@ -179,6 +191,34 @@ std::string ASPTranslator::expandConceptNetPredicate(std::string predicate)
     std::string ret = "";
     ret.append(predicate).append(" :- not ").append("-").append(predicate).append(".\n");
     return ret;
+}
+
+std::vector<std::string> ASPTranslator::split(std::string toSplit)
+{
+    std::stringstream stream;
+    stream << toSplit;
+    std::string segment;
+    std::vector<std::string> seglist;
+
+    while (std::getline(stream, segment, ',')) {
+        seglist.push_back(trim(segment));
+    }
+    return seglist;
+}
+
+std::string ASPTranslator::trim(const std::string& s)
+{
+    auto start = s.begin();
+    while (start != s.end() && std::isspace(*start)) {
+        start++;
+    }
+
+    auto end = s.end();
+    do {
+        end--;
+    } while (std::distance(start, end) > 0 && std::isspace(*end));
+
+    return std::string(start, end + 1);
 }
 
 } // namespace asp

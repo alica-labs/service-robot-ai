@@ -1,7 +1,6 @@
 #include "srg/SRGWorldModel.h"
 
 #include "srg/conceptnet/ConceptNet.h"
-#include "srg/dialogue/DialogueManager.h"
 #include "srg/asp/ASPTranslator.h"
 
 namespace srg
@@ -23,7 +22,6 @@ SRGWorldModel::SRGWorldModel()
     this->aspTranslator = new srg::asp::ASPTranslator(this);
     this->agentName = sc->getHostname();
     this->conceptNet = new conceptnet::ConceptNet(this);
-    std::cout << "Creating a SRGWorldModel\n";
 }
 
 SRGWorldModel::~SRGWorldModel()

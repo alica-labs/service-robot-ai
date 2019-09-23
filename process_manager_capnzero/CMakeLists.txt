@@ -35,7 +35,7 @@ add_library(robot_executable_meta_data
 )
 target_link_libraries(robot_executable_meta_data ${catkin_LIBRARIES})
 
-add_executable(process_manager 
+add_executable(process_manager
   src/ProcessManager.cpp
   src/ManagedExecutable.cpp
   src/ManagedRobot.cpp

@@ -5,7 +5,7 @@
 #include <ConditionCreator.h>
 #include <UtilityFunctionCreator.h>
 #include <ConstraintCreator.h>
-#include <communication/AlicaCapnzeroCommunication.h>
+#include <alica_capnzero_proxy/Communication.h>
 #include <srg/SRGWorldModel.h>
 #include <essentials/IDManager.h>
 
@@ -32,7 +32,7 @@ Base::Base(std::string roleSetName, std::string masterPlanName, std::string role
     crc = new alica::ConstraintCreator();
 
     ae->setAlicaClock(new alica::AlicaClock());
-    ae->setCommunicator(new alicaCapnzeroProxy::AlicaCapnzeroCommunication(ae));
+    ae->setCommunicator(new alica_capnzero_proxy::Communication(ae));
 
     // ASP Solver
 //    std::vector<char const*> args{"clingo", nullptr};
@@ -61,14 +61,11 @@ void Base::start()
 Base::~Base()
 {
     ae->shutdown();
-    delete ae->getAlicaClock();
-    delete ae->getCommunicator();
     delete ae;
     delete cc;
     delete bc;
     delete uc;
     delete crc;
-    delete wm;
 }
 
 bool Base::isRunning()

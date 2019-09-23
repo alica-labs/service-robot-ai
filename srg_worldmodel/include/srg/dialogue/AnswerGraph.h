@@ -4,6 +4,7 @@
 #include "srg/conceptnet/CNManager.h"
 
 #include <vector>
+#include <set>
 #include <string>
 #include <map>
 #include <cgraph.h>
@@ -27,6 +28,8 @@ public:
     std::vector<srg::conceptnet::Concept*> answerConcepts;
     std::vector<srg::conceptnet::ConceptPath*> answerPaths;
     std::map<srg::conceptnet::Concept*, std::vector<srg::conceptnet::Edge*>> adjectiveAntonymMap;
+    std::set<srg::conceptnet::Concept*> closedProperties;
+
     std::string toString();
     void renderDot(Agraph_t* g, bool markInconsistencies = false);
 

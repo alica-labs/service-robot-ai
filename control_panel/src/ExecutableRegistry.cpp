@@ -56,7 +56,7 @@ const map<string, vector<pair<int, int>>>* const ExecutableRegistry::getBundlesM
                 continue;
             }
 
-            for (int i = 0; i < processList.size(); i++) {
+            for (uint32_t i = 0; i < processList.size(); i++) {
                 this->bundlesMap[bundleName].push_back(pair<int, int>(processList[i], stoi(processParamsList[i])));
             }
             cout << "RobotExecutableReg: Bundle '" << bundleName << "' has " << this->bundlesMap[bundleName].size() << " processes." << endl;
