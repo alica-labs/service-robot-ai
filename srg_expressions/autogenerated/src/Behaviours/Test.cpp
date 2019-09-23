@@ -22,7 +22,7 @@ Test::~Test() {
 }
 void Test::run(void *msg) {
   /*PROTECTED REGION ID(run1559635479527) ENABLED START*/
-std::cout << "Test is called!" << std::endl;
+  std::cout << "Test is called!" << std::endl;
   /*PROTECTED REGION END*/
 }
 void Test::initialiseParameters() {

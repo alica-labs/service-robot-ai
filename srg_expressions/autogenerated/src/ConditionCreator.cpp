@@ -16,34 +16,41 @@ namespace alica {
 ConditionCreator::ConditionCreator() {}
 ConditionCreator::~ConditionCreator() {}
 
-std::shared_ptr<BasicCondition> ConditionCreator::createConditions(long conditionConfId)
-{
-    switch (conditionConfId) {
-    case 1558533620473:
-        return std::make_shared<PreCondition1558533620473>();
-        break;
-    case 1558533654035:
-        return std::make_shared<PreCondition1558533654035>();
-        break;
-    case 1558533667052:
-        return std::make_shared<PreCondition1558533667052>();
-        break;
-    case 1558533725689:
-        return std::make_shared<PreCondition1558533725689>();
-        break;
-    case 1560934538125:
-        return std::make_shared<PreCondition1560934538125>();
-        break;
-    case 1568825457853:
-        return std::make_shared<PreCondition1568825457853>();
-        break;
-    case 1568825476581:
-        return std::make_shared<PreCondition1568825476581>();
-        break;
-    default:
-        std::cerr << "ConditionCreator: Unknown condition id requested: " << conditionConfId << std::endl;
-        throw new std::exception();
-        break;
-    }
+std::shared_ptr<BasicCondition>
+ConditionCreator::createConditions(long conditionConfId) {
+  switch (conditionConfId) {
+  case 1558533620473:
+    return std::make_shared<PreCondition1558533620473>();
+    break;
+  case 1558533654035:
+    return std::make_shared<PreCondition1558533654035>();
+    break;
+  case 1558533667052:
+    return std::make_shared<PreCondition1558533667052>();
+    break;
+  case 1558533725689:
+    return std::make_shared<PreCondition1558533725689>();
+    break;
+  case 1560934538125:
+    return std::make_shared<PreCondition1560934538125>();
+    break;
+  case 1568105583307:
+    return std::make_shared<PreCondition1568105583307>();
+    break;
+  case 1568119815697:
+    return std::make_shared<RunTimeCondition1568119815697>();
+    break;
+  case 1568825457853:
+    return std::make_shared<PreCondition1568825457853>();
+    break;
+  case 1568825476581:
+    return std::make_shared<PreCondition1568825476581>();
+    break;
+  default:
+    std::cerr << "ConditionCreator: Unknown condition id requested: "
+              << conditionConfId << std::endl;
+    throw new std::exception();
+    break;
+  }
 }
 } // namespace alica

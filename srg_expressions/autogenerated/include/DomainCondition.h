@@ -11,9 +11,9 @@ public:
   DomainCondition();
   virtual ~DomainCondition();
 
-    /*PROTECTED REGION ID(domainHeader) ENABLED START*/
-    // Add additional options here
-    srg::SRGWorldModel* wm = srg::SRGWorldModel::getInstance();
+  /*PROTECTED REGION ID(domainHeader) ENABLED START*/
+  // Add additional options here
+  srg::SRGWorldModel *wm = srg::SRGWorldModel::getInstance();
 
   /*PROTECTED REGION END*/
 

@@ -33,8 +33,6 @@ namespace srg {
             void processAgentCmd(control::AgentCommand agentCmd);
             void processSimPerceptions(srgsim::SimPerceptions perceptions);
 
-            const supplementary::InfoBuffer<srg::dialogue::SpeechAct>& getSpeechActBuffer();
-
         private:
             SRGWorldModel* wm;
 

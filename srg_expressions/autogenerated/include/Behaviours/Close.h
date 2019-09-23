@@ -5,25 +5,23 @@
 // Add additional includes here
 /*PROTECTED REGION END*/
 
-namespace alica
-{
-class Close : public DomainBehaviour
-{
+namespace alica {
+class Close : public DomainBehaviour {
 public:
-    Close();
-    virtual ~Close();
-    virtual void run(void* msg);
-    /*PROTECTED REGION ID(pub1568801712239) ENABLED START*/
-    // Add additional protected methods here
-    /*PROTECTED REGION END*/
+  Close();
+  virtual ~Close();
+  virtual void run(void *msg);
+  /*PROTECTED REGION ID(pub1568801712239) ENABLED START*/
+  // Add additional protected methods here
+  /*PROTECTED REGION END*/
 protected:
-    virtual void initialiseParameters();
-    /*PROTECTED REGION ID(pro1568801712239) ENABLED START*/
-    // Add additional protected methods here
-    /*PROTECTED REGION END*/
+  virtual void initialiseParameters();
+  /*PROTECTED REGION ID(pro1568801712239) ENABLED START*/
+  // Add additional protected methods here
+  /*PROTECTED REGION END*/
 private:
-    /*PROTECTED REGION ID(prv1568801712239) ENABLED START*/
-    // Add additional private methods here
-    /*PROTECTED REGION END*/
+  /*PROTECTED REGION ID(prv1568801712239) ENABLED START*/
+  // Add additional private methods here
+  /*PROTECTED REGION END*/
 };
 } /* namespace alica */

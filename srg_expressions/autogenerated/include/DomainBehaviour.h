@@ -6,7 +6,7 @@
 namespace srg {
 class Robot;
 class SRGWorldModel;
-}
+} // namespace srg
 /*PROTECTED REGION END*/
 
 namespace alica {
@@ -15,9 +15,9 @@ public:
   DomainBehaviour(std::string name);
   virtual ~DomainBehaviour();
 
-    /*PROTECTED REGION ID(domainBehaviourClassDecl) ENABLED START*/
-    srg::Robot* robot;
-    srg::SRGWorldModel* wm;
-    /*PROTECTED REGION END*/
+  /*PROTECTED REGION ID(domainBehaviourClassDecl) ENABLED START*/
+  srg::Robot *robot;
+  srg::SRGWorldModel *wm;
+  /*PROTECTED REGION END*/
 };
 } /* namespace alica */
