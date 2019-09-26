@@ -85,6 +85,27 @@ void Robot::move(srgsim::Coordinate goal) const {
 
 void Robot::manipulate(essentials::IdentifierConstPtr objectID, srgsim::SimCommand::Action action) const {
     std::cout << "Robot::manipulate(): Not yet implemented!" << std::endl;
+    srgsim::SimCommand sc;
+    sc.senderID = this->id.get();
+    sc.objectID = objectID;
+    switch(action){
+        case srgsim::SimCommand::OPEN:
+            sc.action = srgsim::SimCommand::OPEN;
+            break;
+        case srgsim::SimCommand::CLOSE:
+            sc.action = srgsim::SimCommand::CLOSE;
+            break;
+        case srgsim::SimCommand::PICKUP:
+            sc.action = srgsim::SimCommand::PICKUP;
+            break;
+        case srgsim::SimCommand::PUTDOWN:
+            sc.action = srgsim::SimCommand::PUTDOWN;
+            break;
+        default:
+            std::cerr << "Robot::manipulate(): invalid action" << std::endl;
+            return;
+    }
+    send(sc);
 }
 
 void Robot::send(srgsim::SimCommand sc) const {
