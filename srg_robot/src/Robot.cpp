@@ -88,23 +88,7 @@ void Robot::manipulate(essentials::IdentifierConstPtr objectID, srgsim::SimComma
     srgsim::SimCommand sc;
     sc.senderID = this->id.get();
     sc.objectID = objectID;
-    switch(action){
-        case srgsim::SimCommand::OPEN:
-            sc.action = srgsim::SimCommand::OPEN;
-            break;
-        case srgsim::SimCommand::CLOSE:
-            sc.action = srgsim::SimCommand::CLOSE;
-            break;
-        case srgsim::SimCommand::PICKUP:
-            sc.action = srgsim::SimCommand::PICKUP;
-            break;
-        case srgsim::SimCommand::PUTDOWN:
-            sc.action = srgsim::SimCommand::PUTDOWN;
-            break;
-        default:
-            std::cerr << "Robot::manipulate(): invalid action" << std::endl;
-            return;
-    }
+    sc.action = action;
     send(sc);
 }
 
