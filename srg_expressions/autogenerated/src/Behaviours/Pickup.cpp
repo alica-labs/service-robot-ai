@@ -28,6 +28,8 @@ void Pickup::run(void* msg)
 {
     /*PROTECTED REGION ID(run1568801673599) ENABLED START*/
     // Add additional options here
+    std::cout << "Pcikup called.\n";
+    this->robot->pickup();
     /*PROTECTED REGION END*/
 }
 void Pickup::initialiseParameters()

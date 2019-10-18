@@ -28,6 +28,8 @@ void Open::run(void* msg)
 {
     /*PROTECTED REGION ID(run1568801700485) ENABLED START*/
     // Add additional options here
+    std::cout << "Open called.\n";
+    this->robot->open();
     /*PROTECTED REGION END*/
 }
 void Open::initialiseParameters()

@@ -28,6 +28,8 @@ void Close::run(void* msg)
 {
     /*PROTECTED REGION ID(run1568801712239) ENABLED START*/
     // Add additional options here
+    std::cout << "Close called";
+    this->robot->close();
     /*PROTECTED REGION END*/
 }
 void Close::initialiseParameters()

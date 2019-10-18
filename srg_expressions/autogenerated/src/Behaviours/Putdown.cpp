@@ -28,6 +28,8 @@ void Putdown::run(void* msg)
 {
     /*PROTECTED REGION ID(run1568801687587) ENABLED START*/
     // Add additional options here
+    std::cout << "Putdown called.\n";
+    this->robot->putdown();
     /*PROTECTED REGION END*/
 }
 void Putdown::initialiseParameters()
