@@ -2,7 +2,8 @@
 #include <memory>
 
 /*PROTECTED REGION ID(inccpp1568801687587) ENABLED START*/
-// Add additional includes here
+#include <srg/Robot.h>
+#include <srg/SRGWorldModel.h>
 /*PROTECTED REGION END*/
 
 namespace alica
@@ -29,7 +30,7 @@ void Putdown::run(void* msg)
     /*PROTECTED REGION ID(run1568801687587) ENABLED START*/
     // Add additional options here
     std::cout << "Putdown called.\n";
-    this->robot->putdown();
+    this->robot->manipulate(this->wm->getOwnId(), srgsim::SimCommand::Action::PUTDOWN);
     /*PROTECTED REGION END*/
 }
 void Putdown::initialiseParameters()

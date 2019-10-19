@@ -4,7 +4,7 @@
 #include <nonstd/optional.hpp>
 #include "DomainBehaviour.h"
 /*PROTECTED REGION ID(inc1568825137528) ENABLED START*/
-// Add additional includes here
+#include <control/containers/SpeechAct.h>
 /*PROTECTED REGION END*/
 
 namespace alica
@@ -26,6 +26,7 @@ protected:
 private:
     /*PROTECTED REGION ID(prv1568825137528) ENABLED START*/
     nonstd::optional<srgsim::Coordinate> startCoordinate;
+    nonstd::optional<control::SpeechAct> activeCommand;
     bool firstRun;
     /*PROTECTED REGION END*/
 };

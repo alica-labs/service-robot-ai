@@ -2,7 +2,8 @@
 #include <memory>
 
 /*PROTECTED REGION ID(inccpp1568801673599) ENABLED START*/
-// Add additional includes here
+#include <srg/Robot.h>
+#include <srg/SRGWorldModel.h>
 /*PROTECTED REGION END*/
 
 namespace alica
@@ -28,8 +29,8 @@ void Pickup::run(void* msg)
 {
     /*PROTECTED REGION ID(run1568801673599) ENABLED START*/
     // Add additional options here
-    std::cout << "Pcikup called.\n";
-    this->robot->pickup();
+    std::cout << "Pickup called.\n";
+    this->robot->manipulate(this->wm->getOwnId(), srgsim::SimCommand::Action::PICKUP);
     /*PROTECTED REGION END*/
 }
 void Pickup::initialiseParameters()

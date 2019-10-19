@@ -2,7 +2,8 @@
 #include <memory>
 
 /*PROTECTED REGION ID(inccpp1568801700485) ENABLED START*/
-// Add additional includes here
+#include <srg/Robot.h>
+#include <srg/SRGWorldModel.h>
 /*PROTECTED REGION END*/
 
 namespace alica
@@ -29,7 +30,7 @@ void Open::run(void* msg)
     /*PROTECTED REGION ID(run1568801700485) ENABLED START*/
     // Add additional options here
     std::cout << "Open called.\n";
-    this->robot->open();
+    this->robot->manipulate(this->wm->getOwnId(), srgsim::SimCommand::Action::OPEN);
     /*PROTECTED REGION END*/
 }
 void Open::initialiseParameters()
