@@ -4,8 +4,8 @@
 /*PROTECTED REGION ID(inccpp1568825137528) ENABLED START*/
 #include <srg/Robot.h>
 #include <srg/SRGWorldModel.h>
-#include <srg/robot/Movement.h>
 #include <srg/dialogue/CommandHandler.h>
+#include <srg/robot/Movement.h>
 /*PROTECTED REGION END*/
 
 namespace alica
@@ -50,8 +50,8 @@ void Move::run(void* msg)
         return;
     }
 
-    int xCoord = std::stoi(activeCommand->text.substr(moveIdx+4, commaIdx-(moveIdx+4)));
-    int yCoord = std::stoi(activeCommand->text.substr(commaIdx+1));
+    int xCoord = std::stoi(activeCommand->text.substr(moveIdx + 4, commaIdx - (moveIdx + 4)));
+    int yCoord = std::stoi(activeCommand->text.substr(commaIdx + 1));
 
     srgsim::Coordinate goalCoordinate = srgsim::Coordinate(xCoord, yCoord);
     if (currentCoordinate.has_value() && currentCoordinate.value() == goalCoordinate) {
@@ -72,6 +72,7 @@ void Move::initialiseParameters()
     this->startCoordinate = this->wm->sRGSimData.getOwnPositionBuffer().getLastValidContent();
     this->activeCommand = this->wm->dialogueManager.commandHandler->getActiveCommand();
     firstRun = true;
+
     /*PROTECTED REGION END*/
 }
 /*PROTECTED REGION ID(methods1568825137528) ENABLED START*/

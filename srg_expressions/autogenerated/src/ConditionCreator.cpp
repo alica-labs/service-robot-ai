@@ -1,9 +1,6 @@
 #include "ConditionCreator.h"
-#include "Behaviours/Close1568801712239.h"
+#include "Behaviours/Manipulate1571687572903.h"
 #include "Behaviours/Move1568825137528.h"
-#include "Behaviours/Open1568801700485.h"
-#include "Behaviours/Pickup1568801673599.h"
-#include "Behaviours/Putdown1568801687587.h"
 #include "Behaviours/Spawn1558533534825.h"
 #include "Behaviours/Stop1555602210283.h"
 #include "Behaviours/Test1559635479527.h"
@@ -40,6 +37,12 @@ std::shared_ptr<BasicCondition> ConditionCreator::createConditions(long conditio
         break;
     case 1568825476581:
         return std::make_shared<PreCondition1568825476581>();
+        break;
+    case 1571661864299:
+        return std::make_shared<PreCondition1571661864299>();
+        break;
+    case 1571661980674:
+        return std::make_shared<PreCondition1571661980674>();
         break;
     default:
         std::cerr << "ConditionCreator: Unknown condition id requested: " << conditionConfId << std::endl;

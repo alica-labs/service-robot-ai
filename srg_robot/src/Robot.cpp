@@ -45,6 +45,7 @@ void Robot::spawn() const
 {
     srgsim::SimCommand sc;
     sc.senderID = this->id.get();
+    sc.objectID = this->id.get();
     sc.action = srgsim::SimCommand::SPAWN;
     send(sc);
 }
@@ -60,6 +61,7 @@ void Robot::move(srgsim::Coordinate goal) const {
     std::cout << "Robot::move(): Result " << path->toString() << std::endl;
     srgsim::SimCommand sc;
     sc.senderID = this->id.get();
+    sc.objectID = this->id.get();
     switch (path->getDirection()) {
         case srgsim::Direction::Up:
             sc.action = srgsim::SimCommand::GOUP;
@@ -84,7 +86,6 @@ void Robot::move(srgsim::Coordinate goal) const {
 }
 
 void Robot::manipulate(essentials::IdentifierConstPtr objectID, srgsim::SimCommand::Action action) const {
-    std::cout << "Robot::manipulate(): Not yet implemented!" << std::endl;
     srgsim::SimCommand sc;
     sc.senderID = this->id.get();
     sc.objectID = objectID;

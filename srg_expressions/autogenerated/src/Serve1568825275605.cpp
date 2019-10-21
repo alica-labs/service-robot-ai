@@ -35,6 +35,7 @@ shared_ptr<UtilityFunction> UtilityFunction1568825275605::getUtilityFunction(Pla
  *
  *   - WaitForTask (1568825288640)
  *   - MoveToPosition (1568825309813)
+ *   - ManipulateObject (1571661663929)
  *
  * Vars:
  */
@@ -43,6 +44,34 @@ bool PreCondition1568825457853::evaluate(shared_ptr<RunningPlan> rp)
     /*PROTECTED REGION ID(1568825336792) ENABLED START*/
     auto activeCommand = this->wm->dialogueManager.commandHandler->getActiveCommand();
     return activeCommand.has_value() && activeCommand->text.find("move") != std::string::npos;
+    /*PROTECTED REGION END*/
+}
+/*
+ *
+ * Transition:
+ *   - Name: 1571661980674, ConditionString: Manipulate command!, Comment : MISSING_COMMENT
+ *
+ * Plans in State:
+ *
+ *   - Plan - (Name): Stop, (PlanID): 1555602210283
+ *
+ * Tasks:
+ *
+ *   - Serve (1555601344076) (Entrypoint: 1568825285315)
+ *
+ * States:
+ *
+ *   - WaitForTask (1568825288640)
+ *   - MoveToPosition (1568825309813)
+ *   - ManipulateObject (1571661663929)
+ *
+ * Vars:
+ */
+bool PreCondition1571661980674::evaluate(shared_ptr<RunningPlan> rp)
+{
+    /*PROTECTED REGION ID(1571661739802) ENABLED START*/
+    auto activeCommand = this->wm->dialogueManager.commandHandler->getActiveCommand();
+    return activeCommand.has_value() && activeCommand->text.find("open") != std::string::npos;
     /*PROTECTED REGION END*/
 }
 /*
@@ -62,12 +91,40 @@ bool PreCondition1568825457853::evaluate(shared_ptr<RunningPlan> rp)
  *
  *   - WaitForTask (1568825288640)
  *   - MoveToPosition (1568825309813)
+ *   - ManipulateObject (1571661663929)
  *
  * Vars:
  */
 bool PreCondition1568825476581::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1568825392354) ENABLED START*/
+    return rp->isAnyChildStatus(PlanStatus::Success);
+    /*PROTECTED REGION END*/
+}
+/*
+ *
+ * Transition:
+ *   - Name: 1571661864299, ConditionString: Manipulation successful!, Comment : MISSING_COMMENT
+ *
+ * Plans in State:
+ *
+ *   - Plan - (Name): Manipulate, (PlanID): 1571687572903
+ *
+ * Tasks:
+ *
+ *   - Serve (1555601344076) (Entrypoint: 1568825285315)
+ *
+ * States:
+ *
+ *   - WaitForTask (1568825288640)
+ *   - MoveToPosition (1568825309813)
+ *   - ManipulateObject (1571661663929)
+ *
+ * Vars:
+ */
+bool PreCondition1571661864299::evaluate(shared_ptr<RunningPlan> rp)
+{
+    /*PROTECTED REGION ID(1571661809581) ENABLED START*/
     return rp->isAnyChildStatus(PlanStatus::Success);
     /*PROTECTED REGION END*/
 }

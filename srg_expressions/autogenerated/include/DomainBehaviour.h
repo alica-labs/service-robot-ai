@@ -7,7 +7,7 @@ namespace srg
 {
 class Robot;
 class SRGWorldModel;
-}
+} // namespace srg
 /*PROTECTED REGION END*/
 
 namespace alica
