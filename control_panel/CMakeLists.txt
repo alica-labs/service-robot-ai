@@ -68,6 +68,8 @@ add_executable(${PROJECT_NAME}
   ${control_UIS}
 )
 
+message("######################################################## catkin_LIBRARIES: ${catkin_LIBRARIES}")
+
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
   ${Qt5Core_LIBRARIES}
