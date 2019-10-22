@@ -85,11 +85,49 @@ void Robot::move(srgsim::Coordinate goal) const {
     send(sc);
 }
 
-void Robot::manipulate(essentials::IdentifierConstPtr objectID, srgsim::SimCommand::Action action) const {
+void Robot::manipulate(std::string cmd) const {
+
+    std::string actionString = cmd.substr(0, cmd.find(" "));
+    std::string objectIdString;
+    std::string xCoordString = "-1";
+    std::string yCoordString = "-1";;
+    size_t objectIdEnd = cmd.find(" ", actionString.length() + 1);
+    if (objectIdEnd == std::string::npos) {
+        objectIdString = cmd.substr(actionString.length() + 1);
+    } else {
+        objectIdString = cmd.substr(actionString.length() + 1, objectIdEnd - (actionString.length() + 1));
+        xCoordString = cmd.substr(objectIdEnd + 1, cmd.find(","));
+        yCoordString = cmd.substr(cmd.find(",") + 1);
+    }
+
+    std::cout << "Robot::manipulate(): Action: '" << actionString << "' ID: '" << objectIdString << "' xCoord: '" << xCoordString << "' yCoord: '" << yCoordString << "'" << std::endl;
+
+    srgsim::SimCommand::Action action;
+
+    if (actionString.compare("open") == 0) {
+        action = srgsim::SimCommand::Action::OPEN;
+    } else if (actionString.compare("close") == 0) {
+        action = srgsim::SimCommand::Action::CLOSE;
+    } else if (actionString.compare("pick") == 0) {
+        action = srgsim::SimCommand::Action::PICKUP;
+    } else if (actionString.compare("put") == 0) {
+        action = srgsim::SimCommand::Action::PUTDOWN;
+    } else {
+        std::cout << "Robot::manipulate(): Current command is unknown: " << actionString << std::endl;
+        return;
+    }
+
+    uint32_t idInt = std::stoi(objectIdString);
+    essentials::IdentifierConstPtr objectID = this->wm->getEngine()->getId<uint32_t>(idInt);
+
+    srgsim::Coordinate coord = srgsim::Coordinate(std::stoi(xCoordString), std::stoi(yCoordString));
+
     srgsim::SimCommand sc;
     sc.senderID = this->id.get();
     sc.objectID = objectID;
     sc.action = action;
+    sc.x = coord.x;
+    sc.y = coord.y;
     send(sc);
 }
 

@@ -1,11 +1,11 @@
 #include "srg/wm/SRGSimData.h"
 
 #include "srg/SRGWorldModel.h"
-#include "srgsim/world/Object.h"
 #include "srgsim/SRGEnums.h"
+#include "srgsim/world/Cell.h"
+#include "srgsim/world/Object.h"
 #include "srgsim/world/ServiceRobot.h"
 #include "srgsim/world/World.h"
-#include "srgsim/world/Cell.h"
 
 namespace srg
 {
@@ -27,7 +27,8 @@ SRGSimData::SRGSimData(SRGWorldModel* wm)
 
 SRGSimData::~SRGSimData() {}
 
-const srgsim::World* SRGSimData::getWorld() {
+const srgsim::World* SRGSimData::getWorld()
+{
     return this->world;
 }
 
@@ -40,9 +41,16 @@ void SRGSimData::processPerception(srgsim::SimPerceptions simPerceptions)
             if (this->world->placeObject(robot, srgsim::Coordinate(perception.x, perception.y))) {
                 this->world->addRobot(static_cast<srgsim::ServiceRobot*>(robot));
             }
-            auto ownPositionInfo = std::make_shared<supplementary::InformationElement<srgsim::Coordinate>>(robot->getCell()->coordinate, wm->getTime(), ownPositionValidityDuration, 1.0);
+            auto ownPositionInfo = std::make_shared<supplementary::InformationElement<srgsim::Coordinate>>(
+                    robot->getCell()->coordinate, wm->getTime(), ownPositionValidityDuration, 1.0);
             this->ownPositionBuffer->add(ownPositionInfo);
         } break;
+        case srgsim::Type::Door:
+            break;
+        case srgsim::Type::CupYellow:
+        case srgsim::Type::CupRed:
+        case srgsim::Type::CupBlue:
+            break;
         default:
             std::cerr << "SRGSimData::processPerception(): Unknown perception received!" << std::endl;
         }

@@ -71,7 +71,10 @@ bool PreCondition1571661980674::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1571661739802) ENABLED START*/
     auto activeCommand = this->wm->dialogueManager.commandHandler->getActiveCommand();
-    return activeCommand.has_value() && activeCommand->text.find("open") != std::string::npos;
+    return activeCommand.has_value() && (activeCommand->text.find("open") != std::string::npos
+    || activeCommand->text.find("close") != std::string::npos
+    || activeCommand->text.find("pick") != std::string::npos
+    || activeCommand->text.find("put") != std::string::npos);
     /*PROTECTED REGION END*/
 }
 /*

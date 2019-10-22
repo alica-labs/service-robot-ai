@@ -35,7 +35,7 @@ public:
     // methods for doing something
     void spawn() const;
     void move(srgsim::Coordinate goal) const;
-    void manipulate(essentials::IdentifierConstPtr objectID, srgsim::SimCommand::Action action) const;
+    void manipulate(std::string) const;
 
 private:
     Robot(srg::SRGWorldModel* wm);  /**< Private Singleton Constructor */

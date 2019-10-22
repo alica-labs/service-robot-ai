@@ -26,7 +26,6 @@ protected:
 private:
     /*PROTECTED REGION ID(prv1571687572903) ENABLED START*/
     nonstd::optional<control::SpeechAct> activeCommand;
-    bool firstRun;
     /*PROTECTED REGION END*/
 };
 } /* namespace alica */
