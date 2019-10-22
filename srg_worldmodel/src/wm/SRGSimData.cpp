@@ -35,6 +35,7 @@ const srgsim::World* SRGSimData::getWorld()
 void SRGSimData::processPerception(srgsim::SimPerceptions simPerceptions)
 {
     for (srgsim::Perception perception : simPerceptions.perceptions) {
+        std::cout << "SRGSimData::processPerception(): " << perception << std::endl;
         switch (perception.type) {
         case srgsim::Type::Robot: {
             srgsim::Object* robot = this->world->addObject(perception.objectID, perception.type);
@@ -55,6 +56,7 @@ void SRGSimData::processPerception(srgsim::SimPerceptions simPerceptions)
             std::cerr << "SRGSimData::processPerception(): Unknown perception received!" << std::endl;
         }
     }
+    std::cout << "SRGSimData::processPerception(): -------------- " << std::endl;
 }
 
 bool SRGSimData::isLocalised()
