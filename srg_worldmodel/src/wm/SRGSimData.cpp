@@ -4,6 +4,7 @@
 #include "srgsim/SRGEnums.h"
 #include "srgsim/world/Cell.h"
 #include "srgsim/world/Object.h"
+#include "srgsim/world/Door.h"
 #include "srgsim/world/ServiceRobot.h"
 #include "srgsim/world/World.h"
 
@@ -34,26 +35,22 @@ const srgsim::World* SRGSimData::getWorld()
 
 void SRGSimData::processPerception(srgsim::SimPerceptions simPerceptions)
 {
-    for (srgsim::Perception perception : simPerceptions.perceptions) {
-        std::cout << "SRGSimData::processPerception(): " << perception << std::endl;
-        switch (perception.type) {
-        case srgsim::Type::Robot: {
-            srgsim::Object* robot = this->world->addObject(perception.objectID, perception.type);
-            if (this->world->placeObject(robot, srgsim::Coordinate(perception.x, perception.y))) {
-                this->world->addRobot(static_cast<srgsim::ServiceRobot*>(robot));
+    for (srgsim::CellPerceptions cellPerceptions : simPerceptions.cellPerceptions) {
+        std::cout << "SRGSimData::processPerception(): " << cellPerceptions << std::endl;
+
+        std::vector<srgsim::Object*> objects = this->world->updateCell(cellPerceptions);
+        for (srgsim::Object* object : objects) {
+            switch (object->getType()) {
+                case srgsim::Type::Robot: {
+                    this->world->addRobot(static_cast<srgsim::ServiceRobot*>(object));
+                    auto ownPositionInfo = std::make_shared<supplementary::InformationElement<srgsim::Coordinate>>(
+                            object->getCell()->coordinate, wm->getTime(), ownPositionValidityDuration, 1.0);
+                    this->ownPositionBuffer->add(ownPositionInfo);
+                } break;
+                default:
+                    // nothing extra to do for other types
+                    break;
             }
-            auto ownPositionInfo = std::make_shared<supplementary::InformationElement<srgsim::Coordinate>>(
-                    robot->getCell()->coordinate, wm->getTime(), ownPositionValidityDuration, 1.0);
-            this->ownPositionBuffer->add(ownPositionInfo);
-        } break;
-        case srgsim::Type::Door:
-            break;
-        case srgsim::Type::CupYellow:
-        case srgsim::Type::CupRed:
-        case srgsim::Type::CupBlue:
-            break;
-        default:
-            std::cerr << "SRGSimData::processPerception(): Unknown perception received!" << std::endl;
         }
     }
     std::cout << "SRGSimData::processPerception(): -------------- " << std::endl;
