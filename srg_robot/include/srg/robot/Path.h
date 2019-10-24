@@ -21,6 +21,7 @@ namespace srg {
 
         private:
             Path* addStep(const srgsim::Cell* cell);
+            bool checkValidity(std::vector<const srgsim::Cell*>& visited, srgsim::Cell* cell);
 
             int costs;
             const srgsim::Cell* cell;

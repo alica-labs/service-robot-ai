@@ -26,23 +26,15 @@ Path* Movement::searchPath(srgsim::Coordinate start, srgsim::Coordinate goal)
 //        std::cout << "Movement::searchPath: Current " << currentPath->toString() << std::endl;
 
         if (currentPath->isGoalPath()) {
-//            while (Path* path = fringe.top()) {
-//                fringe.pop();
-//                delete path;
-//            }
             return currentPath;
         }
 
 //        std::cout << "Movement::searchPath: Expanded :" << std::endl;
         std::vector<Path*> newPaths = currentPath->expand(visited);
-        if (newPaths.size() == 0) {
-//            delete currentPath;
-        } else {
-            for (auto path : newPaths) {
-                fringe.push(path);
-                visited.push_back(path->getCell());
+        for (auto path : newPaths) {
+            fringe.push(path);
+            visited.push_back(path->getCell());
 //                std::cout << path->toString() << std::endl;
-            }
         }
     }
     return initialPath;
