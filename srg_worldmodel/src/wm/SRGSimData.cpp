@@ -4,7 +4,6 @@
 #include "srgsim/SRGEnums.h"
 #include "srgsim/world/Cell.h"
 #include "srgsim/world/Object.h"
-#include "srgsim/world/Door.h"
 #include "srgsim/world/ServiceRobot.h"
 #include "srgsim/world/World.h"
 
