@@ -15,6 +15,9 @@ public:
     Movement(srg::SRGWorldModel* wm);
     Path* searchPath(srgsim::Coordinate start, srgsim::Coordinate goal);
 private:
+    srgsim::Coordinate findAlternativeGoal(srgsim::Coordinate start, srgsim::Coordinate goal);
+    bool checkValidity(srgsim::Coordinate coord);
+
     srg::SRGWorldModel* wm;
 };
 } // namespace robot

@@ -35,7 +35,6 @@ Path::~Path() {
 
 srgsim::Direction Path::getDirection()
 {
-    std::cout << "Path::getDirection()" << std::endl;
     // find the first cell that is not on the start coordinates
     Path* firstStep = this;
     while (firstStep->lastStep->lastStep != nullptr) {
@@ -60,12 +59,14 @@ bool Path::isGoalPath()
     return this->cell->coordinate == this->goal;
 }
 
-int Path::getCosts()
+int Path::getTotalCosts()
 {
-    int costs = this->costs;
-    costs += std::abs<int>(this->cell->coordinate.x - this->goal.x);
-    costs += std::abs<int>(this->cell->coordinate.y - this->goal.y);
-    return costs;
+    return this->costs + this->getHeuristicCosts();
+}
+
+int Path::getHeuristicCosts()
+{
+    return std::abs<int>(this->cell->coordinate.x - this->goal.x) + std::abs<int>(this->cell->coordinate.y - this->goal.y);
 }
 
 std::vector<Path*> Path::expand(std::vector<const srgsim::Cell*>& visited)
@@ -74,13 +75,13 @@ std::vector<Path*> Path::expand(std::vector<const srgsim::Cell*>& visited)
     if (checkValidity(visited, cell->down)){
         newPaths.push_back(this->addStep(cell->down));
     }
-    if (checkValidity(visited, cell->down)){
+    if (checkValidity(visited, cell->left)){
         newPaths.push_back(this->addStep(cell->left));
     }
-    if (checkValidity(visited, cell->down)){
+    if (checkValidity(visited, cell->right)){
         newPaths.push_back(this->addStep(cell->right));
     }
-    if (checkValidity(visited, cell->down)){
+    if (checkValidity(visited, cell->up)){
         newPaths.push_back(this->addStep(cell->up));
     }
     return newPaths;

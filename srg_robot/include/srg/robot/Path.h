@@ -14,7 +14,8 @@ namespace srg {
             srgsim::Direction getDirection();
 
             bool isGoalPath();
-            int getCosts();
+            int getTotalCosts();
+            int getHeuristicCosts();
             std::vector<Path*> expand(std::vector<const srgsim::Cell*>& visited);
             const srgsim::Cell* getCell();
             std::string toString();
