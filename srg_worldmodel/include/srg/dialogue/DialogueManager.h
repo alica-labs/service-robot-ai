@@ -20,7 +20,7 @@ namespace dialogue
 {
 class AnswerGraph;
 class InformHandler;
-class CommandHandler;
+class TaskHandler;
 class BasicHumanNeeds;
 
 #define inconsistency_eval
@@ -33,7 +33,7 @@ public:
 
     BasicHumanNeeds* basicHumanNeeds;
     InformHandler* informHandler;
-    CommandHandler* commandHandler;
+    TaskHandler* taskHandler;
 
 private:
     srg::SRGWorldModel* wm;

@@ -2,9 +2,9 @@
 
 #include "DomainBehaviour.h"
 /*PROTECTED REGION ID(inc1568825137528) ENABLED START*/
-#include <control/containers/SpeechAct.h>
 #include <nonstd/optional.hpp>
 #include <srgsim/containers/Coordinate.h>
+#include <srg/dialogue/Task.h>
 /*PROTECTED REGION END*/
 
 namespace alica
@@ -25,9 +25,7 @@ protected:
     /*PROTECTED REGION END*/
 private:
     /*PROTECTED REGION ID(prv1568825137528) ENABLED START*/
-    nonstd::optional<srgsim::Coordinate> startCoordinate;
-    nonstd::optional<control::SpeechAct> activeCommand;
-    bool firstRun;
+    nonstd::optional<srg::dialogue::Task> activeTask;
     /*PROTECTED REGION END*/
 };
 } /* namespace alica */

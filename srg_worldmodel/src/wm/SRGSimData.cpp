@@ -35,9 +35,9 @@ const srgsim::World* SRGSimData::getWorld()
 void SRGSimData::processPerception(srgsim::SimPerceptions simPerceptions)
 {
     for (srgsim::CellPerceptions cellPerceptions : simPerceptions.cellPerceptions) {
-        if (cellPerceptions.perceptions.size() > 0) {
-            std::cout << "SRGSimData::processPerception(): " << std::endl << cellPerceptions << std::endl;
-        }
+//        if (cellPerceptions.perceptions.size() > 0) {
+//            std::cout << "SRGSimData::processPerception(): " << std::endl << cellPerceptions << std::endl;
+//        }
 
         std::vector<srgsim::Object*> objects = this->world->updateCell(cellPerceptions);
         for (srgsim::Object* object : objects) {

@@ -2,6 +2,7 @@
 
 #include <srgsim/containers/SimCommand.h>
 #include <srgsim/containers/Coordinate.h>
+#include <srg/dialogue/ManipulationTask.h>
 #include <essentials/IdentifierConstPtr.h>
 
 #include <string>
@@ -34,8 +35,8 @@ public:
 
     // methods for doing something
     void spawn() const;
-    void move(srgsim::Coordinate goal) const;
-    void manipulate(std::string) const;
+    bool move(srgsim::Coordinate goal) const;
+    void manipulate(srg::dialogue::ManipulationTask) const;
 
 private:
     Robot(srg::SRGWorldModel* wm);  /**< Private Singleton Constructor */

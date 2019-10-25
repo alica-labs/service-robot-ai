@@ -50,11 +50,16 @@ void Robot::spawn() const
     send(sc);
 }
 
-void Robot::move(srgsim::Coordinate goal) const {
+/**
+ * Plans a path, and send a move command to the simulator for making the first step.
+ * @param goal
+ * @return True, if movement is necessary. False, otherwise.
+ */
+bool Robot::move(srgsim::Coordinate goal) const {
     auto ownCoordinate = this->wm->sRGSimData.getOwnPositionBuffer().getLastValidContent();
     if (!ownCoordinate.has_value()) {
         std::cerr << "Robot::move(): Not localised!" << std::endl;
-        return;
+        return true;
     }
 
     robot::Path* path = this->movement->searchPath(ownCoordinate.value(), goal);
@@ -76,58 +81,39 @@ void Robot::move(srgsim::Coordinate goal) const {
             sc.action = srgsim::SimCommand::GOLEFT;
             break;
         default:
-            std::cerr << "Robot::move(): No movement necessary or found!" << std::endl;
+            std::cout << "Robot::move(): No movement necessary or found!" << std::endl;
             delete path;
-            return;
+            return false;
     }
     std::cout << "Robot::move(): Moving " << sc.action << std::endl;
     delete path;
     send(sc);
+    return true;
 }
 
-void Robot::manipulate(std::string cmd) const {
-
-    std::string actionString = cmd.substr(0, cmd.find(" "));
-    std::string objectIdString;
-    std::string xCoordString = "-1";
-    std::string yCoordString = "-1";;
-    size_t objectIdEnd = cmd.find(" ", actionString.length() + 1);
-    if (objectIdEnd == std::string::npos) {
-        objectIdString = cmd.substr(actionString.length() + 1);
-    } else {
-        objectIdString = cmd.substr(actionString.length() + 1, objectIdEnd - (actionString.length() + 1));
-        xCoordString = cmd.substr(objectIdEnd + 1, cmd.find(","));
-        yCoordString = cmd.substr(cmd.find(",") + 1);
-    }
-
-    std::cout << "Robot::manipulate(): Action: '" << actionString << "' ID: '" << objectIdString << "' xCoord: '" << xCoordString << "' yCoord: '" << yCoordString << "'" << std::endl;
-
-    srgsim::SimCommand::Action action;
-
-    if (actionString.compare("open") == 0) {
-        action = srgsim::SimCommand::Action::OPEN;
-    } else if (actionString.compare("close") == 0) {
-        action = srgsim::SimCommand::Action::CLOSE;
-    } else if (actionString.compare("pick") == 0) {
-        action = srgsim::SimCommand::Action::PICKUP;
-    } else if (actionString.compare("put") == 0) {
-        action = srgsim::SimCommand::Action::PUTDOWN;
-    } else {
-        std::cout << "Robot::manipulate(): Current command is unknown: " << actionString << std::endl;
-        return;
-    }
-
-    uint32_t idInt = std::stoi(objectIdString);
-    essentials::IdentifierConstPtr objectID = this->wm->getEngine()->getId<uint32_t>(idInt);
-
-    srgsim::Coordinate coord = srgsim::Coordinate(std::stoi(xCoordString), std::stoi(yCoordString));
-
+void Robot::manipulate(srg::dialogue::ManipulationTask task) const {
     srgsim::SimCommand sc;
+    switch (task.type) {
+        case srgsim::TaskType::Open:
+            sc.action = srgsim::SimCommand::Action::OPEN;
+            break;
+        case srgsim::TaskType::Close:
+            sc.action = srgsim::SimCommand::Action::CLOSE;
+            break;
+        case srgsim::TaskType::PickUp:
+            sc.action = srgsim::SimCommand::Action::PICKUP;
+            break;
+        case srgsim::TaskType::PutDown:
+            sc.action = srgsim::SimCommand::Action::PUTDOWN;
+            break;
+        default:
+            return;
+    }
+
     sc.senderID = this->id.get();
-    sc.objectID = objectID;
-    sc.action = action;
-    sc.x = coord.x;
-    sc.y = coord.y;
+    sc.objectID = task.objectID;
+    sc.x = task.coordinate.x;
+    sc.y = task.coordinate.y;
     send(sc);
 }
 

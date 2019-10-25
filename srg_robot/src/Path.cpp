@@ -35,6 +35,9 @@ Path::~Path() {
 
 srgsim::Direction Path::getDirection()
 {
+    if (start == goal) {
+        return srgsim::Direction::None;
+    }
     // find the first cell that is not on the start coordinates
     Path* firstStep = this;
     while (firstStep->lastStep->lastStep != nullptr) {
@@ -94,6 +97,10 @@ std::vector<Path*> Path::expand(std::vector<const srgsim::Cell*>& visited)
  * @return
  */
 bool Path::checkValidity(std::vector<const srgsim::Cell*>& visited, srgsim::Cell* cell) {
+    if (!cell) {
+        return false;
+    }
+
     auto entry = std::find(visited.begin(), visited.end(), cell);
     if (entry != visited.end()) {
         return false;

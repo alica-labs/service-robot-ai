@@ -4,7 +4,7 @@
 /*PROTECTED REGION ID(inccpp1568825137528) ENABLED START*/
 #include <srg/Robot.h>
 #include <srg/SRGWorldModel.h>
-#include <srg/dialogue/CommandHandler.h>
+#include <srg/dialogue/TaskHandler.h>
 #include <srg/robot/Movement.h>
 /*PROTECTED REGION END*/
 
@@ -31,48 +31,22 @@ void Move::run(void* msg)
 {
     /*PROTECTED REGION ID(run1568825137528) ENABLED START*/
     std::cout << "Move::run() called!" << std::endl;
-    auto currentCoordinate = this->wm->sRGSimData.getOwnPositionBuffer().getLastValidContent();
-
-    if (!activeCommand.has_value()) {
-        std::cout << "Move::run(): Current command has no valid value!" << std::endl;
+    if (this->isSuccess()) {
         return;
     }
 
-    size_t moveIdx = activeCommand->text.find("move");
-    if (moveIdx == std::string::npos) {
-        std::cout << "Move::run(): Current command is no move command!" << std::endl;
-        return;
-    }
-
-    size_t commaIdx = activeCommand->text.find(",", moveIdx);
-    if (commaIdx == std::string::npos) {
-        std::cout << "Move::run(): Current move command has no comma!" << std::endl;
-        return;
-    }
-
-    int xCoord = std::stoi(activeCommand->text.substr(moveIdx + 4, commaIdx - (moveIdx + 4)));
-    int yCoord = std::stoi(activeCommand->text.substr(commaIdx + 1));
-
-    srgsim::Coordinate goalCoordinate = srgsim::Coordinate(xCoord, yCoord);
-    if (currentCoordinate.has_value() && currentCoordinate.value() == goalCoordinate) {
-        std::cout << "Move::run(): Reached goal: " << goalCoordinate << std::endl;
-        this->wm->dialogueManager.commandHandler->commandSuccessful(this->activeCommand->actID);
+    if (!activeTask.has_value() || this->activeTask->type != srgsim::TaskType::Move || this->activeTask->checkSuccess(this->wm)) {
         this->setSuccess();
         return;
-    } else if (firstRun || this->startCoordinate != currentCoordinate) {
-        startCoordinate = currentCoordinate;
-        firstRun = false;
-        this->robot->move(goalCoordinate);
     }
+
+    this->robot->move(activeTask->coordinate);
     /*PROTECTED REGION END*/
 }
 void Move::initialiseParameters()
 {
     /*PROTECTED REGION ID(initialiseParameters1568825137528) ENABLED START*/
-    this->startCoordinate = this->wm->sRGSimData.getOwnPositionBuffer().getLastValidContent();
-    this->activeCommand = this->wm->dialogueManager.commandHandler->getActiveCommand();
-    firstRun = true;
-
+    this->activeTask = this->wm->dialogueManager.taskHandler->getActiveTask();
     /*PROTECTED REGION END*/
 }
 /*PROTECTED REGION ID(methods1568825137528) ENABLED START*/

@@ -4,7 +4,7 @@
 /*PROTECTED REGION ID(inccpp1571687572903) ENABLED START*/
 #include <srg/Robot.h>
 #include <srg/SRGWorldModel.h>
-#include <srg/dialogue/CommandHandler.h>
+#include <srg/dialogue/TaskHandler.h>
 #include <srg/robot/Movement.h>
 /*PROTECTED REGION END*/
 
@@ -34,25 +34,21 @@ void Manipulate::run(void* msg)
         return;
     }
 
-    auto currentCoordinate = this->wm->sRGSimData.getOwnPositionBuffer().getLastValidContent();
-
-    if (!activeCommand.has_value()) {
-        std::cout << "Manipulate::run(): Current command has no valid value!" << std::endl;
+    if (this->activeTask.checkSuccess(this->wm) ||
+            (this->activeTask.type != srgsim::TaskType::Open && this->activeTask.type != srgsim::TaskType::Close &&
+                    this->activeTask.type != srgsim::TaskType::PickUp && this->activeTask.type != srgsim::TaskType::PutDown)) {
+        this->setSuccess();
         return;
     }
 
-    this->robot->manipulate(activeCommand->text);
-
-    // TODO: successful execution of action should depend on perceptions...
-    std::cout << "Manipulate::run(): Command successful: '" << activeCommand->text << std::endl;
-    this->wm->dialogueManager.commandHandler->commandSuccessful(activeCommand->actID);
-    this->setSuccess();
+    this->robot->manipulate(activeTask);
     /*PROTECTED REGION END*/
 }
 void Manipulate::initialiseParameters()
 {
     /*PROTECTED REGION ID(initialiseParameters1571687572903) ENABLED START*/
-    activeCommand = this->wm->dialogueManager.commandHandler->getActiveCommand();
+    srg::dialogue::Task task = this->wm->dialogueManager.taskHandler->getActiveTask();
+    this->activeTask = static_cast<srg::dialogue::ManipulationTask&>(task);
     /*PROTECTED REGION END*/
 }
 /*PROTECTED REGION ID(methods1571687572903) ENABLED START*/

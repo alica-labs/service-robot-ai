@@ -1,6 +1,6 @@
 #include "Serve1568825275605.h"
 /*PROTECTED REGION ID(eph1568825275605) ENABLED START*/
-#include <srg/dialogue/CommandHandler.h>
+#include <srg/dialogue/TaskHandler.h>
 /*PROTECTED REGION END*/
 
 using namespace alica;
@@ -42,8 +42,9 @@ shared_ptr<UtilityFunction> UtilityFunction1568825275605::getUtilityFunction(Pla
 bool PreCondition1568825457853::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1568825336792) ENABLED START*/
-    auto activeCommand = this->wm->dialogueManager.commandHandler->getActiveCommand();
-    return activeCommand.has_value() && activeCommand->text.find("move") != std::string::npos;
+    auto activeCommand = this->wm->dialogueManager.taskHandler->getActiveTask();
+    std::cout << "PreCondition1568825457853::evaluate():" << activeCommand << std::endl;
+    return activeCommand.type == srgsim::TaskType::Move;
     /*PROTECTED REGION END*/
 }
 /*
@@ -70,11 +71,11 @@ bool PreCondition1568825457853::evaluate(shared_ptr<RunningPlan> rp)
 bool PreCondition1571661980674::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1571661739802) ENABLED START*/
-    auto activeCommand = this->wm->dialogueManager.commandHandler->getActiveCommand();
-    return activeCommand.has_value() && (activeCommand->text.find("open") != std::string::npos
-    || activeCommand->text.find("close") != std::string::npos
-    || activeCommand->text.find("pick") != std::string::npos
-    || activeCommand->text.find("put") != std::string::npos);
+    auto activeCommand = this->wm->dialogueManager.taskHandler->getActiveTask();
+    return (activeCommand.type == srgsim::TaskType::Open
+    || activeCommand.type == srgsim::TaskType::Close
+    || activeCommand.type == srgsim::TaskType::PutDown
+    || activeCommand.type == srgsim::TaskType::PickUp);
     /*PROTECTED REGION END*/
 }
 /*
