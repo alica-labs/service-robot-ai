@@ -1,6 +1,8 @@
 #include "srg/robot/Path.h"
 
 #include <srgsim/world/World.h>
+#include <srgsim/world/Object.h>
+#include <srgsim/world/Door.h>
 
 #include <iostream>
 #include <sstream>
@@ -33,7 +35,9 @@ Path::~Path() {
 
 srgsim::Direction Path::getDirection()
 {
-    std::cout << "Path::getDirection()" << std::endl;
+    if (start == goal) {
+        return srgsim::Direction::None;
+    }
     // find the first cell that is not on the start coordinates
     Path* firstStep = this;
     while (firstStep->lastStep->lastStep != nullptr) {
@@ -58,46 +62,61 @@ bool Path::isGoalPath()
     return this->cell->coordinate == this->goal;
 }
 
-int Path::getCosts()
+int Path::getTotalCosts()
 {
-    int costs = this->costs;
-    costs += std::abs<int>(this->cell->coordinate.x - this->goal.x);
-    costs += std::abs<int>(this->cell->coordinate.y - this->goal.y);
-    return costs;
+    return this->costs + this->getHeuristicCosts();
+}
+
+int Path::getHeuristicCosts()
+{
+    return std::abs<int>(this->cell->coordinate.x - this->goal.x) + std::abs<int>(this->cell->coordinate.y - this->goal.y);
 }
 
 std::vector<Path*> Path::expand(std::vector<const srgsim::Cell*>& visited)
 {
     std::vector<Path*> newPaths;
-    auto entry = std::find(visited.begin(), visited.end(), cell->down);
-    if (entry == visited.end()) {
-        if (cell->down->type == srgsim::Type::DoorOpen || cell->down->type == srgsim::Type::Floor || cell->down->type == srgsim::Type::DoorClosed) {
-            newPaths.push_back(this->addStep(cell->down));
-        }
+    if (checkValidity(visited, cell->down)){
+        newPaths.push_back(this->addStep(cell->down));
     }
-
-    entry = std::find(visited.begin(), visited.end(), cell->up);
-    if (entry == visited.end()) {
-        if (cell->up->type == srgsim::Type::DoorOpen || cell->up->type == srgsim::Type::Floor || cell->down->type == srgsim::Type::DoorClosed) {
-            newPaths.push_back(this->addStep(cell->up));
-        }
+    if (checkValidity(visited, cell->left)){
+        newPaths.push_back(this->addStep(cell->left));
     }
-
-    entry = std::find(visited.begin(), visited.end(), cell->left);
-    if (entry == visited.end()) {
-        if (cell->left->type == srgsim::Type::DoorOpen || cell->left->type == srgsim::Type::Floor || cell->down->type == srgsim::Type::DoorClosed) {
-            newPaths.push_back(this->addStep(cell->left));
-        }
+    if (checkValidity(visited, cell->right)){
+        newPaths.push_back(this->addStep(cell->right));
     }
-
-    entry = std::find(visited.begin(), visited.end(), cell->right);
-    if (entry == visited.end()) {
-        if (cell->right->type == srgsim::Type::DoorOpen || cell->right->type == srgsim::Type::Floor ||
-                cell->down->type == srgsim::Type::DoorClosed) {
-            newPaths.push_back(this->addStep(cell->right));
-        }
+    if (checkValidity(visited, cell->up)){
+        newPaths.push_back(this->addStep(cell->up));
     }
     return newPaths;
+}
+
+/**
+ * Only allows to step on floor cells without closed doors on it.
+ * @param visited
+ * @param cell
+ * @return
+ */
+bool Path::checkValidity(std::vector<const srgsim::Cell*>& visited, srgsim::Cell* cell) {
+    if (!cell) {
+        return false;
+    }
+
+    auto entry = std::find(visited.begin(), visited.end(), cell);
+    if (entry != visited.end()) {
+        return false;
+    }
+
+    if (cell->down->type != srgsim::Type::Floor) {
+        return false;
+    }
+
+    for (srgsim::Object* object : cell->getObjects()) {
+        if(class srgsim::Door* door = dynamic_cast<class srgsim::Door*>(object)) {
+            return door->isOpen();
+        }
+    }
+
+    return true;
 }
 
 const srgsim::Cell* Path::getCell() {

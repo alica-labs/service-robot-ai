@@ -45,21 +45,28 @@ void Robot::spawn() const
 {
     srgsim::SimCommand sc;
     sc.senderID = this->id.get();
+    sc.objectID = this->id.get();
     sc.action = srgsim::SimCommand::SPAWN;
     send(sc);
 }
 
-void Robot::move(srgsim::Coordinate goal) const {
+/**
+ * Plans a path, and send a move command to the simulator for making the first step.
+ * @param goal
+ * @return True, if movement is necessary. False, otherwise.
+ */
+bool Robot::move(srgsim::Coordinate goal) const {
     auto ownCoordinate = this->wm->sRGSimData.getOwnPositionBuffer().getLastValidContent();
     if (!ownCoordinate.has_value()) {
         std::cerr << "Robot::move(): Not localised!" << std::endl;
-        return;
+        return true;
     }
 
     robot::Path* path = this->movement->searchPath(ownCoordinate.value(), goal);
     std::cout << "Robot::move(): Result " << path->toString() << std::endl;
     srgsim::SimCommand sc;
     sc.senderID = this->id.get();
+    sc.objectID = this->id.get();
     switch (path->getDirection()) {
         case srgsim::Direction::Up:
             sc.action = srgsim::SimCommand::GOUP;
@@ -74,17 +81,40 @@ void Robot::move(srgsim::Coordinate goal) const {
             sc.action = srgsim::SimCommand::GOLEFT;
             break;
         default:
-            std::cerr << "Robot::move(): No movement necessary or found!" << std::endl;
+            std::cout << "Robot::move(): No movement necessary or found!" << std::endl;
             delete path;
-            return;
+            return false;
     }
     std::cout << "Robot::move(): Moving " << sc.action << std::endl;
     delete path;
     send(sc);
+    return true;
 }
 
-void Robot::manipulate(essentials::IdentifierConstPtr objectID, srgsim::SimCommand::Action action) const {
-    std::cout << "Robot::manipulate(): Not yet implemented!" << std::endl;
+void Robot::manipulate(srg::dialogue::ManipulationTask task) const {
+    srgsim::SimCommand sc;
+    switch (task.type) {
+        case srgsim::TaskType::Open:
+            sc.action = srgsim::SimCommand::Action::OPEN;
+            break;
+        case srgsim::TaskType::Close:
+            sc.action = srgsim::SimCommand::Action::CLOSE;
+            break;
+        case srgsim::TaskType::PickUp:
+            sc.action = srgsim::SimCommand::Action::PICKUP;
+            break;
+        case srgsim::TaskType::PutDown:
+            sc.action = srgsim::SimCommand::Action::PUTDOWN;
+            break;
+        default:
+            return;
+    }
+
+    sc.senderID = this->id.get();
+    sc.objectID = task.objectID;
+    sc.x = task.coordinate.x;
+    sc.y = task.coordinate.y;
+    send(sc);
 }
 
 void Robot::send(srgsim::SimCommand sc) const {

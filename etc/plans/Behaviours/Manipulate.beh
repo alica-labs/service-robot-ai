@@ -1,10 +1,10 @@
 {
-  "id" : 1568801700485,
-  "name" : "Open",
+  "id" : 1571687572903,
+  "name" : "Manipulate",
   "comment" : "",
   "relativeDirectory" : "Behaviours",
   "variables" : [ ],
-  "frequency" : 0,
+  "frequency" : 30,
   "deferring" : 0,
   "preCondition" : null,
   "runtimeCondition" : null,

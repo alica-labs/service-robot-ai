@@ -4,6 +4,7 @@
 /*PROTECTED REGION ID(inccpp1568825137528) ENABLED START*/
 #include <srg/Robot.h>
 #include <srg/SRGWorldModel.h>
+#include <srg/dialogue/TaskHandler.h>
 #include <srg/robot/Movement.h>
 /*PROTECTED REGION END*/
 
@@ -22,31 +23,27 @@ Move::~Move() {
   // Add additional options here
   /*PROTECTED REGION END*/
 }
-void Move::run(void *msg) {
-  /*PROTECTED REGION ID(run1568825137528) ENABLED START*/
-  std::cout << "Move::run() called!" << std::endl;
-  srgsim::Coordinate goalCoordinate = srgsim::Coordinate(1, 1);
-  auto currentCoordinate =
-      this->wm->sRGSimData.getOwnPositionBuffer().getLastValidContent();
-  if (currentCoordinate.has_value() &&
-      currentCoordinate.value() == goalCoordinate) {
-    this->setSuccess();
-    return;
-  } else if (firstRun || this->startCoordinate != currentCoordinate) {
-    startCoordinate = currentCoordinate;
-    firstRun = false;
-    this->robot->move(goalCoordinate);
-  }
+void Move::run(void* msg)
+{
+    /*PROTECTED REGION ID(run1568825137528) ENABLED START*/
+    std::cout << "Move::run() called!" << std::endl;
+    if (this->isSuccess()) {
+        return;
+    }
 
-  /*PROTECTED REGION END*/
+    if (!activeTask.has_value() || this->activeTask->type != srgsim::TaskType::Move || this->activeTask->checkSuccess(this->wm)) {
+        this->setSuccess();
+        return;
+    }
+
+    this->robot->move(activeTask->coordinate);
+    /*PROTECTED REGION END*/
 }
-void Move::initialiseParameters() {
-  /*PROTECTED REGION ID(initialiseParameters1568825137528) ENABLED START*/
-  this->startCoordinate =
-      this->wm->sRGSimData.getOwnPositionBuffer().getLastValidContent();
-  firstRun = true;
-
-  /*PROTECTED REGION END*/
+void Move::initialiseParameters()
+{
+    /*PROTECTED REGION ID(initialiseParameters1568825137528) ENABLED START*/
+    this->activeTask = this->wm->dialogueManager.taskHandler->getActiveTask();
+    /*PROTECTED REGION END*/
 }
 /*PROTECTED REGION ID(methods1568825137528) ENABLED START*/
 // Add additional options here

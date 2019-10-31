@@ -1,11 +1,11 @@
 #include "srg/wm/SRGSimData.h"
 
 #include "srg/SRGWorldModel.h"
-#include "srgsim/world/Object.h"
 #include "srgsim/SRGEnums.h"
+#include "srgsim/world/Cell.h"
+#include "srgsim/world/Object.h"
 #include "srgsim/world/ServiceRobot.h"
 #include "srgsim/world/World.h"
-#include "srgsim/world/Cell.h"
 
 namespace srg
 {
@@ -27,24 +27,31 @@ SRGSimData::SRGSimData(SRGWorldModel* wm)
 
 SRGSimData::~SRGSimData() {}
 
-const srgsim::World* SRGSimData::getWorld() {
+const srgsim::World* SRGSimData::getWorld()
+{
     return this->world;
 }
 
 void SRGSimData::processPerception(srgsim::SimPerceptions simPerceptions)
 {
-    for (srgsim::Perception perception : simPerceptions.perceptions) {
-        switch (perception.type) {
-        case srgsim::Type::Robot: {
-            srgsim::Object* robot = this->world->addObject(perception.objectID, perception.type);
-            if (this->world->placeObject(robot, srgsim::Coordinate(perception.x, perception.y))) {
-                this->world->addRobot(static_cast<srgsim::ServiceRobot*>(robot));
+    for (srgsim::CellPerceptions cellPerceptions : simPerceptions.cellPerceptions) {
+//        if (cellPerceptions.perceptions.size() > 0) {
+//            std::cout << "SRGSimData::processPerception(): " << std::endl << cellPerceptions << std::endl;
+//        }
+
+        std::vector<srgsim::Object*> objects = this->world->updateCell(cellPerceptions);
+        for (srgsim::Object* object : objects) {
+            switch (object->getType()) {
+            case srgsim::Type::Robot: {
+                this->world->addRobot(static_cast<srgsim::ServiceRobot*>(object));
+                auto ownPositionInfo = std::make_shared<supplementary::InformationElement<srgsim::Coordinate>>(
+                        object->getCell()->coordinate, wm->getTime(), ownPositionValidityDuration, 1.0);
+                this->ownPositionBuffer->add(ownPositionInfo);
+            } break;
+            default:
+                // nothing extra to do for other types
+                break;
             }
-            auto ownPositionInfo = std::make_shared<supplementary::InformationElement<srgsim::Coordinate>>(robot->getCell()->coordinate, wm->getTime(), ownPositionValidityDuration, 1.0);
-            this->ownPositionBuffer->add(ownPositionInfo);
-        } break;
-        default:
-            std::cerr << "SRGSimData::processPerception(): Unknown perception received!" << std::endl;
         }
     }
 }

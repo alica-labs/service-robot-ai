@@ -24,6 +24,10 @@ void Stop::run(void *msg) {
   /*PROTECTED REGION ID(run1555602210283) ENABLED START*/
   std::cout << "Stop is called!" << std::endl;
   /*PROTECTED REGION END*/
+void Stop::run(void* msg)
+{
+    /*PROTECTED REGION ID(run1555602210283) ENABLED START*/
+    /*PROTECTED REGION END*/
 }
 void Stop::initialiseParameters() {
   /*PROTECTED REGION ID(initialiseParameters1555602210283) ENABLED START*/

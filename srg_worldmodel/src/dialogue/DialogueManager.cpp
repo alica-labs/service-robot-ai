@@ -4,7 +4,7 @@
 #include "srg/dialogue/AnswerGraph.h"
 #include "srg/dialogue/BasicHumanNeeds.h"
 #include "srg/dialogue/InformHandler.h"
-#include "srg/dialogue/CommandHandler.h"
+#include "srg/dialogue/TaskHandler.h"
 
 #include <control/containers/SpeechAct.h>
 
@@ -21,7 +21,7 @@ DialogueManager::DialogueManager(srg::SRGWorldModel* wm)
 {
     this->basicHumanNeeds = new BasicHumanNeeds(wm);
     this->informHandler = new InformHandler(wm);
-    this->commandHandler = new CommandHandler(wm);
+    this->taskHandler = new TaskHandler(wm);
 }
 DialogueManager::~DialogueManager()
 {
@@ -35,7 +35,7 @@ void DialogueManager::processSpeechAct(std::shared_ptr<supplementary::Informatio
     } else if (speechAct->getInformation().type == control::SpeechType::inform) {
         this->speechActs.push_back(this->informHandler->answerInform(speechAct->getInformation()));
     } else if (speechAct->getInformation().type == control::SpeechType::command) {
-        this->commandHandler->processCommandAct(speechAct);
+        this->taskHandler->processTaskAct(speechAct);
     }
 
 #ifdef inconsistency_eval

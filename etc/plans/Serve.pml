@@ -28,8 +28,8 @@
     "parentPlan" : 1568825275605,
     "abstractPlans" : [ "Behaviours/Stop.beh#1555602210283" ],
     "variableBindings" : [ ],
-    "outTransitions" : [ 1568825336792 ],
-    "inTransitions" : [ 1568825392354 ]
+    "outTransitions" : [ 1568825336792, 1571661739802 ],
+    "inTransitions" : [ 1568825392354, 1571661809581 ]
   }, {
     "type" : "State",
     "id" : 1568825309813,
@@ -41,6 +41,17 @@
     "variableBindings" : [ ],
     "outTransitions" : [ 1568825392354 ],
     "inTransitions" : [ 1568825336792 ]
+  }, {
+    "type" : "State",
+    "id" : 1571661663929,
+    "name" : "ManipulateObject",
+    "comment" : "",
+    "entryPoint" : null,
+    "parentPlan" : 1568825275605,
+    "abstractPlans" : [ "Behaviours/Manipulate.beh#1571687572903" ],
+    "variableBindings" : [ ],
+    "outTransitions" : [ 1571661809581 ],
+    "inTransitions" : [ 1571661739802 ]
   } ],
   "transitions" : [ {
     "id" : 1568825336792,
@@ -71,6 +82,40 @@
       "comment" : "",
       "enabled" : true,
       "conditionString" : "Movement successful!",
+      "pluginName" : "DefaultPlugin",
+      "variables" : [ ],
+      "quantifiers" : [ ]
+    },
+    "synchronisation" : null
+  }, {
+    "id" : 1571661739802,
+    "name" : "FromWaitForTaskToOpenDoor",
+    "comment" : "MISSING_COMMENT",
+    "inState" : 1568825288640,
+    "outState" : 1571661663929,
+    "preCondition" : {
+      "id" : 1571661980674,
+      "name" : "1571661980674",
+      "comment" : "",
+      "enabled" : true,
+      "conditionString" : "Manipulate command!",
+      "pluginName" : "DefaultPlugin",
+      "variables" : [ ],
+      "quantifiers" : [ ]
+    },
+    "synchronisation" : null
+  }, {
+    "id" : 1571661809581,
+    "name" : "FromOpenDoorToWaitForTask",
+    "comment" : "MISSING_COMMENT",
+    "inState" : 1571661663929,
+    "outState" : 1568825288640,
+    "preCondition" : {
+      "id" : 1571661864299,
+      "name" : "1571661864299",
+      "comment" : "",
+      "enabled" : true,
+      "conditionString" : "Manipulation successful!",
       "pluginName" : "DefaultPlugin",
       "variables" : [ ],
       "quantifiers" : [ ]
