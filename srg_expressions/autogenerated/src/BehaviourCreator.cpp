@@ -4,6 +4,10 @@
 #include "Behaviours/Spawn.h"
 #include "Behaviours/Stop.h"
 #include "Behaviours/Test.h"
+#include "Behaviours/Pickup.h"
+#include "Behaviours/Putdown.h"
+#include "Behaviours/Open.h"
+#include "Behaviours/Close.h"
 #include "engine/BasicBehaviour.h"
 
 namespace alica {
