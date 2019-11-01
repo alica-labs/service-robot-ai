@@ -30,7 +30,7 @@ Manipulate::~Manipulate()
 void Manipulate::run(void* msg)
 {
     /*PROTECTED REGION ID(run1571687572903) ENABLED START*/
-    if (this->isSuccess()) {
+    if (this->isSuccess() || !this->activeTask) {
         return;
     }
 

@@ -43,8 +43,7 @@ bool PreCondition1568825457853::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1568825336792) ENABLED START*/
     auto activeCommand = this->wm->dialogueManager.taskHandler->getActiveTask();
-    std::cout << "PreCondition1568825457853::evaluate():" << activeCommand << std::endl;
-    return activeCommand->type == srgsim::TaskType::Move;
+    return activeCommand && activeCommand->type == srgsim::TaskType::Move;
     /*PROTECTED REGION END*/
 }
 /*
@@ -72,7 +71,7 @@ bool PreCondition1571661980674::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1571661739802) ENABLED START*/
     auto activeCommand = this->wm->dialogueManager.taskHandler->getActiveTask();
-    return (activeCommand->type == srgsim::TaskType::Open
+    return activeCommand && (activeCommand->type == srgsim::TaskType::Open
     || activeCommand->type == srgsim::TaskType::Close
     || activeCommand->type == srgsim::TaskType::PutDown
     || activeCommand->type == srgsim::TaskType::PickUp);
