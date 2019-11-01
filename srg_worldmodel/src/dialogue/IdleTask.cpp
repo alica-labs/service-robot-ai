@@ -6,7 +6,7 @@ namespace srg
 {
 namespace dialogue
 {
-bool IdleTask::checkSuccess(SRGWorldModel* wm)
+bool IdleTask::checkSuccess(SRGWorldModel* wm) const
 {
     return true;
 }

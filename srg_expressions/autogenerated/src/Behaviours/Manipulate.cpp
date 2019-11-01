@@ -47,7 +47,7 @@ void Manipulate::run(void* msg)
 void Manipulate::initialiseParameters()
 {
     /*PROTECTED REGION ID(initialiseParameters1571687572903) ENABLED START*/
-    this->activeTask = static_cast<const srg::dialogue::ManipulationTask*>(this->wm->dialogueManager.taskHandler->getActiveTask());
+    this->activeTask = dynamic_cast<const srg::dialogue::ManipulationTask*>(this->wm->dialogueManager.taskHandler->getActiveTask());
     /*PROTECTED REGION END*/
 }
 /*PROTECTED REGION ID(methods1571687572903) ENABLED START*/

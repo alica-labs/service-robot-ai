@@ -46,7 +46,7 @@ void Move::run(void* msg)
 void Move::initialiseParameters()
 {
     /*PROTECTED REGION ID(initialiseParameters1568825137528) ENABLED START*/
-    this->activeTask = this->wm->dialogueManager.taskHandler->getActiveTask();
+    this->activeTask = dynamic_cast<const srg::dialogue::MoveTask*>(this->wm->dialogueManager.taskHandler->getActiveTask());
     /*PROTECTED REGION END*/
 }
 /*PROTECTED REGION ID(methods1568825137528) ENABLED START*/

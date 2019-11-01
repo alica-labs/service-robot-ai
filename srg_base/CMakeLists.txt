@@ -4,13 +4,13 @@ project(srg_base)
 add_compile_options(-std=c++11)
 set(CMAKE_BUILD_TYPE Debug)
 
-find_package(catkin REQUIRED COMPONENTS alica_engine srg_expressions alica_capnzero_proxy srg_worldmodel asp_solver_wrapper asp_solver)
+find_package(catkin REQUIRED COMPONENTS srg_worldmodel alica_engine srg_expressions alica_capnzero_proxy asp_solver_wrapper asp_solver)
 find_package(CapnProto REQUIRED)
 
 catkin_package(
   INCLUDE_DIRS include
 #  LIBRARIES srg-base
-  CATKIN_DEPENDS alica_engine srg_expressions alica_capnzero_proxy srg_worldmodel asp_solver_wrapper asp_solver
+  CATKIN_DEPENDS srg_worldmodel alica_engine srg_expressions alica_capnzero_proxy  asp_solver_wrapper asp_solver
 #  DEPENDS system_lib
 )
 

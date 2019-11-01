@@ -4,7 +4,7 @@
 /*PROTECTED REGION ID(inc1568825137528) ENABLED START*/
 #include <nonstd/optional.hpp>
 #include <srgsim/containers/Coordinate.h>
-#include <srg/dialogue/Task.h>
+#include <srg/dialogue/MoveTask.h>
 /*PROTECTED REGION END*/
 
 namespace alica
@@ -25,7 +25,7 @@ protected:
     /*PROTECTED REGION END*/
 private:
     /*PROTECTED REGION ID(prv1568825137528) ENABLED START*/
-    const srg::dialogue::Task* activeTask;
+    const srg::dialogue::MoveTask* activeTask;
     /*PROTECTED REGION END*/
 };
 } /* namespace alica */

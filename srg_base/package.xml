@@ -8,10 +8,10 @@
 
   <license>MIT</license>
 
+  <depend>srg_worldmodel</depend>
   <depend>alica_engine</depend>
   <depend>alica_capnzero_proxy</depend>
   <depend>srg_expressions</depend>
-  <depend>srg_worldmodel</depend>
   <depend>asp_solver_wrapper</depend>
   <depend>asp_solver</depend>
   <depend>telegram-client</depend>
