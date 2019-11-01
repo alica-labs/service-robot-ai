@@ -10,7 +10,7 @@ namespace dialogue
 class MoveTask : public Task
 {
 public:
-    bool checkSuccess(SRGWorldModel* wm) const;
+    virtual bool checkSuccess(SRGWorldModel* wm) const;
 };
 } // namespace dialogue
 } // namespace srg

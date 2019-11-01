@@ -13,44 +13,46 @@ namespace dialogue
 {
 TaskHandler::TaskHandler(SRGWorldModel* wm)
         : wm(wm)
+        , activeTask(nullptr)
 {
     auto sc = essentials::SystemConfig::getInstance();
     this->taskValidityDuration = alica::AlicaTime::nanoseconds((*sc)["SRGWorldModel"]->get<int64_t>("Data.TaskAct.ValidityDuration", NULL));
-    this->taskActBuffer = new supplementary::InfoBuffer<Task>((*sc)["SRGWorldModel"]->get<int64_t>("Data.TaskAct.BufferLength", NULL));
-    this->activeTask = Task();
-    this->activeTask.type = srgsim::TaskType::Idle;
+    this->taskActBuffer = new supplementary::InfoBuffer<Task*>((*sc)["SRGWorldModel"]->get<int64_t>("Data.TaskAct.BufferLength", NULL));
 }
 
 void TaskHandler::processTaskAct(std::shared_ptr<supplementary::InformationElement<control::SpeechAct>> taskAct)
 {
-    auto taskInfo = std::make_shared<supplementary::InformationElement<Task>>(this->createTask(taskAct), wm->getTime(), taskValidityDuration, 1.0);
+    Task* task = this->createTask(taskAct);
+    // dont ask, but I think that this fixes a memory leak ;-)
+    auto taskInfo = std::shared_ptr<supplementary::InformationElement<Task*>>(
+            new supplementary::InformationElement<Task*>(task, wm->getTime(), taskValidityDuration, 1.0),
+            [task](supplementary::InformationElement<Task*>*) mutable { delete task; });
     this->taskActBuffer->add(taskInfo);
 
-    if (activeTask.type == srgsim::TaskType::Idle) {
+    if (!activeTask || activeTask->type == srgsim::TaskType::Idle) {
         this->activeTask = taskInfo->getInformation();
     }
 }
 
-const supplementary::InfoBuffer<Task>& TaskHandler::getTaskActBuffer()
+const supplementary::InfoBuffer<Task*>& TaskHandler::getTaskActBuffer()
 {
     return *this->taskActBuffer;
 }
 
-Task TaskHandler::getActiveTask() const
+const Task* TaskHandler::getActiveTask() const
 {
     return activeTask;
 }
 
 void TaskHandler::tick()
 {
-    if (this->activeTask.type != srgsim::TaskType::Idle && !this->activeTask.checkSuccess(wm)) {
+    if (this->activeTask->type != srgsim::TaskType::Idle && !this->activeTask->checkSuccess(wm)) {
         return;
     }
 
-    auto newTask = this->taskActBuffer->getLastValidContent();
-    if (!newTask.has_value() || newTask->actID == this->activeTask.actID || newTask->checkSuccess(wm)) {
-        this->activeTask = Task(); // set to idle
-        return;
+    const nonstd::optional<Task*> newTask = this->taskActBuffer->getLastValidContent();
+    if (!newTask.has_value() || newTask.value()->actID == this->activeTask->actID || newTask.value()->checkSuccess(wm)) {
+        this->activeTask = nullptr;
     } else {
         this->activeTask = newTask.value();
     }
@@ -63,9 +65,9 @@ void TaskHandler::tick()
  * @param taskAct
  * @return The created Task.
  */
-Task TaskHandler::createTask(std::shared_ptr<supplementary::InformationElement<control::SpeechAct>> taskAct)
+Task* TaskHandler::createTask(std::shared_ptr<supplementary::InformationElement<control::SpeechAct>> taskAct)
 {
-    Task task;
+    Task* task;
     if (taskAct->getInformation().text.find("move") != std::string::npos) {
         task = createMoveTask(taskAct->getInformation().text);
     } else if (taskAct->getInformation().text.find("put") != std::string::npos || taskAct->getInformation().text.find("pick") != std::string::npos ||
@@ -73,48 +75,48 @@ Task TaskHandler::createTask(std::shared_ptr<supplementary::InformationElement<c
         task = createManipulationTask(taskAct->getInformation().text);
     } else {
         std::cerr << "TaskHandler::createTask(): Unkown task type encountered  - '" << taskAct->getInformation().text << "'" << std::endl;
-        task.type = srgsim::TaskType::Idle;
-        return task;
+        return nullptr;
     }
 
-    task.senderID = taskAct->getInformation().senderID;
-    task.receiverID = taskAct->getInformation().receiverID;
-    task.actID = taskAct->getInformation().actID;
-    task.previousActID = taskAct->getInformation().previousActID;
+    task->senderID = taskAct->getInformation().senderID;
+    task->receiverID = taskAct->getInformation().receiverID;
+    task->actID = taskAct->getInformation().actID;
+    task->previousActID = taskAct->getInformation().previousActID;
     return task;
 }
 
-MoveTask TaskHandler::createMoveTask(std::string taskText)
+MoveTask* TaskHandler::createMoveTask(std::string taskText)
 {
-    MoveTask task;
+    MoveTask* task = new MoveTask();
     size_t moveIdx = taskText.find("move");
     if (moveIdx == std::string::npos) {
         std::cerr << "TaskHandler::createMoveTask(): Task is no move task!" << std::endl;
-        task.type = srgsim::TaskType::Idle;
+        task->type = srgsim::TaskType::Idle;
         return task;
     }
 
     size_t commaIdx = taskText.find(",", moveIdx);
     if (commaIdx == std::string::npos) {
         std::cerr << "TaskHandler::createMoveTask(): Move task has no comma!" << std::endl;
-        task.type = srgsim::TaskType::Idle;
+        task->type = srgsim::TaskType::Idle;
         return task;
     }
 
     int xCoord = std::stoi(taskText.substr(moveIdx + 4, commaIdx - (moveIdx + 4)));
     int yCoord = std::stoi(taskText.substr(commaIdx + 1));
-    task.coordinate = srgsim::Coordinate(xCoord, yCoord);
-    task.type = srgsim::TaskType::Move;
+    task->coordinate = srgsim::Coordinate(xCoord, yCoord);
+    task->type = srgsim::TaskType::Move;
 
     return task;
 }
 
-ManipulationTask TaskHandler::createManipulationTask(std::string taskText)
+ManipulationTask* TaskHandler::createManipulationTask(std::string taskText)
 {
     std::string taskString = taskText.substr(0, taskText.find(" "));
     std::string objectIdString;
     std::string xCoordString = "-1";
-    std::string yCoordString = "-1";;
+    std::string yCoordString = "-1";
+    ;
     size_t objectIdEnd = taskText.find(" ", taskString.length() + 1);
     if (objectIdEnd == std::string::npos) {
         objectIdString = taskText.substr(taskString.length() + 1);
@@ -123,24 +125,25 @@ ManipulationTask TaskHandler::createManipulationTask(std::string taskText)
         xCoordString = taskText.substr(objectIdEnd + 1, taskText.find(","));
         yCoordString = taskText.substr(taskText.find(",") + 1);
     }
-    std::cout << "TaskHandler::createManipulationTask(): Task: '" << taskString << "' ID: '" << objectIdString << "' xCoord: '" << xCoordString << "' yCoord: '" << yCoordString << "'" << std::endl;
+    std::cout << "TaskHandler::createManipulationTask(): Task: '" << taskString << "' ID: '" << objectIdString << "' xCoord: '" << xCoordString << "' yCoord: '"
+              << yCoordString << "'" << std::endl;
 
-    ManipulationTask task;
+    ManipulationTask* task = new ManipulationTask();
     if (taskString.compare("open") == 0) {
-        task.type = srgsim::TaskType::Open;
+        task->type = srgsim::TaskType::Open;
     } else if (taskString.compare("close") == 0) {
-        task.type =  srgsim::TaskType::Close;
+        task->type = srgsim::TaskType::Close;
     } else if (taskString.compare("pick") == 0) {
-        task.type=  srgsim::TaskType::PickUp;
+        task->type = srgsim::TaskType::PickUp;
     } else if (taskString.compare("put") == 0) {
-        task.type=  srgsim::TaskType::PutDown;
+        task->type = srgsim::TaskType::PutDown;
     } else {
         std::cerr << "TaskHandler::createManipulationTask(): Current task type is unknown: " << taskString << std::endl;
-        task.type = srgsim::TaskType::Idle;
+        task->type = srgsim::TaskType::Idle;
     }
     uint32_t idInt = std::stoi(objectIdString);
-    task.objectID = this->wm->getEngine()->getId<uint32_t>(idInt);
-    task.coordinate = srgsim::Coordinate(std::stoi(xCoordString), std::stoi(yCoordString));
+    task->objectID = this->wm->getEngine()->getId<uint32_t>(idInt);
+    task->coordinate = srgsim::Coordinate(std::stoi(xCoordString), std::stoi(yCoordString));
 
     return task;
 }

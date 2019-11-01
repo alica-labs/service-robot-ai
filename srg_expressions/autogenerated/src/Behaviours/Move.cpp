@@ -35,7 +35,7 @@ void Move::run(void* msg)
         return;
     }
 
-    if (!activeTask.has_value() || this->activeTask->type != srgsim::TaskType::Move || this->activeTask->checkSuccess(this->wm)) {
+    if (!activeTask || this->activeTask->type != srgsim::TaskType::Move || this->activeTask->checkSuccess(this->wm)) {
         this->setSuccess();
         return;
     }

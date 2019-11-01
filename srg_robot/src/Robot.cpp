@@ -91,9 +91,9 @@ bool Robot::move(srgsim::Coordinate goal) const {
     return true;
 }
 
-void Robot::manipulate(srg::dialogue::ManipulationTask task) const {
+void Robot::manipulate(const srg::dialogue::ManipulationTask* task) const {
     srgsim::SimCommand sc;
-    switch (task.type) {
+    switch (task->type) {
         case srgsim::TaskType::Open:
             sc.action = srgsim::SimCommand::Action::OPEN;
             break;
@@ -111,9 +111,9 @@ void Robot::manipulate(srg::dialogue::ManipulationTask task) const {
     }
 
     sc.senderID = this->id.get();
-    sc.objectID = task.objectID;
-    sc.x = task.coordinate.x;
-    sc.y = task.coordinate.y;
+    sc.objectID = task->objectID;
+    sc.x = task->coordinate.x;
+    sc.y = task->coordinate.y;
     send(sc);
 }
 

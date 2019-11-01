@@ -34,9 +34,9 @@ void Manipulate::run(void* msg)
         return;
     }
 
-    if (this->activeTask.checkSuccess(this->wm) ||
-            (this->activeTask.type != srgsim::TaskType::Open && this->activeTask.type != srgsim::TaskType::Close &&
-                    this->activeTask.type != srgsim::TaskType::PickUp && this->activeTask.type != srgsim::TaskType::PutDown)) {
+    if (this->activeTask->checkSuccess(this->wm) ||
+            (this->activeTask->type != srgsim::TaskType::Open && this->activeTask->type != srgsim::TaskType::Close &&
+                    this->activeTask->type != srgsim::TaskType::PickUp && this->activeTask->type != srgsim::TaskType::PutDown)) {
         this->setSuccess();
         return;
     }
@@ -47,8 +47,7 @@ void Manipulate::run(void* msg)
 void Manipulate::initialiseParameters()
 {
     /*PROTECTED REGION ID(initialiseParameters1571687572903) ENABLED START*/
-    srg::dialogue::Task task = this->wm->dialogueManager.taskHandler->getActiveTask();
-    this->activeTask = static_cast<srg::dialogue::ManipulationTask&>(task);
+    this->activeTask = static_cast<const srg::dialogue::ManipulationTask*>(this->wm->dialogueManager.taskHandler->getActiveTask());
     /*PROTECTED REGION END*/
 }
 /*PROTECTED REGION ID(methods1571687572903) ENABLED START*/

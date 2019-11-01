@@ -25,7 +25,7 @@ protected:
     /*PROTECTED REGION END*/
 private:
     /*PROTECTED REGION ID(prv1568825137528) ENABLED START*/
-    nonstd::optional<srg::dialogue::Task> activeTask;
+    const srg::dialogue::Task* activeTask;
     /*PROTECTED REGION END*/
 };
 } /* namespace alica */

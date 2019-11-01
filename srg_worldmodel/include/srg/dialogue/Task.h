@@ -12,8 +12,9 @@ class Task
 {
 public:
     Task();
+    virtual ~Task() = default;
 
-    virtual bool checkSuccess(SRGWorldModel* wm) const;
+    virtual bool checkSuccess(SRGWorldModel* wm) const = 0;
 
     friend std::ostream& operator<<(std::ostream& os, const srg::dialogue::Task& obj)
     {

@@ -36,7 +36,7 @@ public:
     // methods for doing something
     void spawn() const;
     bool move(srgsim::Coordinate goal) const;
-    void manipulate(srg::dialogue::ManipulationTask) const;
+    void manipulate(const srg::dialogue::ManipulationTask* task) const;
 
 private:
     Robot(srg::SRGWorldModel* wm);  /**< Private Singleton Constructor */

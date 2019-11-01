@@ -19,18 +19,18 @@ namespace srg {
             void tick();
             void processTaskAct(std::shared_ptr<supplementary::InformationElement<control::SpeechAct>> commandAct);
 
-            const supplementary::InfoBuffer<Task>& getTaskActBuffer();
-            Task getActiveTask() const;
+            const supplementary::InfoBuffer<Task*>& getTaskActBuffer();
+            const Task* getActiveTask() const;
         private:
-            Task createTask(std::shared_ptr<supplementary::InformationElement<control::SpeechAct>> taskAct);
-            MoveTask createMoveTask(std::string taskText);
-            ManipulationTask createManipulationTask(std::string taskText);
+            Task* createTask(std::shared_ptr<supplementary::InformationElement<control::SpeechAct>> taskAct);
+            MoveTask* createMoveTask(std::string taskText);
+            ManipulationTask* createManipulationTask(std::string taskText);
 
             srg::SRGWorldModel* wm;
             essentials::SystemConfig* sc;
             alica::AlicaTime taskValidityDuration;
-            supplementary::InfoBuffer<Task>* taskActBuffer;
-            Task activeTask;
+            supplementary::InfoBuffer<Task*>* taskActBuffer;
+            Task* activeTask;
         };
     }
 }
