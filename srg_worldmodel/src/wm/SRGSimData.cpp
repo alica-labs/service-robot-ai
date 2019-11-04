@@ -6,6 +6,8 @@
 #include "srgsim/world/Object.h"
 #include "srgsim/world/ServiceRobot.h"
 #include "srgsim/world/World.h"
+#include "srg/dialogue/DialogueManager.h"
+#include "srg/dialogue/TaskHandler.h"
 
 namespace srg
 {
@@ -16,6 +18,7 @@ SRGSimData::SRGSimData(SRGWorldModel* wm)
 {
     this->wm = wm;
     this->sc = this->wm->getSystemConfig();
+    this->dialogueManager = &wm->dialogueManager;
 
     // ATTENTION: This path/file is not the same as the simulator
     // is starting, please make sure that both files have the same content!
@@ -54,6 +57,9 @@ void SRGSimData::processPerception(srgsim::SimPerceptions simPerceptions)
             }
         }
     }
+
+    // call to update success status of tasks
+    this->dialogueManager->taskHandler->tick();
 }
 
 bool SRGSimData::isLocalised()

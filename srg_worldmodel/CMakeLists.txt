@@ -3,6 +3,7 @@ project(srg_worldmodel)
     
 ## Use c++ 11x std
 set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+set(CMAKE_BUILD_TYPE Debug)
 
 ##Yaml
 find_package(yaml-cpp REQUIRED)

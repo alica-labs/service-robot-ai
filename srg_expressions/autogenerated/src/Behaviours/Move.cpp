@@ -30,12 +30,11 @@ Move::~Move()
 void Move::run(void* msg)
 {
     /*PROTECTED REGION ID(run1568825137528) ENABLED START*/
-    std::cout << "Move::run() called!" << std::endl;
-    if (this->isSuccess() || !activeTask) {
+    if (this->isSuccess()) {
         return;
     }
 
-    if (this->activeTask->type != srgsim::TaskType::Move || this->activeTask->checkSuccess(this->wm)) {
+    if (!this->activeTask || this->activeTask->type != srgsim::TaskType::Move || this->activeTask->checkSuccess(this->wm)) {
         this->setSuccess();
         return;
     }

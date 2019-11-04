@@ -41,6 +41,7 @@ void Manipulate::run(void* msg)
         return;
     }
 
+    std::cout << "Manipulate::run(void* msg): Call to manipulate environment!" << std::endl;
     this->robot->manipulate(activeTask);
     /*PROTECTED REGION END*/
 }

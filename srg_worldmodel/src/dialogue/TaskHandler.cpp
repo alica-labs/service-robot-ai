@@ -27,10 +27,12 @@ void TaskHandler::processTaskAct(std::shared_ptr<supplementary::InformationEleme
     auto taskInfo = std::shared_ptr<supplementary::InformationElement<Task*>>(
             new supplementary::InformationElement<Task*>(task, wm->getTime(), taskValidityDuration, 1.0),
             [task](supplementary::InformationElement<Task*>*) mutable { delete task; });
-    this->taskActBuffer->add(taskInfo);
 
-    if (!activeTask || activeTask->type == srgsim::TaskType::Idle) {
-        this->activeTask = taskInfo->getInformation();
+
+    if (!activeTask) {
+        this->activeTask = taskInfo;
+    } else {
+        this->taskActBuffer->add(taskInfo);
     }
 }
 
@@ -41,20 +43,25 @@ const supplementary::InfoBuffer<Task*>& TaskHandler::getTaskActBuffer()
 
 const Task* TaskHandler::getActiveTask() const
 {
-    return activeTask;
+    if (activeTask) {
+        return activeTask->getInformation();
+    }
+    return nullptr;
 }
 
 void TaskHandler::tick()
 {
-    if (this->activeTask->type != srgsim::TaskType::Idle && !this->activeTask->checkSuccess(wm)) {
+    if (this->activeTask && !this->activeTask->getInformation()->checkSuccess(wm)) {
+        // active task still in progress
         return;
     }
 
-    const nonstd::optional<Task*> newTask = this->taskActBuffer->getLastValidContent();
-    if (!newTask.has_value() || newTask.value()->actID == this->activeTask->actID || newTask.value()->checkSuccess(wm)) {
+    auto newTask = this->taskActBuffer->popLast();
+    if (!newTask || newTask->getInformation()->checkSuccess(wm)) {
+        // no new task that is not successful already
         this->activeTask = nullptr;
     } else {
-        this->activeTask = newTask.value();
+        this->activeTask = newTask;
     }
 }
 

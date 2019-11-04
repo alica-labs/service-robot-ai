@@ -30,7 +30,7 @@ namespace srg {
             essentials::SystemConfig* sc;
             alica::AlicaTime taskValidityDuration;
             supplementary::InfoBuffer<Task*>* taskActBuffer;
-            Task* activeTask;
+            std::shared_ptr<const supplementary::InformationElement<Task*>> activeTask;
         };
     }
 }

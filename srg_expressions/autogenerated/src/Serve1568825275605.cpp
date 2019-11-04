@@ -101,6 +101,9 @@ bool PreCondition1571661980674::evaluate(shared_ptr<RunningPlan> rp)
 bool PreCondition1568825476581::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1568825392354) ENABLED START*/
+    for (auto child : rp->getChildren()) {
+        std::cout << "PreCondition1568825476581::evaluate(): " << *child << std::endl;
+    }
     return rp->isAnyChildStatus(PlanStatus::Success);
     /*PROTECTED REGION END*/
 }
