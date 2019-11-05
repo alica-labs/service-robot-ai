@@ -1,7 +1,7 @@
 #include "srg/wm/SRGSimData.h"
 
 #include "srg/SRGWorldModel.h"
-#include "srgsim/SRGEnums.h"
+#include "srgsim/world/SpriteObjectType.h"
 #include "srgsim/world/Cell.h"
 #include "srgsim/world/Object.h"
 #include "srgsim/world/ServiceRobot.h"
@@ -45,7 +45,7 @@ void SRGSimData::processPerception(srgsim::SimPerceptions simPerceptions)
         std::vector<srgsim::Object*> objects = this->world->updateCell(cellPerceptions);
         for (srgsim::Object* object : objects) {
             switch (object->getType()) {
-            case srgsim::Type::Robot: {
+            case srgsim::SpriteObjectType::Robot: {
                 this->world->addRobot(static_cast<srgsim::ServiceRobot*>(object));
                 auto ownPositionInfo = std::make_shared<supplementary::InformationElement<srgsim::Coordinate>>(
                         object->getCell()->coordinate, wm->getTime(), ownPositionValidityDuration, 1.0);

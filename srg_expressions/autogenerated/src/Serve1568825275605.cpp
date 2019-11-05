@@ -43,7 +43,7 @@ bool PreCondition1568825457853::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1568825336792) ENABLED START*/
     auto activeCommand = this->wm->dialogueManager.taskHandler->getActiveTask();
-    return activeCommand && activeCommand->type == srgsim::TaskType::Move;
+    return activeCommand && activeCommand->getInformation()->type == srgsim::TaskType::Move;
     /*PROTECTED REGION END*/
 }
 /*
@@ -71,10 +71,10 @@ bool PreCondition1571661980674::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1571661739802) ENABLED START*/
     auto activeCommand = this->wm->dialogueManager.taskHandler->getActiveTask();
-    return activeCommand && (activeCommand->type == srgsim::TaskType::Open
-    || activeCommand->type == srgsim::TaskType::Close
-    || activeCommand->type == srgsim::TaskType::PutDown
-    || activeCommand->type == srgsim::TaskType::PickUp);
+    return activeCommand && (activeCommand->getInformation()->type == srgsim::TaskType::Open
+    || activeCommand->getInformation()->type == srgsim::TaskType::Close
+    || activeCommand->getInformation()->type == srgsim::TaskType::PutDown
+    || activeCommand->getInformation()->type == srgsim::TaskType::PickUp);
     /*PROTECTED REGION END*/
 }
 /*
@@ -101,9 +101,9 @@ bool PreCondition1571661980674::evaluate(shared_ptr<RunningPlan> rp)
 bool PreCondition1568825476581::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1568825392354) ENABLED START*/
-    for (auto child : rp->getChildren()) {
-        std::cout << "PreCondition1568825476581::evaluate(): " << *child << std::endl;
-    }
+//    for (auto child : rp->getChildren()) {
+//        std::cout << "PreCondition1568825476581::evaluate(): " << *child << std::endl;
+//    }
     return rp->isAnyChildStatus(PlanStatus::Success);
     /*PROTECTED REGION END*/
 }

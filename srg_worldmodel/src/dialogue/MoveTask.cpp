@@ -1,10 +1,10 @@
 #include "srg/dialogue/MoveTask.h"
 
 #include "srg/SRGWorldModel.h"
-#include <srgsim/SRGEnums.h>
 #include <srgsim/containers/Coordinate.h>
 #include <srgsim/world/Cell.h>
 #include <srgsim/world/Object.h>
+#include <srgsim/world/SpriteObjectType.h>
 #include <srgsim/world/World.h>
 
 namespace srg
@@ -20,13 +20,13 @@ bool MoveTask::checkSuccess(SRGWorldModel* wm) const
 
     bool goalIsBlocked = false;
     const srgsim::Cell* goalCell = wm->sRGSimData.getWorld()->getCell(this->coordinate);
-    if (goalCell->type == srgsim::Type::Wall) {
+    if (goalCell->type == srgsim::SpriteObjectType::Wall) {
         goalIsBlocked = true;
     }
 
     if (!goalIsBlocked) {
         for (auto object : goalCell->getObjects()) {
-            if (object->getType() == srgsim::Type::Door) {
+            if (object->getType() == srgsim::SpriteObjectType::Door) {
                 goalIsBlocked = true;
                 break;
             }

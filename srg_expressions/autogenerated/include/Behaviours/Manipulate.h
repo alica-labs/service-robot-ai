@@ -26,7 +26,7 @@ protected:
     /*PROTECTED REGION END*/
 private:
     /*PROTECTED REGION ID(prv1571687572903) ENABLED START*/
-    const srg::dialogue::ManipulationTask* activeTask;
+    srg::dialogue::ManipulationTask* activeTask;
     /*PROTECTED REGION END*/
 };
 } /* namespace alica */

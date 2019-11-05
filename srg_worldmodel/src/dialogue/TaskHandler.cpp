@@ -41,26 +41,30 @@ const supplementary::InfoBuffer<Task*>& TaskHandler::getTaskActBuffer()
     return *this->taskActBuffer;
 }
 
-const Task* TaskHandler::getActiveTask() const
+std::shared_ptr<const supplementary::InformationElement<Task*>> TaskHandler::getActiveTask() const
 {
-    if (activeTask) {
-        return activeTask->getInformation();
-    }
-    return nullptr;
+    return this->activeTask;
 }
 
 void TaskHandler::tick()
 {
     if (this->activeTask && !this->activeTask->getInformation()->checkSuccess(wm)) {
         // active task still in progress
+        std::cout << "TaskHandler::tick(): Active task in progress: " << *this->activeTask->getInformation() << std::endl;
         return;
     }
 
     auto newTask = this->taskActBuffer->popLast();
     if (!newTask || newTask->getInformation()->checkSuccess(wm)) {
         // no new task that is not successful already
+        if (newTask) {
+//            std::cout << "TaskHandler::tick(): New task already successful: " << *newTask->getInformation() << std::endl;
+        } else {
+//            std::cout << "TaskHandler::tick(): No new task! " << std::endl;
+        }
         this->activeTask = nullptr;
     } else {
+        std::cout << "TaskHandler::tick(): New task set: " << *newTask->getInformation() << std::endl;
         this->activeTask = newTask;
     }
 }
