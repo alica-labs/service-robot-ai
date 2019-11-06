@@ -61,6 +61,7 @@ void Manipulate::initialiseParameters()
         this->activeTask->previousActID = task->getInformation()->previousActID;
         this->activeTask->senderID = task->getInformation()->senderID;
         this->activeTask->receiverID = task->getInformation()->receiverID;
+        this->activeTask->objectID = static_cast<srg::dialogue::ManipulationTask*>(task->getInformation())->objectID;
     } else {
         this->activeTask = nullptr;
     }

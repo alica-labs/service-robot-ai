@@ -2,9 +2,10 @@
 
 #include "srg/SRGWorldModel.h"
 
+#include <srgsim/world/Cell.h>
 #include <srgsim/world/Object.h>
-#include <srgsim/world/World.h>
 #include <srgsim/world/ServiceRobot.h>
+#include <srgsim/world/World.h>
 
 namespace srg
 {
@@ -14,6 +15,7 @@ bool ManipulationTask::checkSuccess(SRGWorldModel* wm) const
 {
     const srgsim::Object* object = nullptr;
     const srgsim::ServiceRobot* robot = nullptr;
+    const srgsim::Cell* cell = nullptr;
     switch (this->type) {
     case srgsim::TaskType::Open:
         object = wm->sRGSimData.getWorld()->getObject(this->objectID);
@@ -23,13 +25,15 @@ bool ManipulationTask::checkSuccess(SRGWorldModel* wm) const
         return object && object->getState() == srgsim::ObjectState::Closed;
     case srgsim::TaskType::PickUp:
         robot = wm->sRGSimData.getWorld()->getRobot(this->receiverID);
-        return robot->getCarriedObject()->getID() == this->objectID;
+        return robot->getCarriedObject() && robot->getCarriedObject()->getID() == this->objectID;
     case srgsim::TaskType::PutDown:
         std::cout << "ManipulationTask::checkSuccess(): PutDown-CheckSuccess not implemented, yet!" << std::endl;
-        const srgsim::Cell* cell = wm->sRGSimData.getWorld()->getCell(this->coordinate);
-//        for (const srgsim::Object* object : cell->getObjects()) {
-//
-//        }
+        cell = wm->sRGSimData.getWorld()->getCell(this->coordinate);
+        for (const srgsim::Object* object : cell->getObjects()) {
+            if (object->getID() == this->objectID) {
+                return true;
+            }
+        }
         return false;
     default:
         std::cerr << "ManipulationTask::checkSuccess(): Unknown manipulation task encountered: " << this->type << std::endl;

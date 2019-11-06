@@ -34,8 +34,8 @@ bool MoveTask::checkSuccess(SRGWorldModel* wm) const
     }
 
     srgsim::Coordinate diff = this->coordinate - ownCoord.value();
-    if ((goalIsBlocked && diff.x < 2 && diff.y < 2) || (diff.x == 0 && diff.y == 0)) {
-        std::cout << "MoveTask::checkSuccess(): SUCCESS!" << std::endl;
+    if ((goalIsBlocked && abs(diff.x) < 2 && abs(diff.y) < 2) || (diff.x == 0 && diff.y == 0)) {
+        std::cout << "MoveTask::checkSuccess(): SUCCESS! Goal " << this->coordinate << " OwnPos " << ownCoord.value() << std::endl;
         return true;
     }
     return false;

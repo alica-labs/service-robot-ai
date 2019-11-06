@@ -63,7 +63,7 @@ bool Robot::move(srgsim::Coordinate goal) const {
     }
 
     robot::Path* path = this->movement->searchPath(ownCoordinate.value(), goal);
-    std::cout << "Robot::move(): Result " << *path << std::endl;
+//    std::cout << "Robot::move(): Result " << *path << std::endl;
     srgsim::SimCommand sc;
     sc.senderID = this->id.get();
     sc.objectID = this->id.get();
