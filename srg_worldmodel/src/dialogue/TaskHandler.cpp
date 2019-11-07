@@ -56,7 +56,7 @@ void TaskHandler::tick()
 {
     if (this->activeTask && !this->activeTask->getInformation()->checkSuccess(wm)) {
         // active task still in progress
-        std::cout << "TaskHandler::tick(): Active task in progress: " << *this->activeTask->getInformation() << std::endl;
+        std::cout << "TaskHandler::tick(): Active " << *this->activeTask->getInformation() << std::endl;
         return;
     }
 
@@ -150,8 +150,6 @@ ManipulationTask* TaskHandler::createManipulationTask(std::string taskText)
         xCoordString = taskText.substr(objectIdEnd + 1, taskText.find(","));
         yCoordString = taskText.substr(taskText.find(",") + 1);
     }
-    std::cout << "TaskHandler::createManipulationTask(): Task: '" << taskString << "' ID: '" << objectIdString << "' xCoord: '" << xCoordString << "' yCoord: '"
-              << yCoordString << "'" << std::endl;
 
     ManipulationTask* task = new ManipulationTask();
     srgsim::Coordinate coord = srgsim::Coordinate(std::stoi(xCoordString), std::stoi(yCoordString));

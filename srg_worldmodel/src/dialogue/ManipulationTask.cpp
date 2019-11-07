@@ -25,9 +25,11 @@ bool ManipulationTask::checkSuccess(SRGWorldModel* wm) const
         return object && object->getState() == srgsim::ObjectState::Closed;
     case srgsim::TaskType::PickUp:
         robot = wm->sRGSimData.getWorld()->getRobot(this->receiverID);
+        if (robot) {
+            std::cout << "ManipulationTask::checkSuccess(): " << *robot << std::endl;
+        }
         return robot->getCarriedObject() && robot->getCarriedObject()->getID() == this->objectID;
     case srgsim::TaskType::PutDown:
-        std::cout << "ManipulationTask::checkSuccess(): PutDown-CheckSuccess not implemented, yet!" << std::endl;
         cell = wm->sRGSimData.getWorld()->getCell(this->coordinate);
         for (const srgsim::Object* object : cell->getObjects()) {
             if (object->getID() == this->objectID) {
