@@ -87,7 +87,7 @@ Task* TaskHandler::createTask(std::shared_ptr<supplementary::InformationElement<
                taskAct->getInformation().text.find("close") != std::string::npos || taskAct->getInformation().text.find("open") != std::string::npos) {
         task = createManipulationTask(taskAct->getInformation().text);
     } else {
-        std::cerr << "TaskHandler::createTask(): Unkown task type encountered  - '" << taskAct->getInformation().text << "'" << std::endl;
+        std::cerr << "[TaskHandler::createTask] Unkown task type encountered  - '" << taskAct->getInformation().text << "'" << std::endl;
         return nullptr;
     }
     if (!task) {
@@ -106,13 +106,13 @@ MoveTask* TaskHandler::createMoveTask(std::string taskText)
     MoveTask* task = new MoveTask();
     size_t moveIdx = taskText.find("move");
     if (moveIdx == std::string::npos) {
-        std::cerr << "TaskHandler::createMoveTask(): Task is no move task!" << std::endl;
+        std::cerr << "[TaskHandler::createMoveTask] Task is no move task!" << std::endl;
         return nullptr;
     }
 
     size_t commaIdx = taskText.find(",", moveIdx);
     if (commaIdx == std::string::npos) {
-        std::cerr << "TaskHandler::createMoveTask(): Move task has no comma!" << std::endl;
+        std::cerr << "[TaskHandler::createMoveTask] Move task has no comma!" << std::endl;
         return nullptr;
     }
 
@@ -124,7 +124,7 @@ MoveTask* TaskHandler::createMoveTask(std::string taskText)
     int yCoord = std::stoi(taskText.substr(commaIdx + 1));
     srgsim::Coordinate coord = srgsim::Coordinate(xCoord, yCoord);
     if (!isValid(coord, task->type)) {
-        std::cerr << "TaskHandler::createManipulationTask(): Coordinates outside of the world: " << coord << std::endl;
+        std::cerr << "[TaskHandler::createManipulationTask] Coordinates outside of the world: " << coord << std::endl;
         return nullptr;
     }
     task->coordinate = coord;
@@ -159,7 +159,7 @@ ManipulationTask* TaskHandler::createManipulationTask(std::string taskText)
     } else if (taskString.compare("put") == 0) {
         task->type = srgsim::TaskType::PutDown;
     } else {
-        std::cerr << "TaskHandler::createManipulationTask(): Current task type is unknown: " << taskString << std::endl;
+        std::cerr << "[TaskHandler::createManipulationTask] Current task type is unknown: " << taskString << std::endl;
         task->type = srgsim::TaskType::Idle;
     }
 
