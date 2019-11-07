@@ -31,6 +31,7 @@ private:
     Task* createTask(std::shared_ptr<supplementary::InformationElement<control::SpeechAct>> taskAct);
     MoveTask* createMoveTask(std::string taskText);
     ManipulationTask* createManipulationTask(std::string taskText);
+    bool isValid(srgsim::Coordinate coord, srgsim::TaskType type);
 
     srg::SRGWorldModel* wm;
     essentials::SystemConfig* sc;
