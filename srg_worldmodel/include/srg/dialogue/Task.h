@@ -1,8 +1,8 @@
 #pragma once
 
-#include <srgsim/SRGEnums.h>
-#include <srgsim/containers/Coordinate.h>
 #include <essentials/IdentifierConstPtr.h>
+#include <srgsim/containers/Coordinate.h>
+#include <srgsim/world/TaskType.h>
 namespace srg
 {
 class SRGWorldModel;
@@ -12,12 +12,13 @@ class Task
 {
 public:
     Task();
+    virtual ~Task() = default;
 
-    virtual bool checkSuccess(SRGWorldModel* wm) const;
+    virtual bool checkSuccess(SRGWorldModel* wm) const = 0;
 
     friend std::ostream& operator<<(std::ostream& os, const srg::dialogue::Task& obj)
     {
-        os << "Task: Type: " << static_cast<int>(obj.type) << " at " << obj.coordinate;
+        os << "Task: Type: " << obj.type << " at " << obj.coordinate;
         return os;
     }
 

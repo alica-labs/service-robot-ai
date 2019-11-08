@@ -30,25 +30,41 @@ Manipulate::~Manipulate()
 void Manipulate::run(void* msg)
 {
     /*PROTECTED REGION ID(run1571687572903) ENABLED START*/
-    if (this->isSuccess()) {
+    if (this->isSuccess() || !this->activeTask) {
         return;
     }
 
-    if (this->activeTask.checkSuccess(this->wm) ||
-            (this->activeTask.type != srgsim::TaskType::Open && this->activeTask.type != srgsim::TaskType::Close &&
-                    this->activeTask.type != srgsim::TaskType::PickUp && this->activeTask.type != srgsim::TaskType::PutDown)) {
+    if (this->activeTask->checkSuccess(this->wm) ||
+            (this->activeTask->type != srgsim::TaskType::Open && this->activeTask->type != srgsim::TaskType::Close &&
+                    this->activeTask->type != srgsim::TaskType::PickUp && this->activeTask->type != srgsim::TaskType::PutDown)) {
         this->setSuccess();
         return;
     }
 
+    std::cout << "Manipulate::run(void* msg): Call to manipulate environment!" << std::endl;
     this->robot->manipulate(activeTask);
     /*PROTECTED REGION END*/
 }
 void Manipulate::initialiseParameters()
 {
     /*PROTECTED REGION ID(initialiseParameters1571687572903) ENABLED START*/
-    srg::dialogue::Task task = this->wm->dialogueManager.taskHandler->getActiveTask();
-    this->activeTask = static_cast<srg::dialogue::ManipulationTask&>(task);
+    std::shared_ptr<const supplementary::InformationElement<srg::dialogue::Task*>> task = this->wm->dialogueManager.taskHandler->getActiveTask();
+    if (task && (task->getInformation()->type == srgsim::TaskType::PickUp || task->getInformation()->type == srgsim::TaskType::Close ||
+                        task->getInformation()->type == srgsim::TaskType::Open || task->getInformation()->type == srgsim::TaskType::PutDown)) {
+        if (this->activeTask) {
+            delete this->activeTask;
+        }
+        this->activeTask = new srg::dialogue::ManipulationTask();
+        this->activeTask->type = task->getInformation()->type;
+        this->activeTask->coordinate = task->getInformation()->coordinate;
+        this->activeTask->actID = task->getInformation()->actID;
+        this->activeTask->previousActID = task->getInformation()->previousActID;
+        this->activeTask->senderID = task->getInformation()->senderID;
+        this->activeTask->receiverID = task->getInformation()->receiverID;
+        this->activeTask->objectID = static_cast<srg::dialogue::ManipulationTask*>(task->getInformation())->objectID;
+    } else {
+        this->activeTask = nullptr;
+    }
     /*PROTECTED REGION END*/
 }
 /*PROTECTED REGION ID(methods1571687572903) ENABLED START*/

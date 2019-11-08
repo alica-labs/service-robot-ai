@@ -10,7 +10,9 @@ namespace dialogue
 class MoveTask : public Task
 {
 public:
-    bool checkSuccess(SRGWorldModel* wm) const;
+    MoveTask() : Task() {};
+    ~MoveTask() override = default;
+    bool checkSuccess(SRGWorldModel* wm) const override;
 };
 } // namespace dialogue
 } // namespace srg

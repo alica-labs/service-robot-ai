@@ -63,7 +63,7 @@ bool Robot::move(srgsim::Coordinate goal) const {
     }
 
     robot::Path* path = this->movement->searchPath(ownCoordinate.value(), goal);
-    std::cout << "Robot::move(): Result " << path->toString() << std::endl;
+//    std::cout << "Robot::move(): Result " << *path << std::endl;
     srgsim::SimCommand sc;
     sc.senderID = this->id.get();
     sc.objectID = this->id.get();
@@ -85,15 +85,15 @@ bool Robot::move(srgsim::Coordinate goal) const {
             delete path;
             return false;
     }
-    std::cout << "Robot::move(): Moving " << sc.action << std::endl;
+    std::cout << "Robot::move(): OwnPos: " << ownCoordinate.value() << " Moving " << path->getDirection() << std::endl;
     delete path;
     send(sc);
     return true;
 }
 
-void Robot::manipulate(srg::dialogue::ManipulationTask task) const {
+void Robot::manipulate(const srg::dialogue::ManipulationTask* task) const {
     srgsim::SimCommand sc;
-    switch (task.type) {
+    switch (task->type) {
         case srgsim::TaskType::Open:
             sc.action = srgsim::SimCommand::Action::OPEN;
             break;
@@ -111,9 +111,9 @@ void Robot::manipulate(srg::dialogue::ManipulationTask task) const {
     }
 
     sc.senderID = this->id.get();
-    sc.objectID = task.objectID;
-    sc.x = task.coordinate.x;
-    sc.y = task.coordinate.y;
+    sc.objectID = task->objectID;
+    sc.x = task->coordinate.x;
+    sc.y = task->coordinate.y;
     send(sc);
 }
 

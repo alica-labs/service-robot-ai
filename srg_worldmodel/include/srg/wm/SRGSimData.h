@@ -1,9 +1,9 @@
 #pragma once
 
 #include <engine/AlicaClock.h>
+#include <srgsim/containers/SimPerceptions.h>
 #include <supplementary/InfoBuffer.h>
 #include <supplementary/InformationElement.h>
-#include <srgsim/containers/SimPerceptions.h>
 
 #include <vector>
 namespace essentials
@@ -15,7 +15,7 @@ namespace srgsim
 {
 class World;
 class Coordinate;
-}
+} // namespace srgsim
 
 namespace alica
 {
@@ -23,7 +23,10 @@ class AlicaTime;
 }
 namespace srg
 {
-
+namespace dialogue
+{
+class DialogueManager;
+}
 class SRGWorldModel;
 
 namespace wm
@@ -44,6 +47,7 @@ private:
     SRGWorldModel* wm;
     essentials::SystemConfig* sc;
     srgsim::World* world;
+    dialogue::DialogueManager* dialogueManager;
 
     alica::AlicaTime ownPositionValidityDuration;
     supplementary::InfoBuffer<srgsim::Coordinate>* ownPositionBuffer;

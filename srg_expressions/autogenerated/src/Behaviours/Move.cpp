@@ -26,12 +26,11 @@ Move::~Move() {
 void Move::run(void* msg)
 {
     /*PROTECTED REGION ID(run1568825137528) ENABLED START*/
-    std::cout << "Move::run() called!" << std::endl;
     if (this->isSuccess()) {
         return;
     }
 
-    if (!activeTask.has_value() || this->activeTask->type != srgsim::TaskType::Move || this->activeTask->checkSuccess(this->wm)) {
+    if (!this->activeTask || this->activeTask->type != srgsim::TaskType::Move || this->activeTask->checkSuccess(this->wm)) {
         this->setSuccess();
         return;
     }
@@ -42,7 +41,22 @@ void Move::run(void* msg)
 void Move::initialiseParameters()
 {
     /*PROTECTED REGION ID(initialiseParameters1568825137528) ENABLED START*/
-    this->activeTask = this->wm->dialogueManager.taskHandler->getActiveTask();
+    std::shared_ptr<const supplementary::InformationElement<srg::dialogue::Task*>> task = this->wm->dialogueManager.taskHandler->getActiveTask();
+    if (task && task->getInformation()->type == srgsim::TaskType::Move) {
+        if (this->activeTask) {
+            delete this->activeTask;
+        }
+        this->activeTask = new srg::dialogue::MoveTask();
+        this->activeTask->type = task->getInformation()->type;
+        this->activeTask->coordinate = task->getInformation()->coordinate;
+        this->activeTask->actID = task->getInformation()->actID;
+        this->activeTask->previousActID = task->getInformation()->previousActID;
+        this->activeTask->senderID = task->getInformation()->senderID;
+        this->activeTask->receiverID = task->getInformation()->receiverID;
+    } else {
+        this->activeTask = nullptr;
+    }
+
     /*PROTECTED REGION END*/
 }
 /*PROTECTED REGION ID(methods1568825137528) ENABLED START*/

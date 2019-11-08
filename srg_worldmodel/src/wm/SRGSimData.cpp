@@ -1,11 +1,13 @@
 #include "srg/wm/SRGSimData.h"
 
 #include "srg/SRGWorldModel.h"
-#include "srgsim/SRGEnums.h"
+#include "srgsim/world/SpriteObjectType.h"
 #include "srgsim/world/Cell.h"
 #include "srgsim/world/Object.h"
 #include "srgsim/world/ServiceRobot.h"
 #include "srgsim/world/World.h"
+#include "srg/dialogue/DialogueManager.h"
+#include "srg/dialogue/TaskHandler.h"
 
 namespace srg
 {
@@ -16,6 +18,7 @@ SRGSimData::SRGSimData(SRGWorldModel* wm)
 {
     this->wm = wm;
     this->sc = this->wm->getSystemConfig();
+    this->dialogueManager = &wm->dialogueManager;
 
     // ATTENTION: This path/file is not the same as the simulator
     // is starting, please make sure that both files have the same content!
@@ -42,7 +45,7 @@ void SRGSimData::processPerception(srgsim::SimPerceptions simPerceptions)
         std::vector<srgsim::Object*> objects = this->world->updateCell(cellPerceptions);
         for (srgsim::Object* object : objects) {
             switch (object->getType()) {
-            case srgsim::Type::Robot: {
+            case srgsim::SpriteObjectType::Robot: {
                 this->world->addRobot(static_cast<srgsim::ServiceRobot*>(object));
                 auto ownPositionInfo = std::make_shared<supplementary::InformationElement<srgsim::Coordinate>>(
                         object->getCell()->coordinate, wm->getTime(), ownPositionValidityDuration, 1.0);
@@ -54,6 +57,9 @@ void SRGSimData::processPerception(srgsim::SimPerceptions simPerceptions)
             }
         }
     }
+
+    // call to update success status of tasks
+    this->dialogueManager->taskHandler->tick();
 }
 
 bool SRGSimData::isLocalised()

@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(srg_expressions)
 
 add_compile_options(-std=c++11)
+set(CMAKE_BUILD_TYPE Debug)
 
 find_package(catkin REQUIRED alica_engine capnzero system_config grid_sim srg_robot srg_worldmodel)
 

@@ -1,6 +1,7 @@
 #include "srg/robot/Movement.h"
-#include "srgsim/world/Door.h"
-#include "srgsim/world/World.h"
+#include <srgsim/world/Door.h>
+#include <srgsim/world/SpriteObjectType.h>
+#include <srgsim/world/World.h>
 
 #include <queue>
 
@@ -115,7 +116,7 @@ srgsim::Coordinate Movement::findAlternativeGoal(srgsim::Coordinate start, srgsi
 bool Movement::checkValidity(srgsim::Coordinate coord)
 {
     const srgsim::Cell* cell = wm->sRGSimData.getWorld()->getCell(coord);
-    if (cell->type != srgsim::Type::Floor) {
+    if (cell->type != srgsim::SpriteObjectType::Floor) {
         return false;
     }
 

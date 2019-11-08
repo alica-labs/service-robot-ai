@@ -9,7 +9,9 @@ namespace dialogue
 class ManipulationTask : public Task
 {
 public:
-    bool checkSuccess(SRGWorldModel* wm) const;
+    ManipulationTask() : Task() {};
+    ~ManipulationTask() override = default;
+    bool checkSuccess(SRGWorldModel* wm) const override;
 
     essentials::IdentifierConstPtr objectID;
 };

@@ -3,9 +3,9 @@
 #include <srgsim/world/World.h>
 #include <srgsim/world/Object.h>
 #include <srgsim/world/Door.h>
+#include <srgsim/world/SpriteObjectType.h>
 
 #include <iostream>
-#include <sstream>
 
 namespace srg
 {
@@ -43,14 +43,15 @@ srgsim::Direction Path::getDirection()
     while (firstStep->lastStep->lastStep != nullptr) {
         firstStep = firstStep->lastStep;
     }
+//    std::cout << "Path::getDirection(): First Step is " << firstStep->getCell()->coordinate << " Start is " << this->start <<std::endl;
     if (this->start.x < firstStep->cell->coordinate.x) {
         return srgsim::Direction::Right;
     } else if (this->start.x > firstStep->cell->coordinate.x) {
         return srgsim::Direction::Left;
     } else if (this->start.y < firstStep->cell->coordinate.y) {
-        return srgsim::Direction::Up;
-    } else if (this->start.y > firstStep->cell->coordinate.y) {
         return srgsim::Direction::Down;
+    } else if (this->start.y > firstStep->cell->coordinate.y) {
+        return srgsim::Direction::Up;
     } else {
         std::cerr << "Path::getDirection(): Path is longer than 1 step, but stays on the same coordinates!" << std::endl;
         return srgsim::Direction::None;
@@ -69,7 +70,7 @@ int Path::getTotalCosts()
 
 int Path::getHeuristicCosts()
 {
-    return std::abs<int>(this->cell->coordinate.x - this->goal.x) + std::abs<int>(this->cell->coordinate.y - this->goal.y);
+    return std::abs<int>(this->goal.x - this->cell->coordinate.x) + std::abs<int>(this->goal.y - this->cell->coordinate.y);
 }
 
 std::vector<Path*> Path::expand(std::vector<const srgsim::Cell*>& visited)
@@ -106,7 +107,7 @@ bool Path::checkValidity(std::vector<const srgsim::Cell*>& visited, srgsim::Cell
         return false;
     }
 
-    if (cell->down->type != srgsim::Type::Floor) {
+    if (cell->type != srgsim::SpriteObjectType::Floor) {
         return false;
     }
 
@@ -130,18 +131,6 @@ Path* Path::addStep(const srgsim::Cell* cell)
     newPath->cell = cell;
     newPath->costs++;
     return newPath;
-}
-
-std::string Path::toString() {
-    std::stringstream ss;
-    ss << "Path: ";
-    Path* currentPath = this;
-    while(currentPath->lastStep) {
-        ss << "(" << currentPath->cell->coordinate.x << ", " << currentPath->cell->coordinate.y << "), ";
-        currentPath = currentPath->lastStep;
-    }
-    ss << "(" << currentPath->cell->coordinate.x << ", " << currentPath->cell->coordinate.y << "), ";
-    return ss.str();
 }
 } // namespace robot
 } // namespace srg
