@@ -4,7 +4,8 @@
 #include <srgsim/containers/Coordinate.h>
 #include <srgsim/world/Cell.h>
 #include <srgsim/world/Object.h>
-#include <srgsim/world/SpriteObjectType.h>
+#include <srgsim/world/RoomType.h>
+#include <srgsim/world/ObjectType.h>
 #include <srgsim/world/World.h>
 
 namespace srg
@@ -20,13 +21,13 @@ bool MoveTask::checkSuccess(SRGWorldModel* wm) const
 
     bool goalIsBlocked = false;
     const srgsim::Cell* goalCell = wm->sRGSimData.getWorld()->getCell(this->coordinate);
-    if (goalCell->type == srgsim::SpriteObjectType::Wall) {
+    if (goalCell->getType() == srgsim::RoomType::Wall) {
         goalIsBlocked = true;
     }
 
     if (!goalIsBlocked) {
         for (auto object : goalCell->getObjects()) {
-            if (object->getType() == srgsim::SpriteObjectType::Door) {
+            if (object->getType() == srgsim::ObjectType::Door) {
                 goalIsBlocked = true;
                 break;
             }

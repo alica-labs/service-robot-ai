@@ -3,7 +3,7 @@
 #include <srgsim/world/World.h>
 #include <srgsim/world/Object.h>
 #include <srgsim/world/Door.h>
-#include <srgsim/world/SpriteObjectType.h>
+#include <srgsim/world/RoomType.h>
 
 #include <iostream>
 
@@ -107,7 +107,7 @@ bool Path::checkValidity(std::vector<const srgsim::Cell*>& visited, srgsim::Cell
         return false;
     }
 
-    if (cell->type != srgsim::SpriteObjectType::Floor) {
+    if (cell->getType() != srgsim::RoomType::Floor) {
         return false;
     }
 

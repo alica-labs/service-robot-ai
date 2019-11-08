@@ -39,6 +39,7 @@ std::string SRGWorldModel::getAgentName()
 void SRGWorldModel::init()
 {
     this->communication = new wm::Communication(this);
+    this->sRGSimData.init();
 }
 
 void SRGWorldModel::setSolver(reasoner::asp::Solver* solver) {

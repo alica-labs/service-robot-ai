@@ -37,6 +37,7 @@ public:
     SRGSimData(SRGWorldModel* wm);
     virtual ~SRGSimData();
 
+    void init();
     const supplementary::InfoBuffer<srgsim::Coordinate>& getOwnPositionBuffer() const;
 
     void processPerception(srgsim::SimPerceptions simPerceptions);
