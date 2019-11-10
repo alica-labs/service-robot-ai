@@ -7,23 +7,23 @@
 
 namespace alica
 {
-class Stop : public DomainBehaviour
-{
-public:
-    Stop();
-    virtual ~Stop();
-    virtual void run(void* msg);
-    /*PROTECTED REGION ID(pub1555602210283) ENABLED START*/
+    class Stop : public DomainBehaviour
+    {
+        public:
+            Stop();
+            virtual ~Stop();
+            virtual void run(void* msg);
+            /*PROTECTED REGION ID(pub1555602210283) ENABLED START*/
     // Add additional protected methods here
-    /*PROTECTED REGION END*/
-protected:
-    virtual void initialiseParameters();
-    /*PROTECTED REGION ID(pro1555602210283) ENABLED START*/
+            /*PROTECTED REGION END*/
+        protected:
+            virtual void initialiseParameters();
+            /*PROTECTED REGION ID(pro1555602210283) ENABLED START*/
     // Add additional protected methods here
-    /*PROTECTED REGION END*/
-private:
-    /*PROTECTED REGION ID(prv1555602210283) ENABLED START*/
+            /*PROTECTED REGION END*/
+        private:
+        /*PROTECTED REGION ID(prv1555602210283) ENABLED START*/
     // Add additional private methods here
-    /*PROTECTED REGION END*/
-};
+        /*PROTECTED REGION END*/
+    };
 } /* namespace alica */

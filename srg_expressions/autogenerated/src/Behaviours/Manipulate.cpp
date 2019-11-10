@@ -1,4 +1,4 @@
-#include "Behaviours/Manipulate.h"
+#include  "Behaviours/Manipulate.h"
 #include <memory>
 
 /*PROTECTED REGION ID(inccpp1571687572903) ENABLED START*/
@@ -10,26 +10,27 @@
 
 namespace alica
 {
-/*PROTECTED REGION ID(staticVars1571687572903) ENABLED START*/
+    /*PROTECTED REGION ID(staticVars1571687572903) ENABLED START*/
 // initialise static variables here
-/*PROTECTED REGION END*/
+    /*PROTECTED REGION END*/
 
-Manipulate::Manipulate()
-        : DomainBehaviour("Manipulate")
-{
-    /*PROTECTED REGION ID(con1571687572903) ENABLED START*/
+    Manipulate::Manipulate() : DomainBehaviour("Manipulate")
+    {
+        /*PROTECTED REGION ID(con1571687572903) ENABLED START*/
     // Add additional options here
-    /*PROTECTED REGION END*/
-}
-Manipulate::~Manipulate()
-{
-    /*PROTECTED REGION ID(dcon1571687572903) ENABLED START*/
+        /*PROTECTED REGION END*/
+
+    }
+    Manipulate::~Manipulate()
+    {
+        /*PROTECTED REGION ID(dcon1571687572903) ENABLED START*/
     // Add additional options here
-    /*PROTECTED REGION END*/
-}
-void Manipulate::run(void* msg)
-{
-    /*PROTECTED REGION ID(run1571687572903) ENABLED START*/
+        /*PROTECTED REGION END*/
+
+    }
+    void Manipulate::run(void* msg)
+    {
+        /*PROTECTED REGION ID(run1571687572903) ENABLED START*/
     if (this->isSuccess() || !this->activeTask) {
         return;
     }
@@ -43,11 +44,12 @@ void Manipulate::run(void* msg)
 
     std::cout << "Manipulate::run(void* msg): Call to manipulate environment!" << std::endl;
     this->robot->manipulate(activeTask);
-    /*PROTECTED REGION END*/
-}
-void Manipulate::initialiseParameters()
-{
-    /*PROTECTED REGION ID(initialiseParameters1571687572903) ENABLED START*/
+        /*PROTECTED REGION END*/
+
+    }
+    void Manipulate::initialiseParameters()
+    {
+        /*PROTECTED REGION ID(initialiseParameters1571687572903) ENABLED START*/
     std::shared_ptr<const supplementary::InformationElement<srg::dialogue::Task*>> task = this->wm->dialogueManager.taskHandler->getActiveTask();
     if (task && (task->getInformation()->type == srgsim::TaskType::PickUp || task->getInformation()->type == srgsim::TaskType::Close ||
                         task->getInformation()->type == srgsim::TaskType::Open || task->getInformation()->type == srgsim::TaskType::PutDown)) {
@@ -65,10 +67,14 @@ void Manipulate::initialiseParameters()
     } else {
         this->activeTask = nullptr;
     }
-    /*PROTECTED REGION END*/
-}
-/*PROTECTED REGION ID(methods1571687572903) ENABLED START*/
+
+
+
+        /*PROTECTED REGION END*/
+
+    }
+    /*PROTECTED REGION ID(methods1571687572903) ENABLED START*/
 // Add additional options here
-/*PROTECTED REGION END*/
+    /*PROTECTED REGION END*/
 
 } /* namespace alica */

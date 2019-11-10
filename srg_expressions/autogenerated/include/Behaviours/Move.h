@@ -10,23 +10,23 @@
 
 namespace alica
 {
-class Move : public DomainBehaviour
-{
-public:
-    Move();
-    virtual ~Move();
-    virtual void run(void* msg);
-    /*PROTECTED REGION ID(pub1568825137528) ENABLED START*/
+    class Move : public DomainBehaviour
+    {
+        public:
+            Move();
+            virtual ~Move();
+            virtual void run(void* msg);
+            /*PROTECTED REGION ID(pub1568825137528) ENABLED START*/
     int counter;
-    /*PROTECTED REGION END*/
-protected:
-    virtual void initialiseParameters();
-    /*PROTECTED REGION ID(pro1568825137528) ENABLED START*/
+            /*PROTECTED REGION END*/
+        protected:
+            virtual void initialiseParameters();
+            /*PROTECTED REGION ID(pro1568825137528) ENABLED START*/
     // Add additional protected methods here
-    /*PROTECTED REGION END*/
-private:
-    /*PROTECTED REGION ID(prv1568825137528) ENABLED START*/
+            /*PROTECTED REGION END*/
+        private:
+        /*PROTECTED REGION ID(prv1568825137528) ENABLED START*/
     srg::dialogue::MoveTask* activeTask;
-    /*PROTECTED REGION END*/
-};
+        /*PROTECTED REGION END*/
+    };
 } /* namespace alica */

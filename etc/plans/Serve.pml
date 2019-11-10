@@ -28,8 +28,8 @@
     "parentPlan" : 1568825275605,
     "abstractPlans" : [ "Behaviours/Stop.beh#1555602210283" ],
     "variableBindings" : [ ],
-    "outTransitions" : [ 1568825336792, 1571661739802 ],
-    "inTransitions" : [ 1568825392354, 1571661809581 ]
+    "outTransitions" : [ 1568825336792, 1571661739802, 1573418725423 ],
+    "inTransitions" : [ 1568825392354, 1571661809581, 1573418821209 ]
   }, {
     "type" : "State",
     "id" : 1568825309813,
@@ -52,6 +52,17 @@
     "variableBindings" : [ ],
     "outTransitions" : [ 1571661809581 ],
     "inTransitions" : [ 1571661739802 ]
+  }, {
+    "type" : "State",
+    "id" : 1573418710533,
+    "name" : "BringToPosition",
+    "comment" : "",
+    "entryPoint" : null,
+    "parentPlan" : 1568825275605,
+    "abstractPlans" : [ "Transport.pml#1573418869596" ],
+    "variableBindings" : [ ],
+    "outTransitions" : [ 1573418821209 ],
+    "inTransitions" : [ 1573418725423 ]
   } ],
   "transitions" : [ {
     "id" : 1568825336792,
@@ -116,6 +127,40 @@
       "comment" : "",
       "enabled" : true,
       "conditionString" : "Manipulation successful!",
+      "pluginName" : "DefaultPlugin",
+      "variables" : [ ],
+      "quantifiers" : [ ]
+    },
+    "synchronisation" : null
+  }, {
+    "id" : 1573418725423,
+    "name" : "FromWaitForTaskToBringToPosition",
+    "comment" : "MISSING_COMMENT",
+    "inState" : 1568825288640,
+    "outState" : 1573418710533,
+    "preCondition" : {
+      "id" : 1573418732991,
+      "name" : "1573418732991",
+      "comment" : "",
+      "enabled" : true,
+      "conditionString" : "Received Catch Task",
+      "pluginName" : "DefaultPlugin",
+      "variables" : [ ],
+      "quantifiers" : [ ]
+    },
+    "synchronisation" : null
+  }, {
+    "id" : 1573418821209,
+    "name" : "FromBringToPositionToWaitForTask",
+    "comment" : "MISSING_COMMENT",
+    "inState" : 1573418710533,
+    "outState" : 1568825288640,
+    "preCondition" : {
+      "id" : 1573418838905,
+      "name" : "1573418838905",
+      "comment" : "",
+      "enabled" : true,
+      "conditionString" : "Any children success",
       "pluginName" : "DefaultPlugin",
       "variables" : [ ],
       "quantifiers" : [ ]
