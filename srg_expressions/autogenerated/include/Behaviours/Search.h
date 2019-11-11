@@ -2,7 +2,10 @@
 
 #include "DomainBehaviour.h"
 /*PROTECTED REGION ID(inc1573419059418) ENABLED START*/
-// Add additional includes here
+#include <nonstd/optional.hpp>
+#include <srg/dialogue/TransportTask.h>
+#include <srgsim/containers/Coordinate.h>
+#include <supplementary/InformationElement.h>
 /*PROTECTED REGION END*/
 
 namespace alica
@@ -23,7 +26,7 @@ protected:
     /*PROTECTED REGION END*/
 private:
     /*PROTECTED REGION ID(prv1573419059418) ENABLED START*/
-    // Add additional private methods here
+    srg::dialogue::TransportTask* activeTask;
     /*PROTECTED REGION END*/
 };
 } /* namespace alica */

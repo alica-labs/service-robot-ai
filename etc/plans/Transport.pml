@@ -12,9 +12,9 @@
     "id" : 1573418933317,
     "name" : "1573418933317",
     "comment" : "",
-    "successRequired" : false,
+    "successRequired" : true,
     "minCardinality" : 0,
-    "maxCardinality" : 0,
+    "maxCardinality" : 20,
     "task" : "ServiceRobotsTasks.tsk#1555601323994",
     "state" : 1573418936395,
     "plan" : 1573418869596
@@ -184,7 +184,7 @@
       "name" : "1573419800282",
       "comment" : "",
       "enabled" : true,
-      "conditionString" : "Close by",
+      "conditionString" : "Found & Close by",
       "pluginName" : "DefaultPlugin",
       "variables" : [ ],
       "quantifiers" : [ ]

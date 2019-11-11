@@ -16,7 +16,7 @@ namespace srg
 namespace wm
 {
 
-SRGSimData::SRGSimData(SRGWorldModel* wm)
+SRGSimData::SRGSimData(SRGWorldModel* wm) : world(nullptr)
 {
     this->wm = wm;
     this->sc = this->wm->getSystemConfig();
@@ -41,6 +41,8 @@ const srgsim::World* SRGSimData::getWorld()
 
 void SRGSimData::processPerception(srgsim::SimPerceptions simPerceptions)
 {
+    if (!world)
+        return;
     for (srgsim::CellPerceptions cellPerceptions : simPerceptions.cellPerceptions) {
         //        if (cellPerceptions.perceptions.size() > 0) {
         //            std::cout << "SRGSimData::processPerception(): " << std::endl << cellPerceptions << std::endl;

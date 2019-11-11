@@ -1,8 +1,8 @@
 #include "srg/dialogue/TaskHandler.h"
 #include "srg/dialogue/ManipulationTask.h"
 #include "srg/dialogue/MoveTask.h"
-#include "srg/dialogue/TransportTask.h"
 #include "srg/dialogue/Task.h"
+#include "srg/dialogue/TransportTask.h"
 
 #include <srgsim/containers/Coordinate.h>
 #include <srgsim/world/Cell.h>
@@ -12,7 +12,6 @@
 #include <engine/AlicaEngine.h>
 
 #include <SystemConfig.h>
-
 
 namespace srg
 {
@@ -83,10 +82,11 @@ void TaskHandler::tick()
 Task* TaskHandler::createTask(std::shared_ptr<supplementary::InformationElement<control::SpeechAct>> taskAct)
 {
     Task* task;
-    if (taskAct->getInformation().text.find("move") != std::string::npos) {
+    std::string taskText = taskAct->getInformation().text;
+    if (taskText.find("move") != std::string::npos) {
         task = createMoveTask(taskAct->getInformation().text);
-    } else if (taskAct->getInformation().text.find("put") != std::string::npos || taskAct->getInformation().text.find("pick") != std::string::npos ||
-               taskAct->getInformation().text.find("close") != std::string::npos || taskAct->getInformation().text.find("open") != std::string::npos) {
+    } else if (taskText.find("put") != std::string::npos || taskText.find("pick") != std::string::npos || taskText.find("close") != std::string::npos ||
+               taskText.find("open") != std::string::npos || taskText.find("bring") != std::string::npos) {
         task = createManipulationTask(taskAct->getInformation().text);
     } else {
         std::cerr << "[TaskHandler::createTask] Unkown task type encountered  - '" << taskAct->getInformation().text << "'" << std::endl;
