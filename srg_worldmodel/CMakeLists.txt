@@ -41,6 +41,7 @@ add_library(srg_worldmodel
   src/dialogue/TaskHandler.cpp
   src/dialogue/Task.cpp
   src/dialogue/MoveTask.cpp
+  src/dialogue/TransportTask.cpp
   src/dialogue/ManipulationTask.cpp
   src/dialogue/IdleTask.cpp
   src/asp/ASPTranslator.cpp

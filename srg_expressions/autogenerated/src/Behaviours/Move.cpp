@@ -1,4 +1,4 @@
-#include  "Behaviours/Move.h"
+#include "Behaviours/Move.h"
 #include <memory>
 
 /*PROTECTED REGION ID(inccpp1568825137528) ENABLED START*/
@@ -10,27 +10,26 @@
 
 namespace alica
 {
-    /*PROTECTED REGION ID(staticVars1568825137528) ENABLED START*/
+/*PROTECTED REGION ID(staticVars1568825137528) ENABLED START*/
 // initialise static variables here
+/*PROTECTED REGION END*/
+
+Move::Move()
+        : DomainBehaviour("Move")
+{
+    /*PROTECTED REGION ID(con1568825137528) ENABLED START*/
+    // Add additional options here
     /*PROTECTED REGION END*/
-
-    Move::Move() : DomainBehaviour("Move")
-    {
-        /*PROTECTED REGION ID(con1568825137528) ENABLED START*/
+}
+Move::~Move()
+{
+    /*PROTECTED REGION ID(dcon1568825137528) ENABLED START*/
     // Add additional options here
-        /*PROTECTED REGION END*/
-
-    }
-    Move::~Move()
-    {
-        /*PROTECTED REGION ID(dcon1568825137528) ENABLED START*/
-    // Add additional options here
-        /*PROTECTED REGION END*/
-
-    }
-    void Move::run(void* msg)
-    {
-        /*PROTECTED REGION ID(run1568825137528) ENABLED START*/
+    /*PROTECTED REGION END*/
+}
+void Move::run(void* msg)
+{
+    /*PROTECTED REGION ID(run1568825137528) ENABLED START*/
     if (this->isSuccess()) {
         return;
     }
@@ -41,12 +40,11 @@ namespace alica
     }
 
     this->robot->move(activeTask->coordinate);
-        /*PROTECTED REGION END*/
-
-    }
-    void Move::initialiseParameters()
-    {
-        /*PROTECTED REGION ID(initialiseParameters1568825137528) ENABLED START*/
+    /*PROTECTED REGION END*/
+}
+void Move::initialiseParameters()
+{
+    /*PROTECTED REGION ID(initialiseParameters1568825137528) ENABLED START*/
     std::shared_ptr<const supplementary::InformationElement<srg::dialogue::Task*>> task = this->wm->dialogueManager.taskHandler->getActiveTask();
     if (task && task->getInformation()->type == srgsim::TaskType::Move) {
         if (this->activeTask) {
@@ -63,14 +61,10 @@ namespace alica
         this->activeTask = nullptr;
     }
 
-
-
-
-        /*PROTECTED REGION END*/
-
-    }
-    /*PROTECTED REGION ID(methods1568825137528) ENABLED START*/
-// Add additional options here
     /*PROTECTED REGION END*/
+}
+/*PROTECTED REGION ID(methods1568825137528) ENABLED START*/
+// Add additional options here
+/*PROTECTED REGION END*/
 
 } /* namespace alica */

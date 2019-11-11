@@ -11,7 +11,7 @@ class ManipulationTask : public Task
 public:
     ManipulationTask() : Task() {};
     ~ManipulationTask() override = default;
-    bool checkSuccess(SRGWorldModel* wm) const override;
+    virtual bool checkSuccess(SRGWorldModel* wm) const override;
 
     essentials::IdentifierConstPtr objectID;
 };

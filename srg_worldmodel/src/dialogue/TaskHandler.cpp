@@ -1,6 +1,7 @@
 #include "srg/dialogue/TaskHandler.h"
 #include "srg/dialogue/ManipulationTask.h"
 #include "srg/dialogue/MoveTask.h"
+#include "srg/dialogue/TransportTask.h"
 #include "srg/dialogue/Task.h"
 
 #include <srgsim/containers/Coordinate.h>
@@ -11,6 +12,7 @@
 #include <engine/AlicaEngine.h>
 
 #include <SystemConfig.h>
+
 
 namespace srg
 {
@@ -136,7 +138,7 @@ ManipulationTask* TaskHandler::createManipulationTask(std::string taskText)
 {
     // parsing
     std::string taskString = taskText.substr(0, taskText.find(" "));
-    std::string objectIdString;
+    std::string objectIdString; /**< either the id of an object, or the type of an object */
     std::string xCoordString = "-1";
     std::string yCoordString = "-1";
     size_t objectIdEnd = taskText.find(" ", taskString.length() + 1);
@@ -149,23 +151,41 @@ ManipulationTask* TaskHandler::createManipulationTask(std::string taskText)
     }
 
     // set task type
-    ManipulationTask* task = new ManipulationTask();
+    ManipulationTask* task;
     if (taskString.compare("open") == 0) {
+        task = new ManipulationTask();
         task->type = srgsim::TaskType::Open;
     } else if (taskString.compare("close") == 0) {
+        task = new ManipulationTask();
         task->type = srgsim::TaskType::Close;
     } else if (taskString.compare("pick") == 0) {
+        task = new ManipulationTask();
         task->type = srgsim::TaskType::PickUp;
     } else if (taskString.compare("put") == 0) {
+        task = new ManipulationTask();
         task->type = srgsim::TaskType::PutDown;
+    } else if (taskString.compare("bring") == 0) {
+        task = new TransportTask();
+        task->type = srgsim::TaskType::Transport;
     } else {
         std::cerr << "[TaskHandler::createManipulationTask] Current task type is unknown: " << taskString << std::endl;
         task->type = srgsim::TaskType::Idle;
     }
 
     // set object id
-    uint32_t idInt = std::stoi(objectIdString);
-    task->objectID = this->wm->getEngine()->getId<uint32_t>(idInt);
+    if (task->type != srgsim::TaskType::Transport) {
+        uint32_t idInt = std::stoi(objectIdString);
+        task->objectID = this->wm->getEngine()->getId<uint32_t>(idInt);
+    } else {
+        TransportTask* transTask = static_cast<TransportTask*>(task);
+        if (objectIdString.compare("blueCup") == 0) {
+            transTask->objectType = srgsim::ObjectType::CupBlue;
+        } else if (objectIdString.compare("yellowCup") == 0) {
+            transTask->objectType = srgsim::ObjectType::CupYellow;
+        } else if (objectIdString.compare("redCup") == 0) {
+            transTask->objectType = srgsim::ObjectType::CupRed;
+        }
+    }
 
     // set coordinates
     srgsim::Coordinate coord(-1, -1);
@@ -181,6 +201,7 @@ ManipulationTask* TaskHandler::createManipulationTask(std::string taskText)
         }
         break;
     }
+    case srgsim::TaskType::Transport:
     case srgsim::TaskType::PutDown:
         coord = srgsim::Coordinate(std::stoi(xCoordString), std::stoi(yCoordString));
         break;

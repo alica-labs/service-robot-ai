@@ -55,7 +55,7 @@
   }, {
     "type" : "State",
     "id" : 1573418710533,
-    "name" : "BringToPosition",
+    "name" : "TransportToPosition",
     "comment" : "",
     "entryPoint" : null,
     "parentPlan" : 1568825275605,
@@ -143,7 +143,7 @@
       "name" : "1573418732991",
       "comment" : "",
       "enabled" : true,
-      "conditionString" : "Received Catch Task",
+      "conditionString" : "Received a transport task!",
       "pluginName" : "DefaultPlugin",
       "variables" : [ ],
       "quantifiers" : [ ]
