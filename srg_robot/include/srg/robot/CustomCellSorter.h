@@ -8,11 +8,11 @@ namespace srg
 {
 namespace robot
 {
-class Search;
+class ObjectSearch;
 struct CustomCellSorter
 {
-    CustomCellSorter(srg::robot::Search* search);
-    srg::robot::Search* search;
+    CustomCellSorter(srg::robot::ObjectSearch* search);
+    srg::robot::ObjectSearch* search;
     bool operator()(const srgsim::Cell* const& lhs, const srgsim::Cell* const& rhs);
 };
 } // namespace robot

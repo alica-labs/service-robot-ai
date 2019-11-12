@@ -5,7 +5,7 @@
 #include <srg/SRGWorldModel.h>
 #include <srg/dialogue/TaskHandler.h>
 #include <srgsim/world/Cell.h>
-#include <srg/robot/Search.h>
+#include <srg/robot/ObjectSearch.h>
 #include <srg/Robot.h>
 /*PROTECTED REGION END*/
 
@@ -31,7 +31,7 @@ Search::~Search()
 void Search::run(void* msg)
 {
     /*PROTECTED REGION ID(run1573419059418) ENABLED START*/
-    std::cout << "[Search::run] Called! Task is " << *this->activeTask << std::endl;
+//    std::cout << "[Search::run] Called! Task is " << *this->activeTask << std::endl;
     if (this->isSuccess()) {
         return;
     }
@@ -41,9 +41,13 @@ void Search::run(void* msg)
         return;
     }
 
+    this->search->update(this->wm);
     const srgsim::Cell* cell = this->search->getNextCell();
     if (cell) {
+        std::cout << "[Search] " << *cell << std::endl;
         this->robot->move(cell->coordinate);
+    } else {
+        std::cout << "[Search] No cell received!" << std::endl;
     }
     /*PROTECTED REGION END*/
 }
@@ -67,7 +71,7 @@ void Search::initialiseParameters()
         this->activeTask->receiverID = task->getInformation()->receiverID;
         this->activeTask->objectID = static_cast<srg::dialogue::TransportTask*>(task->getInformation())->objectID;
         this->activeTask->objectType = static_cast<srg::dialogue::TransportTask*>(task->getInformation())->objectType;
-        this->search = new srg::robot::Search(this->activeTask->objectType);
+        this->search = new srg::robot::ObjectSearch(this->activeTask->objectType);
     } else {
         this->activeTask = nullptr;
         this->search = nullptr;

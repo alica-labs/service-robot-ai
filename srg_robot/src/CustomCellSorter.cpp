@@ -1,6 +1,6 @@
 #include "srg/robot/CustomCellSorter.h"
 
-#include <srg/robot/Search.h>
+#include <srg/robot/ObjectSearch.h>
 #include <srgsim/world/Cell.h>
 
 namespace srg
@@ -8,7 +8,7 @@ namespace srg
 namespace robot
 {
 
-CustomCellSorter::CustomCellSorter(srg::robot::Search* search)
+CustomCellSorter::CustomCellSorter(srg::robot::ObjectSearch* search)
         : search(search)
 {
 }

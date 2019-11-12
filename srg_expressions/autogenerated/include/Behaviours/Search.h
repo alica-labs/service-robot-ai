@@ -10,7 +10,7 @@ namespace srg
 {
 namespace robot
 {
-class Search;
+class ObjectSearch;
 }
 } // namespace srg
 /*PROTECTED REGION END*/
@@ -34,7 +34,7 @@ protected:
 private:
     /*PROTECTED REGION ID(prv1573419059418) ENABLED START*/
     srg::dialogue::TransportTask* activeTask;
-    srg::robot::Search* search;
+    srg::robot::ObjectSearch* search;
     /*PROTECTED REGION END*/
 };
 } /* namespace alica */

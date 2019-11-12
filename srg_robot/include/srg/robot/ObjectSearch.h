@@ -4,6 +4,7 @@
 
 #include <srgsim/containers/Coordinate.h>
 #include <srgsim/world/ObjectType.h>
+#include <srgsim/world/Cell.h>
 
 #include <cstdint>
 #include <set>
@@ -16,7 +17,6 @@ class SystemConfig;
 
 namespace srgsim
 {
-class Cell;
 class World;
 } // namespace srgsim
 
@@ -25,24 +25,25 @@ namespace srg
 class SRGWorldModel;
 namespace robot
 {
-class Search
+class ObjectSearch
 {
 public:
-    Search(srgsim::ObjectType objectType);
+    ObjectSearch(srgsim::ObjectType objectType);
 
     void update(srg::SRGWorldModel* wm);
     const srgsim::Cell* getNextCell();
     const srgsim::Coordinate getOwnCoordinates();
 
 private:
-    void getVisibleAndFrontCells(
-            srgsim::Coordinate& ownCoord, const srgsim::World* world, std::vector<const srgsim::Cell*>& visible, std::vector<const srgsim::Cell*>& front);
+    void getVisibleAndFrontCells(srgsim::Coordinate& ownCoord, const srgsim::World* world,
+            std::set<const srgsim::Cell*, decltype(&srgsim::Cell::sortByCoordinates)>& visible,
+            std::set<const srgsim::Cell*, decltype(&srgsim::Cell::sortByCoordinates)>& front);
     void trace(const srgsim::World* world, srgsim::Coordinate& from, srgsim::Coordinate& to, std::vector<const srgsim::Cell*>& visible,
             const srgsim::Cell*& frontCell);
 
-
     srgsim::ObjectType objectType;
-    std::set<const srgsim::Cell*, CustomCellSorter>* fringe;
+    std::multiset<const srgsim::Cell*, CustomCellSorter>* fringe;
+    std::set<const srgsim::Cell*, decltype(&srgsim::Cell::sortByCoordinates)>* visited;
     essentials::SystemConfig* sc;
     srgsim::Coordinate ownCoordinates;
     uint32_t sightLimit;
