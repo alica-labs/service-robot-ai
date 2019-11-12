@@ -45,7 +45,7 @@ add_library(srg_worldmodel
   src/dialogue/ManipulationTask.cpp
   src/dialogue/IdleTask.cpp
   src/asp/ASPTranslator.cpp
-        src/wm/Search.cpp include/srg/wm/Search.h)
+)
 
 target_link_libraries(srg_worldmodel
   ${catkin_LIBRARIES}

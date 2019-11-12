@@ -23,6 +23,8 @@ add_library(${PROJECT_NAME}
   src/Robot.cpp
   src/Path.cpp
   src/Movement.cpp
+  src/Search.cpp
+  src/CustomCellSorter.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}

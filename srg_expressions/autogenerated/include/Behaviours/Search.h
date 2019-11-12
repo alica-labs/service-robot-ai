@@ -6,6 +6,13 @@
 #include <srg/dialogue/TransportTask.h>
 #include <srgsim/containers/Coordinate.h>
 #include <supplementary/InformationElement.h>
+namespace srg
+{
+namespace robot
+{
+class Search;
+}
+} // namespace srg
 /*PROTECTED REGION END*/
 
 namespace alica
@@ -27,6 +34,7 @@ protected:
 private:
     /*PROTECTED REGION ID(prv1573419059418) ENABLED START*/
     srg::dialogue::TransportTask* activeTask;
+    srg::robot::Search* search;
     /*PROTECTED REGION END*/
 };
 } /* namespace alica */

@@ -6,6 +6,7 @@
 #include <essentials/IdentifierConstPtr.h>
 
 #include <string>
+#include <srg/robot/Search.h>
 
 namespace capnzero
 {
@@ -51,6 +52,7 @@ private:
     srg::SRGWorldModel* wm;
     essentials::IdentifierConstPtr id;
     srg::robot::Movement* movement;
+    srg::robot::Search* search;
 
 };
 } // namespace srg
