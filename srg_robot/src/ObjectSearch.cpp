@@ -19,8 +19,8 @@ ObjectSearch::ObjectSearch(srgsim::ObjectType objectType)
 {
     this->sc = essentials::SystemConfig::getInstance();
     this->sightLimit = (*sc)["ObjectDetection"]->get<uint32_t>("sightLimit", NULL);
-    this->fringe = new std::multiset<const srgsim::Cell*, CustomCellSorter>(CustomCellSorter(this));
-    this->visited = new std::set<const srgsim::Cell*, decltype(&srgsim::Cell::sortByCoordinates)>(&srgsim::Cell::sortByCoordinates);
+    this->fringe = new std::set<const srgsim::Cell*>();
+    this->visited = new std::set<const srgsim::Cell*>();
 }
 
 const srgsim::Coordinate ObjectSearch::getOwnCoordinates()
@@ -30,11 +30,12 @@ const srgsim::Coordinate ObjectSearch::getOwnCoordinates()
 
 const srgsim::Cell* ObjectSearch::getNextCell()
 {
-    if (this->fringe->size() > 0) {
-        return *this->fringe->begin();
-    } else {
+    if (this->fringe->size() == 0) {
         return nullptr;
     }
+    std::vector<const srgsim::Cell*> cellsInPriorityOrder (this->fringe->begin(), this->fringe->end());
+    std::sort(cellsInPriorityOrder.begin(), cellsInPriorityOrder.end(), CustomCellSorter(this));
+    return *cellsInPriorityOrder.begin();
 }
 
 void ObjectSearch::update(srg::SRGWorldModel* wm)
@@ -45,51 +46,36 @@ void ObjectSearch::update(srg::SRGWorldModel* wm)
     }
     ownCoordinates = ownCoord.value();
 
-    std::set<const srgsim::Cell*, decltype(&srgsim::Cell::sortByCoordinates)> visible(&srgsim::Cell::sortByCoordinates);
-    std::set<const srgsim::Cell*, decltype(&srgsim::Cell::sortByCoordinates)> front(&srgsim::Cell::sortByCoordinates);
+    std::set<const srgsim::Cell*> visible;
+    std::set<const srgsim::Cell*> front;
     this->getVisibleAndFrontCells(ownCoord.value(), wm->sRGSimData.getWorld(), visible, front);
-//    std::cout << "[ObjectSearch] Front: ";
-//    for (auto& cell : front) {
-//        std::cout << cell->coordinate << " ";
-//    }
-//    std::cout << std::endl;
-//    std::cout << "[ObjectSearch] Visible: ";
-//    for (auto& cell : visible) {
-//        std::cout << cell->coordinate << " ";
-//    }
-//    std::cout << std::endl;
+    //    std::cout << "[ObjectSearch] Front: ";
+    //    for (auto& cell : front) {
+    //        std::cout << cell->coordinate << " ";
+    //    }
+    //    std::cout << std::endl;
+    //    std::cout << "[ObjectSearch] Visible: ";
+    //    for (auto& cell : visible) {
+    //        std::cout << cell->coordinate << " ";
+    //    }
+    //    std::cout << std::endl;
 
     for (const srgsim::Cell* cell : visible) {
-        for (std::multiset<const srgsim::Cell*, CustomCellSorter>::iterator iter = this->fringe->begin(); iter != this->fringe->end();) {
-            if ((*iter)->coordinate == cell->coordinate) {
-                iter = this->fringe->erase(iter);
-            } else {
-                ++iter;
-            }
-        }
+        this->fringe->erase(cell);
         this->visited->insert(cell);
     }
     for (const srgsim::Cell* cell : front) {
         if (this->visited->find(cell) == this->visited->end()) {
-            bool found = false;
-            for (std::multiset<const srgsim::Cell*, CustomCellSorter>::iterator iter = this->fringe->begin(); iter != this->fringe->end();++iter) {
-                if ((*iter)->coordinate == cell->coordinate) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                this->fringe->insert(cell);
-            }
+            this->fringe->insert(cell);
         }
     }
 
-//    std::cout << "[ObjectSearch] Visited: ";
-//    for (auto& cell : *this->visited) {
-//        std::cout << cell->coordinate << " ";
-//    }
-//    std::cout << std::endl;
-//
+    //    std::cout << "[ObjectSearch] Visited: ";
+    //    for (auto& cell : *this->visited) {
+    //        std::cout << cell->coordinate << " ";
+    //    }
+    //    std::cout << std::endl;
+    //
     std::cout << "[ObjectSearch] Fringe: ";
     for (auto& cell : *this->fringe) {
         std::cout << cell->coordinate << " ";
@@ -97,9 +83,8 @@ void ObjectSearch::update(srg::SRGWorldModel* wm)
     std::cout << std::endl;
 }
 
-void ObjectSearch::getVisibleAndFrontCells(srgsim::Coordinate& ownCoord, const srgsim::World* world,
-        std::set<const srgsim::Cell*, decltype(&srgsim::Cell::sortByCoordinates)>& visible,
-        std::set<const srgsim::Cell*, decltype(&srgsim::Cell::sortByCoordinates)>& front)
+void ObjectSearch::getVisibleAndFrontCells(
+        srgsim::Coordinate& ownCoord, const srgsim::World* world, std::set<const srgsim::Cell*>& visible, std::set<const srgsim::Cell*>& front)
 {
     double increment = atan2(1, sightLimit + 2);
     for (double currentDegree = -M_PI; currentDegree < M_PI; currentDegree += increment) {

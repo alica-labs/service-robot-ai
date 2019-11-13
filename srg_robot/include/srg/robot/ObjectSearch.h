@@ -36,14 +36,14 @@ public:
 
 private:
     void getVisibleAndFrontCells(srgsim::Coordinate& ownCoord, const srgsim::World* world,
-            std::set<const srgsim::Cell*, decltype(&srgsim::Cell::sortByCoordinates)>& visible,
-            std::set<const srgsim::Cell*, decltype(&srgsim::Cell::sortByCoordinates)>& front);
+            std::set<const srgsim::Cell*>& visible,
+            std::set<const srgsim::Cell*>& front);
     void trace(const srgsim::World* world, srgsim::Coordinate& from, srgsim::Coordinate& to, std::vector<const srgsim::Cell*>& visible,
             const srgsim::Cell*& frontCell);
 
     srgsim::ObjectType objectType;
-    std::multiset<const srgsim::Cell*, CustomCellSorter>* fringe;
-    std::set<const srgsim::Cell*, decltype(&srgsim::Cell::sortByCoordinates)>* visited;
+    std::set<const srgsim::Cell*>* fringe;
+    std::set<const srgsim::Cell*>* visited;
     essentials::SystemConfig* sc;
     srgsim::Coordinate ownCoordinates;
     uint32_t sightLimit;
