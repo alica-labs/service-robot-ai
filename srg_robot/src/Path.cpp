@@ -107,7 +107,7 @@ bool Path::checkValidity(std::vector<const srgsim::Cell*>& visited, srgsim::Cell
         return false;
     }
 
-    if (cell->getType() != srgsim::RoomType::Floor) {
+    if (cell->getType() == srgsim::RoomType::Wall) {
         return false;
     }
 

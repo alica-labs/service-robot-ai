@@ -18,10 +18,12 @@ SRGWorldModel::SRGWorldModel()
         , rawSensorData(this)
         , dialogueManager(this)
         , communication(nullptr)
+        , gui(nullptr)
 {
     this->aspTranslator = new srg::asp::ASPTranslator(this);
     this->agentName = sc->getHostname();
     this->conceptNet = new conceptnet::ConceptNet(this);
+
 }
 
 SRGWorldModel::~SRGWorldModel()
@@ -29,6 +31,7 @@ SRGWorldModel::~SRGWorldModel()
     delete this->conceptNet;
     delete this->communication;
     delete this->aspTranslator;
+    delete this->gui;
 }
 
 std::string SRGWorldModel::getAgentName()
@@ -38,8 +41,9 @@ std::string SRGWorldModel::getAgentName()
 
 void SRGWorldModel::init()
 {
-    this->communication = new wm::Communication(this);
     this->sRGSimData.init();
+    this->gui = new srgsim::GUI(this->agentName);
+    this->communication = new wm::Communication(this);
 }
 
 void SRGWorldModel::setSolver(reasoner::asp::Solver* solver) {

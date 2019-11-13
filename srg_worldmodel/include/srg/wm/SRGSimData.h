@@ -42,7 +42,7 @@ public:
 
     void processPerception(srgsim::SimPerceptions simPerceptions);
     bool isLocalised();
-    const srgsim::World* getWorld();
+    srgsim::World* getWorld();
 
 private:
     SRGWorldModel* wm;

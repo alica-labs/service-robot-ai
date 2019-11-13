@@ -116,7 +116,7 @@ srgsim::Coordinate Movement::findAlternativeGoal(srgsim::Coordinate start, srgsi
 bool Movement::checkValidity(srgsim::Coordinate coord)
 {
     const srgsim::Cell* cell = wm->sRGSimData.getWorld()->getCell(coord);
-    if (cell->getType() != srgsim::RoomType::Floor) {
+    if (cell->getType() == srgsim::RoomType::Wall) {
         return false;
     }
 

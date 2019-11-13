@@ -34,7 +34,7 @@ void SRGSimData::init() {
     this->world = new srgsim::World((*sc).getConfigPath() + "/textures/Department.tmx", wm->getEngine()->getIdManager());
 }
 
-const srgsim::World* SRGSimData::getWorld()
+srgsim::World* SRGSimData::getWorld()
 {
     return this->world;
 }
@@ -66,6 +66,9 @@ void SRGSimData::processPerception(srgsim::SimPerceptions simPerceptions)
 
     // call to update success status of tasks
     this->dialogueManager->taskHandler->tick();
+
+    // draw the world from the robots perspective
+    this->wm->gui->draw(world);
 }
 
 bool SRGSimData::isLocalised()

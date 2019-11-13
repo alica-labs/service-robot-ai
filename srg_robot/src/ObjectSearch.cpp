@@ -17,10 +17,11 @@ ObjectSearch::ObjectSearch(srgsim::ObjectType objectType)
         : objectType(objectType)
         , ownCoordinates(-1, -1)
 {
+    std::cout << "[ObjectSearc] CONSTRUCTED!!!!!!!!!!!!!!!!" << std::endl;
     this->sc = essentials::SystemConfig::getInstance();
     this->sightLimit = (*sc)["ObjectDetection"]->get<uint32_t>("sightLimit", NULL);
     this->fringe = new std::set<const srgsim::Cell*>();
-    this->visited = new std::set<const srgsim::Cell*>();
+    this->visited = new std::unordered_set<const srgsim::Cell*>();
 }
 
 const srgsim::Coordinate ObjectSearch::getOwnCoordinates()
@@ -33,7 +34,7 @@ const srgsim::Cell* ObjectSearch::getNextCell()
     if (this->fringe->size() == 0) {
         return nullptr;
     }
-    std::vector<const srgsim::Cell*> cellsInPriorityOrder (this->fringe->begin(), this->fringe->end());
+    std::vector<const srgsim::Cell*> cellsInPriorityOrder(this->fringe->begin(), this->fringe->end());
     std::sort(cellsInPriorityOrder.begin(), cellsInPriorityOrder.end(), CustomCellSorter(this));
     return *cellsInPriorityOrder.begin();
 }
@@ -46,20 +47,9 @@ void ObjectSearch::update(srg::SRGWorldModel* wm)
     }
     ownCoordinates = ownCoord.value();
 
-    std::set<const srgsim::Cell*> visible;
-    std::set<const srgsim::Cell*> front;
+    std::unordered_set<const srgsim::Cell*> visible;
+    std::unordered_set<const srgsim::Cell*> front;
     this->getVisibleAndFrontCells(ownCoord.value(), wm->sRGSimData.getWorld(), visible, front);
-    //    std::cout << "[ObjectSearch] Front: ";
-    //    for (auto& cell : front) {
-    //        std::cout << cell->coordinate << " ";
-    //    }
-    //    std::cout << std::endl;
-    //    std::cout << "[ObjectSearch] Visible: ";
-    //    for (auto& cell : visible) {
-    //        std::cout << cell->coordinate << " ";
-    //    }
-    //    std::cout << std::endl;
-
     for (const srgsim::Cell* cell : visible) {
         this->fringe->erase(cell);
         this->visited->insert(cell);
@@ -70,47 +60,34 @@ void ObjectSearch::update(srg::SRGWorldModel* wm)
         }
     }
 
-    //    std::cout << "[ObjectSearch] Visited: ";
-    //    for (auto& cell : *this->visited) {
-    //        std::cout << cell->coordinate << " ";
-    //    }
-    //    std::cout << std::endl;
-    //
-    std::cout << "[ObjectSearch] Fringe: ";
+    //    std::cout << "[ObjectSearch] Fringe: ";
     for (auto& cell : *this->fringe) {
-        std::cout << cell->coordinate << " ";
+        //        std::cout << cell->coordinate << " ";
+        srgsim::Perception p;
+        p.type = srgsim::ObjectType::CupRed;
+        p.x = cell->coordinate.x;
+        p.y = cell->coordinate.y;
+        wm->sRGSimData.getWorld()->addMarker(p);
     }
-    std::cout << std::endl;
+    //    std::cout << std::endl;
 }
 
-void ObjectSearch::getVisibleAndFrontCells(
-        srgsim::Coordinate& ownCoord, const srgsim::World* world, std::set<const srgsim::Cell*>& visible, std::set<const srgsim::Cell*>& front)
+void ObjectSearch::getVisibleAndFrontCells(srgsim::Coordinate& ownCoord, const srgsim::World* world, std::unordered_set<const srgsim::Cell*>& visible,
+        std::unordered_set<const srgsim::Cell*>& front)
 {
     double increment = atan2(1, sightLimit + 2);
     for (double currentDegree = -M_PI; currentDegree < M_PI; currentDegree += increment) {
-        // +1 for new front cell
-        int32_t xDelta = round(sin(currentDegree) * sightLimit + 1);
-        int32_t yDelta = round(cos(currentDegree) * sightLimit + 1);
+        int32_t xDelta = round(sin(currentDegree) * sightLimit);
+        int32_t yDelta = round(cos(currentDegree) * sightLimit);
         srgsim::Coordinate traceEnd = srgsim::Coordinate(ownCoord.x + xDelta, ownCoord.y + yDelta);
-
-        std::vector<const srgsim::Cell*> visibleTrace;
-        const srgsim::Cell* frontCell = nullptr;
-        this->trace(world, ownCoord, traceEnd, visibleTrace, frontCell);
-        for (const srgsim::Cell* cell : visibleTrace) {
-            visible.insert(cell);
-        }
-        if (frontCell) {
-            front.insert(frontCell);
-        }
+        this->trace(world, ownCoord, traceEnd, visible, front);
     }
 }
 
-void ObjectSearch::trace(
-        const srgsim::World* world, srgsim::Coordinate& from, srgsim::Coordinate& to, std::vector<const srgsim::Cell*>& visible, const srgsim::Cell*& frontCell)
+void ObjectSearch::trace(const srgsim::World* world, srgsim::Coordinate& from, srgsim::Coordinate& to, std::unordered_set<const srgsim::Cell*>& visible,
+        std::unordered_set<const srgsim::Cell*>& front)
 {
-    frontCell = nullptr;
-
-    visible.push_back(world->getCell(from));
+    visible.insert(world->getCell(from));
     int32_t sign_x = ((int32_t) to.x - (int32_t) from.x) > 0 ? 1 : -1;
     int32_t sign_y = ((int32_t) to.y - (int32_t) from.y) > 0 ? 1 : -1;
 
@@ -131,7 +108,8 @@ void ObjectSearch::trace(
 
         // check if sight is blocked in this cell
         const srgsim::Cell* cell = world->getCell(currentPoint);
-        if (!cell || cell->getType() != srgsim::RoomType::Floor) {
+        front.erase(cell);
+        if (!cell || cell->getType() == srgsim::RoomType::Wall) {
             break;
         }
         bool sightBlocked = false;
@@ -144,10 +122,19 @@ void ObjectSearch::trace(
         if (sightBlocked) {
             break;
         }
-        if (currentPoint != to) {
-            visible.push_back(cell);
-        } else {
-            frontCell = cell;
+
+        visible.insert(cell);
+        if (visible.find(cell->up) == visible.end() && cell->up->getType() != srgsim::RoomType::Wall) {
+            front.insert(cell->up);
+        }
+        if (visible.find(cell->down) == visible.end() && cell->down->getType() != srgsim::RoomType::Wall) {
+            front.insert(cell->down);
+        }
+        if (visible.find(cell->right) == visible.end() && cell->right->getType() != srgsim::RoomType::Wall) {
+            front.insert(cell->right);
+        }
+        if (visible.find(cell->left) == visible.end() && cell->left->getType() != srgsim::RoomType::Wall) {
+            front.insert(cell->left);
         }
     }
 }
