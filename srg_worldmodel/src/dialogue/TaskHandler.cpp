@@ -58,7 +58,6 @@ void TaskHandler::tick()
 {
     if (this->activeTask && !this->activeTask->getInformation()->checkSuccess(wm)) {
         // active task still in progress
-//        std::cout << "[TaskHandler::tick] Active " << *this->activeTask->getInformation() << std::endl;
         return;
     }
 

@@ -12,39 +12,36 @@
 namespace alica
 {
 /*PROTECTED REGION ID(staticVars1573419059418) ENABLED START*/
-// initialise static variables here
 /*PROTECTED REGION END*/
 
 Search::Search()
         : DomainBehaviour("Search")
 {
     /*PROTECTED REGION ID(con1573419059418) ENABLED START*/
-    // Add additional options here
+    activeTask = nullptr;
+    search = nullptr;
     /*PROTECTED REGION END*/
 }
 Search::~Search()
 {
     /*PROTECTED REGION ID(dcon1573419059418) ENABLED START*/
-    // Add additional options here
     /*PROTECTED REGION END*/
 }
 void Search::run(void* msg)
 {
     /*PROTECTED REGION ID(run1573419059418) ENABLED START*/
-//    std::cout << "[Search::run] Called! Task is " << *this->activeTask << std::endl;
     if (this->isSuccess()) {
         return;
     }
 
-    if (!this->activeTask || this->activeTask->type != srgsim::TaskType::Transport || this->activeTask->checkSuccess(this->wm)) {
+    if (!this->activeTask || this->activeTask->type != srgsim::TaskType::Transport || this->activeTask->foundObject(this->wm)) {
         this->setSuccess();
         return;
     }
 
-    this->search->update(this->wm);
+    this->search->update();
     const srgsim::Cell* cell = this->search->getNextCell();
     if (cell) {
-        std::cout << "[Search] " << *cell << std::endl;
         this->robot->move(cell->coordinate);
     } else {
         std::cout << "[Search] No cell received!" << std::endl;
@@ -54,14 +51,13 @@ void Search::run(void* msg)
 void Search::initialiseParameters()
 {
     /*PROTECTED REGION ID(initialiseParameters1573419059418) ENABLED START*/
-    if (this->search) {
-        delete search;
-    }
+    // clean up
+    delete search;
+    delete activeTask;
+
+    // init
     std::shared_ptr<const supplementary::InformationElement<srg::dialogue::Task*>> task = this->wm->dialogueManager.taskHandler->getActiveTask();
     if (task && task->getInformation()->type == srgsim::TaskType::Transport) {
-        if (this->activeTask) {
-            delete this->activeTask;
-        }
         this->activeTask = new srg::dialogue::TransportTask();
         this->activeTask->type = task->getInformation()->type;
         this->activeTask->coordinate = task->getInformation()->coordinate;
@@ -71,16 +67,14 @@ void Search::initialiseParameters()
         this->activeTask->receiverID = task->getInformation()->receiverID;
         this->activeTask->objectID = static_cast<srg::dialogue::TransportTask*>(task->getInformation())->objectID;
         this->activeTask->objectType = static_cast<srg::dialogue::TransportTask*>(task->getInformation())->objectType;
-        this->search = new srg::robot::ObjectSearch(this->activeTask->objectType);
+        this->search = new srg::robot::ObjectSearch(this->activeTask->objectType, this->wm);
     } else {
         this->activeTask = nullptr;
         this->search = nullptr;
     }
-
     /*PROTECTED REGION END*/
 }
 /*PROTECTED REGION ID(methods1573419059418) ENABLED START*/
-// Add additional options here
 /*PROTECTED REGION END*/
 
 } /* namespace alica */

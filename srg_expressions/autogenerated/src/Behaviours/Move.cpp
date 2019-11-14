@@ -47,9 +47,8 @@ void Move::initialiseParameters()
     /*PROTECTED REGION ID(initialiseParameters1568825137528) ENABLED START*/
     std::shared_ptr<const supplementary::InformationElement<srg::dialogue::Task*>> task = this->wm->dialogueManager.taskHandler->getActiveTask();
     if (task && task->getInformation()->type == srgsim::TaskType::Move) {
-        if (this->activeTask) {
-            delete this->activeTask;
-        }
+        delete this->activeTask;
+
         this->activeTask = new srg::dialogue::MoveTask();
         this->activeTask->type = task->getInformation()->type;
         this->activeTask->coordinate = task->getInformation()->coordinate;

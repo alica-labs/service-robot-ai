@@ -15,13 +15,12 @@ public:
     ~TransportTask() override = default;
     bool checkSuccess(SRGWorldModel* wm) const override;
     // different parts of the task
-    bool foundObject(SRGWorldModel* wm) const;
-    bool pickedObject(SRGWorldModel* wm) const;
-    bool movedToDestination(SRGWorldModel* wm) const;
-    bool closeToObject(srg::SRGWorldModel* wm) const;
+    bool foundObject(SRGWorldModel* wm);
+    bool pickedObject(SRGWorldModel* wm);
+    bool movedToDestination(SRGWorldModel* wm);
+    bool closeToObject(srg::SRGWorldModel* wm);
 
     friend std::ostream& operator<<(std::ostream& os, const srg::dialogue::TransportTask& obj);
-
 
     srgsim::ObjectType objectType;
 };

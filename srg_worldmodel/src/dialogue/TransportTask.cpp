@@ -5,7 +5,6 @@
 #include <srgsim/world/Cell.h>
 #include <srgsim/world/Object.h>
 #include <srgsim/world/ServiceRobot.h>
-#include <srgsim/world/World.h>
 
 namespace srg
 {
@@ -22,16 +21,21 @@ bool TransportTask::checkSuccess(SRGWorldModel* wm) const
     return false;
 }
 
-bool TransportTask::foundObject(srg::SRGWorldModel* wm) const
+bool TransportTask::foundObject(srg::SRGWorldModel* wm)
 {
-    if (!this->objectID) {
-        return false;
+    if (this->objectID) {
+        return true;
     }
-    const srgsim::Object* object = wm->sRGSimData.getWorld()->getObject(this->objectID);
-    return object && object->getType() == this->objectType;
+
+    const srgsim::Object* object = wm->sRGSimData.getWorld()->getObject(this->objectType);
+    if (object) {
+        this->objectID = object->getID();
+        return true;
+    }
+    return false;
 }
 
-bool TransportTask::closeToObject(srg::SRGWorldModel* wm) const
+bool TransportTask::closeToObject(srg::SRGWorldModel* wm)
 {
     if (!foundObject(wm)) {
         return false;
@@ -47,13 +51,10 @@ bool TransportTask::closeToObject(srg::SRGWorldModel* wm) const
         return false;
     }
     srgsim::Coordinate diff = (goalCell->coordinate - ownCoord.value()).abs();
-    if (diff.x < 2 && diff.y < 2) {
-        return true;
-    }
-    return false;
+    return diff.x < 2 && diff.y < 2;
 }
 
-bool TransportTask::movedToDestination(srg::SRGWorldModel* wm) const
+bool TransportTask::movedToDestination(srg::SRGWorldModel* wm)
 {
     if (!pickedObject(wm)) {
         return false;
@@ -63,13 +64,10 @@ bool TransportTask::movedToDestination(srg::SRGWorldModel* wm) const
         return false;
     }
     srgsim::Coordinate diff = (this->coordinate - ownCoord.value()).abs();
-    if (diff.x < 2 && diff.y < 2) {
-        return true;
-    }
-    return false;
+    return diff.x < 2 && diff.y < 2;
 }
 
-bool TransportTask::pickedObject(srg::SRGWorldModel* wm) const
+bool TransportTask::pickedObject(srg::SRGWorldModel* wm)
 {
     if (!foundObject(wm)) {
         return false;
@@ -77,7 +75,7 @@ bool TransportTask::pickedObject(srg::SRGWorldModel* wm) const
 
     const srgsim::ServiceRobot* robot = wm->sRGSimData.getWorld()->getRobot(this->receiverID);
     if (!robot) {
-        std::cerr << "[TransportTask::foundObject] World does not know myself!" << std::endl;
+        std::cerr << "[TransportTask] World does not know myself!" << std::endl;
         return false;
     }
 
@@ -88,10 +86,6 @@ std::ostream& operator<<(std::ostream& os, const srg::dialogue::TransportTask& o
 {
     os << "[TransportTask] " << obj.objectType << "(ID: " << obj.objectID << ")"
        << " to " << obj.coordinate;
-    //    os << obj.actID;
-    //    os << obj.previousActID;
-    //    os << obj.senderID;
-    //    os << obj.receiverID;
     return os;
 }
 

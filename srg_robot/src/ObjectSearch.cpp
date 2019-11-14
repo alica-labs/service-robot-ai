@@ -13,63 +13,70 @@ namespace srg
 {
 namespace robot
 {
-ObjectSearch::ObjectSearch(srgsim::ObjectType objectType)
+ObjectSearch::ObjectSearch(srgsim::ObjectType objectType, srg::SRGWorldModel* wm)
         : objectType(objectType)
-        , ownCoordinates(-1, -1)
+        , wm(wm)
+        , updateCounter(0)
 {
-    std::cout << "[ObjectSearc] CONSTRUCTED!!!!!!!!!!!!!!!!" << std::endl;
     this->sc = essentials::SystemConfig::getInstance();
     this->sightLimit = (*sc)["ObjectDetection"]->get<uint32_t>("sightLimit", NULL);
-    this->fringe = new std::set<const srgsim::Cell*>();
+    this->fringe = new std::set<SearchCell, SearchCellSorter>(SearchCellSorter(this->wm));
     this->visited = new std::unordered_set<const srgsim::Cell*>();
 }
 
-const srgsim::Coordinate ObjectSearch::getOwnCoordinates()
-{
-    return this->ownCoordinates;
-}
+void ObjectSearch::addRoomType(srgsim::RoomType type){
+    this->roomTypes.insert(type);
+};
 
 const srgsim::Cell* ObjectSearch::getNextCell()
 {
     if (this->fringe->size() == 0) {
         return nullptr;
     }
-    std::vector<const srgsim::Cell*> cellsInPriorityOrder(this->fringe->begin(), this->fringe->end());
-    std::sort(cellsInPriorityOrder.begin(), cellsInPriorityOrder.end(), CustomCellSorter(this));
-    return *cellsInPriorityOrder.begin();
+    return this->fringe->begin()->cell;
+
+    //    std::vector<std::pair<int32_t, const srgsim::Cell*>> cellsInPriorityOrder;
+    //    for (SearchCell sCell : *this->fringe) {
+    //        cellsInPriorityOrder.emplace_back(-1, cell);
+    //    }
+    //    std::sort(cellsInPriorityOrder.begin(), cellsInPriorityOrder.end(), CustomCellSorter(this->wm));
+    //    return cellsInPriorityOrder.begin()->second;
 }
 
-void ObjectSearch::update(srg::SRGWorldModel* wm)
+void ObjectSearch::update()
 {
     nonstd::optional<srgsim::Coordinate> ownCoord = wm->sRGSimData.getOwnPositionBuffer().getLastValidContent();
     if (!ownCoord.has_value()) {
         return;
     }
-    ownCoordinates = ownCoord.value();
+
+    updateCounter++;
 
     std::unordered_set<const srgsim::Cell*> visible;
     std::unordered_set<const srgsim::Cell*> front;
     this->getVisibleAndFrontCells(ownCoord.value(), wm->sRGSimData.getWorld(), visible, front);
     for (const srgsim::Cell* cell : visible) {
-        this->fringe->erase(cell);
+        for (auto iter = this->fringe->begin(); iter != this->fringe->end(); ++iter) {
+            if (iter->cell == cell) {
+                this->fringe->erase(iter);
+                break;
+            }
+        }
         this->visited->insert(cell);
     }
     for (const srgsim::Cell* cell : front) {
         if (this->visited->find(cell) == this->visited->end()) {
-            this->fringe->insert(cell);
+            this->fringe->insert(SearchCell(updateCounter, cell));
         }
     }
 
-    //    std::cout << "[ObjectSearch] Fringe: ";
     for (auto& cell : *this->fringe) {
-        //        std::cout << cell->coordinate << " ";
         srgsim::Perception p;
         p.type = srgsim::ObjectType::CupRed;
-        p.x = cell->coordinate.x;
-        p.y = cell->coordinate.y;
+        p.x = cell.cell->coordinate.x;
+        p.y = cell.cell->coordinate.y;
         wm->sRGSimData.getWorld()->addMarker(p);
     }
-    //    std::cout << std::endl;
 }
 
 void ObjectSearch::getVisibleAndFrontCells(srgsim::Coordinate& ownCoord, const srgsim::World* world, std::unordered_set<const srgsim::Cell*>& visible,

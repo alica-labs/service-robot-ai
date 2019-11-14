@@ -59,7 +59,7 @@ bool Robot::move(srgsim::Coordinate goal) const
 {
     auto ownCoordinate = this->wm->sRGSimData.getOwnPositionBuffer().getLastValidContent();
     if (!ownCoordinate.has_value()) {
-        std::cerr << "Robot::move(): Not localised!" << std::endl;
+        std::cerr << "[Robot] Not localised!" << std::endl;
         return true;
     }
 
@@ -90,6 +90,22 @@ bool Robot::move(srgsim::Coordinate goal) const
     delete path;
     send(sc);
     return true;
+}
+
+int32_t Robot::getPathCost(srgsim::Coordinate goal) const
+{
+    auto ownCoordinate = this->wm->sRGSimData.getOwnPositionBuffer().getLastValidContent();
+    if (!ownCoordinate.has_value()) {
+        std::cerr << "[Robot] Not localised!" << std::endl;
+        return true;
+    }
+
+    robot::Path* path = this->movement->searchPath(ownCoordinate.value(), goal);
+    if (path) {
+        return path->getTotalCosts();
+    } else {
+        return -1;
+    }
 }
 
 void Robot::manipulate(const srg::dialogue::ManipulationTask* task) const
