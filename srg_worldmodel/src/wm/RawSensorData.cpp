@@ -8,7 +8,7 @@
 #include <supplementary/InfoBuffer.h>
 
 #include <memory>
-#include <srgsim/containers/SimPerceptions.h>
+#include <srg/sim/containers/SimPerceptions.h>
 
 namespace srg
 {
@@ -28,7 +28,7 @@ RawSensorData::RawSensorData(srg::SRGWorldModel* wm)
     this->agentCmdBuffer = new supplementary::InfoBuffer<control::AgentCommand>((*sc)["SRGWorldModel"]->get<int>("Data.AgentCmd.BufferLength", NULL));
 
     this->perceptionsValidityDuration = alica::AlicaTime::nanoseconds((*sc)["SRGWorldModel"]->get<int>("Data.Perception.ValidityDuration", NULL));
-    this->perceptionsBuffer = new supplementary::InfoBuffer<srgsim::SimPerceptions>((*sc)["SRGWorldModel"]->get<int>("Data.Perception.BufferLength", NULL));
+    this->perceptionsBuffer = new supplementary::InfoBuffer<srg::sim::containers::SimPerceptions>((*sc)["SRGWorldModel"]->get<int>("Data.Perception.BufferLength", NULL));
 }
 
 RawSensorData::~RawSensorData() {}
@@ -48,7 +48,7 @@ const supplementary::InfoBuffer<control::SpeechAct>& RawSensorData::getSpeechAct
     return *this->speechActBuffer;
 }
 
-const supplementary::InfoBuffer<srgsim::SimPerceptions>& RawSensorData::getPerceptionsBuffer()
+const supplementary::InfoBuffer<srg::sim::containers::SimPerceptions>& RawSensorData::getPerceptionsBuffer()
 {
     return *this->perceptionsBuffer;
 }
@@ -74,9 +74,9 @@ void RawSensorData::processAgentCmd(control::AgentCommand agentCmd)
     agentCmdBuffer->add(agentCmdInfo);
 }
 
-void RawSensorData::processSimPerceptions(srgsim::SimPerceptions simPerceptions)
+void RawSensorData::processSimPerceptions(srg::sim::containers::SimPerceptions simPerceptions)
 {
-    auto perceptionsInfo = std::make_shared<supplementary::InformationElement<srgsim::SimPerceptions>>(simPerceptions, wm->getTime(), perceptionsValidityDuration, 1.0);
+    auto perceptionsInfo = std::make_shared<supplementary::InformationElement<srg::sim::containers::SimPerceptions>>(simPerceptions, wm->getTime(), perceptionsValidityDuration, 1.0);
     perceptionsBuffer->add(perceptionsInfo);
 
     // further processing

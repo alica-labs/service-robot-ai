@@ -12,7 +12,7 @@
 #include <knowledge_manager/ASPKnowledgeManager.h>
 #include <supplementary/InformationElement.h>
 #include <supplementary/WorldModel.h>
-#include <srgsim/world/GUI.h>
+#include <srg/GUI.h>
 
 namespace essentials
 {
@@ -62,7 +62,7 @@ public:
     wm::Communication* communication;
     knowledge_manager::ASPKnowledgeManager knowledgeManager;
     srg::asp::ASPTranslator* aspTranslator;
-    srgsim::GUI* gui;
+    srg::GUI* gui;
 
 private:
     SRGWorldModel(); /**< Private Singleton Constructor */

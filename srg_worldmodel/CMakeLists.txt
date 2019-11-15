@@ -38,12 +38,12 @@ add_library(srg_worldmodel
   src/dialogue/BasicHumanNeeds.cpp
   src/dialogue/DialogueManager.cpp
   src/dialogue/InformHandler.cpp
-  src/dialogue/TaskHandler.cpp
-  src/dialogue/Task.cpp
-  src/dialogue/MoveTask.cpp
-  src/dialogue/TransportTask.cpp
-  src/dialogue/ManipulationTask.cpp
-  src/dialogue/IdleTask.cpp
+  src/tasks/TaskHandler.cpp
+  src/tasks/Task.cpp
+  src/tasks/MoveTask.cpp
+  src/tasks/TransportTask.cpp
+  src/tasks/ManipulationTask.cpp
+  src/tasks/TaskType.cpp
   src/asp/ASPTranslator.cpp
 )
 

@@ -42,7 +42,7 @@ std::string SRGWorldModel::getAgentName()
 void SRGWorldModel::init()
 {
     this->sRGSimData.init();
-    this->gui = new srgsim::GUI(this->agentName);
+    this->gui = new srg::GUI(this->agentName);
     this->communication = new wm::Communication(this);
 }
 

@@ -4,7 +4,7 @@
 
 #include <Message.h>
 #include <control/containers/ContainerUtils.h>
-#include <srgsim/containers/ContainerUtils.h>
+#include <srg/sim/ContainerUtils.h>
 
 #include <control/SpeechActMsg.capnp.h>
 #include <control/containers/ContainerUtils.h>
@@ -78,7 +78,7 @@ void Communication::onAgentCmd(capnp::FlatArrayMessageReader& msg)
 
 void Communication::onSimPerceptions(capnp::FlatArrayMessageReader& msg)
 {
-    auto simPerceptions = srgsim::ContainerUtils::toSimPerceptions(msg, this->wm->getEngine()->getIdManager());
+    auto simPerceptions = srg::sim::ContainerUtils::toSimPerceptions(msg, this->wm->getEngine()->getIdManager());
     if (simPerceptions.receiverID == this->wm->getOwnId()) {
         this->wm->rawSensorData.processSimPerceptions(simPerceptions);
     }

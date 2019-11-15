@@ -1,13 +1,10 @@
-#include "srg/dialogue/TaskHandler.h"
-#include "srg/dialogue/ManipulationTask.h"
-#include "srg/dialogue/MoveTask.h"
-#include "srg/dialogue/Task.h"
-#include "srg/dialogue/TransportTask.h"
+#include "srg/tasks/TaskHandler.h"
+#include "srg/tasks/Task.h"
 
-#include <srgsim/containers/Coordinate.h>
-#include <srgsim/world/Cell.h>
-#include <srgsim/world/Object.h>
-#include <srgsim/world/World.h>
+#include <srg/world/Coordinate.h>
+#include <srg/world/Cell.h>
+#include <srg/world/Object.h>
+#include <srg/World.h>
 
 #include <engine/AlicaEngine.h>
 
@@ -15,7 +12,7 @@
 
 namespace srg
 {
-namespace dialogue
+namespace tasks
 {
 TaskHandler::TaskHandler(SRGWorldModel* wm)
         : wm(wm)

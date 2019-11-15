@@ -1,7 +1,7 @@
 #pragma once
 
 #include <engine/AlicaClock.h>
-#include <srgsim/containers/SimPerceptions.h>
+#include <srg/sim/containers/SimPerceptions.h>
 #include <supplementary/InfoBuffer.h>
 #include <supplementary/InformationElement.h>
 
@@ -11,18 +11,16 @@ namespace essentials
 class SystemConfig;
 }
 
-namespace srgsim
-{
-class World;
-class Coordinate;
-} // namespace srgsim
-
 namespace alica
 {
 class AlicaTime;
 }
 namespace srg
 {
+class World;
+namespace world {
+    class Coordinate;
+}
 namespace dialogue
 {
 class DialogueManager;
@@ -38,20 +36,20 @@ public:
     virtual ~SRGSimData();
 
     void init();
-    const supplementary::InfoBuffer<srgsim::Coordinate>& getOwnPositionBuffer() const;
+    const supplementary::InfoBuffer<srg::world::Coordinate>& getOwnPositionBuffer() const;
 
-    void processPerception(srgsim::SimPerceptions simPerceptions);
+    void processPerception(srg::sim::containers::SimPerceptions simPerceptions);
     bool isLocalised();
-    srgsim::World* getWorld();
+    srg::World* getWorld();
 
 private:
     SRGWorldModel* wm;
     essentials::SystemConfig* sc;
-    srgsim::World* world;
+    srg::World* world;
     dialogue::DialogueManager* dialogueManager;
 
     alica::AlicaTime ownPositionValidityDuration;
-    supplementary::InfoBuffer<srgsim::Coordinate>* ownPositionBuffer;
+    supplementary::InfoBuffer<srg::world::Coordinate>* ownPositionBuffer;
 };
 } /* namespace wm */
 } /* namespace srg */

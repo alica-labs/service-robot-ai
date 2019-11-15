@@ -1,20 +1,26 @@
 #pragma once
 
-#include <memory>
 #include <map>
+#include <memory>
 #include <vector>
 
-namespace supplementary {
-    template<typename>
-    class InformationElement;
+namespace supplementary
+{
+template <typename>
+class InformationElement;
 }
 
-namespace control {
-    class SpeechAct;
+namespace control
+{
+class SpeechAct;
 }
 
 namespace srg
 {
+namespace tasks
+{
+class TaskHandler;
+}
 class SRGWorldModel;
 namespace dialogue
 {
@@ -33,7 +39,7 @@ public:
 
     BasicHumanNeeds* basicHumanNeeds;
     InformHandler* informHandler;
-    TaskHandler* taskHandler;
+    srg::tasks::TaskHandler* taskHandler;
 
 private:
     srg::SRGWorldModel* wm;

@@ -5,8 +5,6 @@
 #include <string>
 #include <vector>
 
-
-
 namespace srg
 {
 namespace conceptnet

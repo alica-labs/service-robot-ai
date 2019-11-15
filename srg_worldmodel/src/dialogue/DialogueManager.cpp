@@ -4,7 +4,7 @@
 #include "srg/dialogue/AnswerGraph.h"
 #include "srg/dialogue/BasicHumanNeeds.h"
 #include "srg/dialogue/InformHandler.h"
-#include "srg/dialogue/TaskHandler.h"
+#include "srg/tasks/TaskHandler.h"
 
 #include <control/containers/SpeechAct.h>
 
@@ -21,7 +21,7 @@ DialogueManager::DialogueManager(srg::SRGWorldModel* wm)
 {
     this->basicHumanNeeds = new BasicHumanNeeds(wm);
     this->informHandler = new InformHandler(wm);
-    this->taskHandler = new TaskHandler(wm);
+    this->taskHandler = new srg::tasks::TaskHandler(wm);
 }
 DialogueManager::~DialogueManager()
 {

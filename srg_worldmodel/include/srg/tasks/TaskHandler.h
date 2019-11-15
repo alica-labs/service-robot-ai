@@ -1,7 +1,7 @@
 #pragma once
 
 #include "srg/SRGWorldModel.h"
-#include "srg/dialogue/Task.h"
+#include "Task.h"
 #include <control/containers/SpeechAct.h>
 #include <nonstd/optional.hpp>
 
@@ -12,7 +12,7 @@ class SystemConfig;
 
 namespace srg
 {
-namespace dialogue
+namespace tasks
 {
 class ManipulationTask;
 class MoveTask;
@@ -31,7 +31,7 @@ private:
     Task* createTask(std::shared_ptr<supplementary::InformationElement<control::SpeechAct>> taskAct);
     MoveTask* createMoveTask(std::string taskText);
     ManipulationTask* createManipulationTask(std::string taskText);
-    bool isValid(srgsim::Coordinate coord, srgsim::TaskType type);
+    bool isValid(srg::world::Coordinate coord, TaskType type);
 
     srg::SRGWorldModel* wm;
     essentials::SystemConfig* sc;
