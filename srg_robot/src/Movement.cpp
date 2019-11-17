@@ -1,7 +1,7 @@
 #include "srg/robot/Movement.h"
-#include <srgsim/world/Door.h>
-#include <srgsim/world/RoomType.h>
-#include <srgsim/world/World.h>
+#include <srg/world/Door.h>
+#include <srg/world/RoomType.h>
+#include <srg/World.h>
 
 #include <queue>
 
@@ -14,7 +14,7 @@ Movement::Movement(srg::SRGWorldModel* wm)
 {
 }
 
-Path* Movement::searchPath(srgsim::Coordinate start, srgsim::Coordinate goal)
+Path* Movement::searchPath(srg::world::Coordinate start, srg::world::Coordinate goal)
 {
     if (!checkValidity(goal)) {
         goal = this->findAlternativeGoal(start, goal);
@@ -26,7 +26,7 @@ Path* Movement::searchPath(srgsim::Coordinate start, srgsim::Coordinate goal)
 
     Path* initialPath = new Path(start, goal, wm);
     fringe.push(initialPath);
-    std::vector<const srgsim::Cell*> visited;
+    std::vector<const srg::world::Cell*> visited;
 
     while (Path* currentPath = fringe.top()) {
         fringe.pop();
@@ -52,12 +52,12 @@ Path* Movement::searchPath(srgsim::Coordinate start, srgsim::Coordinate goal)
     return initialPath;
 }
 
-srgsim::Coordinate Movement::findAlternativeGoal(srgsim::Coordinate start, srgsim::Coordinate goal)
+    srg::world::Coordinate Movement::findAlternativeGoal(srg::world::Coordinate start, srg::world::Coordinate goal)
 {
     int32_t deltaX = (start.x - goal.x > 0 ? 1 : -1);
     int32_t deltaY = (start.y - goal.y > 0 ? 1 : -1);
 
-    srgsim::Coordinate alternativeGoal = goal;
+    srg::world::Coordinate alternativeGoal = goal;
     alternativeGoal.x += deltaX;
     alternativeGoal.y += deltaY;
     if (checkValidity(alternativeGoal)) {
@@ -113,15 +113,15 @@ srgsim::Coordinate Movement::findAlternativeGoal(srgsim::Coordinate start, srgsi
     return goal;
 }
 
-bool Movement::checkValidity(srgsim::Coordinate coord)
+bool Movement::checkValidity(srg::world::Coordinate coord)
 {
-    const srgsim::Cell* cell = wm->sRGSimData.getWorld()->getCell(coord);
-    if (cell->getType() == srgsim::RoomType::Wall) {
+    const srg::world::Cell* cell = wm->sRGSimData.getWorld()->getCell(coord);
+    if (cell->getType() == srg::world::RoomType::Wall) {
         return false;
     }
 
-    for (srgsim::Object* object : cell->getObjects()) {
-        if (class srgsim::Door* door = dynamic_cast<class srgsim::Door*>(object)) {
+    for (srg::world::Object* object : cell->getObjects()) {
+        if (class srg::world::Door* door = dynamic_cast<class srg::world::Door*>(object)) {
             return door->isOpen();
         }
     }

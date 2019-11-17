@@ -1,12 +1,12 @@
 #include "srg/robot/SearchCell.h"
 
-#include <srgsim/world/Cell.h>
+#include <srg/world/Cell.h>
 
 namespace srg
 {
 namespace robot
 {
-SearchCell::SearchCell(int32_t priority, const srgsim::Cell* cell)
+SearchCell::SearchCell(int32_t priority, const srg::world::Cell* cell)
         : priority(priority)
         , cell(cell)
 {

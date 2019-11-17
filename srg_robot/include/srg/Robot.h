@@ -1,8 +1,7 @@
 #pragma once
 
-#include <srgsim/containers/SimCommand.h>
-#include <srgsim/containers/Coordinate.h>
-#include <srg/dialogue/ManipulationTask.h>
+#include <srg/sim/containers/SimCommand.h>
+#include <srg/world/Coordinate.h>
 #include <essentials/IdentifierConstPtr.h>
 
 #include <string>
@@ -22,7 +21,9 @@ namespace srg
 {
 
 class SRGWorldModel;
-
+namespace tasks {
+    class Task;
+}
 namespace robot {
     class Movement;
 }
@@ -36,13 +37,13 @@ public:
 
     // methods for doing something
     void spawn() const;
-    bool move(srgsim::Coordinate goal) const;
-    void manipulate(const srg::dialogue::ManipulationTask* task) const;
-    int32_t getPathCost(srgsim::Coordinate goal) const;
+    bool move(srg::world::Coordinate goal) const;
+    void manipulate(const srg::tasks::Task* task) const;
+    int32_t getPathCost(srg::world::Coordinate goal) const;
 
 private:
     Robot(srg::SRGWorldModel* wm);  /**< Private Singleton Constructor */
-    void send(srgsim::SimCommand sc) const;
+    void send(srg::sim::containers::SimCommand sc) const;
 
     essentials::SystemConfig* sc;
     std::string simCmdTopic;

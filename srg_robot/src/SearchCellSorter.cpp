@@ -2,7 +2,7 @@
 
 #include <Geometry.h>
 #include <srg/Robot.h>
-#include <srgsim/world/Cell.h>
+#include <srg/world/Cell.h>
 
 namespace srg
 {

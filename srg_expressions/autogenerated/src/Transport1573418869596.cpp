@@ -1,10 +1,10 @@
 #include "Transport1573418869596.h"
 /*PROTECTED REGION ID(eph1573418869596) ENABLED START*/
-#include <srg/dialogue/TaskHandler.h>
-#include <srg/dialogue/TransportTask.h>
-#include <srgsim/world/Cell.h>
-#include <srgsim/world/Object.h>
-#include <srgsim/world/World.h>
+#include <srg/tasks/TaskHandler.h>
+#include <srg/tasks/Task.h>
+#include <srg/world/Cell.h>
+#include <srg/world/Object.h>
+#include <srg/World.h>
 /*PROTECTED REGION END*/
 
 using namespace alica;
@@ -53,11 +53,11 @@ bool PreCondition1573419746851::evaluate(shared_ptr<RunningPlan> rp)
         return false;
     }
     auto activeCommand = this->wm->dialogueManager.taskHandler->getActiveTask();
-    if (activeCommand->getInformation()->type != srgsim::TaskType::Transport) {
+    if (activeCommand->getInformation()->type != srg::tasks::TaskType::Search) {
         return false;
     }
-    srg::dialogue::TransportTask* transportTask = static_cast<srg::dialogue::TransportTask*>(activeCommand->getInformation());
-    return transportTask->foundObject(this->wm) && transportTask->closeToObject(this->wm);
+    srg::tasks::Task* transportTask = static_cast<srg::tasks::Task*>(activeCommand->getInformation());
+    return false; //transportTask->foundObject(this->wm) && transportTask->closeToObject(this->wm);
     /*PROTECTED REGION END*/
 }
 /*
@@ -91,11 +91,11 @@ bool PreCondition1573419765536::evaluate(shared_ptr<RunningPlan> rp)
         return false;
     }
     auto activeCommand = this->wm->dialogueManager.taskHandler->getActiveTask();
-    if (activeCommand->getInformation()->type != srgsim::TaskType::Transport) {
+    if (activeCommand->getInformation()->type != srg::tasks::TaskType::Search) {
         return false;
     }
-    srg::dialogue::TransportTask* transportTask = static_cast<srg::dialogue::TransportTask*>(activeCommand->getInformation());
-    return transportTask->foundObject(this->wm) && !transportTask->closeToObject(wm);
+    srg::tasks::Task* transportTask = static_cast<srg::tasks::Task*>(activeCommand->getInformation());
+    return false; //transportTask->foundObject(this->wm) && !transportTask->closeToObject(wm);
     /*PROTECTED REGION END*/
 }
 /*
@@ -129,11 +129,11 @@ bool PreCondition1573419810456::evaluate(shared_ptr<RunningPlan> rp)
         return false;
     }
     auto activeCommand = this->wm->dialogueManager.taskHandler->getActiveTask();
-    if (activeCommand->getInformation()->type != srgsim::TaskType::Transport) {
+    if (activeCommand->getInformation()->type != srg::tasks::TaskType::Search) {
         return false;
     }
-    srg::dialogue::TransportTask* transportTask = static_cast<srg::dialogue::TransportTask*>(activeCommand->getInformation());
-    return transportTask->pickedObject(this->wm);
+    srg::tasks::Task* transportTask = static_cast<srg::tasks::Task*>(activeCommand->getInformation());
+    return false; //transportTask->pickedObject(this->wm);
     /*PROTECTED REGION END*/
 }
 /*
@@ -167,11 +167,11 @@ bool PreCondition1573419828606::evaluate(shared_ptr<RunningPlan> rp)
         return false;
     }
     auto activeCommand = this->wm->dialogueManager.taskHandler->getActiveTask();
-    if (activeCommand->getInformation()->type != srgsim::TaskType::Transport) {
+    if (activeCommand->getInformation()->type != srg::tasks::TaskType::Search) {
         return false;
     }
-    srg::dialogue::TransportTask* transportTask = static_cast<srg::dialogue::TransportTask*>(activeCommand->getInformation());
-    return transportTask->movedToDestination(this->wm);
+    srg::tasks::Task* transportTask = static_cast<srg::tasks::Task*>(activeCommand->getInformation());
+    return false; //transportTask->movedToDestination(this->wm);
     /*PROTECTED REGION END*/
 }
 /*
@@ -205,10 +205,10 @@ bool PreCondition1573419841944::evaluate(shared_ptr<RunningPlan> rp)
         return false;
     }
     auto activeCommand = this->wm->dialogueManager.taskHandler->getActiveTask();
-    if (activeCommand->getInformation()->type != srgsim::TaskType::Transport) {
+    if (activeCommand->getInformation()->type != srg::tasks::TaskType::Search) {
         return false;
     }
-    srg::dialogue::TransportTask* transportTask = static_cast<srg::dialogue::TransportTask*>(activeCommand->getInformation());
+    srg::tasks::Task* transportTask = static_cast<srg::tasks::Task*>(activeCommand->getInformation());
     return transportTask->checkSuccess(this->wm);
     /*PROTECTED REGION END*/
 }
@@ -243,11 +243,11 @@ bool PreCondition1573419800282::evaluate(shared_ptr<RunningPlan> rp)
         return false;
     }
     auto activeCommand = this->wm->dialogueManager.taskHandler->getActiveTask();
-    if (activeCommand->getInformation()->type != srgsim::TaskType::Transport) {
+    if (activeCommand->getInformation()->type != srg::tasks::TaskType::Search) {
         return false;
     }
-    srg::dialogue::TransportTask* transportTask = static_cast<srg::dialogue::TransportTask*>(activeCommand->getInformation());
-    return transportTask->foundObject(this->wm) && transportTask->closeToObject(this->wm);
+    srg::tasks::Task* transportTask = static_cast<srg::tasks::Task*>(activeCommand->getInformation());
+    return false;// transportTask->foundObject(this->wm) && transportTask->closeToObject(this->wm);
     /*PROTECTED REGION END*/
 }
 } // namespace alicaAutogenerated

@@ -4,7 +4,7 @@
 /*PROTECTED REGION ID(inccpp1568825137528) ENABLED START*/
 #include <srg/Robot.h>
 #include <srg/SRGWorldModel.h>
-#include <srg/dialogue/TaskHandler.h>
+#include <srg/tasks/TaskHandler.h>
 #include <srg/robot/Movement.h>
 /*PROTECTED REGION END*/
 
@@ -34,7 +34,7 @@ void Move::run(void* msg)
         return;
     }
 
-    if (!this->activeTask || this->activeTask->type != srgsim::TaskType::Move || this->activeTask->checkSuccess(this->wm)) {
+    if (!this->activeTask || this->activeTask->type != srg::tasks::TaskType::Move || this->activeTask->checkSuccess(this->wm)) {
         this->setSuccess();
         return;
     }
@@ -45,12 +45,11 @@ void Move::run(void* msg)
 void Move::initialiseParameters()
 {
     /*PROTECTED REGION ID(initialiseParameters1568825137528) ENABLED START*/
-    std::shared_ptr<const supplementary::InformationElement<srg::dialogue::Task*>> task = this->wm->dialogueManager.taskHandler->getActiveTask();
-    if (task && task->getInformation()->type == srgsim::TaskType::Move) {
+    std::shared_ptr<const supplementary::InformationElement<srg::tasks::Task*>> task = this->wm->dialogueManager.taskHandler->getActiveTask();
+    if (task && task->getInformation()->type == srg::tasks::TaskType::Move) {
         delete this->activeTask;
 
-        this->activeTask = new srg::dialogue::MoveTask();
-        this->activeTask->type = task->getInformation()->type;
+        this->activeTask = new srg::tasks::Task(task->getInformation()->type);
         this->activeTask->coordinate = task->getInformation()->coordinate;
         this->activeTask->actID = task->getInformation()->actID;
         this->activeTask->previousActID = task->getInformation()->previousActID;

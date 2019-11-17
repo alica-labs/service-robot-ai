@@ -1,6 +1,6 @@
 #include "Serve1568825275605.h"
 /*PROTECTED REGION ID(eph1568825275605) ENABLED START*/
-#include <srg/dialogue/TaskHandler.h>
+#include <srg/tasks/TaskHandler.h>
 /*PROTECTED REGION END*/
 
 using namespace alica;
@@ -44,7 +44,7 @@ bool PreCondition1568825457853::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1568825336792) ENABLED START*/
     auto activeCommand = this->wm->dialogueManager.taskHandler->getActiveTask();
-    return activeCommand && activeCommand->getInformation()->type == srgsim::TaskType::Move;
+    return activeCommand && activeCommand->getInformation()->type == srg::tasks::TaskType::Move;
     /*PROTECTED REGION END*/
 }
 /*
@@ -74,8 +74,8 @@ bool PreCondition1571661980674::evaluate(shared_ptr<RunningPlan> rp)
     /*PROTECTED REGION ID(1571661739802) ENABLED START*/
     auto activeCommand = this->wm->dialogueManager.taskHandler->getActiveTask();
     return activeCommand &&
-           (activeCommand->getInformation()->type == srgsim::TaskType::Open || activeCommand->getInformation()->type == srgsim::TaskType::Close ||
-                   activeCommand->getInformation()->type == srgsim::TaskType::PutDown || activeCommand->getInformation()->type == srgsim::TaskType::PickUp);
+           (activeCommand->getInformation()->type == srg::tasks::TaskType::Open || activeCommand->getInformation()->type == srg::tasks::TaskType::Close ||
+                   activeCommand->getInformation()->type == srg::tasks::TaskType::PutDown || activeCommand->getInformation()->type == srg::tasks::TaskType::PickUp);
     /*PROTECTED REGION END*/
 }
 /*
@@ -104,7 +104,7 @@ bool PreCondition1573418732991::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1573418725423) ENABLED START*/
     auto activeCommand = this->wm->dialogueManager.taskHandler->getActiveTask();
-    return activeCommand && (activeCommand->getInformation()->type == srgsim::TaskType::Transport);
+    return activeCommand && (activeCommand->getInformation()->type == srg::tasks::TaskType::Search);
     /*PROTECTED REGION END*/
 }
 /*

@@ -1,9 +1,9 @@
 #include "srg/robot/Path.h"
 
-#include <srgsim/world/World.h>
-#include <srgsim/world/Object.h>
-#include <srgsim/world/Door.h>
-#include <srgsim/world/RoomType.h>
+#include <srg/World.h>
+#include <srg/world/Object.h>
+#include <srg/world/Door.h>
+#include <srg/world/RoomType.h>
 
 #include <iostream>
 
@@ -11,7 +11,7 @@ namespace srg
 {
 namespace robot
 {
-Path::Path(srgsim::Coordinate start, srgsim::Coordinate goal, srg::SRGWorldModel* wm)
+Path::Path(srg::world::Coordinate start, srg::world::Coordinate goal, srg::SRGWorldModel* wm)
         : start(start)
         , goal(goal)
         , lastStep(nullptr)
@@ -33,10 +33,10 @@ Path::~Path() {
     delete this->lastStep;
 }
 
-srgsim::Direction Path::getDirection()
+    srg::world::Direction Path::getDirection()
 {
     if (start == goal) {
-        return srgsim::Direction::None;
+        return srg::world::Direction::None;
     }
     // find the first cell that is not on the start coordinates
     Path* firstStep = this;
@@ -45,16 +45,16 @@ srgsim::Direction Path::getDirection()
     }
 //    std::cout << "Path::getDirection(): First Step is " << firstStep->getCell()->coordinate << " Start is " << this->start <<std::endl;
     if (this->start.x < firstStep->cell->coordinate.x) {
-        return srgsim::Direction::Right;
+        return srg::world::Direction::Right;
     } else if (this->start.x > firstStep->cell->coordinate.x) {
-        return srgsim::Direction::Left;
+        return srg::world::Direction::Left;
     } else if (this->start.y < firstStep->cell->coordinate.y) {
-        return srgsim::Direction::Down;
+        return srg::world::Direction::Down;
     } else if (this->start.y > firstStep->cell->coordinate.y) {
-        return srgsim::Direction::Up;
+        return srg::world::Direction::Up;
     } else {
         std::cerr << "Path::getDirection(): Path is longer than 1 step, but stays on the same coordinates!" << std::endl;
-        return srgsim::Direction::None;
+        return srg::world::Direction::None;
     }
 }
 
@@ -73,7 +73,7 @@ int Path::getHeuristicCosts()
     return std::abs<int>(this->goal.x - this->cell->coordinate.x) + std::abs<int>(this->goal.y - this->cell->coordinate.y);
 }
 
-std::vector<Path*> Path::expand(std::vector<const srgsim::Cell*>& visited)
+std::vector<Path*> Path::expand(std::vector<const srg::world::Cell*>& visited)
 {
     std::vector<Path*> newPaths;
     if (checkValidity(visited, cell->down)){
@@ -97,7 +97,7 @@ std::vector<Path*> Path::expand(std::vector<const srgsim::Cell*>& visited)
  * @param cell
  * @return
  */
-bool Path::checkValidity(std::vector<const srgsim::Cell*>& visited, srgsim::Cell* cell) {
+bool Path::checkValidity(std::vector<const srg::world::Cell*>& visited, srg::world::Cell* cell) {
     if (!cell) {
         return false;
     }
@@ -107,12 +107,12 @@ bool Path::checkValidity(std::vector<const srgsim::Cell*>& visited, srgsim::Cell
         return false;
     }
 
-    if (cell->getType() == srgsim::RoomType::Wall) {
+    if (cell->getType() == srg::world::RoomType::Wall) {
         return false;
     }
 
-    for (srgsim::Object* object : cell->getObjects()) {
-        if(class srgsim::Door* door = dynamic_cast<class srgsim::Door*>(object)) {
+    for (srg::world::Object* object : cell->getObjects()) {
+        if(class srg::world::Door* door = dynamic_cast<class srg::world::Door*>(object)) {
             return door->isOpen();
         }
     }
@@ -120,11 +120,11 @@ bool Path::checkValidity(std::vector<const srgsim::Cell*>& visited, srgsim::Cell
     return true;
 }
 
-const srgsim::Cell* Path::getCell() {
+const srg::world::Cell* Path::getCell() {
     return this->cell;
 }
 
-Path* Path::addStep(const srgsim::Cell* cell)
+Path* Path::addStep(const srg::world::Cell* cell)
 {
     Path* newPath = new Path(*this);
     newPath->lastStep = this;

@@ -1,11 +1,12 @@
 #pragma once
 
-#include "srg/robot/SearchCellSorter.h"
 #include "srg/robot/SearchCell.h"
+#include "srg/robot/SearchCellSorter.h"
 
-#include <srgsim/containers/Coordinate.h>
-#include <srgsim/world/Cell.h>
-#include <srgsim/world/ObjectType.h>
+#include <srg/world/Coordinate.h>
+#include <srg/world/Object.h>
+#include <srg/world/ObjectType.h>
+#include <srg/world/RoomType.h>
 
 #include <cstdint>
 #include <set>
@@ -17,42 +18,41 @@ namespace essentials
 class SystemConfig;
 }
 
-namespace srgsim
-{
-class World;
-} // namespace srgsim
-
 namespace srg
 {
+class World;
 class SRGWorldModel;
+namespace world
+{
+class Cell;
+}
 namespace robot
 {
 class ObjectSearch
 {
 public:
-    ObjectSearch(srgsim::ObjectType objectType, srg::SRGWorldModel* wm);
+    ObjectSearch(srg::world::ObjectType objectType, srg::SRGWorldModel* wm);
 
-    void addRoomType(srgsim::RoomType type);
+    void addRoomType(srg::world::RoomType type);
     void update();
-    const srgsim::Cell* getNextCell();
+    const srg::world::Cell* getNextCell();
 
 private:
-    void getVisibleAndFrontCells(srgsim::Coordinate& ownCoord, const srgsim::World* world, std::unordered_set<const srgsim::Cell*>& visible,
-            std::unordered_set<const srgsim::Cell*>& front);
-    void trace(const srgsim::World* world, srgsim::Coordinate& from, srgsim::Coordinate& to, std::unordered_set<const srgsim::Cell*>& visible,
-            std::unordered_set<const srgsim::Cell*>& front);
+    void getVisibleAndFrontCells(srg::world::Coordinate& ownCoord, const srg::World* world, std::unordered_set<const srg::world::Cell*>& visible,
+            std::unordered_set<const srg::world::Cell*>& front);
+    void trace(const srg::World* world, srg::world::Coordinate& from, srg::world::Coordinate& to, std::unordered_set<const srg::world::Cell*>& visible,
+            std::unordered_set<const srg::world::Cell*>& front);
 
     essentials::SystemConfig* sc;
     srg::SRGWorldModel* wm;
     uint32_t sightLimit;
     uint32_t updateCounter;
 
-    srgsim::ObjectType objectType;
-    std::unordered_set<srgsim::RoomType> roomTypes;
+    srg::world::ObjectType objectType;
+    std::unordered_set<srg::world::RoomType> roomTypes;
 
     std::set<SearchCell, SearchCellSorter>* fringe;
-    std::unordered_set<const srgsim::Cell*>* visited;
-
+    std::unordered_set<const srg::world::Cell*>* visited;
 };
 
 } // namespace robot

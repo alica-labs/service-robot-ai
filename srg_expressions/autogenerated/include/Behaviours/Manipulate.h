@@ -4,8 +4,8 @@
 /*PROTECTED REGION ID(inc1571687572903) ENABLED START*/
 #include <control/containers/SpeechAct.h>
 #include <nonstd/optional.hpp>
-#include <srg/dialogue/ManipulationTask.h>
-#include <srgsim/containers/Coordinate.h>
+#include <srg/tasks/Task.h>
+#include <srg/world/Coordinate.h>
 /*PROTECTED REGION END*/
 
 namespace alica
@@ -26,7 +26,7 @@ protected:
     /*PROTECTED REGION END*/
 private:
     /*PROTECTED REGION ID(prv1571687572903) ENABLED START*/
-    srg::dialogue::ManipulationTask* activeTask;
+    srg::tasks::Task* activeTask;
     /*PROTECTED REGION END*/
 };
 } /* namespace alica */

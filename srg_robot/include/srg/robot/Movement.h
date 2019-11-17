@@ -2,7 +2,7 @@
 
 #include "srg/robot/Path.h"
 
-#include <srgsim/containers/Coordinate.h>
+#include <srg/world/Coordinate.h>
 
 namespace srg
 {
@@ -13,10 +13,10 @@ class Movement
 {
 public:
     Movement(srg::SRGWorldModel* wm);
-    Path* searchPath(srgsim::Coordinate start, srgsim::Coordinate goal);
+    Path* searchPath(srg::world::Coordinate start, srg::world::Coordinate goal);
 private:
-    srgsim::Coordinate findAlternativeGoal(srgsim::Coordinate start, srgsim::Coordinate goal);
-    bool checkValidity(srgsim::Coordinate coord);
+    srg::world::Coordinate findAlternativeGoal(srg::world::Coordinate start, srg::world::Coordinate goal);
+    bool checkValidity(srg::world::Coordinate coord);
 
     srg::SRGWorldModel* wm;
 };

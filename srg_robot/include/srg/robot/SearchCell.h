@@ -2,19 +2,19 @@
 
 #include <cstdint>
 
-namespace srgsim {
-    class Cell;
-}
-
 namespace srg
 {
+namespace world
+{
+class Cell;
+}
 namespace robot
 {
 struct SearchCell
 {
-    SearchCell(int32_t priority, const srgsim::Cell* cell);
+    SearchCell(int32_t priority, const srg::world::Cell* cell);
     int32_t priority;
-    const srgsim::Cell* cell;
+    const srg::world::Cell* cell;
 };
 } // namespace robot
 } // namespace srg

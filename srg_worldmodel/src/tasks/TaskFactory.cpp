@@ -107,7 +107,7 @@ void TaskFactory::setIDFields(const control::SpeechAct& speechAct, Task* task)
     task->previousActID = speechAct.previousActID;
 }
 
-std::vector<std::string> split(const std::string& taskText)
+std::vector<std::string> TaskFactory::split(const std::string& taskText)
 {
     std::istringstream iss(taskText);
     std::vector<std::string> tokens((std::istream_iterator<std::string>(iss)), std::istream_iterator<std::string>());

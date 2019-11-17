@@ -1,8 +1,8 @@
 #pragma once
 
 #include <srg/SRGWorldModel.h>
-#include <srgsim/world/Cell.h>
-#include <srgsim/world/Direction.h>
+#include <srg/world/Cell.h>
+#include <srg/world/Direction.h>
 
 namespace srg
 {
@@ -11,16 +11,16 @@ namespace robot
 class Path
 {
 public:
-    Path(srgsim::Coordinate start, srgsim::Coordinate goal, srg::SRGWorldModel* wm);
+    Path(srg::world::Coordinate start, srg::world::Coordinate goal, srg::SRGWorldModel* wm);
     Path(const Path& path);
     ~Path();
-    srgsim::Direction getDirection();
+    srg::world::Direction getDirection();
 
     bool isGoalPath();
     int getTotalCosts();
     int getHeuristicCosts();
-    std::vector<Path*> expand(std::vector<const srgsim::Cell*>& visited);
-    const srgsim::Cell* getCell();
+    std::vector<Path*> expand(std::vector<const srg::world::Cell*>& visited);
+    const srg::world::Cell* getCell();
     friend std::ostream& operator<<(std::ostream& os, const srg::robot::Path& path)
     {
         os << "Path: ";
@@ -34,13 +34,13 @@ public:
     }
 
 private:
-    Path* addStep(const srgsim::Cell* cell);
-    bool checkValidity(std::vector<const srgsim::Cell*>& visited, srgsim::Cell* cell);
+    Path* addStep(const srg::world::Cell* cell);
+    bool checkValidity(std::vector<const srg::world::Cell*>& visited, srg::world::Cell* cell);
 
     int costs;
-    const srgsim::Cell* cell;
-    srgsim::Coordinate start;
-    srgsim::Coordinate goal;
+    const srg::world::Cell* cell;
+    srg::world::Coordinate start;
+    srg::world::Coordinate goal;
     Path* lastStep;
 };
 } // namespace robot
