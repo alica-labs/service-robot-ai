@@ -27,29 +27,26 @@ include_directories(include
 add_library(srg_worldmodel
   src/SRGWorldModel.cpp
   src/wm/SRGSimData.cpp
+  src/wm/RawSensorData.cpp
+  src/wm/Communication.cpp
+  src/asp/ASPTranslator.cpp
   src/conceptnet/ConceptNet.cpp
   src/conceptnet/Edge.cpp
   src/conceptnet/Concept.cpp
   src/conceptnet/EdgeTranslator.cpp
   src/conceptnet/ConceptPath.cpp
   src/dialogue/AnswerGraph.cpp
-  src/wm/RawSensorData.cpp
-  src/wm/Communication.cpp
   src/dialogue/BasicHumanNeeds.cpp
   src/dialogue/DialogueManager.cpp
   src/dialogue/InformHandler.cpp
   src/tasks/TaskHandler.cpp
   src/tasks/Task.cpp
-  src/tasks/MoveTask.cpp
-  src/tasks/TransportTask.cpp
-  src/tasks/ManipulationTask.cpp
   src/tasks/TaskType.cpp
-  src/asp/ASPTranslator.cpp
-)
+        src/tasks/TaskFactory.cpp include/srg/tasks/TaskFactory.h)
 
 target_link_libraries(srg_worldmodel
   ${catkin_LIBRARIES}
   ${YAML_CPP_LIBRARIES}
-  curl
   ${gvc_LIBRARIES}
+  curl
 )

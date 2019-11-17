@@ -14,13 +14,12 @@ namespace srg
 {
 namespace tasks
 {
-class ManipulationTask;
-class MoveTask;
+class TaskFactory;
 class TaskHandler
 {
 public:
     TaskHandler(SRGWorldModel* wm);
-
+    virtual ~TaskHandler();
     void tick();
     void processTaskAct(std::shared_ptr<supplementary::InformationElement<control::SpeechAct>> commandAct);
 
@@ -28,12 +27,8 @@ public:
     std::shared_ptr<const supplementary::InformationElement<Task*>> getActiveTask() const;
 
 private:
-    Task* createTask(std::shared_ptr<supplementary::InformationElement<control::SpeechAct>> taskAct);
-    MoveTask* createMoveTask(std::string taskText);
-    ManipulationTask* createManipulationTask(std::string taskText);
-    bool isValid(srg::world::Coordinate coord, TaskType type);
-
     srg::SRGWorldModel* wm;
+    TaskFactory* taskFactory;
     essentials::SystemConfig* sc;
     alica::AlicaTime taskValidityDuration;
     supplementary::InfoBuffer<Task*>* taskActBuffer;
