@@ -34,7 +34,7 @@ void Search::run(void* msg)
         return;
     }
 
-    if (!this->activeTask || this->activeTask->type != srg::tasks::TaskType::Search){// || this->activeTask->foundObject(this->wm)) {
+    if (this->activeTask && this->activeTask->checkSuccess(this->wm)) {
         this->setSuccess();
         return;
     }
@@ -53,23 +53,22 @@ void Search::initialiseParameters()
     /*PROTECTED REGION ID(initialiseParameters1573419059418) ENABLED START*/
     // clean up
     delete search;
-    delete activeTask;
+    activeTask = nullptr;
+    task = nullptr;
 
     // init
-    std::shared_ptr<const supplementary::InformationElement<srg::tasks::Task*>> task = this->wm->dialogueManager.taskHandler->getActiveTask();
-    if (task && task->getInformation()->type == srg::tasks::TaskType::Search) {
-        this->activeTask = new srg::tasks::Task(task->getInformation()->type);
-        this->activeTask->coordinate = task->getInformation()->coordinate;
-        this->activeTask->actID = task->getInformation()->actID;
-        this->activeTask->previousActID = task->getInformation()->previousActID;
-        this->activeTask->senderID = task->getInformation()->senderID;
-        this->activeTask->receiverID = task->getInformation()->receiverID;
-        this->activeTask->objectID = task->getInformation()->objectID;
-        this->activeTask->objectType = task->getInformation()->objectType;
-        this->search = new srg::robot::ObjectSearch(this->activeTask->objectType, this->wm);
+    task = this->wm->dialogueManager.taskHandler->getActiveTask();
+    int32_t progress = task->getInformation()->getProgress(this->wm);
+    while (progress > 0) {
+        activeTask = task->getInformation()->nextTask;
+        progress--;
+    }
+
+    if (activeTask && activeTask->type == srg::tasks::TaskType::Search) {
+        search = new srg::robot::ObjectSearch(activeTask->objectType, this->wm);
     } else {
         this->activeTask = nullptr;
-        this->search = nullptr;
+        this->task = nullptr;
     }
     /*PROTECTED REGION END*/
 }

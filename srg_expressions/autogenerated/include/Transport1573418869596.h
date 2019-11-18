@@ -18,10 +18,6 @@ class UtilityFunction1573418869596 : public BasicUtilityFunction
 {
     shared_ptr<UtilityFunction> getUtilityFunction(Plan* plan);
 };
-class PreCondition1573419746851 : public DomainCondition
-{
-    bool evaluate(std::shared_ptr<RunningPlan> rp);
-};
 class PreCondition1573419765536 : public DomainCondition
 {
     bool evaluate(std::shared_ptr<RunningPlan> rp);

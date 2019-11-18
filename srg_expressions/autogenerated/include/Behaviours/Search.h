@@ -33,6 +33,7 @@ protected:
     /*PROTECTED REGION END*/
 private:
     /*PROTECTED REGION ID(prv1573419059418) ENABLED START*/
+    std::shared_ptr<const supplementary::InformationElement<srg::tasks::Task*>> task;
     srg::tasks::Task* activeTask;
     srg::robot::ObjectSearch* search;
     /*PROTECTED REGION END*/

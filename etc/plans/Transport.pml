@@ -28,7 +28,7 @@
     "parentPlan" : 1573418869596,
     "abstractPlans" : [ "Behaviours/Search.beh#1573419059418" ],
     "variableBindings" : [ ],
-    "outTransitions" : [ 1573418996008, 1573419007368 ],
+    "outTransitions" : [ 1573419007368 ],
     "inTransitions" : [ ]
   }, {
     "type" : "State",
@@ -40,7 +40,7 @@
     "abstractPlans" : [ "Behaviours/Manipulate.beh#1571687572903" ],
     "variableBindings" : [ ],
     "outTransitions" : [ 1573418998111 ],
-    "inTransitions" : [ 1573418996008, 1573419009128 ]
+    "inTransitions" : [ 1573419009128 ]
   }, {
     "type" : "State",
     "id" : 1573418938883,
@@ -89,23 +89,6 @@
     "postCondition" : null
   } ],
   "transitions" : [ {
-    "id" : 1573418996008,
-    "name" : "FromSearchToPickUp",
-    "comment" : "MISSING_COMMENT",
-    "inState" : 1573418936395,
-    "outState" : 1573418937725,
-    "preCondition" : {
-      "id" : 1573419746851,
-      "name" : "1573419746851",
-      "comment" : "",
-      "enabled" : true,
-      "conditionString" : "Found & Close By",
-      "pluginName" : "DefaultPlugin",
-      "variables" : [ ],
-      "quantifiers" : [ ]
-    },
-    "synchronisation" : null
-  }, {
     "id" : 1573418998111,
     "name" : "FromPickUpToMove",
     "comment" : "MISSING_COMMENT",

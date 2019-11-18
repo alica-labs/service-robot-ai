@@ -4,8 +4,8 @@
 
 #include <srg/world/Cell.h>
 #include <srg/world/Object.h>
-#include <srg/world/ServiceRobot.h>
 #include <srg/world/RoomType.h>
+#include <srg/world/ServiceRobot.h>
 
 namespace srg
 {
@@ -21,18 +21,53 @@ Task::Task(srg::tasks::TaskType type)
         , previousActID(nullptr)
         , objectID(nullptr)
         , objectType(world::ObjectType::Unknown)
-        , specifiedCompletely(false)
+        , successful(false)
 {
+}
+
+Task::~Task()
+{
+    delete this->nextTask;
 }
 
 bool Task::checkSuccess(SRGWorldModel* wm) const
 {
-    switch (type) {
-    case TaskType::Move:
-        return this->checkMoveSuccess(wm);
-    default:
-        return false;
+    if (!this->isSuccessful() && isCompletelySpecified()) {
+        switch (type) {
+        case TaskType::Move:
+            this->successful = this->checkMoveSuccess(wm);
+        case TaskType::Search:
+            this->successful = this->checkSearchSuccess(wm);
+        case TaskType::Close:
+            this->successful = this->checkManipulationSuccess(wm);
+        case TaskType::Open:
+            this->successful = this->checkManipulationSuccess(wm);
+        case TaskType::PickUp:
+            this->successful = this->checkManipulationSuccess(wm);
+        case TaskType::PutDown:
+            this->successful = this->checkManipulationSuccess(wm);
+        default:
+            this->successful = false;
+        }
     }
+    return isSuccessful();
+}
+
+bool Task::isSuccessful() const
+{
+    return this->successful;
+}
+
+int32_t Task::getProgress(SRGWorldModel* wm) const
+{
+    int32_t progress = 0;
+    if (checkSuccess(wm)) {
+        progress++;
+        if (this->nextTask) {
+            progress += this->nextTask->getProgress(wm);
+        }
+    }
+    return progress;
 }
 
 bool Task::checkMoveSuccess(SRGWorldModel* wm) const
@@ -41,25 +76,10 @@ bool Task::checkMoveSuccess(SRGWorldModel* wm) const
     if (!ownCoord.has_value()) {
         return false;
     }
-
-    bool goalIsBlocked = false;
+    srg::world::Coordinate diff = (this->coordinate - ownCoord.value()).abs();
     const srg::world::Cell* goalCell = wm->sRGSimData.getWorld()->getCell(this->coordinate);
-    if (goalCell->getType() == srg::world::RoomType::Wall) {
-        goalIsBlocked = true;
-    }
-
-    if (!goalIsBlocked) {
-        for (auto object : goalCell->getObjects()) {
-            if (object->getType() == srg::world::ObjectType::Door) {
-                goalIsBlocked = true;
-                break;
-            }
-        }
-    }
-
-    srg::world::Coordinate diff = this->coordinate - ownCoord.value();
-    if ((goalIsBlocked && abs(diff.x) < 2 && abs(diff.y) < 2) || (diff.x == 0 && diff.y == 0)) {
-        std::cout << "MoveTask::checkSuccess(): SUCCESS! Goal " << this->coordinate << " OwnPos " << ownCoord.value() << std::endl;
+    if ((goalCell->isBlocked() && diff.x < 2 && diff.y < 2) || (diff.x == 0 && diff.y == 0)) {
+        std::cout << "[Task] Move-Task to goal " << this->coordinate << " successful!" << std::endl;
         return true;
     }
     return false;
@@ -79,20 +99,12 @@ bool Task::checkManipulationSuccess(SRGWorldModel* wm) const
         return object && object->getState() == srg::world::ObjectState::Closed;
     case TaskType::PickUp:
         robot = wm->sRGSimData.getWorld()->getRobot(this->receiverID);
-        if (robot) {
-            std::cout << "ManipulationTask::checkSuccess(): " << *robot << std::endl;
-        }
         return robot->isCarrying(this->objectID);
     case TaskType::PutDown:
         cell = wm->sRGSimData.getWorld()->getCell(this->coordinate);
-        for (const srg::world::Object* object : cell->getObjects()) {
-            if (object->getID() == this->objectID) {
-                return true;
-            }
-        }
-        return false;
+        return cell->contains(this->objectID);
     default:
-        std::cerr << "ManipulationTask::checkSuccess(): Unknown manipulation task encountered: " << this->type << std::endl;
+        std::cerr << "[Task] Unknown manipulation task encountered: " << this->type << std::endl;
         return false;
     }
 }
@@ -102,9 +114,29 @@ bool Task::checkSearchSuccess(srg::SRGWorldModel* wm) const
     return wm->sRGSimData.getWorld()->getObject(this->objectType);
 }
 
-std::ostream& operator<<(std::ostream& os, const srg::tasks::Task& obj)
+bool Task::isCompletelySpecified() const
 {
-    os << "[Task] " << obj.type;
+    switch (type) {
+    case TaskType::Move:
+        return this->coordinate.x >= 0;
+    case TaskType::PutDown:
+        return this->coordinate.x >= 0 && this->objectID.get();
+    case TaskType::Close:
+    case TaskType::Open:
+    case TaskType::PickUp:
+        return this->objectID.get();
+    case TaskType::Search:
+        return this->objectType != srg::world::ObjectType::Unknown;
+    default:
+        return false;
+    }
+}
+
+std::ostream& operator<<(std::ostream& os, const srg::tasks::Task& task)
+{
+    os << "[Task] " << task.type;
+    os << " Object: " << task.objectType << "(" << task.objectID << ")";
+    os << " Coordinate: " << task.coordinate;
     return os;
 }
 } // namespace tasks

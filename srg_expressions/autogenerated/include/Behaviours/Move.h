@@ -26,6 +26,7 @@ protected:
     /*PROTECTED REGION END*/
 private:
     /*PROTECTED REGION ID(prv1568825137528) ENABLED START*/
+    std::shared_ptr<const supplementary::InformationElement<srg::tasks::Task*>> task;
     srg::tasks::Task* activeTask;
     /*PROTECTED REGION END*/
 };

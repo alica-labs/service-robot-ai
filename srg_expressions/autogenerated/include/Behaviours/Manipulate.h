@@ -6,6 +6,7 @@
 #include <nonstd/optional.hpp>
 #include <srg/tasks/Task.h>
 #include <srg/world/Coordinate.h>
+#include <supplementary/InformationElement.h>
 /*PROTECTED REGION END*/
 
 namespace alica
@@ -26,6 +27,7 @@ protected:
     /*PROTECTED REGION END*/
 private:
     /*PROTECTED REGION ID(prv1571687572903) ENABLED START*/
+    std::shared_ptr<const supplementary::InformationElement<srg::tasks::Task*>> task;
     srg::tasks::Task* activeTask;
     /*PROTECTED REGION END*/
 };

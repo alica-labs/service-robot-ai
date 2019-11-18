@@ -4,8 +4,8 @@
 /*PROTECTED REGION ID(inccpp1568825137528) ENABLED START*/
 #include <srg/Robot.h>
 #include <srg/SRGWorldModel.h>
-#include <srg/tasks/TaskHandler.h>
 #include <srg/robot/Movement.h>
+#include <srg/tasks/TaskHandler.h>
 /*PROTECTED REGION END*/
 
 namespace alica
@@ -34,7 +34,7 @@ void Move::run(void* msg)
         return;
     }
 
-    if (!this->activeTask || this->activeTask->type != srg::tasks::TaskType::Move || this->activeTask->checkSuccess(this->wm)) {
+    if (this->activeTask && this->activeTask->checkSuccess(this->wm)) {
         this->setSuccess();
         return;
     }
@@ -45,20 +45,17 @@ void Move::run(void* msg)
 void Move::initialiseParameters()
 {
     /*PROTECTED REGION ID(initialiseParameters1568825137528) ENABLED START*/
-    std::shared_ptr<const supplementary::InformationElement<srg::tasks::Task*>> task = this->wm->dialogueManager.taskHandler->getActiveTask();
-    if (task && task->getInformation()->type == srg::tasks::TaskType::Move) {
-        delete this->activeTask;
-
-        this->activeTask = new srg::tasks::Task(task->getInformation()->type);
-        this->activeTask->coordinate = task->getInformation()->coordinate;
-        this->activeTask->actID = task->getInformation()->actID;
-        this->activeTask->previousActID = task->getInformation()->previousActID;
-        this->activeTask->senderID = task->getInformation()->senderID;
-        this->activeTask->receiverID = task->getInformation()->receiverID;
-    } else {
-        this->activeTask = nullptr;
+    task = this->wm->dialogueManager.taskHandler->getActiveTask();
+    int32_t progress = task->getInformation()->getProgress(this->wm);
+    while (progress > 0) {
+        activeTask = task->getInformation()->nextTask;
+        progress--;
     }
 
+    if (activeTask && activeTask->type != srg::tasks::TaskType::Move){
+        this->activeTask = nullptr;
+        this->task = nullptr;
+    }
     /*PROTECTED REGION END*/
 }
 /*PROTECTED REGION ID(methods1568825137528) ENABLED START*/

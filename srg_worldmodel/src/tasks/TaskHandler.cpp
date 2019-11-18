@@ -46,12 +46,13 @@ void TaskHandler::tick()
         return;
     }
 
+    // TODO:::::
     auto newTask = this->taskActBuffer->popLast();
     if (!newTask || newTask->getInformation()->checkSuccess(wm)) {
         // no new task that is not successful already
         this->activeTask = nullptr;
     } else {
-        std::cout << "[TaskHandler::tick] New task set: " << *newTask->getInformation() << std::endl;
+        std::cout << "[TaskHandler] New task set: " << *newTask->getInformation() << std::endl;
         this->activeTask = newTask;
     }
 }

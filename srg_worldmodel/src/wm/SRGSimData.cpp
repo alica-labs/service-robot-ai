@@ -47,9 +47,9 @@ void SRGSimData::processPerception(srg::sim::containers::SimPerceptions simPerce
     if (!world)
         return;
     for (srg::sim::containers::CellPerceptions cellPerceptions : simPerceptions.cellPerceptions) {
-        //        if (cellPerceptions.perceptions.size() > 0) {
-        //            std::cout << "SRGSimData::processPerception(): " << std::endl << cellPerceptions << std::endl;
-        //        }
+//        if (cellPerceptions.perceptions.size() > 0) {
+//            std::cout << "[SRGSimData]" << std::endl << cellPerceptions << std::endl;
+//        }
 
         const srg::world::Cell* cell = this->world->getCell(srg::world::Coordinate(cellPerceptions.x, cellPerceptions.y));
         if (cell) {
@@ -86,8 +86,8 @@ void SRGSimData::processPerception(srg::sim::containers::SimPerceptions simPerce
 
 bool SRGSimData::isLocalised()
 {
-    const world::Object* robot = this->world->getObject(this->wm->getOwnId());
-    return (robot && ((world::ServiceRobot*) robot)->getCell());
+    nonstd::optional<srg::world::Coordinate> ownCoord = this->getOwnPositionBuffer().getLastValidContent();
+    return ownCoord.has_value();
 }
 
 const supplementary::InfoBuffer<srg::world::Coordinate>& SRGSimData::getOwnPositionBuffer() const

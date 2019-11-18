@@ -13,12 +13,15 @@ class Task
 {
 public:
     Task(srg::tasks::TaskType type);
-    virtual ~Task() = default;
+    virtual ~Task();
+    int32_t getProgress(SRGWorldModel* wm) const;
+    bool isSuccessful() const;
     bool checkSuccess(SRGWorldModel* wm) const;
     bool checkMoveSuccess(SRGWorldModel* wm) const;
     bool checkManipulationSuccess(SRGWorldModel* wm) const;
     bool checkSearchSuccess(srg::SRGWorldModel* wm) const;
-    friend std::ostream& operator<<(std::ostream& os, const srg::tasks::Task& obj);
+    bool isCompletelySpecified() const;
+    friend std::ostream& operator<<(std::ostream& os, const srg::tasks::Task& task);
 
     // Dialogue and Communication
     essentials::IdentifierConstPtr senderID;
@@ -28,10 +31,10 @@ public:
 
     // Description of the task
     srg::tasks::TaskType type;
-    bool specifiedCompletely; /**< Depending on the task type, it is true when all necessary information are set.*/
     world::Coordinate coordinate;
     essentials::IdentifierConstPtr objectID;
     world::ObjectType objectType;
+    mutable bool successful;
 
     // Pointer for task sequences
     Task* nextTask;
