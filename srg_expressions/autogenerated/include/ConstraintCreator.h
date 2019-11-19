@@ -6,12 +6,12 @@
 namespace alica
 {
 
-class ConstraintCreator : public IConstraintCreator
-{
-public:
-    ConstraintCreator();
-    virtual ~ConstraintCreator();
-    std::shared_ptr<BasicConstraint> createConstraint(long constraintConfId);
-};
+    class ConstraintCreator : public IConstraintCreator
+    {
+        public:
+        ConstraintCreator();
+        virtual ~ConstraintCreator();
+        std::shared_ptr<BasicConstraint> createConstraint(long constraintConfId);
+    };
 
 } /* namespace alica */

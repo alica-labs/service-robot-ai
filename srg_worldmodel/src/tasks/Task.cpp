@@ -24,9 +24,7 @@ Task::Task(srg::tasks::TaskType type)
 {
 }
 
-Task::~Task()
-{
-}
+Task::~Task() {}
 
 bool Task::checkSuccess(SRGWorldModel* wm) const
 {
@@ -34,16 +32,22 @@ bool Task::checkSuccess(SRGWorldModel* wm) const
         switch (type) {
         case TaskType::Move:
             this->successful = this->checkMoveSuccess(wm);
+            break;
         case TaskType::Search:
             this->successful = this->checkSearchSuccess(wm);
+            break;
         case TaskType::Close:
             this->successful = this->checkManipulationSuccess(wm);
+            break;
         case TaskType::Open:
             this->successful = this->checkManipulationSuccess(wm);
+            break;
         case TaskType::PickUp:
             this->successful = this->checkManipulationSuccess(wm);
+            break;
         case TaskType::PutDown:
             this->successful = this->checkManipulationSuccess(wm);
+            break;
         default:
             this->successful = false;
         }

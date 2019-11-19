@@ -10,8 +10,8 @@ namespace tasks
 {
 TaskSequence::TaskSequence()
         : activeTaskIdx(0)
-        , taskSequence(6) // make some space, by default
 {
+    taskSequence.reserve(6); /**< make some space, by default */
 }
 
 TaskSequence::~TaskSequence()
@@ -55,9 +55,9 @@ int32_t TaskSequence::size() const
 
 std::ostream& operator<<(std::ostream& os, const srg::tasks::TaskSequence& taskSequence)
 {
-    os << "[TaskSequence] Size: " << taskSequence.taskSequence.size();
+    os << "[TaskSequence] Size: " << taskSequence.taskSequence.size() << std::endl;
     for (Task* task : taskSequence.taskSequence) {
-        os << task;
+        os << *task << std::endl;
     }
     return os;
 }

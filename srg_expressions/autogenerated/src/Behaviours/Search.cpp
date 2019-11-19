@@ -1,4 +1,4 @@
-#include "Behaviours/Search.h"
+#include  "Behaviours/Search.h"
 #include <memory>
 
 /*PROTECTED REGION ID(inccpp1573419059418) ENABLED START*/
@@ -11,30 +11,31 @@
 
 namespace alica
 {
-/*PROTECTED REGION ID(staticVars1573419059418) ENABLED START*/
-/*PROTECTED REGION END*/
+    /*PROTECTED REGION ID(staticVars1573419059418) ENABLED START*/
+    /*PROTECTED REGION END*/
 
-Search::Search()
-        : DomainBehaviour("Search")
-{
-    /*PROTECTED REGION ID(con1573419059418) ENABLED START*/
+    Search::Search() : DomainBehaviour("Search")
+    {
+        /*PROTECTED REGION ID(con1573419059418) ENABLED START*/
     activeTask = nullptr;
     search = nullptr;
-    /*PROTECTED REGION END*/
-}
-Search::~Search()
-{
-    /*PROTECTED REGION ID(dcon1573419059418) ENABLED START*/
-    /*PROTECTED REGION END*/
-}
-void Search::run(void* msg)
-{
-    /*PROTECTED REGION ID(run1573419059418) ENABLED START*/
-    if (this->isSuccess()) {
+        /*PROTECTED REGION END*/
+
+    }
+    Search::~Search()
+    {
+        /*PROTECTED REGION ID(dcon1573419059418) ENABLED START*/
+        /*PROTECTED REGION END*/
+
+    }
+    void Search::run(void* msg)
+    {
+        /*PROTECTED REGION ID(run1573419059418) ENABLED START*/
+    if (this->isSuccess() || !this->activeTask) {
         return;
     }
 
-    if (this->activeTask && this->activeTask->checkSuccess(this->wm)) {
+    if (this->activeTask->checkSuccess(this->wm)) {
         this->setSuccess();
         return;
     }
@@ -46,11 +47,12 @@ void Search::run(void* msg)
     } else {
         std::cout << "[Search] No cell received!" << std::endl;
     }
-    /*PROTECTED REGION END*/
-}
-void Search::initialiseParameters()
-{
-    /*PROTECTED REGION ID(initialiseParameters1573419059418) ENABLED START*/
+        /*PROTECTED REGION END*/
+
+    }
+    void Search::initialiseParameters()
+    {
+        /*PROTECTED REGION ID(initialiseParameters1573419059418) ENABLED START*/
     // clean up
     delete search;
 
@@ -64,9 +66,12 @@ void Search::initialiseParameters()
         this->activeTask = nullptr;
         this->taskSequence = nullptr;
     }
+
+
+        /*PROTECTED REGION END*/
+
+    }
+    /*PROTECTED REGION ID(methods1573419059418) ENABLED START*/
     /*PROTECTED REGION END*/
-}
-/*PROTECTED REGION ID(methods1573419059418) ENABLED START*/
-/*PROTECTED REGION END*/
 
 } /* namespace alica */

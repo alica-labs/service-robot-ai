@@ -99,7 +99,7 @@
       "name" : "1573419810456",
       "comment" : "",
       "enabled" : true,
-      "conditionString" : "Picked up",
+      "conditionString" : "Object picked up, now bring it somewhere!",
       "pluginName" : "DefaultPlugin",
       "variables" : [ ],
       "quantifiers" : [ ]
@@ -116,7 +116,7 @@
       "name" : "1573419828606",
       "comment" : "",
       "enabled" : true,
-      "conditionString" : "Moved to destination",
+      "conditionString" : "Object carried to destination, now put it down.",
       "pluginName" : "DefaultPlugin",
       "variables" : [ ],
       "quantifiers" : [ ]
@@ -133,7 +133,7 @@
       "name" : "1573419841944",
       "comment" : "",
       "enabled" : true,
-      "conditionString" : "Object put down",
+      "conditionString" : "Object put down, transport task successful!",
       "pluginName" : "DefaultPlugin",
       "variables" : [ ],
       "quantifiers" : [ ]
@@ -150,7 +150,7 @@
       "name" : "1573419765536",
       "comment" : "",
       "enabled" : true,
-      "conditionString" : "Found & Too far away for grasping",
+      "conditionString" : "Object found, now move to it!",
       "pluginName" : "DefaultPlugin",
       "variables" : [ ],
       "quantifiers" : [ ]
@@ -167,7 +167,7 @@
       "name" : "1573419800282",
       "comment" : "",
       "enabled" : true,
-      "conditionString" : "Found & Close by",
+      "conditionString" : "At the object, now pick it up!",
       "pluginName" : "DefaultPlugin",
       "variables" : [ ],
       "quantifiers" : [ ]

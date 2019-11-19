@@ -5,22 +5,21 @@
 
 namespace alica
 {
-DomainCondition::DomainCondition()
-        : BasicCondition()
-{
-    /*PROTECTED REGION ID(domainSourceConstructor) ENABLED START*/
+    DomainCondition::DomainCondition() : BasicCondition()
+    {
+        /*PROTECTED REGION ID(domainSourceConstructor) ENABLED START*/
     // Add additional options here
-    /*PROTECTED REGION END*/
-}
+        /*PROTECTED REGION END*/
+    }
 
-DomainCondition::~DomainCondition()
-{
-    /*PROTECTED REGION ID(domainSourceDestructor) ENABLED START*/
+    DomainCondition::~DomainCondition()
+    {
+        /*PROTECTED REGION ID(domainSourceDestructor) ENABLED START*/
     // Add additional options here
-    /*PROTECTED REGION END*/
-}
+        /*PROTECTED REGION END*/
+    }
 
-/*PROTECTED REGION ID(additionalMethodsDomainCondition) ENABLED START*/
+    /*PROTECTED REGION ID(additionalMethodsDomainCondition) ENABLED START*/
 // Add additional methods here
-/*PROTECTED REGION END*/
+    /*PROTECTED REGION END*/
 } /* namespace alica */

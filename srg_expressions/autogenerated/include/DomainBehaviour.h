@@ -12,15 +12,15 @@ class SRGWorldModel;
 
 namespace alica
 {
-class DomainBehaviour : public BasicBehaviour
-{
-public:
-    DomainBehaviour(std::string name);
-    virtual ~DomainBehaviour();
+    class DomainBehaviour : public BasicBehaviour
+    {
+        public:
+        DomainBehaviour(std::string name);
+        virtual ~DomainBehaviour();
 
-    /*PROTECTED REGION ID(domainBehaviourClassDecl) ENABLED START*/
+        /*PROTECTED REGION ID(domainBehaviourClassDecl) ENABLED START*/
     srg::Robot* robot;
     srg::SRGWorldModel* wm;
-    /*PROTECTED REGION END*/
-};
+        /*PROTECTED REGION END*/
+    };
 } /* namespace alica */

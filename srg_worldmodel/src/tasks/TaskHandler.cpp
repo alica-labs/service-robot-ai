@@ -61,7 +61,7 @@ void TaskHandler::updateCurrentTaskSequence()
 
     // find last search task before active task
     int32_t taskIdx = this->currentTaskSequence->getActiveTaskIdx();
-    Task* searchTask;
+    Task* searchTask = nullptr;
     while (taskIdx >= 0) {
         searchTask = this->currentTaskSequence->getTask(taskIdx--);
         if (searchTask->type == TaskType::Search) {
@@ -89,8 +89,9 @@ void TaskHandler::updateCurrentTaskSequence()
         activeTask->coordinate = searchTask->coordinate;
         activeTask->objectID = searchTask->objectID;
         activeTask->objectType = searchTask->objectType;
+        break;
     default:
-        std::cout << "[TaskHandler] Incomplete specified task not handled: " << activeTask << std::endl;
+        std::cout << "[TaskHandler] Incompletely specified task not handled: " << *activeTask << std::endl;
         break;
     }
 }
@@ -106,7 +107,11 @@ void TaskHandler::setNextTaskSequence()
             // stop when no new task speech act is available
             break;
         }
-        this->currentTaskSequence = std::shared_ptr<TaskSequence>(this->taskFactory->createTaskSequence(taskSpeechAct->getInformation()));
+        TaskSequence* rawCurrentTaskSequence = this->taskFactory->createTaskSequence(taskSpeechAct->getInformation());
+        if (!rawCurrentTaskSequence) {
+            return;
+        }
+        this->currentTaskSequence = std::shared_ptr<TaskSequence>(rawCurrentTaskSequence);
 
         if (this->currentTaskSequence && !this->currentTaskSequence->isSuccessful()) {
             // new task sequence is not finished yet - that is fine

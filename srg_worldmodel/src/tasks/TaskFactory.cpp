@@ -19,7 +19,7 @@ TaskFactory::TaskFactory(srg::SRGWorldModel* wm)
 TaskSequence* TaskFactory::createTaskSequence(const control::SpeechAct& speechAct)
 {
     TaskSequence* taskSequence = new TaskSequence();
-    Task* curTask;
+    Task* curTask = nullptr;
     std::vector<std::string> tokens = split(speechAct.text);
     if (tokens[0].find("move") != std::string::npos) {
         curTask = new Task(TaskType::Move);
@@ -77,14 +77,16 @@ TaskSequence* TaskFactory::createTaskSequence(const control::SpeechAct& speechAc
     return taskSequence;
 }
 
-void TaskFactory::setObjectType(const std::string& objecTypeToken, Task* task)
+void TaskFactory::setObjectType(const std::string& objectTypeToken, Task* task)
 {
-    if (objecTypeToken == "CupBlue") {
+    if (objectTypeToken == "CupBlue") {
         task->objectType = srg::world::ObjectType::CupBlue;
-    } else if (objecTypeToken == "CupYellow") {
+    } else if (objectTypeToken == "CupYellow") {
         task->objectType = srg::world::ObjectType::CupYellow;
-    } else if (objecTypeToken == "CupRed") {
+    } else if (objectTypeToken == "CupRed") {
         task->objectType = srg::world::ObjectType::CupRed;
+    } else {
+        std::cerr << "[TaskFactory] Unhandled object type '" << objectTypeToken << "' encountered!" << std::endl;
     }
 }
 
