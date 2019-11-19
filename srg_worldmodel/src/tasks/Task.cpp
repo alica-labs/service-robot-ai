@@ -69,7 +69,7 @@ bool Task::checkMoveSuccess(SRGWorldModel* wm) const
     srg::world::Coordinate diff = (this->coordinate - ownCoord.value()).abs();
     const srg::world::Cell* goalCell = wm->sRGSimData.getWorld()->getCell(this->coordinate);
     if ((goalCell->isBlocked() && diff.x < 2 && diff.y < 2) || (diff.x == 0 && diff.y == 0)) {
-        std::cout << "[Task] Move-Task to goal " << this->coordinate << " successful!" << std::endl;
+        std::cout << "[Task] Move to " << this->coordinate << " successful!" << std::endl;
         return true;
     }
     return false;
@@ -80,28 +80,41 @@ bool Task::checkManipulationSuccess(SRGWorldModel* wm) const
     const srg::world::Object* object = nullptr;
     const srg::world::ServiceRobot* robot = nullptr;
     const srg::world::Cell* cell = nullptr;
+    bool success = false;
     switch (this->type) {
     case TaskType::Open:
         object = wm->sRGSimData.getWorld()->getObject(this->objectID);
-        return object && object->getState() == srg::world::ObjectState::Open;
+        success = object && object->getState() == srg::world::ObjectState::Open;
+        break;
     case TaskType::Close:
         object = wm->sRGSimData.getWorld()->getObject(this->objectID);
-        return object && object->getState() == srg::world::ObjectState::Closed;
+        success = object && object->getState() == srg::world::ObjectState::Closed;
+        break;
     case TaskType::PickUp:
         robot = wm->sRGSimData.getWorld()->getRobot(this->receiverID);
-        return robot->isCarrying(this->objectID);
+        success = robot->isCarrying(this->objectID);
+        break;
     case TaskType::PutDown:
         cell = wm->sRGSimData.getWorld()->getCell(this->coordinate);
-        return cell->contains(this->objectID);
+        success = cell->contains(this->objectID);
+        break;
     default:
         std::cerr << "[Task] Unknown manipulation task encountered: " << this->type << std::endl;
-        return false;
+        success = false;
     }
+    if (success) {
+        std::cout << "[Task] " << this->type << " of " << this->objectType << "(ID: "<< this->objectID << ") to  successful!" << std::endl;
+    }
+    return success;
 }
 
 bool Task::checkSearchSuccess(srg::SRGWorldModel* wm) const
 {
-    return wm->sRGSimData.getWorld()->getObject(this->objectType);
+    if (wm->sRGSimData.getWorld()->getObject(this->objectType)) {
+        std::cout << "[Task] Search for " << this->objectType << " successful!" << std::endl;
+        return true;
+    }
+    return false;
 }
 
 bool Task::isCompletelySpecified() const

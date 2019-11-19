@@ -51,6 +51,7 @@ void TaskHandler::updateCurrentTaskSequence()
         return;
     }
     if (this->currentTaskSequence->isSuccessful()) {
+        std::cout << "[TaskHandler] TaskSequence successful and therefore removed!" << std::endl;
         this->currentTaskSequence = nullptr;
         return;
     }
@@ -86,7 +87,10 @@ void TaskHandler::updateCurrentTaskSequence()
     switch (activeTask->type) {
     case TaskType::Move:
     case TaskType::PickUp:
-        activeTask->coordinate = searchTask->coordinate;
+    case TaskType::PutDown:
+        if (activeTask->coordinate.x < 0) {
+            activeTask->coordinate = searchTask->coordinate;
+        }
         activeTask->objectID = searchTask->objectID;
         activeTask->objectType = searchTask->objectType;
         break;

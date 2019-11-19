@@ -19,11 +19,21 @@ namespace alica
 
 
 
+
+
+
+
+
         /*PROTECTED REGION END*/
 
 protected:
                 /*PROTECTED REGION ID(protectedDomainHeader) ENABLED START*/
     // Add additional options here
+
+
+
+
+
 
 
 

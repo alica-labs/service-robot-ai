@@ -13,7 +13,7 @@
     "name" : "1573418933317",
     "comment" : "",
     "successRequired" : true,
-    "minCardinality" : 0,
+    "minCardinality" : 1,
     "maxCardinality" : 20,
     "task" : "ServiceRobotsTasks.tsk#1555601323994",
     "state" : 1573418936395,
@@ -44,7 +44,7 @@
   }, {
     "type" : "State",
     "id" : 1573418938883,
-    "name" : "Move",
+    "name" : "MoveDestination",
     "comment" : "",
     "entryPoint" : null,
     "parentPlan" : 1573418869596,

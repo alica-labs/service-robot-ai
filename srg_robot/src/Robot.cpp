@@ -104,7 +104,7 @@ bool Robot::move(srg::world::Coordinate goal) const
         delete path;
         return false;
     }
-    std::cout << "Robot::move(): OwnPos: " << ownCoordinate.value() << " Moving " << path->getDirection() << std::endl;
+//    std::cout << "Robot::move(): OwnPos: " << ownCoordinate.value() << " Moving " << path->getDirection() << std::endl;
     delete path;
     send(sc);
     return true;
