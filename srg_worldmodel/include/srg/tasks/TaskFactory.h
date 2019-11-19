@@ -11,12 +11,14 @@ class SRGWorldModel;
 namespace tasks
 {
 class Task;
+class TaskSequence;
 class TaskFactory
 {
 public:
     TaskFactory(srg::SRGWorldModel* wm);
 
-    Task* createTask(const control::SpeechAct& speechAct);
+    TaskSequence* createTaskSequence(const control::SpeechAct& speechAct);
+
 private:
     void setIDFields(const control::SpeechAct& speechAct, Task* task);
     void setCoordinate(const std::string& coordToken, Task* task);

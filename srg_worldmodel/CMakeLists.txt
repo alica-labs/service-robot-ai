@@ -42,7 +42,9 @@ add_library(srg_worldmodel
   src/tasks/TaskHandler.cpp
   src/tasks/Task.cpp
   src/tasks/TaskType.cpp
-        src/tasks/TaskFactory.cpp include/srg/tasks/TaskFactory.h)
+  src/tasks/TaskFactory.cpp
+  src/tasks/TaskSequence.cpp
+)
 
 target_link_libraries(srg_worldmodel
   ${catkin_LIBRARIES}

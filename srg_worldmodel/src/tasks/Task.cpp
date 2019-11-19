@@ -14,7 +14,6 @@ namespace tasks
 Task::Task(srg::tasks::TaskType type)
         : coordinate(-1, -1)
         , type(type)
-        , nextTask(nullptr)
         , senderID(nullptr)
         , receiverID(nullptr)
         , actID(nullptr)
@@ -27,7 +26,6 @@ Task::Task(srg::tasks::TaskType type)
 
 Task::~Task()
 {
-    delete this->nextTask;
 }
 
 bool Task::checkSuccess(SRGWorldModel* wm) const
@@ -56,18 +54,6 @@ bool Task::checkSuccess(SRGWorldModel* wm) const
 bool Task::isSuccessful() const
 {
     return this->successful;
-}
-
-int32_t Task::getProgress(SRGWorldModel* wm) const
-{
-    int32_t progress = 0;
-    if (checkSuccess(wm)) {
-        progress++;
-        if (this->nextTask) {
-            progress += this->nextTask->getProgress(wm);
-        }
-    }
-    return progress;
 }
 
 bool Task::checkMoveSuccess(SRGWorldModel* wm) const

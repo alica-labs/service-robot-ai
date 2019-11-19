@@ -14,7 +14,6 @@ class Task
 public:
     Task(srg::tasks::TaskType type);
     virtual ~Task();
-    int32_t getProgress(SRGWorldModel* wm) const;
     bool isSuccessful() const;
     bool checkSuccess(SRGWorldModel* wm) const;
     bool checkMoveSuccess(SRGWorldModel* wm) const;
@@ -35,9 +34,6 @@ public:
     essentials::IdentifierConstPtr objectID;
     world::ObjectType objectType;
     mutable bool successful;
-
-    // Pointer for task sequences
-    Task* nextTask;
 };
 } // namespace dialogue
 } // namespace srg

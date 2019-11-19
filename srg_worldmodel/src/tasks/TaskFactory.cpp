@@ -1,6 +1,7 @@
 #include "srg/tasks/TaskFactory.h"
 #include "srg/SRGWorldModel.h"
 #include "srg/tasks/Task.h"
+#include "srg/tasks/TaskSequence.h"
 
 #include <engine/AlicaEngine.h>
 
@@ -15,60 +16,65 @@ TaskFactory::TaskFactory(srg::SRGWorldModel* wm)
 {
 }
 
-Task* TaskFactory::createTask(const control::SpeechAct& speechAct)
+TaskSequence* TaskFactory::createTaskSequence(const control::SpeechAct& speechAct)
 {
+    TaskSequence* taskSequence = new TaskSequence();
     Task* curTask;
     std::vector<std::string> tokens = split(speechAct.text);
     if (tokens[0].find("move") != std::string::npos) {
         curTask = new Task(TaskType::Move);
         setCoordinate(tokens[1], curTask);
+        taskSequence->addTask(curTask);
     } else if (tokens[0].find("put") != std::string::npos){
         curTask = new Task(TaskType::PutDown);
         setCoordinate(tokens[1], curTask);
+        taskSequence->addTask(curTask);
     } else if (tokens[0].find("pick") != std::string::npos) {
         curTask = new Task(TaskType::PickUp);
         setObjectID(tokens[1], curTask);
+        taskSequence->addTask(curTask);
     } else if (tokens[0].find("close") != std::string::npos) {
         curTask = new Task(TaskType::Close);
         setObjectID(tokens[1], curTask);
+        taskSequence->addTask(curTask);
     } else if (tokens[0].find("open") != std::string::npos) {
         curTask = new Task(TaskType::Open);
         setObjectID(tokens[1], curTask);
+        taskSequence->addTask(curTask);
     } else if (tokens[0].find("search") != std::string::npos) {
         curTask = new Task(TaskType::Search);
         setObjectType(tokens[1], curTask);
+        taskSequence->addTask(curTask);
     } else if (tokens[0].find("transport") != std::string::npos) {
         curTask = new Task(TaskType::Search);
         setObjectType(tokens[1], curTask);
+        taskSequence->addTask(curTask);
 
         // The first move task depends on the location of the found object
         Task* nextTask = new Task(TaskType::Move);
         setIDFields(speechAct, nextTask);
-        curTask->nextTask = nextTask;
-        Task* tmpTask = nextTask;
+        taskSequence->addTask(nextTask);
 
         // The pick up task depends on the location of the found object
         nextTask = new Task(TaskType::PickUp);
         setIDFields(speechAct, nextTask);
-        tmpTask->nextTask = nextTask;
-        tmpTask = nextTask;
+        taskSequence->addTask(nextTask);
 
         nextTask = new Task(TaskType::Move);
         setIDFields(speechAct, nextTask);
         setCoordinate(tokens[2], nextTask);
-        tmpTask->nextTask = nextTask;
-        tmpTask = nextTask;
+        taskSequence->addTask(nextTask);
 
         nextTask = new Task(TaskType::PutDown);
         setIDFields(speechAct, nextTask);
         setCoordinate(tokens[2], nextTask);
-        tmpTask->nextTask = nextTask;
+        taskSequence->addTask(nextTask);
+    } else {
+        return nullptr;
     }
 
-    if (curTask) {
-        setIDFields(speechAct, curTask);
-    }
-    return curTask;
+    setIDFields(speechAct, curTask);
+    return taskSequence;
 }
 
 void TaskFactory::setObjectType(const std::string& objecTypeToken, Task* task)

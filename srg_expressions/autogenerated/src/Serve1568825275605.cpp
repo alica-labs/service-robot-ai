@@ -43,8 +43,12 @@ shared_ptr<UtilityFunction> UtilityFunction1568825275605::getUtilityFunction(Pla
 bool PreCondition1568825457853::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1568825336792) ENABLED START*/
-    auto activeCommand = this->wm->dialogueManager.taskHandler->getActiveTask();
-    return activeCommand && activeCommand->getInformation()->type == srg::tasks::TaskType::Move;
+    auto taskSequence = this->wm->dialogueManager.taskHandler->getActiveTaskSequence();
+    if (!taskSequence) {
+        return false;
+    }
+    auto activeTask = taskSequence->getActiveTask();
+    return activeTask && activeTask->type == srg::tasks::TaskType::Move;
     /*PROTECTED REGION END*/
 }
 /*
@@ -72,11 +76,13 @@ bool PreCondition1568825457853::evaluate(shared_ptr<RunningPlan> rp)
 bool PreCondition1571661980674::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1571661739802) ENABLED START*/
-    auto activeCommand = this->wm->dialogueManager.taskHandler->getActiveTask();
-    return activeCommand &&
-           (activeCommand->getInformation()->type == srg::tasks::TaskType::Open || activeCommand->getInformation()->type == srg::tasks::TaskType::Close ||
-                   activeCommand->getInformation()->type == srg::tasks::TaskType::PutDown ||
-                   activeCommand->getInformation()->type == srg::tasks::TaskType::PickUp);
+    auto taskSequence = this->wm->dialogueManager.taskHandler->getActiveTaskSequence();
+    if (!taskSequence) {
+        return false;
+    }
+    auto activeTask = taskSequence->getActiveTask();
+    return activeTask && (activeTask->type == srg::tasks::TaskType::Open || activeTask->type == srg::tasks::TaskType::Close ||
+                                 activeTask->type == srg::tasks::TaskType::PutDown || activeTask->type == srg::tasks::TaskType::PickUp);
     /*PROTECTED REGION END*/
 }
 /*
@@ -104,8 +110,12 @@ bool PreCondition1571661980674::evaluate(shared_ptr<RunningPlan> rp)
 bool PreCondition1573418732991::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1573418725423) ENABLED START*/
-    auto activeCommand = this->wm->dialogueManager.taskHandler->getActiveTask();
-    return activeCommand && (activeCommand->getInformation()->type == srg::tasks::TaskType::Search);
+    auto taskSequence = this->wm->dialogueManager.taskHandler->getActiveTaskSequence();
+    if (!taskSequence) {
+        return false;
+    }
+    auto activeTask = taskSequence->getActiveTask();
+    return activeTask && activeTask->type == srg::tasks::TaskType::Search;
     /*PROTECTED REGION END*/
 }
 /*

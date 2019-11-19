@@ -45,17 +45,13 @@ void Manipulate::run(void* msg)
 void Manipulate::initialiseParameters()
 {
     /*PROTECTED REGION ID(initialiseParameters1571687572903) ENABLED START*/
-    task = this->wm->dialogueManager.taskHandler->getActiveTask();
-    int32_t progress = task->getInformation()->getProgress(this->wm);
-    while (progress > 0) {
-        activeTask = task->getInformation()->nextTask;
-        progress--;
-    }
+    this->taskSequence = this->wm->dialogueManager.taskHandler->getActiveTaskSequence();
+    this->activeTask = this->taskSequence->getActiveTask();
 
     if (activeTask && activeTask->type != srg::tasks::TaskType::PickUp && activeTask->type != srg::tasks::TaskType::Close &&
             activeTask->type != srg::tasks::TaskType::Open && activeTask->type != srg::tasks::TaskType::PutDown) {
         this->activeTask = nullptr;
-        this->task = nullptr;
+        this->taskSequence = nullptr;
     }
     /*PROTECTED REGION END*/
 }

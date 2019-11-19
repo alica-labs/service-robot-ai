@@ -53,22 +53,16 @@ void Search::initialiseParameters()
     /*PROTECTED REGION ID(initialiseParameters1573419059418) ENABLED START*/
     // clean up
     delete search;
-    activeTask = nullptr;
-    task = nullptr;
 
     // init
-    task = this->wm->dialogueManager.taskHandler->getActiveTask();
-    int32_t progress = task->getInformation()->getProgress(this->wm);
-    while (progress > 0) {
-        activeTask = task->getInformation()->nextTask;
-        progress--;
-    }
+    this->taskSequence = this->wm->dialogueManager.taskHandler->getActiveTaskSequence();
+    this->activeTask = this->taskSequence->getActiveTask();
 
     if (activeTask && activeTask->type == srg::tasks::TaskType::Search) {
         search = new srg::robot::ObjectSearch(activeTask->objectType, this->wm);
     } else {
         this->activeTask = nullptr;
-        this->task = nullptr;
+        this->taskSequence = nullptr;
     }
     /*PROTECTED REGION END*/
 }

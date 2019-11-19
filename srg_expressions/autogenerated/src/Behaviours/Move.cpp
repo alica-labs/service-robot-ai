@@ -45,16 +45,12 @@ void Move::run(void* msg)
 void Move::initialiseParameters()
 {
     /*PROTECTED REGION ID(initialiseParameters1568825137528) ENABLED START*/
-    task = this->wm->dialogueManager.taskHandler->getActiveTask();
-    int32_t progress = task->getInformation()->getProgress(this->wm);
-    while (progress > 0) {
-        activeTask = task->getInformation()->nextTask;
-        progress--;
-    }
+    this->taskSequence = this->wm->dialogueManager.taskHandler->getActiveTaskSequence();
+    this->activeTask = this->taskSequence->getActiveTask();
 
-    if (activeTask && activeTask->type != srg::tasks::TaskType::Move){
+    if (activeTask && activeTask->type != srg::tasks::TaskType::Move) {
         this->activeTask = nullptr;
-        this->task = nullptr;
+        this->taskSequence = nullptr;
     }
     /*PROTECTED REGION END*/
 }

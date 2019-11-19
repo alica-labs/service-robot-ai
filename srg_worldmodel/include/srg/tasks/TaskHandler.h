@@ -1,7 +1,9 @@
 #pragma once
 
 #include "srg/SRGWorldModel.h"
-#include "Task.h"
+#include "srg/tasks/Task.h"
+#include "srg/tasks/TaskSequence.h"
+
 #include <control/containers/SpeechAct.h>
 #include <nonstd/optional.hpp>
 
@@ -23,16 +25,18 @@ public:
     void tick();
     void processTaskAct(std::shared_ptr<supplementary::InformationElement<control::SpeechAct>> commandAct);
 
-    const supplementary::InfoBuffer<Task*>& getTaskActBuffer();
-    std::shared_ptr<const supplementary::InformationElement<Task*>> getActiveTask() const;
+    const supplementary::InfoBuffer<control::SpeechAct>& getTaskActBuffer();
+    std::shared_ptr<TaskSequence> getActiveTaskSequence();
 
 private:
+    void updateCurrentTaskSequence();
+    void setNextTaskSequence();
     srg::SRGWorldModel* wm;
     TaskFactory* taskFactory;
     essentials::SystemConfig* sc;
     alica::AlicaTime taskValidityDuration;
-    supplementary::InfoBuffer<Task*>* taskActBuffer;
-    std::shared_ptr<const supplementary::InformationElement<Task*>> activeTask;
+    supplementary::InfoBuffer<control::SpeechAct>* taskActBuffer;
+    std::shared_ptr<TaskSequence> currentTaskSequence;
 };
-} // namespace dialogue
+} // namespace tasks
 } // namespace srg
