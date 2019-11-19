@@ -111,8 +111,8 @@ bool Path::checkValidity(std::vector<const srg::world::Cell*>& visited, srg::wor
         return false;
     }
 
-    for (srg::world::Object* object : cell->getObjects()) {
-        if(class srg::world::Door* door = dynamic_cast<class srg::world::Door*>(object)) {
+    for (auto& objectEntry : cell->getObjects()) {
+        if(class srg::world::Door* door = dynamic_cast<class srg::world::Door*>(objectEntry.second)) {
             return door->isOpen();
         }
     }

@@ -79,7 +79,7 @@ void TaskHandler::updateCurrentTaskSequence()
         std::cerr << "[TaskHandler] No object of type " << searchTask->objectType << ", although search task was successful!" << std::endl;
         return;
     }
-    searchTask->coordinate = foundObject->getCell()->coordinate;
+    searchTask->coordinate = dynamic_cast<const world::Cell*>(foundObject->getParentContainer())->coordinate;
     searchTask->objectID = foundObject->getID();
     searchTask->objectType = foundObject->getType();
 

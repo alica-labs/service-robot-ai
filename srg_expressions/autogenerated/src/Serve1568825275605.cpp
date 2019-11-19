@@ -178,11 +178,11 @@ bool PreCondition1573418838905::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1573418821209) ENABLED START*/
     for (auto entry : rp->getChildren()) {
-        if (getPlanStatusName(entry->getStatus()) == "Success") {
+        if (std::string("Success").compare(getPlanStatusName(entry->getStatus())) == 0) {
             std::cout << "Plan: " << entry->getActivePlan()->getName() << " is "
                       << getPlanStatusName(entry->getStatus()) << std::endl;
         } else {
-            std::cout << ".";
+//            std::cout << ".";
         }
     }
     return rp->isAnyChildStatus(PlanStatus::Success);

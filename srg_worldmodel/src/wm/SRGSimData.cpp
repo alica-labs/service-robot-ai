@@ -65,8 +65,9 @@ void SRGSimData::processPerception(srg::sim::containers::SimPerceptions simPerce
                 switch (object->getType()) {
                 case world::ObjectType::Robot: {
                     this->world->addRobot(static_cast<srg::world::ServiceRobot*>(object));
+                    const world::Cell* cell = dynamic_cast<const world::Cell*>(object->getParentContainer());
                     auto ownPositionInfo = std::make_shared<supplementary::InformationElement<srg::world::Coordinate>>(
-                            object->getCell()->coordinate, wm->getTime(), ownPositionValidityDuration, 1.0);
+                            cell->coordinate, wm->getTime(), ownPositionValidityDuration, 1.0);
                     this->ownPositionBuffer->add(ownPositionInfo);
                 } break;
                 default:

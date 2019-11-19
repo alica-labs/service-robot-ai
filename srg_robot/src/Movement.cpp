@@ -120,8 +120,8 @@ bool Movement::checkValidity(srg::world::Coordinate coord)
         return false;
     }
 
-    for (srg::world::Object* object : cell->getObjects()) {
-        if (class srg::world::Door* door = dynamic_cast<class srg::world::Door*>(object)) {
+    for (auto& objectEntry : cell->getObjects()) {
+        if (class srg::world::Door* door = dynamic_cast<class srg::world::Door*>(objectEntry.second)) {
             return door->isOpen();
         }
     }

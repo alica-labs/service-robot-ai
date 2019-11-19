@@ -2,6 +2,7 @@
 
 #include <srg/SRGWorldModel.h>
 #include <srg/world/Cell.h>
+#include <srg/world/Door.h>
 #include <srg/World.h>
 
 #include <cnc_geometry/Calculator.h>
@@ -115,9 +116,9 @@ void ObjectSearch::trace(const srg::World* world, srg::world::Coordinate& from, 
             break;
         }
         bool sightBlocked = false;
-        for (auto object : cell->getObjects()) {
-            if (object->getType() == srg::world::ObjectType::Door && object->getState() == srg::world::ObjectState::Closed) {
-                sightBlocked = true;
+        for (auto& objectEntry : cell->getObjects()) {
+            if(class srg::world::Door* door = dynamic_cast<class srg::world::Door*>(objectEntry.second)) {
+                sightBlocked = !door->isOpen();
                 break;
             }
         }
