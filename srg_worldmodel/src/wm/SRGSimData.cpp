@@ -46,21 +46,21 @@ void SRGSimData::processPerception(srg::sim::containers::SimPerceptions simPerce
 {
     if (!world)
         return;
-    for (srg::sim::containers::CellPerceptions cellPerceptions : simPerceptions.cellPerceptions) {
+    for (srg::sim::containers::CellPerception cellPerception : simPerceptions.cellPerceptions) {
 //        if (cellPerceptions.perceptions.size() > 0) {
 //            std::cout << "[SRGSimData]" << std::endl << cellPerceptions << std::endl;
 //        }
 
-        const srg::world::Cell* cell = this->world->getCell(srg::world::Coordinate(cellPerceptions.x, cellPerceptions.y));
+        const srg::world::Cell* cell = this->world->getCell(srg::world::Coordinate(cellPerception.x, cellPerception.y));
         if (cell) {
             // update objects itself
             std::vector<world::Object*> objects;
-            for (srg::sim::containers::Perception perception : cellPerceptions.perceptions) {
-                objects.push_back(this->world->createOrUpdateObject(perception.objectID, perception.type, perception.state, perception.robotID));
+            for (srg::world::Object* object : cellPerception.objects) {
+                objects.push_back(this->world->createOrUpdateObject(object));
             }
 
             // update association with cell
-            this->world->updateCell(srg::world::Coordinate(cellPerceptions.x, cellPerceptions.y), objects);
+            this->world->updateCell(srg::world::Coordinate(cellPerception.x, cellPerception.y), objects);
             for (world::Object* object : objects) {
                 switch (object->getType()) {
                 case world::ObjectType::Robot: {

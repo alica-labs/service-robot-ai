@@ -62,26 +62,31 @@ void TaskHandler::updateCurrentTaskSequence()
 
     // find last search task before active task
     int32_t taskIdx = this->currentTaskSequence->getActiveTaskIdx();
-    Task* searchTask = nullptr;
+    Task* completionHelperTask = nullptr;
     while (taskIdx >= 0) {
-        searchTask = this->currentTaskSequence->getTask(taskIdx--);
-        if (searchTask->type == TaskType::Search) {
+        completionHelperTask = this->currentTaskSequence->getTask(taskIdx--);
+        if (completionHelperTask->type == TaskType::Search || completionHelperTask->objectID) {
             break;
         }
     }
-    if (searchTask->type != TaskType::Search) {
-        std::cerr << "[TaskHandler] No search task found, to complete active task: " << activeTask << std::endl;
+    if (completionHelperTask->type != TaskType::Search && !completionHelperTask->objectID) {
+        std::cerr << "[TaskHandler] No task found, to complete active task: " << activeTask << std::endl;
         return;
     }
 
-    const srg::world::Object* foundObject = this->wm->sRGSimData.getWorld()->getObject(searchTask->objectType);
+    const srg::world::Object* foundObject = nullptr;
+    if (completionHelperTask->objectID) {
+        foundObject = this->wm->sRGSimData.getWorld()->getObject(completionHelperTask->objectID);
+    } else {
+        foundObject = this->wm->sRGSimData.getWorld()->getObject(completionHelperTask->objectType);
+    }
     if (!foundObject) {
-        std::cerr << "[TaskHandler] No object of type " << searchTask->objectType << ", although search task was successful!" << std::endl;
+        std::cerr << "[TaskHandler] No object of type " << completionHelperTask->objectType << ", although search task was successful!" << std::endl;
         return;
     }
-    searchTask->coordinate = dynamic_cast<const world::Cell*>(foundObject->getParentContainer())->coordinate;
-    searchTask->objectID = foundObject->getID();
-    searchTask->objectType = foundObject->getType();
+    completionHelperTask->coordinate = foundObject->getCoordinate();
+    completionHelperTask->objectID = foundObject->getID();
+    completionHelperTask->objectType = foundObject->getType();
 
     // completely specify tasks with found object
     switch (activeTask->type) {
@@ -89,10 +94,10 @@ void TaskHandler::updateCurrentTaskSequence()
     case TaskType::PickUp:
     case TaskType::PutDown:
         if (activeTask->coordinate.x < 0) {
-            activeTask->coordinate = searchTask->coordinate;
+            activeTask->coordinate = completionHelperTask->coordinate;
         }
-        activeTask->objectID = searchTask->objectID;
-        activeTask->objectType = searchTask->objectType;
+        activeTask->objectID = completionHelperTask->objectID;
+        activeTask->objectType = completionHelperTask->objectType;
         break;
     default:
         std::cout << "[TaskHandler] Incompletely specified task not handled: " << *activeTask << std::endl;

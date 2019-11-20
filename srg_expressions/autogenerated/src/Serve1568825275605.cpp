@@ -43,8 +43,8 @@ bool PreCondition1568825457853::evaluate(shared_ptr<RunningPlan> rp)
     if (!taskSequence) {
         return false;
     }
-    auto activeTask = taskSequence->getActiveTask();
-    return activeTask && activeTask->type == srg::tasks::TaskType::Move && !activeTask->checkSuccess(this->wm);
+    auto firstTask = taskSequence->getTask(0);
+    return firstTask && firstTask->type == srg::tasks::TaskType::Move && !firstTask->checkSuccess(this->wm);
     /*PROTECTED REGION END*/
 }
 /**
@@ -72,11 +72,11 @@ bool PreCondition1571661980674::evaluate(shared_ptr<RunningPlan> rp)
     if (!taskSequence) {
         return false;
     }
-    auto activeTask = taskSequence->getActiveTask();
-    return activeTask &&
-           (activeTask->type == srg::tasks::TaskType::Open || activeTask->type == srg::tasks::TaskType::Close ||
-                   activeTask->type == srg::tasks::TaskType::PutDown || activeTask->type == srg::tasks::TaskType::PickUp) &&
-           !activeTask->checkSuccess(this->wm);
+    auto firstTask = taskSequence->getTask(0);
+    return firstTask &&
+           (firstTask->type == srg::tasks::TaskType::Open || firstTask->type == srg::tasks::TaskType::Close ||
+            firstTask->type == srg::tasks::TaskType::PutDown || firstTask->type == srg::tasks::TaskType::PickUp) &&
+           !firstTask->checkSuccess(this->wm);
     /*PROTECTED REGION END*/
 }
 /**
@@ -104,8 +104,8 @@ bool PreCondition1573418732991::evaluate(shared_ptr<RunningPlan> rp)
     if (!taskSequence) {
         return false;
     }
-    auto activeTask = taskSequence->getActiveTask();
-    return activeTask && activeTask->type == srg::tasks::TaskType::Search && !activeTask->checkSuccess(this->wm);
+    auto firstTask = taskSequence->getTask(0);
+    return firstTask && firstTask->type == srg::tasks::TaskType::Search;
     /*PROTECTED REGION END*/
 }
 /**
@@ -178,12 +178,8 @@ bool PreCondition1573418838905::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1573418821209) ENABLED START*/
     for (auto entry : rp->getChildren()) {
-        if (std::string("Success").compare(getPlanStatusName(entry->getStatus())) == 0) {
             std::cout << "Plan: " << entry->getActivePlan()->getName() << " is "
                       << getPlanStatusName(entry->getStatus()) << std::endl;
-        } else {
-//            std::cout << ".";
-        }
     }
     return rp->isAnyChildStatus(PlanStatus::Success);
     /*PROTECTED REGION END*/

@@ -47,7 +47,7 @@ bool PreCondition1573419765536::evaluate(shared_ptr<RunningPlan> rp)
     /*PROTECTED REGION ID(1573419007368) ENABLED START*/
     auto taskSequence = this->wm->dialogueManager.taskHandler->getActiveTaskSequence();
     if (!taskSequence) {
-        return false;
+        return true;
     }
     auto activeTask = taskSequence->getActiveTask();
     return rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::Move;
@@ -78,7 +78,7 @@ bool PreCondition1573419810456::evaluate(shared_ptr<RunningPlan> rp)
     /*PROTECTED REGION ID(1573418998111) ENABLED START*/
     auto taskSequence = this->wm->dialogueManager.taskHandler->getActiveTaskSequence();
     if (!taskSequence) {
-        return false;
+        return true;
     }
     auto activeTask = taskSequence->getActiveTask();
     return rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::Move;
@@ -110,7 +110,7 @@ bool PreCondition1573419828606::evaluate(shared_ptr<RunningPlan> rp)
 
     auto taskSequence = this->wm->dialogueManager.taskHandler->getActiveTaskSequence();
     if (!taskSequence) {
-        return false;
+        return true;
     }
     auto activeTask = taskSequence->getActiveTask();
     return rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::PutDown;
@@ -167,7 +167,7 @@ bool PreCondition1573419800282::evaluate(shared_ptr<RunningPlan> rp)
     /*PROTECTED REGION ID(1573419009128) ENABLED START*/
     auto taskSequence = this->wm->dialogueManager.taskHandler->getActiveTaskSequence();
     if (!taskSequence) {
-        return false;
+        return true;
     }
     auto activeTask = taskSequence->getActiveTask();
     return rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::PickUp;
