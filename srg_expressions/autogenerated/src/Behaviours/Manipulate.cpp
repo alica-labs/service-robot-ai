@@ -51,7 +51,9 @@ namespace alica
     {
         /*PROTECTED REGION ID(initialiseParameters1571687572903) ENABLED START*/
     this->taskSequence = this->wm->dialogueManager.taskHandler->getActiveTaskSequence();
-    this->activeTask = this->taskSequence->getActiveTask();
+    if (this->taskSequence) {
+        this->activeTask = this->taskSequence->getActiveTask();
+    }
 
     if (activeTask && activeTask->type != srg::tasks::TaskType::PickUp && activeTask->type != srg::tasks::TaskType::Close &&
             activeTask->type != srg::tasks::TaskType::Open && activeTask->type != srg::tasks::TaskType::PutDown) {

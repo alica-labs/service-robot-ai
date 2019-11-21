@@ -1,4 +1,4 @@
-#include  "Behaviours/Search.h"
+#include "Behaviours/Search.h"
 #include <memory>
 
 /*PROTECTED REGION ID(inccpp1573419059418) ENABLED START*/
@@ -11,26 +11,25 @@
 
 namespace alica
 {
-    /*PROTECTED REGION ID(staticVars1573419059418) ENABLED START*/
-    /*PROTECTED REGION END*/
+/*PROTECTED REGION ID(staticVars1573419059418) ENABLED START*/
+/*PROTECTED REGION END*/
 
-    Search::Search() : DomainBehaviour("Search")
-    {
-        /*PROTECTED REGION ID(con1573419059418) ENABLED START*/
+Search::Search()
+        : DomainBehaviour("Search")
+{
+    /*PROTECTED REGION ID(con1573419059418) ENABLED START*/
     activeTask = nullptr;
     search = nullptr;
-        /*PROTECTED REGION END*/
-
-    }
-    Search::~Search()
-    {
-        /*PROTECTED REGION ID(dcon1573419059418) ENABLED START*/
-        /*PROTECTED REGION END*/
-
-    }
-    void Search::run(void* msg)
-    {
-        /*PROTECTED REGION ID(run1573419059418) ENABLED START*/
+    /*PROTECTED REGION END*/
+}
+Search::~Search()
+{
+    /*PROTECTED REGION ID(dcon1573419059418) ENABLED START*/
+    /*PROTECTED REGION END*/
+}
+void Search::run(void* msg)
+{
+    /*PROTECTED REGION ID(run1573419059418) ENABLED START*/
     if (this->isSuccess() || !this->activeTask) {
         return;
     }
@@ -47,18 +46,19 @@ namespace alica
     } else {
         std::cout << "[Search] No cell received!" << std::endl;
     }
-        /*PROTECTED REGION END*/
-
-    }
-    void Search::initialiseParameters()
-    {
-        /*PROTECTED REGION ID(initialiseParameters1573419059418) ENABLED START*/
+    /*PROTECTED REGION END*/
+}
+void Search::initialiseParameters()
+{
+    /*PROTECTED REGION ID(initialiseParameters1573419059418) ENABLED START*/
     // clean up
     delete search;
 
     // init
     this->taskSequence = this->wm->dialogueManager.taskHandler->getActiveTaskSequence();
-    this->activeTask = this->taskSequence->getActiveTask();
+    if (this->taskSequence) {
+        this->activeTask = this->taskSequence->getActiveTask();
+    }
 
     if (activeTask && activeTask->type == srg::tasks::TaskType::Search) {
         search = new srg::robot::ObjectSearch(activeTask->objectType, this->wm);
@@ -67,16 +67,9 @@ namespace alica
         this->taskSequence = nullptr;
     }
 
-
-
-
-
-
-
-        /*PROTECTED REGION END*/
-
-    }
-    /*PROTECTED REGION ID(methods1573419059418) ENABLED START*/
     /*PROTECTED REGION END*/
+}
+/*PROTECTED REGION ID(methods1573419059418) ENABLED START*/
+/*PROTECTED REGION END*/
 
 } /* namespace alica */
