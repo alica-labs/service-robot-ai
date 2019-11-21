@@ -75,7 +75,7 @@ bool PreCondition1571661980674::evaluate(shared_ptr<RunningPlan> rp)
     auto firstTask = taskSequence->getTask(0);
     return firstTask &&
            (firstTask->type == srg::tasks::TaskType::Open || firstTask->type == srg::tasks::TaskType::Close ||
-            firstTask->type == srg::tasks::TaskType::PutDown || firstTask->type == srg::tasks::TaskType::PickUp) &&
+                   firstTask->type == srg::tasks::TaskType::PutDown || firstTask->type == srg::tasks::TaskType::PickUp) &&
            !firstTask->checkSuccess(this->wm);
     /*PROTECTED REGION END*/
 }
@@ -177,10 +177,6 @@ bool PreCondition1571661864299::evaluate(shared_ptr<RunningPlan> rp)
 bool PreCondition1573418838905::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1573418821209) ENABLED START*/
-    for (auto entry : rp->getChildren()) {
-            std::cout << "Plan: " << entry->getActivePlan()->getName() << " is "
-                      << getPlanStatusName(entry->getStatus()) << std::endl;
-    }
     return rp->isAnyChildStatus(PlanStatus::Success);
     /*PROTECTED REGION END*/
 }
