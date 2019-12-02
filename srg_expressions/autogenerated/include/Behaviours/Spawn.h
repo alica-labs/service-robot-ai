@@ -7,23 +7,23 @@
 
 namespace alica
 {
-    class Spawn : public DomainBehaviour
-    {
-        public:
-            Spawn();
-            virtual ~Spawn();
-            virtual void run(void* msg);
-            /*PROTECTED REGION ID(pub1558533534825) ENABLED START*/
+class Spawn : public DomainBehaviour
+{
+public:
+    Spawn();
+    virtual ~Spawn();
+    virtual void run(void* msg);
+    /*PROTECTED REGION ID(pub1558533534825) ENABLED START*/
     // Add additional protected methods here
-            /*PROTECTED REGION END*/
-        protected:
-            virtual void initialiseParameters();
-            /*PROTECTED REGION ID(pro1558533534825) ENABLED START*/
+    /*PROTECTED REGION END*/
+protected:
+    virtual void initialiseParameters();
+    /*PROTECTED REGION ID(pro1558533534825) ENABLED START*/
     // Add additional protected methods here
-            /*PROTECTED REGION END*/
-        private:
-        /*PROTECTED REGION ID(prv1558533534825) ENABLED START*/
+    /*PROTECTED REGION END*/
+private:
+    /*PROTECTED REGION ID(prv1558533534825) ENABLED START*/
     // Add additional private methods here
-        /*PROTECTED REGION END*/
-    };
+    /*PROTECTED REGION END*/
+};
 } /* namespace alica */

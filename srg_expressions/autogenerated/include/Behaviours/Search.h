@@ -17,25 +17,25 @@ class ObjectSearch;
 
 namespace alica
 {
-    class Search : public DomainBehaviour
-    {
-        public:
-            Search();
-            virtual ~Search();
-            virtual void run(void* msg);
-            /*PROTECTED REGION ID(pub1573419059418) ENABLED START*/
+class Search : public DomainBehaviour
+{
+public:
+    Search();
+    virtual ~Search();
+    virtual void run(void* msg);
+    /*PROTECTED REGION ID(pub1573419059418) ENABLED START*/
     // Add additional protected methods here
-            /*PROTECTED REGION END*/
-        protected:
-            virtual void initialiseParameters();
-            /*PROTECTED REGION ID(pro1573419059418) ENABLED START*/
+    /*PROTECTED REGION END*/
+protected:
+    virtual void initialiseParameters();
+    /*PROTECTED REGION ID(pro1573419059418) ENABLED START*/
     // Add additional protected methods here
-            /*PROTECTED REGION END*/
-        private:
-        /*PROTECTED REGION ID(prv1573419059418) ENABLED START*/
+    /*PROTECTED REGION END*/
+private:
+    /*PROTECTED REGION ID(prv1573419059418) ENABLED START*/
     std::shared_ptr<srg::tasks::TaskSequence> taskSequence;
     srg::tasks::Task* activeTask;
     srg::robot::ObjectSearch* search;
-        /*PROTECTED REGION END*/
-    };
+    /*PROTECTED REGION END*/
+};
 } /* namespace alica */

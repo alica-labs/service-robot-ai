@@ -23,5 +23,10 @@
     "name" : "Search",
     "comment" : "",
     "taskRepository" : 1555601264276
+  }, {
+    "id" : 1575291322015,
+    "name" : "GenerateTasks",
+    "comment" : "",
+    "taskRepository" : 1555601264276
   } ]
 }
