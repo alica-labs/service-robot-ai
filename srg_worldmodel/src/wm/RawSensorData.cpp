@@ -70,6 +70,9 @@ void RawSensorData::processSpeechAct(control::SpeechAct act)
 
 void RawSensorData::processAgentCmd(control::AgentCommand agentCmd)
 {
+    if (agentCmd.receiverID != this->wm->getOwnId()) {
+        return;
+    }
     auto agentCmdInfo = std::make_shared<supplementary::InformationElement<control::AgentCommand>>(agentCmd, wm->getTime(), agentCmdValidityDuration, 1.0);
     agentCmdBuffer->add(agentCmdInfo);
 }
