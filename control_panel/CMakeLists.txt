@@ -52,6 +52,11 @@ QT5_WRAP_CPP(control_MOCS
         include/control/Agent.h
         include/control/Talker.h
 )
+
+QT5_ADD_RESOURCES(control_RESOURCES
+  resources/resources.qrc
+)
+
 # ensure generated header files are being created in the devel space
 set(_cmake_current_binary_dir "${CMAKE_CURRENT_BINARY_DIR}")
 set(CMAKE_CURRENT_BINARY_DIR "${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}")
@@ -66,6 +71,7 @@ add_executable(${PROJECT_NAME}
   src/ExecutableRegistry.cpp
   ${control_MOCS}
   ${control_UIS}
+  ${control_RESOURCES}
 )
 
 target_link_libraries(${PROJECT_NAME}
