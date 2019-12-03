@@ -1,7 +1,7 @@
 #include "control/Communication.h"
 
 #include "control/ControlPanel.h"
-#include "control/containers/ContainerUtils.h"
+#include "srg/agent/containers/ContainerUtils.h"
 
 #include <process_manager/containers/ContainerUtils.h>
 #include <process_manager/ProcessStatsMsg.capnp.h>
@@ -34,10 +34,10 @@ namespace control {
         this->processCommandPub->setDefaultTopic(this->processCommandTopic);
         this->processCommandPub->addAddress("224.0.0.2:5555");
 
-        this->agentCommandTopic = (*sc)["ControlPanel"]->get<std::string>("AgentCmd.topic", NULL);
+        this->agentCommandTopic = (*sc)["Voice"]->get<std::string>("AgentCmd.topic", NULL);
         this->agentCommandPub = new capnzero::Publisher(this->ctx, capnzero::Protocol::UDP);
         this->agentCommandPub->setDefaultTopic(this->agentCommandTopic);
-        this->agentCommandPub->addAddress((*sc)["ControlPanel"]->get<std::string>("AgentCmd.address", NULL));
+        this->agentCommandPub->addAddress((*sc)["Voice"]->get<std::string>("AgentCmd.address", NULL));
     }
 
     void Communication::handleAlicaInfo(capnp::FlatArrayMessageReader& msg)
@@ -56,9 +56,9 @@ namespace control {
         this->processCommandPub->send(builder);
     }
 
-    void Communication::send(AgentCommand agentCommand) {
+    void Communication::send(srg::agent::AgentCommand agentCommand) {
         capnp::MallocMessageBuilder builder;
-        control::ContainerUtils::toMsg(agentCommand,builder);
+        srg::agent::ContainerUtils::toMsg(agentCommand,builder);
         this->agentCommandPub->send(builder);
     }
 }

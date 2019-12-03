@@ -1,5 +1,6 @@
 #pragma once
 
+#include <srg/agent/containers/SpeechAct.h>
 #include "DomainBehaviour.h"
 /*PROTECTED REGION ID(inc1575291385685) ENABLED START*/
 // Add additional includes here
@@ -23,7 +24,7 @@ protected:
     /*PROTECTED REGION END*/
 private:
     /*PROTECTED REGION ID(prv1575291385685) ENABLED START*/
-    // Add additional private methods here
+    srg::agent::SpeechAct sa;
     /*PROTECTED REGION END*/
 };
 } /* namespace alica */

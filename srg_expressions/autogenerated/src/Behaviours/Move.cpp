@@ -2,9 +2,9 @@
 #include <memory>
 
 /*PROTECTED REGION ID(inccpp1568825137528) ENABLED START*/
-#include <srg/Robot.h>
+#include <srg/Agent.h>
 #include <srg/SRGWorldModel.h>
-#include <srg/robot/Movement.h>
+#include <srg/agent/Movement.h>
 #include <srg/tasks/TaskHandler.h>
 /*PROTECTED REGION END*/
 
@@ -42,7 +42,7 @@ void Move::run(void* msg)
     if (!this->activeTask->isCompletelySpecified()) {
         return;
     }
-    this->robot->move(activeTask->coordinate);
+    this->agent->move(activeTask->coordinate);
     /*PROTECTED REGION END*/
 }
 void Move::initialiseParameters()

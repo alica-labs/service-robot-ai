@@ -1,11 +1,11 @@
 #pragma once
 
-#include <control/containers/SpeechAct.h>
+#include <srg/agent/containers/SpeechAct.h>
 
 #include <srg/sim/containers/SimPerceptions.h>
 
 #include <Message.h>
-#include <control/containers/AgentCommand.h>
+#include <srg/agent/containers/AgentCommand.h>
 #include <supplementary/InformationElement.h>
 
 namespace supplementary{
@@ -23,14 +23,14 @@ namespace srg {
 
             // Methods for accessing the buffers
             const supplementary::InfoBuffer<Message>& getTelegramMessageBuffer();
-            const supplementary::InfoBuffer<control::AgentCommand>& getAgentCmdBuffer();
-            const supplementary::InfoBuffer<control::SpeechAct>& getSpeechActBuffer();
+            const supplementary::InfoBuffer<agent::AgentCommand>& getAgentCmdBuffer();
+            const supplementary::InfoBuffer<agent::SpeechAct>& getSpeechActBuffer();
             const supplementary::InfoBuffer<srg::sim::containers::SimPerceptions>& getPerceptionsBuffer();
 
             // Methods for processing Messages
             void processTelegramMessage(Message message);
-            void processSpeechAct(control::SpeechAct act);
-            void processAgentCmd(control::AgentCommand agentCmd);
+            void processSpeechAct(agent::SpeechAct act);
+            void processAgentCmd(agent::AgentCommand agentCmd);
             void processSimPerceptions(srg::sim::containers::SimPerceptions perceptions);
 
         private:
@@ -40,10 +40,10 @@ namespace srg {
             supplementary::InfoBuffer<Message>* telegramMessageBuffer;
 
             alica::AlicaTime agentCmdValidityDuration;
-            supplementary::InfoBuffer<control::AgentCommand>* agentCmdBuffer;
+            supplementary::InfoBuffer<agent::AgentCommand>* agentCmdBuffer;
 
             alica::AlicaTime speechActValidityDuration;
-            supplementary::InfoBuffer<control::SpeechAct>* speechActBuffer;
+            supplementary::InfoBuffer<agent::SpeechAct>* speechActBuffer;
 
             alica::AlicaTime perceptionsValidityDuration;
             supplementary::InfoBuffer<srg::sim::containers::SimPerceptions>* perceptionsBuffer;

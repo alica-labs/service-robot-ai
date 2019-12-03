@@ -3,11 +3,9 @@
 #include <srg/SRGWorldModel.h>
 
 #include <Message.h>
-#include <control/containers/ContainerUtils.h>
+#include <srg/agent/SpeechActMsg.capnp.h>
+#include <srg/agent/containers/ContainerUtils.h>
 #include <srg/sim/ContainerUtils.h>
-
-#include <control/SpeechActMsg.capnp.h>
-#include <control/containers/ContainerUtils.h>
 
 #include <engine/AlicaEngine.h>
 
@@ -31,29 +29,31 @@ Communication::Communication(SRGWorldModel* wm)
     this->telegramMessageSub->addAddress((*sc)["SRGWorldModel"]->get<std::string>("Data.Telegram.Address", NULL));
     this->telegramMessageSub->subscribe(&Communication::onTelegramMessage, &(*this));
 
-    std::string speechActTopic = (*sc)["Talker"]->get<std::string>("topic", NULL);
+    std::string speechActTopic = (*sc)["Voice"]->get<std::string>("SpeechAct.topic", NULL);
     this->speechActSub = new capnzero::Subscriber(this->ctx, capnzero::Protocol::UDP);
     this->speechActSub->setTopic(speechActTopic);
-    this->speechActSub->addAddress((*sc)["Talker"]->get<std::string>("address", NULL));
+    this->speechActSub->addAddress((*sc)["Voice"]->get<std::string>("SpeechAct.address", NULL));
     this->speechActSub->subscribe(&Communication::onSpeechAct, &(*this));
 
-    std::string agendCmdTopic = (*sc)["ControlPanel"]->get<std::string>("AgentCmd.topic", NULL);
+    std::string agendCmdTopic = (*sc)["Voice"]->get<std::string>("AgentCmd.topic", NULL);
     this->agentCommandSub = new capnzero::Subscriber(this->ctx, capnzero::Protocol::UDP);
     this->agentCommandSub->setTopic(agendCmdTopic);
-    this->agentCommandSub->addAddress((*sc)["ControlPanel"]->get<std::string>("AgentCmd.address", NULL));
+    this->agentCommandSub->addAddress((*sc)["Voice"]->get<std::string>("AgentCmd.address", NULL));
     this->agentCommandSub->subscribe(&Communication::onAgentCmd, &(*this));
 
     std::string perceptionTopic = (*sc)["SRGSim"]->get<std::string>("SRGSim.Communication.perceptionsTopic", NULL);
-    this->agentCommandSub = new capnzero::Subscriber(this->ctx, capnzero::Protocol::UDP);
-    this->agentCommandSub->setTopic(perceptionTopic);
-    this->agentCommandSub->addAddress((*sc)["SRGSim"]->get<std::string>("SRGSim.Communication.address", NULL));
-    this->agentCommandSub->subscribe(&Communication::onSimPerceptions, &(*this));
+    this->perceptionSub = new capnzero::Subscriber(this->ctx, capnzero::Protocol::UDP);
+    this->perceptionSub->setTopic(perceptionTopic);
+    this->perceptionSub->addAddress((*sc)["SRGSim"]->get<std::string>("SRGSim.Communication.address", NULL));
+    this->perceptionSub->subscribe(&Communication::onSimPerceptions, &(*this));
 }
 
 Communication::~Communication()
 {
     delete this->telegramMessageSub;
     delete this->speechActSub;
+    delete this->perceptionSub;
+    delete this->agentCommandSub;
 }
 
 void Communication::onTelegramMessage(capnp::FlatArrayMessageReader& msg)
@@ -65,7 +65,7 @@ void Communication::onTelegramMessage(capnp::FlatArrayMessageReader& msg)
 
 void Communication::onSpeechAct(capnp::FlatArrayMessageReader& msg)
 {
-    control::SpeechAct speechAct = control::ContainerUtils::toSpeechAct(msg, this->wm->getEngine()->getIdManager());
+    agent::SpeechAct speechAct = agent::ContainerUtils::toSpeechAct(msg, this->wm->getEngine()->getIdManager());
     if (speechAct.receiverID == this->wm->getOwnId() || speechAct.receiverID.get()->getType() == essentials::Identifier::WILDCARD_TYPE) {
         this->wm->rawSensorData.processSpeechAct(speechAct);
     }
@@ -73,7 +73,7 @@ void Communication::onSpeechAct(capnp::FlatArrayMessageReader& msg)
 
 void Communication::onAgentCmd(capnp::FlatArrayMessageReader& msg)
 {
-    this->wm->rawSensorData.processAgentCmd(control::ContainerUtils::toAgentCommand(msg, this->wm->getEngine()->getIdManager()));
+    this->wm->rawSensorData.processAgentCmd(agent::ContainerUtils::toAgentCommand(msg, this->wm->getEngine()->getIdManager()));
 }
 
 void Communication::onSimPerceptions(capnp::FlatArrayMessageReader& msg)

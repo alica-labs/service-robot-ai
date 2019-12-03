@@ -2,7 +2,7 @@
 #include <memory>
 
 /*PROTECTED REGION ID(inccpp1575291385685) ENABLED START*/
-// Add additional includes here
+#include <srg/Agent.h>
 /*PROTECTED REGION END*/
 
 namespace alica
@@ -27,14 +27,17 @@ GenerateTasks::~GenerateTasks()
 void GenerateTasks::run(void* msg)
 {
     /*PROTECTED REGION ID(run1575291385685) ENABLED START*/
-    // Add additional options here
     /*PROTECTED REGION END*/
 }
 void GenerateTasks::initialiseParameters()
 {
     /*PROTECTED REGION ID(initialiseParameters1575291385685) ENABLED START*/
-    // Add additional options here
-
+    sa.senderID = this->wm->getOwnId();
+    sa.actID = this->wm->getEngine()->getIdManager()->generateID();
+    sa.previousActID = this->wm->getEngine()->getIdManager()->getWildcardID();
+    sa.type = srg::agent::SpeechType::command;
+    sa.text = "bring CupBlue 5,5";
+    this->agent->speak(sa);
     /*PROTECTED REGION END*/
 }
 /*PROTECTED REGION ID(methods1575291385685) ENABLED START*/

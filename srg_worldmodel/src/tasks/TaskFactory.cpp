@@ -16,7 +16,7 @@ TaskFactory::TaskFactory(srg::SRGWorldModel* wm)
 {
 }
 
-TaskSequence* TaskFactory::createTaskSequence(const control::SpeechAct& speechAct)
+TaskSequence* TaskFactory::createTaskSequence(const agent::SpeechAct& speechAct)
 {
     TaskSequence* taskSequence = new TaskSequence();
     Task* curTask = nullptr;
@@ -107,7 +107,7 @@ void TaskFactory::setCoordinate(const std::string& coordToken, Task* task)
     task->coordinate = coord;
 }
 
-void TaskFactory::setIDFields(const control::SpeechAct& speechAct, Task* task)
+void TaskFactory::setIDFields(const agent::SpeechAct& speechAct, Task* task)
 {
     task->senderID = speechAct.senderID;
     task->receiverID = speechAct.receiverID;

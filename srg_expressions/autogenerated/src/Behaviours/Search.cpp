@@ -2,9 +2,9 @@
 #include <memory>
 
 /*PROTECTED REGION ID(inccpp1573419059418) ENABLED START*/
-#include <srg/Robot.h>
+#include <srg/Agent.h>
 #include <srg/SRGWorldModel.h>
-#include <srg/robot/ObjectSearch.h>
+#include <srg/agent/ObjectSearch.h>
 #include <srg/tasks/TaskHandler.h>
 #include <srg/world/Cell.h>
 /*PROTECTED REGION END*/
@@ -42,7 +42,7 @@ void Search::run(void* msg)
     this->search->update();
     const srg::world::Cell* cell = this->search->getNextCell();
     if (cell) {
-        this->robot->move(cell->coordinate);
+        this->agent->move(cell->coordinate);
     } else {
         std::cout << "[Search] No cell received!" << std::endl;
     }
@@ -61,7 +61,7 @@ void Search::initialiseParameters()
     }
 
     if (activeTask && activeTask->type == srg::tasks::TaskType::Search) {
-        search = new srg::robot::ObjectSearch(activeTask->objectType, this->wm);
+        search = new srg::agent::ObjectSearch(activeTask->objectType, this->wm);
     } else {
         this->activeTask = nullptr;
         this->taskSequence = nullptr;

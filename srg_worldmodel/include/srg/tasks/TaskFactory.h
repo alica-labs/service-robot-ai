@@ -2,7 +2,7 @@
 
 #include "srg/tasks/TaskType.h"
 
-#include <control/containers/SpeechAct.h>
+#include <srg/agent/containers/SpeechAct.h>
 #include <srg/world/Coordinate.h>
 
 namespace srg
@@ -17,10 +17,10 @@ class TaskFactory
 public:
     TaskFactory(srg::SRGWorldModel* wm);
 
-    TaskSequence* createTaskSequence(const control::SpeechAct& speechAct);
+    TaskSequence* createTaskSequence(const agent::SpeechAct& speechAct);
 
 private:
-    void setIDFields(const control::SpeechAct& speechAct, Task* task);
+    void setIDFields(const agent::SpeechAct& speechAct, Task* task);
     void setCoordinate(const std::string& coordToken, Task* task);
     void setObjectType(const std::string& objectTypeToken, Task* task);
     void setObjectID(const std::string& objectIDToken, Task* task);

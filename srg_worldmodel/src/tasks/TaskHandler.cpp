@@ -20,7 +20,7 @@ TaskHandler::TaskHandler(SRGWorldModel* wm)
 {
     auto sc = essentials::SystemConfig::getInstance();
     this->taskValidityDuration = alica::AlicaTime::nanoseconds((*sc)["SRGWorldModel"]->get<int64_t>("Data.TaskAct.ValidityDuration", NULL));
-    this->taskActBuffer = new supplementary::InfoBuffer<control::SpeechAct>((*sc)["SRGWorldModel"]->get<int64_t>("Data.TaskAct.BufferLength", NULL));
+    this->taskActBuffer = new supplementary::InfoBuffer<agent::SpeechAct>((*sc)["SRGWorldModel"]->get<int64_t>("Data.TaskAct.BufferLength", NULL));
 }
 
 TaskHandler::~TaskHandler()
@@ -29,7 +29,7 @@ TaskHandler::~TaskHandler()
     delete taskActBuffer;
 }
 
-const supplementary::InfoBuffer<control::SpeechAct>& TaskHandler::getTaskActBuffer()
+const supplementary::InfoBuffer<agent::SpeechAct>& TaskHandler::getTaskActBuffer()
 {
     return *this->taskActBuffer;
 }
@@ -132,7 +132,7 @@ void TaskHandler::setNextTaskSequence()
     }
 }
 
-void TaskHandler::processTaskAct(std::shared_ptr<supplementary::InformationElement<control::SpeechAct>> taskAct)
+void TaskHandler::processTaskAct(std::shared_ptr<supplementary::InformationElement<agent::SpeechAct>> taskAct)
 {
     this->taskActBuffer->add(taskAct);
 }

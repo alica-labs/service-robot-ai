@@ -4,7 +4,7 @@
 #include "srg/tasks/Task.h"
 #include "srg/tasks/TaskSequence.h"
 
-#include <control/containers/SpeechAct.h>
+#include <srg/agent/containers/SpeechAct.h>
 #include <nonstd/optional.hpp>
 
 namespace essentials
@@ -23,9 +23,9 @@ public:
     TaskHandler(SRGWorldModel* wm);
     virtual ~TaskHandler();
     void tick();
-    void processTaskAct(std::shared_ptr<supplementary::InformationElement<control::SpeechAct>> commandAct);
+    void processTaskAct(std::shared_ptr<supplementary::InformationElement<agent::SpeechAct>> commandAct);
 
-    const supplementary::InfoBuffer<control::SpeechAct>& getTaskActBuffer();
+    const supplementary::InfoBuffer<agent::SpeechAct>& getTaskActBuffer();
     std::shared_ptr<TaskSequence> getActiveTaskSequence();
 
 private:
@@ -35,7 +35,7 @@ private:
     TaskFactory* taskFactory;
     essentials::SystemConfig* sc;
     alica::AlicaTime taskValidityDuration;
-    supplementary::InfoBuffer<control::SpeechAct>* taskActBuffer;
+    supplementary::InfoBuffer<agent::SpeechAct>* taskActBuffer;
     std::shared_ptr<TaskSequence> currentTaskSequence;
 };
 } // namespace tasks

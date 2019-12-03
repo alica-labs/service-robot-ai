@@ -20,7 +20,7 @@ InformHandler::InformHandler(SRGWorldModel* wm)
     this->cn = this->wm->conceptNet;
 }
 
-std::shared_ptr<control::SpeechAct> InformHandler::answerInform(const control::SpeechAct informAct)
+std::shared_ptr<agent::SpeechAct> InformHandler::answerInform(const agent::SpeechAct informAct)
 {
     srg::dialogue::AnswerGraph* answerGraph = new srg::dialogue::AnswerGraph();
     conceptnet::Concept* root = this->cn->getConcept(answerGraph, informAct.text);
@@ -36,10 +36,10 @@ std::shared_ptr<control::SpeechAct> InformHandler::answerInform(const control::S
     file.close();
     std::cout << answerGraph->toString() << std::endl;
 
-    std::shared_ptr<control::SpeechAct> answerSpeechAct = std::make_shared<control::SpeechAct>();
+    std::shared_ptr<agent::SpeechAct> answerSpeechAct = std::make_shared<agent::SpeechAct>();
     answerSpeechAct->text = "";
     answerSpeechAct->answerGraph = answerGraph;
-    answerSpeechAct->type = control::SpeechType::inform;
+    answerSpeechAct->type = agent::SpeechType::inform;
     answerSpeechAct->previousActID = informAct.actID;
     answerSpeechAct->actID = this->wm->getEngine()->getIdManager()->generateID();
     answerSpeechAct->senderID = this->wm->getOwnId();

@@ -2,7 +2,7 @@
 
 #include "srg/SRGWorldModel.h"
 
-#include <control/containers/SpeechAct.h>
+#include <srg/agent/containers/SpeechAct.h>
 
 #include <SystemConfig.h>
 #include <supplementary/InfoBuffer.h>
@@ -22,10 +22,10 @@ RawSensorData::RawSensorData(srg::SRGWorldModel* wm)
     this->telegramMessageBuffer = new supplementary::InfoBuffer<Message>((*sc)["SRGWorldModel"]->get<int>("Data.Telegram.BufferLength", NULL));
 
     this->speechActValidityDuration = alica::AlicaTime::nanoseconds((*sc)["SRGWorldModel"]->get<int>("Data.SpeechAct.ValidityDuration", NULL));
-    this->speechActBuffer = new supplementary::InfoBuffer<control::SpeechAct>((*sc)["SRGWorldModel"]->get<int>("Data.SpeechAct.BufferLength", NULL));
+    this->speechActBuffer = new supplementary::InfoBuffer<agent::SpeechAct>((*sc)["SRGWorldModel"]->get<int>("Data.SpeechAct.BufferLength", NULL));
 
     this->agentCmdValidityDuration = alica::AlicaTime::nanoseconds((*sc)["SRGWorldModel"]->get<int>("Data.AgentCmd.ValidityDuration", NULL));
-    this->agentCmdBuffer = new supplementary::InfoBuffer<control::AgentCommand>((*sc)["SRGWorldModel"]->get<int>("Data.AgentCmd.BufferLength", NULL));
+    this->agentCmdBuffer = new supplementary::InfoBuffer<agent::AgentCommand>((*sc)["SRGWorldModel"]->get<int>("Data.AgentCmd.BufferLength", NULL));
 
     this->perceptionsValidityDuration = alica::AlicaTime::nanoseconds((*sc)["SRGWorldModel"]->get<int>("Data.Perception.ValidityDuration", NULL));
     this->perceptionsBuffer = new supplementary::InfoBuffer<srg::sim::containers::SimPerceptions>((*sc)["SRGWorldModel"]->get<int>("Data.Perception.BufferLength", NULL));
@@ -38,12 +38,12 @@ const supplementary::InfoBuffer<Message>& RawSensorData::getTelegramMessageBuffe
     return *this->telegramMessageBuffer;
 }
 
-const supplementary::InfoBuffer<control::AgentCommand>& RawSensorData::getAgentCmdBuffer()
+const supplementary::InfoBuffer<agent::AgentCommand>& RawSensorData::getAgentCmdBuffer()
 {
     return *this->agentCmdBuffer;
 }
 
-const supplementary::InfoBuffer<control::SpeechAct>& RawSensorData::getSpeechActBuffer()
+const supplementary::InfoBuffer<agent::SpeechAct>& RawSensorData::getSpeechActBuffer()
 {
     return *this->speechActBuffer;
 }
@@ -59,21 +59,21 @@ void RawSensorData::processTelegramMessage(Message message)
     telegramMessageBuffer->add(messageInfo);
 }
 
-void RawSensorData::processSpeechAct(control::SpeechAct act)
+void RawSensorData::processSpeechAct(agent::SpeechAct act)
 {
-    auto speechActInfo = std::make_shared<supplementary::InformationElement<control::SpeechAct>>(act, wm->getTime(), speechActValidityDuration, 1.0);
+    auto speechActInfo = std::make_shared<supplementary::InformationElement<agent::SpeechAct>>(act, wm->getTime(), speechActValidityDuration, 1.0);
     speechActBuffer->add(speechActInfo);
 
     // further processing
     this->wm->dialogueManager.processSpeechAct(speechActInfo);
 }
 
-void RawSensorData::processAgentCmd(control::AgentCommand agentCmd)
+void RawSensorData::processAgentCmd(agent::AgentCommand agentCmd)
 {
     if (agentCmd.receiverID != this->wm->getOwnId()) {
         return;
     }
-    auto agentCmdInfo = std::make_shared<supplementary::InformationElement<control::AgentCommand>>(agentCmd, wm->getTime(), agentCmdValidityDuration, 1.0);
+    auto agentCmdInfo = std::make_shared<supplementary::InformationElement<agent::AgentCommand>>(agentCmd, wm->getTime(), agentCmdValidityDuration, 1.0);
     agentCmdBuffer->add(agentCmdInfo);
 }
 

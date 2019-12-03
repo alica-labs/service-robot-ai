@@ -8,7 +8,7 @@
 #include <supplementary/InformationElement.h>
 namespace srg
 {
-namespace robot
+namespace agent
 {
 class ObjectSearch;
 }
@@ -35,7 +35,7 @@ private:
     /*PROTECTED REGION ID(prv1573419059418) ENABLED START*/
     std::shared_ptr<srg::tasks::TaskSequence> taskSequence;
     srg::tasks::Task* activeTask;
-    srg::robot::ObjectSearch* search;
+    srg::agent::ObjectSearch* search;
     /*PROTECTED REGION END*/
 };
 } /* namespace alica */

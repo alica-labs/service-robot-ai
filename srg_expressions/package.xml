@@ -3,22 +3,13 @@
   <name>srg_expressions</name>
   <version>0.0.0</version>
   <description>The srg_expressions package</description>
-
   <maintainer email="opfer@vs.uni-kassel.de">Stephan Opfer</maintainer>
-  
   <depend>alica_engine</depend>
   <depend>capnzero</depend>
   <depend>system_config</depend>
   <depend>grid_sim</depend>
-  <depend>srg_robot</depend>
+  <depend>srg_agent</depend>
   <depend>srg_worldmodel</depend>
-
   <license>MIT</license>
-
-
   <buildtool_depend>catkin</buildtool_depend>
-
-
-  <export>
-  </export>
 </package>

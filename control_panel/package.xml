@@ -14,6 +14,8 @@
   <depend>id_manager</depend>
   <depend>id_capnzero</depend>
   <depend>alica_capnzero_proxy</depend>
+  <depend>srg_agent_msgs</depend>
+  <depend>srg_agent</depend>
   <buildtool_depend>catkin</buildtool_depend>
 
   <export>

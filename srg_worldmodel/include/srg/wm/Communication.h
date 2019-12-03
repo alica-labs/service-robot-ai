@@ -23,6 +23,7 @@ private:
     capnzero::Subscriber* telegramMessageSub;
     capnzero::Subscriber* speechActSub;
     capnzero::Subscriber* agentCommandSub;
+    capnzero::Subscriber* perceptionSub;
 
     void onTelegramMessage(capnp::FlatArrayMessageReader& msg);
     void onSpeechAct(capnp::FlatArrayMessageReader& msg);

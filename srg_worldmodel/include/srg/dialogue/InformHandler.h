@@ -2,16 +2,17 @@
 
 #include <string>
 #include <memory>
+#include <srg/agent/containers/SpeechAct.h>
 
-namespace control {
-    class SpeechAct;
-}
 namespace srg
 {
 class SRGWorldModel;
 namespace conceptnet
 {
 class ConceptNet;
+}
+namespace agent {
+    class SpeechAct;
 }
 namespace dialogue
 {
@@ -20,7 +21,7 @@ class InformHandler
 public:
     explicit InformHandler(SRGWorldModel* wm);
 
-    std::shared_ptr<control::SpeechAct> answerInform(const control::SpeechAct informAct);
+    std::shared_ptr<agent::SpeechAct> answerInform(const agent::SpeechAct informAct);
 
 private:
     srg::SRGWorldModel* wm;

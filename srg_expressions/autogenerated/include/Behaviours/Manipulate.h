@@ -2,7 +2,7 @@
 
 #include "DomainBehaviour.h"
 /*PROTECTED REGION ID(inc1571687572903) ENABLED START*/
-#include <control/containers/SpeechAct.h>
+#include <srg/agent/containers/SpeechAct.h>
 #include <nonstd/optional.hpp>
 #include <srg/tasks/TaskSequence.h>
 #include <srg/world/Coordinate.h>

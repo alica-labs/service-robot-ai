@@ -5,7 +5,7 @@
 /*PROTECTED REGION ID(domainBehaviourHeaderHead) ENABLED START*/
 namespace srg
 {
-class Robot;
+class Agent;
 class SRGWorldModel;
 } // namespace srg
 /*PROTECTED REGION END*/
@@ -19,7 +19,7 @@ public:
     virtual ~DomainBehaviour();
 
     /*PROTECTED REGION ID(domainBehaviourClassDecl) ENABLED START*/
-    srg::Robot* robot;
+    srg::Agent* agent;
     srg::SRGWorldModel* wm;
     /*PROTECTED REGION END*/
 };

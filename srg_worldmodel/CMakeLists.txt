@@ -7,7 +7,7 @@ set(CMAKE_BUILD_TYPE Debug)
 
 ##Yaml
 find_package(yaml-cpp REQUIRED)
-find_package(catkin REQUIRED COMPONENTS system_config event_handling alica_engine world_model asp_solver_wrapper asp_solver telegram-client id_manager knowledge_manager control_panel grid_sim)
+find_package(catkin REQUIRED COMPONENTS system_config event_handling alica_engine world_model asp_solver_wrapper asp_solver telegram-client id_manager knowledge_manager srg_agent_msgs grid_sim)
 
 INCLUDE(FindPkgConfig)
 PKG_SEARCH_MODULE(gvc REQUIRED libgvc libcgraph libcdt)
@@ -15,7 +15,7 @@ PKG_SEARCH_MODULE(gvc REQUIRED libgvc libcgraph libcdt)
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES srg_worldmodel
-  CATKIN_DEPENDS system_config event_handling world_model asp_solver_wrapper asp_solver telegram-client id_manager knowledge_manager control_panel grid_sim
+  CATKIN_DEPENDS system_config event_handling world_model asp_solver_wrapper asp_solver telegram-client id_manager knowledge_manager srg_agent_msgs grid_sim
 )
 
 include_directories(include

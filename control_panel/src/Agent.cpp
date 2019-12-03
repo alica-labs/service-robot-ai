@@ -122,13 +122,13 @@ void Agent::addExec(QWidget* exec)
 
 void Agent::handleAgentCommandBtnClicked(bool checked)
 {
-    AgentCommand ac;
+    srg::agent::AgentCommand ac;
     ac.receiverID = this->getAgentID();
     if (checked) {
-        ac.cmd = AgentCommand::START;
+        ac.cmd = srg::agent::AgentCommand::START;
         this->uiAgent->agentCommandBtn->setText(QString("Stop"));
     } else {
-        ac.cmd = AgentCommand::STOP;
+        ac.cmd = srg::agent::AgentCommand::STOP;
         this->uiAgent->agentCommandBtn->setText(QString("Start"));
     }
     this->controlPanel->getCommunication()->send(ac);

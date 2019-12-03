@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>srg_agent_msgs</name>
+  <version>0.0.0</version>
+  <description>The srg_agent_msgs package</description>
+  <maintainer email="opfer@vs.uni-kassel.de">Stephan Opfer</maintainer>
+  <license>MIT</license>
+  <depend>capnzero</depend>
+  <depend>id_capnzero</depend>
+  <depend>id_manager</depend>
+  <buildtool_depend>catkin</buildtool_depend>
+  <export>
+  </export>
+</package>
