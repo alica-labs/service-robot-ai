@@ -2,6 +2,7 @@
 
 #include <essentials/IdentifierConstPtr.h>
 
+#include <iosfwd>
 #include <string>
 
 namespace srg
@@ -22,6 +23,7 @@ enum SpeechType : uint16_t
     request,
     command
 };
+std::ostream& operator<<(std::ostream& os, const SpeechType& speechType);
 
 class SpeechAct
 {
@@ -34,6 +36,13 @@ public:
     SpeechType type;
     std::string text;
     srg::dialogue::AnswerGraph* answerGraph;
+
+    friend std::ostream& operator<<(std::ostream& os, const srg::agent::SpeechAct& act) {
+        os << "[SpeechAct] Type: " << act.type << " Text: " << act.text;
+        os <<  "Sender: " << act.senderID << " Receiver: " << act.receiverID;
+        os << " ActID: " << act.actID << " Previous ActID: " << act.previousActID;
+        return os;
+    }
 };
 } // namespace human
 } // namespace srg

@@ -61,6 +61,7 @@ void RawSensorData::processTelegramMessage(Message message)
 
 void RawSensorData::processSpeechAct(agent::SpeechAct act)
 {
+    std::cout << "[RawSensorData] " << act << std::endl;
     auto speechActInfo = std::make_shared<supplementary::InformationElement<agent::SpeechAct>>(act, wm->getTime(), speechActValidityDuration, 1.0);
     speechActBuffer->add(speechActInfo);
 

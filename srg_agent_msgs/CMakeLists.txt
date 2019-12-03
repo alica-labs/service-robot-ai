@@ -31,7 +31,7 @@ capnp_generate_cpp(CAPNP_SRCS CAPNP_HDRS ${capnp_messages})
 add_library(${PROJECT_NAME}
     src/ContainerUtils.cpp
     ${CAPNP_SRCS}
-)
+        src/SpeechAct.cpp)
 target_link_libraries(${PROJECT_NAME}
     ${catkin_LIBRARIES}
 )
