@@ -8,7 +8,7 @@
 #include <srg/world/Cell.h>
 #include <srg/world/Object.h>
 #include <srg/world/ObjectType.h>
-#include <srg/world/ServiceRobot.h>
+#include <srg/world/Agent.h>
 
 #include <engine/AlicaEngine.h>
 
@@ -63,8 +63,9 @@ void SRGSimData::processPerception(srg::sim::containers::SimPerceptions simPerce
             this->world->updateCell(srg::world::Coordinate(cellPerception.x, cellPerception.y), objects);
             for (world::Object* object : objects) {
                 switch (object->getType()) {
-                case world::ObjectType::Robot: {
-                    this->world->addRobot(static_cast<srg::world::ServiceRobot*>(object));
+                case world::ObjectType::Robot:
+                case world::ObjectType::Human:{
+                    this->world->addAgent(static_cast<srg::world::Agent*>(object));
                     const world::Cell* cell = dynamic_cast<const world::Cell*>(object->getParentContainer());
                     auto ownPositionInfo = std::make_shared<supplementary::InformationElement<srg::world::Coordinate>>(
                             cell->coordinate, wm->getTime(), ownPositionValidityDuration, 1.0);

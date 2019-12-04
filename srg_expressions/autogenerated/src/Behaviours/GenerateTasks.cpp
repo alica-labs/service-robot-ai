@@ -33,11 +33,16 @@ void GenerateTasks::initialiseParameters()
 {
     /*PROTECTED REGION ID(initialiseParameters1575291385685) ENABLED START*/
     sa.senderID = this->wm->getOwnId();
+    bool idSet = false;
     for (essentials::IdentifierConstPtr agentId : this->wm->getEngine()->getTeamManager()->getActiveAgentIds()) {
         if (agentId != this->wm->getOwnId()) {
             sa.receiverID = agentId;
+            idSet = true;
             break;
         }
+    }
+    if (!idSet) {
+        return;
     }
     sa.actID = this->wm->getEngine()->getIdManager()->generateID();
     sa.previousActID = this->wm->getEngine()->getIdManager()->getWildcardID();

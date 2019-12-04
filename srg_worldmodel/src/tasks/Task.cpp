@@ -5,7 +5,7 @@
 #include <srg/world/Cell.h>
 #include <srg/world/Object.h>
 #include <srg/world/RoomType.h>
-#include <srg/world/ServiceRobot.h>
+#include <srg/world/Agent.h>
 
 namespace srg
 {
@@ -78,7 +78,7 @@ bool Task::checkMoveSuccess(SRGWorldModel* wm) const
 bool Task::checkManipulationSuccess(SRGWorldModel* wm) const
 {
     const srg::world::Object* object = nullptr;
-    const srg::world::ServiceRobot* robot = nullptr;
+    const srg::world::Agent* agent = nullptr;
     const srg::world::Cell* cell = nullptr;
     bool success = false;
     switch (this->type) {
@@ -91,9 +91,9 @@ bool Task::checkManipulationSuccess(SRGWorldModel* wm) const
         success = object && object->getState() == srg::world::ObjectState::Closed;
         break;
     case TaskType::PickUp:
-        robot = wm->sRGSimData.getWorld()->getRobot(this->receiverID);
-        std::cout << "[Task] " << &*robot << " " << *robot << std::endl;
-        success = robot->contains(this->objectID);
+        agent = wm->sRGSimData.getWorld()->getAgent(this->receiverID);
+        std::cout << "[Task] " << &*agent << " " << *agent << std::endl;
+        success = agent->contains(this->objectID);
         break;
     case TaskType::PutDown:
         std::cout << "[Task] " <<  this->type << " of " << this->objectType << "(ID: "<< this->objectID << ") at " << this->coordinate << std::endl;

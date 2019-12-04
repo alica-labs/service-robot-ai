@@ -12,6 +12,7 @@
 #include <capnzero/Publisher.h>
 #include <engine/AlicaEngine.h>
 #include <engine/teammanager/TeamManager.h>
+#include <engine/IRoleAssignment.h>
 
 #include <capnp/message.h>
 
@@ -52,7 +53,14 @@ void Agent::spawn() const
     srg::sim::containers::SimCommand sc;
     sc.senderID = this->id.get();
     sc.objectID = this->id.get();
-    sc.action = srg::sim::containers::SimCommand::SPAWN;
+    const alica::Role* ownRole = this->wm->getEngine()->getRoleAssignment()->getRole(this->wm->getOwnId());
+    if (ownRole->getName().compare("Human") == 0) {
+        sc.action = srg::sim::containers::SimCommand::SPAWNHUMAN;
+    } else if (ownRole->getName().compare("Assistant") == 0) {
+        sc.action = srg::sim::containers::SimCommand::SPAWNROBOT;
+    } else {
+        std::cerr << "[Agent] Unknown role " << ownRole << std::endl;
+    }
     send(sc);
 }
 
