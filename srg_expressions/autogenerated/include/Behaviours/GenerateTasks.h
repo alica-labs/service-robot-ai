@@ -1,9 +1,16 @@
 #pragma once
 
-#include <srg/agent/containers/SpeechAct.h>
 #include "DomainBehaviour.h"
+#include <srg/agent/containers/SpeechAct.h>
+#include <srg/world/Coordinate.h>
 /*PROTECTED REGION ID(inc1575291385685) ENABLED START*/
-// Add additional includes here
+namespace srg
+{
+namespace world
+{
+class Room;
+}
+} // namespace srg
 /*PROTECTED REGION END*/
 
 namespace alica
@@ -24,7 +31,10 @@ protected:
     /*PROTECTED REGION END*/
 private:
     /*PROTECTED REGION ID(prv1575291385685) ENABLED START*/
-    srg::agent::SpeechAct sa;
+    void generateSpeechActs(int numberOfTasks);
+    const srg::world::Coordinate getRandomCoordinate();
+    int sentCounter;
+    std::vector<srg::agent::SpeechAct> speechActs;
     /*PROTECTED REGION END*/
 };
 } /* namespace alica */
