@@ -39,7 +39,7 @@ public:
 
     friend std::ostream& operator<<(std::ostream& os, const srg::agent::SpeechAct& act) {
         os << "[SpeechAct] Type: " << act.type << " Text: " << act.text;
-        os <<  "Sender: " << act.senderID << " Receiver: " << act.receiverID;
+        os << " Sender: " << act.senderID << " Receiver: " << act.receiverID;
         os << " ActID: " << act.actID << " Previous ActID: " << act.previousActID;
         return os;
     }

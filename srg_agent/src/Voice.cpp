@@ -87,7 +87,7 @@ void Voice::speak(SpeechAct speechAct) const
 {
     ::capnp::MallocMessageBuilder msgBuilder;
     ContainerUtils::toMsg(speechAct, msgBuilder);
-    std::cout << "[Voice] sending msg '" << msgBuilder.getRoot<SpeechActMsg>().toString().flatten().cStr() << "'" << std::endl;
+//    std::cout << "[Voice] sending msg '" << msgBuilder.getRoot<SpeechActMsg>().toString().flatten().cStr() << "'" << std::endl;
     this->speechActPublisher->send(msgBuilder);
 }
 

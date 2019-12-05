@@ -33,6 +33,7 @@ private:
     /*PROTECTED REGION ID(prv1575291385685) ENABLED START*/
     void generateSpeechActs(int numberOfTasks);
     const srg::world::Coordinate getRandomCoordinate();
+    std::string getRandomObjectString();
     int sentCounter;
     std::vector<srg::agent::SpeechAct> speechActs;
     /*PROTECTED REGION END*/

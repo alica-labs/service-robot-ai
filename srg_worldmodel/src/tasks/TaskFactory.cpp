@@ -21,6 +21,9 @@ TaskSequence* TaskFactory::createTaskSequence(const agent::SpeechAct& speechAct)
     TaskSequence* taskSequence = new TaskSequence();
     Task* curTask = nullptr;
     std::vector<std::string> tokens = split(speechAct.text);
+    for (std::string token : tokens) {
+        std::cout << "[TaskFactory] '" << token << "'" << std::endl;
+    }
     if (tokens[0].find("move") != std::string::npos) {
         curTask = new Task(TaskType::Move);
         setCoordinate(tokens[1], curTask);
@@ -100,6 +103,7 @@ void TaskFactory::setCoordinate(const std::string& coordToken, Task* task)
 {
     std::string xCoordString = coordToken.substr(0, coordToken.find(","));
     std::string yCoordString = coordToken.substr(coordToken.find(",") + 1);
+    std::cout << "[TaskFactory]" << xCoordString << " " << yCoordString << std::endl;
     srg::world::Coordinate coord = srg::world::Coordinate(std::stoi(xCoordString), std::stoi(yCoordString));
     if (!isValid(coord, task->type)) {
         std::cerr << "[TaskFactory] This coordinates are outside of the world: " << coord << std::endl;
@@ -128,14 +132,15 @@ bool TaskFactory::isValid(const srg::world::Coordinate& coord, TaskType type)
         std::cerr << "[TaskFactory] Coordinates are outside of the world: " << coord << std::endl;
         return false;
     }
-    if (type == TaskType::PutDown || type == TaskType::PickUp || type == TaskType::Close || type == TaskType::Open) {
-        auto ownPos = this->wm->sRGSimData.getOwnPositionBuffer().getLastValidContent();
-        auto diff = (ownPos.value() - coord).abs();
-        if (diff.x > 2 && diff.y > 2) {
-            std::cerr << "[TaskFactory] Coordinates are out of reach: " << coord << std::endl;
-            return false;
-        }
-    }
+    // is only valid for simple tasks, not for complex one
+//    if (type == TaskType::PutDown || type == TaskType::PickUp || type == TaskType::Close || type == TaskType::Open) {
+//        auto ownPos = this->wm->sRGSimData.getOwnPositionBuffer().getLastValidContent();
+//        auto diff = (ownPos.value() - coord).abs();
+//        if (diff.x > 2 && diff.y > 2) {
+//            std::cerr << "[TaskFactory] Coordinates are out of reach: " << coord << std::endl;
+//            return false;
+//        }
+//    }
     return true;
 }
 } // namespace tasks
