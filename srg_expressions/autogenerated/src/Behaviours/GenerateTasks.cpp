@@ -51,6 +51,7 @@ void GenerateTasks::initialiseParameters()
     for (srg::agent::SpeechAct sa : this->speechActs) {
         std::cout << "[GenerateTasks] " << sa << std::endl;
     }
+
     /*PROTECTED REGION END*/
 }
 /*PROTECTED REGION ID(methods1575291385685) ENABLED START*/
@@ -114,13 +115,13 @@ const srg::world::Coordinate GenerateTasks::getRandomCoordinate()
     } else {
         // other room types
         for (auto& roomEntry : this->wm->sRGSimData.getWorld()->getRooms()) {
-            switch(roomEntry.second->getType()) {
-                case srg::world::RoomType::Kitchen:
-                case srg::world::RoomType::Workroom:
-                case srg::world::RoomType::Wall:
-                    continue;
-                default:
-                    rooms.push_back(roomEntry.second);
+            switch (roomEntry.second->getType()) {
+            case srg::world::RoomType::Kitchen:
+            case srg::world::RoomType::Workroom:
+            case srg::world::RoomType::Wall:
+                continue;
+            default:
+                rooms.push_back(roomEntry.second);
             }
         }
     }

@@ -24,7 +24,7 @@
     "successRequired" : false,
     "minCardinality" : 0,
     "maxCardinality" : 20,
-    "task" : "ServiceRobotsTasks.tsk#1555601344076",
+    "task" : "ServiceRobotsTasks.tsk#1575654042058",
     "state" : 1555601748848,
     "plan" : 1555601736192
   } ],
@@ -38,7 +38,7 @@
     "abstractPlans" : [ "Behaviours/Stop.beh#1555602210283" ],
     "variableBindings" : [ ],
     "outTransitions" : [ 1558533492085 ],
-    "inTransitions" : [ 1558533494595, 1558533714287, 1575291123141 ]
+    "inTransitions" : [ 1558533494595, 1558533714287 ]
   }, {
     "type" : "State",
     "id" : 1558533460297,
@@ -48,30 +48,19 @@
     "parentPlan" : 1555601736192,
     "abstractPlans" : [ "Behaviours/Spawn.beh#1558533534825" ],
     "variableBindings" : [ ],
-    "outTransitions" : [ 1558533494595, 1558533514929, 1575291118178 ],
+    "outTransitions" : [ 1558533494595, 1558533514929 ],
     "inTransitions" : [ 1558533492085 ]
   }, {
     "type" : "State",
     "id" : 1558533461982,
-    "name" : "Serve",
+    "name" : "Operate",
     "comment" : "",
     "entryPoint" : null,
     "parentPlan" : 1555601736192,
-    "abstractPlans" : [ "Serve.pml#1568825275605" ],
+    "abstractPlans" : [ "Operate.pml#1575655614484" ],
     "variableBindings" : [ ],
     "outTransitions" : [ 1558533714287 ],
     "inTransitions" : [ 1558533514929 ]
-  }, {
-    "type" : "State",
-    "id" : 1575291091434,
-    "name" : "SimHuman",
-    "comment" : "",
-    "entryPoint" : null,
-    "parentPlan" : 1555601736192,
-    "abstractPlans" : [ "Human.pml#1575294066871" ],
-    "variableBindings" : [ ],
-    "outTransitions" : [ 1575291123141 ],
-    "inTransitions" : [ 1575291118178 ]
   } ],
   "transitions" : [ {
     "id" : 1558533492085,
@@ -133,40 +122,6 @@
     "preCondition" : {
       "id" : 1560934538125,
       "name" : "1560934538125",
-      "comment" : "",
-      "enabled" : true,
-      "conditionString" : "Stop received!",
-      "pluginName" : "DefaultPlugin",
-      "variables" : [ ],
-      "quantifiers" : [ ]
-    },
-    "synchronisation" : null
-  }, {
-    "id" : 1575291118178,
-    "name" : "FromSpawnToSimHuman",
-    "comment" : "MISSING_COMMENT",
-    "inState" : 1558533460297,
-    "outState" : 1575291091434,
-    "preCondition" : {
-      "id" : 1575291183488,
-      "name" : "1575291183488",
-      "comment" : "",
-      "enabled" : true,
-      "conditionString" : "Spawn successful (acknowledge through received sim sensor values) && I am a simulated human",
-      "pluginName" : "DefaultPlugin",
-      "variables" : [ ],
-      "quantifiers" : [ ]
-    },
-    "synchronisation" : null
-  }, {
-    "id" : 1575291123141,
-    "name" : "FromSimHumanToStop",
-    "comment" : "MISSING_COMMENT",
-    "inState" : 1575291091434,
-    "outState" : 1555601748848,
-    "preCondition" : {
-      "id" : 1575291206583,
-      "name" : "1575291206583",
       "comment" : "",
       "enabled" : true,
       "conditionString" : "Stop received!",

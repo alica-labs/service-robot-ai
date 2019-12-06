@@ -7,6 +7,7 @@
 #include "Behaviours/Stop1555602210283.h"
 #include "Behaviours/Test1559635479527.h"
 #include "Human1575294066871.h"
+#include "Operate1575655614484.h"
 #include "Serve1568825275605.h"
 #include "ServeMaster1555601736192.h"
 #include "Transport1573418869596.h"
@@ -68,12 +69,6 @@ std::shared_ptr<BasicCondition> ConditionCreator::createConditions(long conditio
         break;
     case 1573419841944:
         return std::make_shared<PreCondition1573419841944>();
-        break;
-    case 1575291183488:
-        return std::make_shared<PreCondition1575291183488>();
-        break;
-    case 1575291206583:
-        return std::make_shared<PreCondition1575291206583>();
         break;
     default:
         std::cerr << "ConditionCreator: Unknown condition id requested: " << conditionConfId << std::endl;

@@ -1,5 +1,6 @@
 #include "UtilityFunctionCreator.h"
 #include "Human1575294066871.h"
+#include "Operate1575655614484.h"
 #include "Serve1568825275605.h"
 #include "ServeMaster1555601736192.h"
 #include "Transport1573418869596.h"
@@ -28,6 +29,9 @@ std::shared_ptr<BasicUtilityFunction> UtilityFunctionCreator::createUtility(long
         break;
     case 1575294066871:
         return std::make_shared<UtilityFunction1575294066871>();
+        break;
+    case 1575655614484:
+        return std::make_shared<UtilityFunction1575655614484>();
         break;
     default:
         std::cerr << "UtilityFunctionCreator: Unknown utility requested: " << utilityfunctionConfId << std::endl;

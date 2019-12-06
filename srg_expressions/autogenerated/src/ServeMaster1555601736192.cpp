@@ -21,7 +21,7 @@ bool PreCondition1558533725689::evaluate(shared_ptr<RunningPlan> rp)
     /*PROTECTED REGION END*/
 }
 /* generated comment
-    Task: Serve  -> EntryPoint-ID: 1555601746711
+    Task: Default  -> EntryPoint-ID: 1555601746711
 */
 shared_ptr<UtilityFunction> UtilityFunction1555601736192::getUtilityFunction(Plan* plan)
 {
@@ -41,14 +41,13 @@ shared_ptr<UtilityFunction> UtilityFunction1555601736192::getUtilityFunction(Pla
  *
  * Tasks:
  *
- *   - Serve (1555601344076) (Entrypoint: 1555601746711)
+ *   - Default (1575654042058) (Entrypoint: 1555601746711)
  *
  * States:
  *
  *   - Stop (1555601748848)
  *   - Spawn (1558533460297)
- *   - Serve (1558533461982)
- *   - SimHuman (1575291091434)
+ *   - Operate (1558533461982)
  *
  * Vars:
  */
@@ -70,14 +69,13 @@ bool PreCondition1558533620473::evaluate(shared_ptr<RunningPlan> rp)
  *
  * Tasks:
  *
- *   - Serve (1555601344076) (Entrypoint: 1555601746711)
+ *   - Default (1575654042058) (Entrypoint: 1555601746711)
  *
  * States:
  *
  *   - Stop (1555601748848)
  *   - Spawn (1558533460297)
- *   - Serve (1558533461982)
- *   - SimHuman (1575291091434)
+ *   - Operate (1558533461982)
  *
  * Vars:
  */
@@ -99,52 +97,20 @@ bool PreCondition1558533654035::evaluate(shared_ptr<RunningPlan> rp)
  *
  * Tasks:
  *
- *   - Serve (1555601344076) (Entrypoint: 1555601746711)
+ *   - Default (1575654042058) (Entrypoint: 1555601746711)
  *
  * States:
  *
  *   - Stop (1555601748848)
  *   - Spawn (1558533460297)
- *   - Serve (1558533461982)
- *   - SimHuman (1575291091434)
+ *   - Operate (1558533461982)
  *
  * Vars:
  */
 bool PreCondition1558533667052::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1558533514929) ENABLED START*/
-    const alica::Role* ownRole = this->wm->getEngine()->getRoleAssignment()->getRole(this->wm->getOwnId());
-    return this->wm->sRGSimData.isLocalised() && ownRole->getName().compare("Assistant") == 0;
-    /*PROTECTED REGION END*/
-}
-/*
- *
- * Transition:
- *   - Name: 1575291183488, ConditionString: Spawn successful (acknowledge through received sim sensor values) && I am a simulated human, Comment :
- * MISSING_COMMENT
- *
- * Plans in State:
- *
- *   - Plan - (Name): Spawn, (PlanID): 1558533534825
- *
- * Tasks:
- *
- *   - Serve (1555601344076) (Entrypoint: 1555601746711)
- *
- * States:
- *
- *   - Stop (1555601748848)
- *   - Spawn (1558533460297)
- *   - Serve (1558533461982)
- *   - SimHuman (1575291091434)
- *
- * Vars:
- */
-bool PreCondition1575291183488::evaluate(shared_ptr<RunningPlan> rp)
-{
-    /*PROTECTED REGION ID(1575291118178) ENABLED START*/
-    const alica::Role* ownRole = this->wm->getEngine()->getRoleAssignment()->getRole(this->wm->getOwnId());
-    return this->wm->sRGSimData.isLocalised() && ownRole->getName().compare("Human") == 0;
+    return this->wm->sRGSimData.isLocalised();
     /*PROTECTED REGION END*/
 }
 /*
@@ -154,53 +120,23 @@ bool PreCondition1575291183488::evaluate(shared_ptr<RunningPlan> rp)
  *
  * Plans in State:
  *
- *   - Plan - (Name): Serve, (PlanID): 1568825275605
+ *   - Plan - (Name): Operate, (PlanID): 1575655614484
  *
  * Tasks:
  *
- *   - Serve (1555601344076) (Entrypoint: 1555601746711)
+ *   - Default (1575654042058) (Entrypoint: 1555601746711)
  *
  * States:
  *
  *   - Stop (1555601748848)
  *   - Spawn (1558533460297)
- *   - Serve (1558533461982)
- *   - SimHuman (1575291091434)
+ *   - Operate (1558533461982)
  *
  * Vars:
  */
 bool PreCondition1560934538125::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1558533714287) ENABLED START*/
-    auto lastCmd = this->wm->rawSensorData.getAgentCmdBuffer().getLastValidContent();
-    return lastCmd.has_value() && lastCmd->cmd == srg::agent::AgentCommand::STOP;
-    /*PROTECTED REGION END*/
-}
-/*
- *
- * Transition:
- *   - Name: 1575291206583, ConditionString: Stop received!, Comment : MISSING_COMMENT
- *
- * Plans in State:
- *
- *   - Plan - (Name): Human, (PlanID): 1575294066871
- *
- * Tasks:
- *
- *   - Serve (1555601344076) (Entrypoint: 1555601746711)
- *
- * States:
- *
- *   - Stop (1555601748848)
- *   - Spawn (1558533460297)
- *   - Serve (1558533461982)
- *   - SimHuman (1575291091434)
- *
- * Vars:
- */
-bool PreCondition1575291206583::evaluate(shared_ptr<RunningPlan> rp)
-{
-    /*PROTECTED REGION ID(1575291123141) ENABLED START*/
     auto lastCmd = this->wm->rawSensorData.getAgentCmdBuffer().getLastValidContent();
     return lastCmd.has_value() && lastCmd->cmd == srg::agent::AgentCommand::STOP;
     /*PROTECTED REGION END*/

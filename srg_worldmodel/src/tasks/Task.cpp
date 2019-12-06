@@ -92,11 +92,9 @@ bool Task::checkManipulationSuccess(SRGWorldModel* wm) const
         break;
     case TaskType::PickUp:
         agent = wm->sRGSimData.getWorld()->getAgent(this->receiverID);
-        std::cout << "[Task] " << &*agent << " " << *agent << std::endl;
         success = agent->contains(this->objectID);
         break;
     case TaskType::PutDown:
-        std::cout << "[Task] " <<  this->type << " of " << this->objectType << "(ID: "<< this->objectID << ") at " << this->coordinate << std::endl;
         cell = wm->sRGSimData.getWorld()->getCell(this->coordinate);
         success = cell->contains(this->objectID);
         break;

@@ -117,7 +117,7 @@ bool PreCondition1573418732991::evaluate(shared_ptr<RunningPlan> rp)
         return false;
     }
     auto firstTask = taskSequence->getTask(0);
-    return firstTask && firstTask->type == srg::tasks::TaskType::Search;
+    return firstTask && firstTask->type == srg::tasks::TaskType::Search && !taskSequence->isSuccessful();
     /*PROTECTED REGION END*/
 }
 /*

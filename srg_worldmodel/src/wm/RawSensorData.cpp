@@ -9,6 +9,7 @@
 
 #include <memory>
 #include <srg/sim/containers/SimPerceptions.h>
+#include <essentials/WildcardID.h>
 
 namespace srg
 {
@@ -61,7 +62,6 @@ void RawSensorData::processTelegramMessage(Message message)
 
 void RawSensorData::processSpeechAct(agent::SpeechAct act)
 {
-    std::cout << "[RawSensorData] " << act << std::endl;
     auto speechActInfo = std::make_shared<supplementary::InformationElement<agent::SpeechAct>>(act, wm->getTime(), speechActValidityDuration, 1.0);
     speechActBuffer->add(speechActInfo);
 
@@ -71,7 +71,7 @@ void RawSensorData::processSpeechAct(agent::SpeechAct act)
 
 void RawSensorData::processAgentCmd(agent::AgentCommand agentCmd)
 {
-    if (agentCmd.receiverID != this->wm->getOwnId()) {
+    if (agentCmd.receiverID != this->wm->getOwnId() && agentCmd.receiverID->getType() != essentials::Identifier::WILDCARD_TYPE) {
         return;
     }
     auto agentCmdInfo = std::make_shared<supplementary::InformationElement<agent::AgentCommand>>(agentCmd, wm->getTime(), agentCmdValidityDuration, 1.0);

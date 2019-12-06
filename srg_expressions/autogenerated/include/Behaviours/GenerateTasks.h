@@ -1,8 +1,6 @@
 #pragma once
 
 #include "DomainBehaviour.h"
-#include <srg/agent/containers/SpeechAct.h>
-#include <srg/world/Coordinate.h>
 /*PROTECTED REGION ID(inc1575291385685) ENABLED START*/
 namespace srg
 {
@@ -11,6 +9,8 @@ namespace world
 class Room;
 }
 } // namespace srg
+#include <srg/agent/containers/SpeechAct.h>
+#include <srg/world/Coordinate.h>
 /*PROTECTED REGION END*/
 
 namespace alica
