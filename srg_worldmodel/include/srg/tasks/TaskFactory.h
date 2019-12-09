@@ -4,6 +4,7 @@
 
 #include <srg/agent/containers/SpeechAct.h>
 #include <srg/world/Coordinate.h>
+#include <engine/AlicaClock.h>
 
 namespace srg
 {
@@ -17,7 +18,7 @@ class TaskFactory
 public:
     TaskFactory(srg::SRGWorldModel* wm);
 
-    TaskSequence* createTaskSequence(const agent::SpeechAct& speechAct);
+    TaskSequence* createTaskSequence(const agent::SpeechAct& speechAct, const alica::AlicaTime creationTime);
 
 private:
     void setIDFields(const agent::SpeechAct& speechAct, Task* task);

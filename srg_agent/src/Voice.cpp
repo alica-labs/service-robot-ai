@@ -93,7 +93,7 @@ void Voice::speak(SpeechAct speechAct) const
 
 void Voice::onSpeechAct(capnp::FlatArrayMessageReader& msg)
 {
-    std::cout << "[Voice] receiving msg '" << msg.getRoot<SpeechActMsg>().toString().flatten().cStr() << "'" << std::endl;
+//    std::cout << "[Voice] receiving msg '" << msg.getRoot<SpeechActMsg>().toString().flatten().cStr() << "'" << std::endl;
 }
 
 std::vector<std::string> Voice::split(std::string input)

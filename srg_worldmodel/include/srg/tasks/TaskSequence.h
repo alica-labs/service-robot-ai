@@ -3,6 +3,7 @@
 #include <vector>
 #include <cstdint>
 #include <iosfwd>
+#include <engine/AlicaClock.h>
 
 namespace srg
 {
@@ -21,8 +22,13 @@ public:
     int32_t getActiveTaskIdx();
     int32_t size() const;
     bool isSuccessful();
+    void setStartTime(alica::AlicaTime startTime);
+    void setEndTime(alica::AlicaTime endTime);
+    std::string toLogString();
     friend std::ostream& operator<<(std::ostream& os, const srg::tasks::TaskSequence& taskSequence);
 private:
+    alica::AlicaTime startTime;
+    alica::AlicaTime endTime;
     int32_t activeTaskIdx;
     std::vector<Task*> taskSequence;
 };

@@ -31,6 +31,8 @@ public:
 private:
     void updateCurrentTaskSequence();
     void setNextTaskSequence();
+    void logTaskSequence(std::shared_ptr<TaskSequence> taskSequence);
+
     srg::SRGWorldModel* wm;
     TaskFactory* taskFactory;
     essentials::SystemConfig* sc;

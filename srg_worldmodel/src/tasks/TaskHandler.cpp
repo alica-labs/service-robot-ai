@@ -52,6 +52,7 @@ void TaskHandler::updateCurrentTaskSequence()
     }
     if (this->currentTaskSequence->isSuccessful()) {
         std::cout << "[TaskHandler] TaskSequence successful and therefore removed!" << std::endl;
+        this->logTaskSequence(this->currentTaskSequence);
         this->currentTaskSequence = nullptr;
         return;
     }
@@ -116,7 +117,7 @@ void TaskHandler::setNextTaskSequence()
             // stop when no new task speech act is available
             break;
         }
-        TaskSequence* rawCurrentTaskSequence = this->taskFactory->createTaskSequence(taskSpeechAct->getInformation());
+        TaskSequence* rawCurrentTaskSequence = this->taskFactory->createTaskSequence(taskSpeechAct->getInformation(), taskSpeechAct->getCreationTime());
         if (!rawCurrentTaskSequence) {
             return;
         }
@@ -135,6 +136,13 @@ void TaskHandler::setNextTaskSequence()
 void TaskHandler::processTaskAct(std::shared_ptr<supplementary::InformationElement<agent::SpeechAct>> taskAct)
 {
     this->taskActBuffer->add(taskAct);
+}
+
+void TaskHandler::logTaskSequence(std::shared_ptr<TaskSequence> taskSequence) {
+    taskSequence->setEndTime(this->wm->getTime());
+    std::ofstream fileWriter;
+    fileWriter.open(essentials::FileSystem::combinePaths("results", "TaskLog.csv"), std::ios_base::app);
+    fileWriter << std::fixed << taskSequence->toLogString() << std::endl;
 }
 
 } // namespace tasks

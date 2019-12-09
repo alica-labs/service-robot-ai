@@ -3,6 +3,7 @@
 #include "srg/tasks/Task.h"
 
 #include <iostream>
+#include <sstream>
 
 namespace srg
 {
@@ -19,6 +20,14 @@ TaskSequence::~TaskSequence()
     for (Task* task : taskSequence) {
         delete task;
     }
+}
+
+void TaskSequence::setStartTime(alica::AlicaTime startTime) {
+    this->startTime = startTime;
+}
+
+void TaskSequence::setEndTime(alica::AlicaTime endTime) {
+    this->endTime = endTime;
 }
 
 bool TaskSequence::isSuccessful()
@@ -51,6 +60,15 @@ void TaskSequence::addTask(srg::tasks::Task* task)
 int32_t TaskSequence::size() const
 {
     return this->taskSequence.size();
+}
+
+std::string TaskSequence::toLogString() {
+    std::stringstream logStringStream;
+    logStringStream << this->endTime-this->startTime << "\t" << this->size() << std::endl;
+    for (Task* task : this->taskSequence) {
+        logStringStream << *task << std::endl;
+    }
+    return logStringStream.str();
 }
 
 std::ostream& operator<<(std::ostream& os, const srg::tasks::TaskSequence& taskSequence)
