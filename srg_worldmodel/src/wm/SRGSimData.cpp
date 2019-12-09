@@ -3,6 +3,7 @@
 #include "srg/SRGWorldModel.h"
 #include "srg/dialogue/DialogueManager.h"
 #include "srg/tasks/TaskHandler.h"
+#include "srg/asp/SRGKnowledgeManager.h"
 
 #include <srg/World.h>
 #include <srg/world/Cell.h>
@@ -32,9 +33,11 @@ SRGSimData::~SRGSimData() {}
 
 void SRGSimData::init()
 {
-    // ATTENTION: This path/file is not the same as the simulator
-    // is starting, please make sure that both files have the same content!
     this->world = new srg::World((*sc).getConfigPath() + "/textures/Department.tmx", wm->getEngine()->getIdManager());
+    // add asp facts that probably don't change
+    for (auto& roomEntry : this->world->getRooms()) {
+        this->wm->srgKnowledgeManager->addRoom(roomEntry.second);
+    }
 }
 
 srg::World* SRGSimData::getWorld()

@@ -9,15 +9,9 @@
 
 #include <SystemConfig.h>
 #include <essentials/EventTrigger.h>
-#include <knowledge_manager/ASPKnowledgeManager.h>
+#include <srg/GUI.h>
 #include <supplementary/InformationElement.h>
 #include <supplementary/WorldModel.h>
-#include <srg/GUI.h>
-
-namespace essentials
-{
-class SystemConfig;
-}
 
 namespace reasoner
 {
@@ -32,7 +26,8 @@ namespace srg
 namespace asp
 {
 class ASPTranslator;
-}
+class SRGKnowledgeManager;
+} // namespace asp
 
 namespace conceptnet
 {
@@ -60,8 +55,8 @@ public:
     dialogue::DialogueManager dialogueManager;
     wm::RawSensorData rawSensorData;
     wm::Communication* communication;
-    knowledge_manager::ASPKnowledgeManager knowledgeManager;
     srg::asp::ASPTranslator* aspTranslator;
+    srg::asp::SRGKnowledgeManager* srgKnowledgeManager;
     srg::GUI* gui;
 
 private:

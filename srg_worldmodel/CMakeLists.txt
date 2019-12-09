@@ -30,6 +30,8 @@ add_library(srg_worldmodel
   src/wm/RawSensorData.cpp
   src/wm/Communication.cpp
   src/asp/ASPTranslator.cpp
+  src/asp/SRGKnowledgeManager.cpp
+  src/asp/Generator.cpp
   src/conceptnet/ConceptNet.cpp
   src/conceptnet/Edge.cpp
   src/conceptnet/Concept.cpp

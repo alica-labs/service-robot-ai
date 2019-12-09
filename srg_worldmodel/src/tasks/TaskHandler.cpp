@@ -142,7 +142,7 @@ void TaskHandler::logTaskSequence(std::shared_ptr<TaskSequence> taskSequence) {
     taskSequence->setEndTime(this->wm->getTime());
     std::ofstream fileWriter;
     fileWriter.open(essentials::FileSystem::combinePaths("results", "TaskLog.csv"), std::ios_base::app);
-    fileWriter << std::fixed << taskSequence->toLogString() << std::endl;
+    fileWriter << std::fixed << taskSequence->toLogString(this->wm->getOwnId()) << std::endl;
 }
 
 } // namespace tasks

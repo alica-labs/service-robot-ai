@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <iosfwd>
 #include <engine/AlicaClock.h>
+#include <essentials/IdentifierConstPtr.h>
 
 namespace srg
 {
@@ -24,7 +25,7 @@ public:
     bool isSuccessful();
     void setStartTime(alica::AlicaTime startTime);
     void setEndTime(alica::AlicaTime endTime);
-    std::string toLogString();
+    std::string toLogString(essentials::IdentifierConstPtr agentID);
     friend std::ostream& operator<<(std::ostream& os, const srg::tasks::TaskSequence& taskSequence);
 private:
     alica::AlicaTime startTime;
