@@ -50,10 +50,6 @@ void SRGSimData::processPerception(srg::sim::containers::SimPerceptions simPerce
     if (!world)
         return;
     for (srg::sim::containers::CellPerception cellPerception : simPerceptions.cellPerceptions) {
-//        if (cellPerceptions.perceptions.size() > 0) {
-//            std::cout << "[SRGSimData]" << std::endl << cellPerceptions << std::endl;
-//        }
-
         const srg::world::Cell* cell = this->world->getCell(srg::world::Coordinate(cellPerception.x, cellPerception.y));
         if (cell) {
             // update objects itself

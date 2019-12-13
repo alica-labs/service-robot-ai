@@ -1,5 +1,7 @@
 #include "srg/asp/SRGKnowledgeManager.h"
 
+#include <reasoner/asp/Solver.h>
+
 namespace srg
 {
 namespace asp
@@ -16,7 +18,7 @@ void SRGKnowledgeManager::setSolver(reasoner::asp::Solver * solver) {
 int SRGKnowledgeManager::addRoom(const srg::world::Room* room)
 {
     std::vector<std::string> infoStrings;
-    infoStrings.push_back(gen->get(room));
+    infoStrings.push_back(gen->is(room));
     return this->addInformation(infoStrings);
 }
 
