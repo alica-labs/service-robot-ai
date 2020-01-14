@@ -54,7 +54,7 @@ UtilityFunction1555601736192::getUtilityFunction(Plan *plan) {
  */
 bool PreCondition1558533620473::evaluate(shared_ptr<RunningPlan> rp) {
   /*PROTECTED REGION ID(1558533492085) ENABLED START*/
-        std::cout << "evaluate called transition 1\n" <<std::endl;
+ //       std::cout << "evaluate called transition 1\n" <<std::endl;
   auto lastCmd =
       this->wm->rawSensorData.getAgentCmdBuffer().getLastValidContent();
   return lastCmd.has_value() && lastCmd->cmd == control::AgentCommand::START;
@@ -84,7 +84,7 @@ bool PreCondition1558533620473::evaluate(shared_ptr<RunningPlan> rp) {
  */
 bool PreCondition1558533654035::evaluate(shared_ptr<RunningPlan> rp) {
   /*PROTECTED REGION ID(1558533494595) ENABLED START*/
-        std::cout << "evaluate called transition 2\n" <<std::endl;
+//        std::cout << "evaluate called transition 2\n" <<std::endl;
   auto lastCmd =
       this->wm->rawSensorData.getAgentCmdBuffer().getLastValidContent();
         std::cout << (lastCmd.has_value() && lastCmd->cmd == control::AgentCommand::STOP) << "\n" <<std::endl;
