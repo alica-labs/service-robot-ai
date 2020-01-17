@@ -5,7 +5,7 @@
 #include "srg/conceptnet/Edge.h"
 #include "srg/conceptnet/Relations.h"
 #include "srg/dialogue/AnswerGraph.h"
-#include <knowledge_manager/ASPKnowledgeManager.h>
+#include "srg/asp/SRGKnowledgeManager.h"
 
 #include <algorithm>
 #include <sstream>
@@ -46,18 +46,18 @@ std::string ASPTranslator::extractASPProgram(srg::dialogue::AnswerGraph* answerG
         auto symVec = Clingo::SymbolVector();
         auto paramList = split(tmp);
         for (auto it : paramList) {
-            symVec.push_back(this->wm->knowledgeManager.parseValue(it.c_str()));
+            symVec.push_back(this->wm->srgKnowledgeManager->parseValue(it.c_str()));
         }
-        this->wm->knowledgeManager.ground({{programSection.c_str(), symVec}}, nullptr);
+        this->wm->srgKnowledgeManager->ground({{programSection.c_str(), symVec}}, nullptr);
     } else {
-        this->wm->knowledgeManager.ground({{programSection.c_str(), {}}}, nullptr);
+        this->wm->srgKnowledgeManager->ground({{programSection.c_str(), {}}}, nullptr);
     }
-    this->wm->knowledgeManager.solve();
+    this->wm->srgKnowledgeManager->solve();
 
     auto pgmMap = extractBackgroundKnowledgePrograms(answerGraph, inconsistencyRemoval);
     for (auto pair : pgmMap) {
         program.append(pair.second).append("\n");
-        this->wm->knowledgeManager.add(programSection.c_str(), {}, pair.second.c_str());
+        this->wm->srgKnowledgeManager->add(programSection.c_str(), {}, pair.second.c_str());
     }
     return program;
 }

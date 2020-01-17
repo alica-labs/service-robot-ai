@@ -1,6 +1,6 @@
 #pragma once
 
-#include "control/containers/AgentCommand.h"
+#include "srg/agent/containers/AgentCommand.h"
 
 #include <capnzero/CapnZero.h>
 #include <essentials/IdentifierConstPtr.h>
@@ -25,7 +25,7 @@ public:
     void handleProcessStats(capnp::FlatArrayMessageReader& msg);
     void handleAlicaInfo(capnp::FlatArrayMessageReader& msg);
     void send(process_manager::ProcessCommand pc);
-    void send(AgentCommand rc);
+    void send(srg::agent::AgentCommand rc);
 private:
     essentials::SystemConfig* sc;
     ControlPanel* controlPanel;

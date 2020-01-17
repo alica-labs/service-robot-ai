@@ -175,5 +175,6 @@ int main(int argc, char* argv[])
 
     control::ControlPanel mainWin;
     mainWin.show();
+    mainWin.setWindowIcon(QIcon(":/Robot-Head.png"));
     return app.exec();
 }

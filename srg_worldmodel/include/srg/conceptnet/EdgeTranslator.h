@@ -20,16 +20,16 @@ private:
     static std::string conceptToASPPredicate(std::string concept);
     static std::string createASPPredicates(std::vector<srg::conceptnet::Edge>& edges);
     /**
-     * Containts the cn5_ prefix.
+     * Contains the cn5_ prefix.
      */
     static const std::string PREFIX;
     /**
- * Containts the commonsense knowledge section.
- */
+     * Contains the commonsense knowledge section.
+     */
     static const std::string COMMONSENSE_KNOWLEDGE;
     /**
- * Containts the situational knowledge section.
- */
+     * Contains the situational knowledge section.
+     */
     static const std::string SITUATIONAL_KNOWLEDGE;
 };
 

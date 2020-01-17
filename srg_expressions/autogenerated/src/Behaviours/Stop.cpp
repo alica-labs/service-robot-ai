@@ -2,7 +2,7 @@
 #include <memory>
 
 /*PROTECTED REGION ID(inccpp1555602210283) ENABLED START*/
-#include <srg/Robot.h>
+#include <srg/Agent.h>
 /*PROTECTED REGION END*/
 
 namespace alica {

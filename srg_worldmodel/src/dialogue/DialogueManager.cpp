@@ -4,9 +4,9 @@
 #include "srg/dialogue/AnswerGraph.h"
 #include "srg/dialogue/BasicHumanNeeds.h"
 #include "srg/dialogue/InformHandler.h"
-#include "srg/dialogue/TaskHandler.h"
+#include "srg/tasks/TaskHandler.h"
 
-#include <control/containers/SpeechAct.h>
+#include <srg/agent/containers/SpeechAct.h>
 
 #include <gvc.h>
 #include <gvcext.h>
@@ -21,20 +21,20 @@ DialogueManager::DialogueManager(srg::SRGWorldModel* wm)
 {
     this->basicHumanNeeds = new BasicHumanNeeds(wm);
     this->informHandler = new InformHandler(wm);
-    this->taskHandler = new TaskHandler(wm);
+    this->taskHandler = new srg::tasks::TaskHandler(wm);
 }
 DialogueManager::~DialogueManager()
 {
 
 }
 
-void DialogueManager::processSpeechAct(std::shared_ptr<supplementary::InformationElement<control::SpeechAct>> speechAct)
+void DialogueManager::processSpeechAct(std::shared_ptr<supplementary::InformationElement<agent::SpeechAct>> speechAct)
 {
-    if (speechAct->getInformation().type == control::SpeechType::request) {
+    if (speechAct->getInformation().type == agent::SpeechType::request) {
         this->speechActs.push_back(this->basicHumanNeeds->answerNeed(speechAct->getInformation()));
-    } else if (speechAct->getInformation().type == control::SpeechType::inform) {
+    } else if (speechAct->getInformation().type == agent::SpeechType::inform) {
         this->speechActs.push_back(this->informHandler->answerInform(speechAct->getInformation()));
-    } else if (speechAct->getInformation().type == control::SpeechType::command) {
+    } else if (speechAct->getInformation().type == agent::SpeechType::command) {
         this->taskHandler->processTaskAct(speechAct);
     }
 

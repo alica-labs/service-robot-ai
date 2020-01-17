@@ -1,6 +1,6 @@
 #include "Serve1568825275605.h"
 /*PROTECTED REGION ID(eph1568825275605) ENABLED START*/
-#include <srg/dialogue/TaskHandler.h>
+#include <srg/tasks/TaskHandler.h>
 /*PROTECTED REGION END*/
 
 using namespace alica;
@@ -37,6 +37,7 @@ UtilityFunction1568825275605::getUtilityFunction(Plan *plan) {
  *   - WaitForTask (1568825288640)
  *   - MoveToPosition (1568825309813)
  *   - ManipulateObject (1571661663929)
+ *   - TransportToPosition (1573418710533)
  *
  * Vars:
  */
@@ -44,8 +45,12 @@ UtilityFunction1568825275605::getUtilityFunction(Plan *plan) {
 bool PreCondition1568825457853::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1568825336792) ENABLED START*/
-    auto activeCommand = this->wm->dialogueManager.taskHandler->getActiveTask();
-    return activeCommand && activeCommand->getInformation()->type == srgsim::TaskType::Move;
+    auto taskSequence = this->wm->dialogueManager.taskHandler->getActiveTaskSequence();
+    if (!taskSequence) {
+        return false;
+    }
+    auto firstTask = taskSequence->getTask(0);
+    return firstTask && firstTask->type == srg::tasks::TaskType::Move && !firstTask->checkSuccess(this->wm);
     /*PROTECTED REGION END*/
 }
 /*
@@ -66,17 +71,55 @@ bool PreCondition1568825457853::evaluate(shared_ptr<RunningPlan> rp)
  *   - WaitForTask (1568825288640)
  *   - MoveToPosition (1568825309813)
  *   - ManipulateObject (1571661663929)
+ *   - TransportToPosition (1573418710533)
  *
  * Vars:
  */
 bool PreCondition1571661980674::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1571661739802) ENABLED START*/
-    auto activeCommand = this->wm->dialogueManager.taskHandler->getActiveTask();
-    return activeCommand && (activeCommand->getInformation()->type == srgsim::TaskType::Open
-    || activeCommand->getInformation()->type == srgsim::TaskType::Close
-    || activeCommand->getInformation()->type == srgsim::TaskType::PutDown
-    || activeCommand->getInformation()->type == srgsim::TaskType::PickUp);
+    auto taskSequence = this->wm->dialogueManager.taskHandler->getActiveTaskSequence();
+    if (!taskSequence) {
+        return false;
+    }
+    auto firstTask = taskSequence->getTask(0);
+    return firstTask &&
+           (firstTask->type == srg::tasks::TaskType::Open || firstTask->type == srg::tasks::TaskType::Close ||
+                   firstTask->type == srg::tasks::TaskType::PutDown || firstTask->type == srg::tasks::TaskType::PickUp) &&
+           !firstTask->checkSuccess(this->wm);
+    /*PROTECTED REGION END*/
+}
+/*
+ *
+ * Transition:
+ *   - Name: 1573418732991, ConditionString: Received a transport task!, Comment : MISSING_COMMENT
+ *
+ * Plans in State:
+ *
+ *   - Plan - (Name): Stop, (PlanID): 1555602210283
+ *
+ * Tasks:
+ *
+ *   - Serve (1555601344076) (Entrypoint: 1568825285315)
+ *
+ * States:
+ *
+ *   - WaitForTask (1568825288640)
+ *   - MoveToPosition (1568825309813)
+ *   - ManipulateObject (1571661663929)
+ *   - TransportToPosition (1573418710533)
+ *
+ * Vars:
+ */
+bool PreCondition1573418732991::evaluate(shared_ptr<RunningPlan> rp)
+{
+    /*PROTECTED REGION ID(1573418725423) ENABLED START*/
+    auto taskSequence = this->wm->dialogueManager.taskHandler->getActiveTaskSequence();
+    if (!taskSequence) {
+        return false;
+    }
+    auto firstTask = taskSequence->getTask(0);
+    return firstTask && firstTask->type == srg::tasks::TaskType::Search && !taskSequence->isSuccessful();
     /*PROTECTED REGION END*/
 }
 /*
@@ -98,15 +141,13 @@ bool PreCondition1571661980674::evaluate(shared_ptr<RunningPlan> rp)
  *   - WaitForTask (1568825288640)
  *   - MoveToPosition (1568825309813)
  *   - ManipulateObject (1571661663929)
+ *   - TransportToPosition (1573418710533)
  *
  * Vars:
  */
 bool PreCondition1568825476581::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1568825392354) ENABLED START*/
-//    for (auto child : rp->getChildren()) {
-//        std::cout << "PreCondition1568825476581::evaluate(): " << *child << std::endl;
-//    }
     return rp->isAnyChildStatus(PlanStatus::Success);
     /*PROTECTED REGION END*/
 
@@ -129,12 +170,41 @@ bool PreCondition1568825476581::evaluate(shared_ptr<RunningPlan> rp)
  *   - WaitForTask (1568825288640)
  *   - MoveToPosition (1568825309813)
  *   - ManipulateObject (1571661663929)
+ *   - TransportToPosition (1573418710533)
  *
  * Vars:
  */
 bool PreCondition1571661864299::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1571661809581) ENABLED START*/
+    return rp->isAnyChildStatus(PlanStatus::Success);
+    /*PROTECTED REGION END*/
+}
+/*
+ *
+ * Transition:
+ *   - Name: 1573418838905, ConditionString: Any children success, Comment : MISSING_COMMENT
+ *
+ * Plans in State:
+ *
+ *   - Plan - (Name): Transport, (PlanID): 1573418869596
+ *
+ * Tasks:
+ *
+ *   - Serve (1555601344076) (Entrypoint: 1568825285315)
+ *
+ * States:
+ *
+ *   - WaitForTask (1568825288640)
+ *   - MoveToPosition (1568825309813)
+ *   - ManipulateObject (1571661663929)
+ *   - TransportToPosition (1573418710533)
+ *
+ * Vars:
+ */
+bool PreCondition1573418838905::evaluate(shared_ptr<RunningPlan> rp)
+{
+    /*PROTECTED REGION ID(1573418821209) ENABLED START*/
     return rp->isAnyChildStatus(PlanStatus::Success);
     /*PROTECTED REGION END*/
 }

@@ -24,7 +24,7 @@
     "successRequired" : false,
     "minCardinality" : 0,
     "maxCardinality" : 20,
-    "task" : "ServiceRobotsTasks.tsk#1555601344076",
+    "task" : "ServiceRobotsTasks.tsk#1575654042058",
     "state" : 1555601748848,
     "plan" : 1555601736192
   } ],
@@ -53,11 +53,11 @@
   }, {
     "type" : "State",
     "id" : 1558533461982,
-    "name" : "Serve",
+    "name" : "Operate",
     "comment" : "",
     "entryPoint" : null,
     "parentPlan" : 1555601736192,
-    "abstractPlans" : [ "Serve.pml#1568825275605" ],
+    "abstractPlans" : [ "Operate.pml#1575655614484" ],
     "variableBindings" : [ ],
     "outTransitions" : [ 1558533714287 ],
     "inTransitions" : [ 1558533514929 ]
@@ -107,7 +107,7 @@
       "name" : "1558533667052",
       "comment" : "",
       "enabled" : true,
-      "conditionString" : "Spawn successful (acknowledge through received sim sensor values)",
+      "conditionString" : "Spawn successful (acknowledge through received sim sensor values) && I am a robot",
       "pluginName" : "DefaultPlugin",
       "variables" : [ ],
       "quantifiers" : [ ]

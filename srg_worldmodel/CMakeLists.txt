@@ -7,7 +7,7 @@ set(CMAKE_BUILD_TYPE Debug)
 
 ##Yaml
 find_package(yaml-cpp REQUIRED)
-find_package(catkin REQUIRED COMPONENTS system_config event_handling alica_engine world_model asp_solver_wrapper asp_solver telegram-client id_manager knowledge_manager control_panel grid_sim)
+find_package(catkin REQUIRED COMPONENTS system_config event_handling alica_engine world_model asp_solver_wrapper asp_solver telegram-client id_manager knowledge_manager srg_agent_msgs grid_sim)
 
 INCLUDE(FindPkgConfig)
 PKG_SEARCH_MODULE(gvc REQUIRED libgvc libcgraph libcdt)
@@ -15,7 +15,7 @@ PKG_SEARCH_MODULE(gvc REQUIRED libgvc libcgraph libcdt)
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES srg_worldmodel
-  CATKIN_DEPENDS system_config event_handling world_model asp_solver_wrapper asp_solver telegram-client id_manager knowledge_manager control_panel grid_sim
+  CATKIN_DEPENDS system_config event_handling world_model asp_solver_wrapper asp_solver telegram-client id_manager knowledge_manager srg_agent_msgs grid_sim
 )
 
 include_directories(include
@@ -27,28 +27,30 @@ include_directories(include
 add_library(srg_worldmodel
   src/SRGWorldModel.cpp
   src/wm/SRGSimData.cpp
+  src/wm/RawSensorData.cpp
+  src/wm/Communication.cpp
+  src/asp/ASPTranslator.cpp
+  src/asp/SRGKnowledgeManager.cpp
+  src/asp/Generator.cpp
   src/conceptnet/ConceptNet.cpp
   src/conceptnet/Edge.cpp
   src/conceptnet/Concept.cpp
   src/conceptnet/EdgeTranslator.cpp
   src/conceptnet/ConceptPath.cpp
   src/dialogue/AnswerGraph.cpp
-  src/wm/RawSensorData.cpp
-  src/wm/Communication.cpp
   src/dialogue/BasicHumanNeeds.cpp
   src/dialogue/DialogueManager.cpp
   src/dialogue/InformHandler.cpp
-  src/dialogue/TaskHandler.cpp
-  src/dialogue/Task.cpp
-  src/dialogue/MoveTask.cpp
-  src/dialogue/ManipulationTask.cpp
-  src/dialogue/IdleTask.cpp
-  src/asp/ASPTranslator.cpp
+  src/tasks/TaskHandler.cpp
+  src/tasks/Task.cpp
+  src/tasks/TaskType.cpp
+  src/tasks/TaskFactory.cpp
+  src/tasks/TaskSequence.cpp
 )
 
 target_link_libraries(srg_worldmodel
   ${catkin_LIBRARIES}
   ${YAML_CPP_LIBRARIES}
-  curl
   ${gvc_LIBRARIES}
+  curl
 )

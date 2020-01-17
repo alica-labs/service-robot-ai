@@ -2,10 +2,10 @@
 #include <memory>
 
 /*PROTECTED REGION ID(inccpp1571687572903) ENABLED START*/
-#include <srg/Robot.h>
+#include <srg/Agent.h>
 #include <srg/SRGWorldModel.h>
-#include <srg/dialogue/TaskHandler.h>
-#include <srg/robot/Movement.h>
+#include <srg/agent/Movement.h>
+#include <srg/tasks/TaskHandler.h>
 /*PROTECTED REGION END*/
 
 namespace alica
@@ -34,37 +34,31 @@ void Manipulate::run(void* msg)
         return;
     }
 
-    if (this->activeTask->checkSuccess(this->wm) ||
-            (this->activeTask->type != srgsim::TaskType::Open && this->activeTask->type != srgsim::TaskType::Close &&
-                    this->activeTask->type != srgsim::TaskType::PickUp && this->activeTask->type != srgsim::TaskType::PutDown)) {
+    if (this->activeTask->checkSuccess(this->wm)) {
         this->setSuccess();
         return;
     }
 
-    std::cout << "Manipulate::run(void* msg): Call to manipulate environment!" << std::endl;
-    this->robot->manipulate(activeTask);
+    if (!this->activeTask->isCompletelySpecified()) {
+        return;
+    }
+    this->agent->manipulate(activeTask);
     /*PROTECTED REGION END*/
 }
 void Manipulate::initialiseParameters()
 {
     /*PROTECTED REGION ID(initialiseParameters1571687572903) ENABLED START*/
-    std::shared_ptr<const supplementary::InformationElement<srg::dialogue::Task*>> task = this->wm->dialogueManager.taskHandler->getActiveTask();
-    if (task && (task->getInformation()->type == srgsim::TaskType::PickUp || task->getInformation()->type == srgsim::TaskType::Close ||
-                        task->getInformation()->type == srgsim::TaskType::Open || task->getInformation()->type == srgsim::TaskType::PutDown)) {
-        if (this->activeTask) {
-            delete this->activeTask;
-        }
-        this->activeTask = new srg::dialogue::ManipulationTask();
-        this->activeTask->type = task->getInformation()->type;
-        this->activeTask->coordinate = task->getInformation()->coordinate;
-        this->activeTask->actID = task->getInformation()->actID;
-        this->activeTask->previousActID = task->getInformation()->previousActID;
-        this->activeTask->senderID = task->getInformation()->senderID;
-        this->activeTask->receiverID = task->getInformation()->receiverID;
-        this->activeTask->objectID = static_cast<srg::dialogue::ManipulationTask*>(task->getInformation())->objectID;
-    } else {
-        this->activeTask = nullptr;
+    this->taskSequence = this->wm->dialogueManager.taskHandler->getActiveTaskSequence();
+    if (this->taskSequence) {
+        this->activeTask = this->taskSequence->getActiveTask();
     }
+
+    if (activeTask && activeTask->type != srg::tasks::TaskType::PickUp && activeTask->type != srg::tasks::TaskType::Close &&
+            activeTask->type != srg::tasks::TaskType::Open && activeTask->type != srg::tasks::TaskType::PutDown) {
+        this->activeTask = nullptr;
+        this->taskSequence = nullptr;
+    }
+
     /*PROTECTED REGION END*/
 }
 /*PROTECTED REGION ID(methods1571687572903) ENABLED START*/

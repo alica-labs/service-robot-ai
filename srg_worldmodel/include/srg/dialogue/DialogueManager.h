@@ -1,20 +1,27 @@
 #pragma once
 
-#include <memory>
 #include <map>
+#include <memory>
 #include <vector>
+#include <srg/agent/containers/SpeechAct.h>
 
-namespace supplementary {
-    template<typename>
-    class InformationElement;
+namespace supplementary
+{
+template <typename>
+class InformationElement;
 }
 
-namespace control {
-    class SpeechAct;
+namespace control
+{
+class SpeechAct;
 }
 
 namespace srg
 {
+namespace tasks
+{
+class TaskHandler;
+}
 class SRGWorldModel;
 namespace dialogue
 {
@@ -29,15 +36,15 @@ class DialogueManager
 public:
     explicit DialogueManager(SRGWorldModel* wm);
     ~DialogueManager();
-    void processSpeechAct(std::shared_ptr<supplementary::InformationElement<control::SpeechAct>> speechAct);
+    void processSpeechAct(std::shared_ptr<supplementary::InformationElement<agent::SpeechAct>> speechAct);
 
     BasicHumanNeeds* basicHumanNeeds;
     InformHandler* informHandler;
-    TaskHandler* taskHandler;
+    srg::tasks::TaskHandler* taskHandler;
 
 private:
     srg::SRGWorldModel* wm;
-    std::vector<std::shared_ptr<control::SpeechAct>> speechActs;
+    std::vector<std::shared_ptr<srg::agent::SpeechAct>> speechActs;
     void renderDot() const;
 };
 } // namespace dialogue
