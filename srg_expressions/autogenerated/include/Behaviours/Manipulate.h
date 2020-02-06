@@ -2,11 +2,7 @@
 
 #include "DomainBehaviour.h"
 /*PROTECTED REGION ID(inc1571687572903) ENABLED START*/
-#include <nonstd/optional.hpp>
-#include <srg/agent/containers/SpeechAct.h>
-#include <srg/tasks/TaskSequence.h>
-#include <srg/world/Coordinate.h>
-#include <supplementary/InformationElement.h>
+// Add additional includes here
 /*PROTECTED REGION END*/
 
 namespace alica
@@ -27,8 +23,7 @@ protected:
     /*PROTECTED REGION END*/
 private:
     /*PROTECTED REGION ID(prv1571687572903) ENABLED START*/
-    std::shared_ptr<srg::tasks::TaskSequence> taskSequence;
-    srg::tasks::Task* activeTask;
+    // Add additional private methods here
     /*PROTECTED REGION END*/
 };
 } /* namespace alica */

@@ -1,10 +1,6 @@
 #include "Transport1573418869596.h"
 /*PROTECTED REGION ID(eph1573418869596) ENABLED START*/
-#include <srg/World.h>
-#include <srg/tasks/Task.h>
-#include <srg/tasks/TaskHandler.h>
-#include <srg/world/Cell.h>
-#include <srg/world/Object.h>
+// Add additional options here
 /*PROTECTED REGION END*/
 
 using namespace alica;
@@ -22,21 +18,17 @@ shared_ptr<UtilityFunction> UtilityFunction1573418869596::getUtilityFunction(Pla
     return defaultFunction;
     /*PROTECTED REGION END*/
 }
-/*
+/**
+ * Outgoing transition:
+ *   - Name: 1573419765536, ConditionString: Object found, now move to it!, Comment: MISSING_COMMENT
  *
- * Transition:
- *   - Name: 1573419765536, ConditionString: Object found, now move to it!, Comment : MISSING_COMMENT
+ * Abstractplans in current state:
+ *   - Search (1573419059418)
  *
- * Plans in State:
- *
- *   - Plan - (Name): Search, (PlanID): 1573419059418
- *
- * Tasks:
- *
+ * Tasks in plan:
  *   - Fetch (1555601323994) (Entrypoint: 1573418933317)
  *
- * States:
- *
+ * States in plan:
  *   - Search (1573418936395)
  *   - PickUp (1573418937725)
  *   - MoveDestination (1573418938883)
@@ -44,34 +36,25 @@ shared_ptr<UtilityFunction> UtilityFunction1573418869596::getUtilityFunction(Pla
  *   - MoveClose (1573418941076)
  *   - TransportDone (1573418943460)
  *
- * Vars:
+ * Variables of plan:
  */
 bool PreCondition1573419765536::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1573419007368) ENABLED START*/
-    auto taskSequence = this->wm->dialogueManager.taskHandler->getActiveTaskSequence();
-    if (!taskSequence) {
-        return true;
-    }
-    auto activeTask = taskSequence->getActiveTask();
-    return rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::Move;
+    return true;
     /*PROTECTED REGION END*/
 }
-/*
+/**
+ * Outgoing transition:
+ *   - Name: 1573419810456, ConditionString: Object picked up, now bring it somewhere!, Comment: MISSING_COMMENT
  *
- * Transition:
- *   - Name: 1573419810456, ConditionString: Object picked up, now bring it somewhere!, Comment : MISSING_COMMENT
+ * Abstractplans in current state:
+ *   - Manipulate (1571687572903)
  *
- * Plans in State:
- *
- *   - Plan - (Name): Manipulate, (PlanID): 1571687572903
- *
- * Tasks:
- *
+ * Tasks in plan:
  *   - Fetch (1555601323994) (Entrypoint: 1573418933317)
  *
- * States:
- *
+ * States in plan:
  *   - Search (1573418936395)
  *   - PickUp (1573418937725)
  *   - MoveDestination (1573418938883)
@@ -79,34 +62,25 @@ bool PreCondition1573419765536::evaluate(shared_ptr<RunningPlan> rp)
  *   - MoveClose (1573418941076)
  *   - TransportDone (1573418943460)
  *
- * Vars:
+ * Variables of plan:
  */
 bool PreCondition1573419810456::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1573418998111) ENABLED START*/
-    auto taskSequence = this->wm->dialogueManager.taskHandler->getActiveTaskSequence();
-    if (!taskSequence) {
-        return true;
-    }
-    auto activeTask = taskSequence->getActiveTask();
-    return rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::Move;
+    return true;
     /*PROTECTED REGION END*/
 }
-/*
+/**
+ * Outgoing transition:
+ *   - Name: 1573419828606, ConditionString: Object carried to destination, now put it down., Comment: MISSING_COMMENT
  *
- * Transition:
- *   - Name: 1573419828606, ConditionString: Object carried to destination, now put it down., Comment : MISSING_COMMENT
+ * Abstractplans in current state:
+ *   - Move (1568825137528)
  *
- * Plans in State:
- *
- *   - Plan - (Name): Move, (PlanID): 1568825137528
- *
- * Tasks:
- *
+ * Tasks in plan:
  *   - Fetch (1555601323994) (Entrypoint: 1573418933317)
  *
- * States:
- *
+ * States in plan:
  *   - Search (1573418936395)
  *   - PickUp (1573418937725)
  *   - MoveDestination (1573418938883)
@@ -114,35 +88,25 @@ bool PreCondition1573419810456::evaluate(shared_ptr<RunningPlan> rp)
  *   - MoveClose (1573418941076)
  *   - TransportDone (1573418943460)
  *
- * Vars:
+ * Variables of plan:
  */
 bool PreCondition1573419828606::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1573419000441) ENABLED START*/
-
-    auto taskSequence = this->wm->dialogueManager.taskHandler->getActiveTaskSequence();
-    if (!taskSequence) {
-        return true;
-    }
-    auto activeTask = taskSequence->getActiveTask();
-    return rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::PutDown;
+    return true;
     /*PROTECTED REGION END*/
 }
-/*
+/**
+ * Outgoing transition:
+ *   - Name: 1573419841944, ConditionString: Object put down, transport task successful!, Comment: MISSING_COMMENT
  *
- * Transition:
- *   - Name: 1573419841944, ConditionString: Object put down, transport task successful!, Comment : MISSING_COMMENT
+ * Abstractplans in current state:
+ *   - Manipulate (1571687572903)
  *
- * Plans in State:
- *
- *   - Plan - (Name): Manipulate, (PlanID): 1571687572903
- *
- * Tasks:
- *
+ * Tasks in plan:
  *   - Fetch (1555601323994) (Entrypoint: 1573418933317)
  *
- * States:
- *
+ * States in plan:
  *   - Search (1573418936395)
  *   - PickUp (1573418937725)
  *   - MoveDestination (1573418938883)
@@ -150,29 +114,25 @@ bool PreCondition1573419828606::evaluate(shared_ptr<RunningPlan> rp)
  *   - MoveClose (1573418941076)
  *   - TransportDone (1573418943460)
  *
- * Vars:
+ * Variables of plan:
  */
 bool PreCondition1573419841944::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1573419003625) ENABLED START*/
-    return rp->isAnyChildStatus(PlanStatus::Success);
+    return true;
     /*PROTECTED REGION END*/
 }
-/*
+/**
+ * Outgoing transition:
+ *   - Name: 1573419800282, ConditionString: At the object, now pick it up!, Comment: MISSING_COMMENT
  *
- * Transition:
- *   - Name: 1573419800282, ConditionString: At the object, now pick it up!, Comment : MISSING_COMMENT
+ * Abstractplans in current state:
+ *   - Move (1568825137528)
  *
- * Plans in State:
- *
- *   - Plan - (Name): Move, (PlanID): 1568825137528
- *
- * Tasks:
- *
+ * Tasks in plan:
  *   - Fetch (1555601323994) (Entrypoint: 1573418933317)
  *
- * States:
- *
+ * States in plan:
  *   - Search (1573418936395)
  *   - PickUp (1573418937725)
  *   - MoveDestination (1573418938883)
@@ -180,17 +140,12 @@ bool PreCondition1573419841944::evaluate(shared_ptr<RunningPlan> rp)
  *   - MoveClose (1573418941076)
  *   - TransportDone (1573418943460)
  *
- * Vars:
+ * Variables of plan:
  */
 bool PreCondition1573419800282::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1573419009128) ENABLED START*/
-    auto taskSequence = this->wm->dialogueManager.taskHandler->getActiveTaskSequence();
-    if (!taskSequence) {
-        return true;
-    }
-    auto activeTask = taskSequence->getActiveTask();
-    return rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::PickUp;
+    return true;
     /*PROTECTED REGION END*/
 }
 } // namespace alicaAutogenerated

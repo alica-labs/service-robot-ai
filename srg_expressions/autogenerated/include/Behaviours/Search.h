@@ -2,17 +2,7 @@
 
 #include "DomainBehaviour.h"
 /*PROTECTED REGION ID(inc1573419059418) ENABLED START*/
-#include <nonstd/optional.hpp>
-#include <srg/tasks/TaskSequence.h>
-#include <srg/world/Coordinate.h>
-#include <supplementary/InformationElement.h>
-namespace srg
-{
-namespace agent
-{
-class ObjectSearch;
-}
-} // namespace srg
+// Add additional includes here
 /*PROTECTED REGION END*/
 
 namespace alica
@@ -33,9 +23,7 @@ protected:
     /*PROTECTED REGION END*/
 private:
     /*PROTECTED REGION ID(prv1573419059418) ENABLED START*/
-    std::shared_ptr<srg::tasks::TaskSequence> taskSequence;
-    srg::tasks::Task* activeTask;
-    srg::agent::ObjectSearch* search;
+    // Add additional private methods here
     /*PROTECTED REGION END*/
 };
 } /* namespace alica */

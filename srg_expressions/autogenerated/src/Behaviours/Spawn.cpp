@@ -2,7 +2,7 @@
 #include <memory>
 
 /*PROTECTED REGION ID(inccpp1558533534825) ENABLED START*/
-#include <srg/Agent.h>
+// Add additional includes here
 /*PROTECTED REGION END*/
 
 namespace alica
@@ -27,8 +27,7 @@ Spawn::~Spawn()
 void Spawn::run(void* msg)
 {
     /*PROTECTED REGION ID(run1558533534825) ENABLED START*/
-    std::cout << "Spawn is called!" << std::endl;
-    this->agent->spawn();
+    std::cout << "Spawn was called" << std::endl;
     /*PROTECTED REGION END*/
 }
 void Spawn::initialiseParameters()

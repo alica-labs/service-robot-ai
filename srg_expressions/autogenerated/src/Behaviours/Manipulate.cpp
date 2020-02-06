@@ -2,10 +2,7 @@
 #include <memory>
 
 /*PROTECTED REGION ID(inccpp1571687572903) ENABLED START*/
-#include <srg/Agent.h>
-#include <srg/SRGWorldModel.h>
-#include <srg/agent/Movement.h>
-#include <srg/tasks/TaskHandler.h>
+// Add additional includes here
 /*PROTECTED REGION END*/
 
 namespace alica
@@ -30,34 +27,13 @@ Manipulate::~Manipulate()
 void Manipulate::run(void* msg)
 {
     /*PROTECTED REGION ID(run1571687572903) ENABLED START*/
-    if (this->isSuccess() || !this->activeTask) {
-        return;
-    }
-
-    if (this->activeTask->checkSuccess(this->wm)) {
-        this->setSuccess();
-        return;
-    }
-
-    if (!this->activeTask->isCompletelySpecified()) {
-        return;
-    }
-    this->agent->manipulate(activeTask);
+    // Add additional options here
     /*PROTECTED REGION END*/
 }
 void Manipulate::initialiseParameters()
 {
     /*PROTECTED REGION ID(initialiseParameters1571687572903) ENABLED START*/
-    this->taskSequence = this->wm->dialogueManager.taskHandler->getActiveTaskSequence();
-    if (this->taskSequence) {
-        this->activeTask = this->taskSequence->getActiveTask();
-    }
-
-    if (activeTask && activeTask->type != srg::tasks::TaskType::PickUp && activeTask->type != srg::tasks::TaskType::Close &&
-            activeTask->type != srg::tasks::TaskType::Open && activeTask->type != srg::tasks::TaskType::PutDown) {
-        this->activeTask = nullptr;
-        this->taskSequence = nullptr;
-    }
+    // Add additional options here
 
     /*PROTECTED REGION END*/
 }

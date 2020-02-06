@@ -34,10 +34,6 @@ SRGSimData::~SRGSimData() {}
 void SRGSimData::init()
 {
     this->world = new srg::World((*sc).getConfigPath() + "/textures/Department.tmx", wm->getEngine()->getIdManager());
-    // add asp facts that probably don't change
-    for (auto& roomEntry : this->world->getRooms()) {
-        this->wm->srgKnowledgeManager->addRoom(roomEntry.second);
-    }
 }
 
 srg::World* SRGSimData::getWorld()

@@ -3,11 +3,7 @@
 #include <engine/BasicBehaviour.h>
 #include <string>
 /*PROTECTED REGION ID(domainBehaviourHeaderHead) ENABLED START*/
-namespace srg
-{
-class Agent;
-class SRGWorldModel;
-} // namespace srg
+// Add additional options here
 /*PROTECTED REGION END*/
 
 namespace alica
@@ -19,8 +15,7 @@ public:
     virtual ~DomainBehaviour();
 
     /*PROTECTED REGION ID(domainBehaviourClassDecl) ENABLED START*/
-    srg::Agent* agent;
-    srg::SRGWorldModel* wm;
+    // Add additional options here
     /*PROTECTED REGION END*/
 };
 } /* namespace alica */

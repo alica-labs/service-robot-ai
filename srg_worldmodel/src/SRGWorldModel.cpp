@@ -52,5 +52,9 @@ void SRGWorldModel::init()
 
 void SRGWorldModel::setSolver(reasoner::asp::Solver* solver) {
     this->srgKnowledgeManager->setSolver(solver);
+  // add asp facts that probably don't change
+//  for (auto& roomEntry : this->sRGSimData.getWorld()->getRooms()) {
+//    this->srgKnowledgeManager->addRoom(roomEntry.second);
+//  }
 }
 } /* namespace wumpus */
