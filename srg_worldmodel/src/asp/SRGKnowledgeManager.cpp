@@ -15,11 +15,11 @@ void SRGKnowledgeManager::setSolver(reasoner::asp::Solver * solver) {
     ASPKnowledgeManager::setSolver(solver);
 }
 
-int SRGKnowledgeManager::addRoom(const srg::world::Room* room)
+void SRGKnowledgeManager::addRoom(const srg::world::Room* room)
 {
-    std::vector<std::string> infoStrings;
-    infoStrings.push_back(gen->is(room));
-    return this->addInformation(infoStrings);
+    std::vector<std::string> backgroundRules;
+    backgroundRules.push_back(gen->is(room));
+    this->addBackgroundRules(backgroundRules);
 }
 
 } // namespace asp

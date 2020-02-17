@@ -25,7 +25,7 @@ public:
     virtual ~SRGKnowledgeManager();
     void setSolver(reasoner::asp::Solver *solver) override;
 
-    int addRoom(const srg::world::Room* room);
+    void addRoom(const srg::world::Room* room);
 private:
     Generator* gen;
 };
