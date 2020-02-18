@@ -15,6 +15,10 @@ void SRGKnowledgeManager::setSolver(reasoner::asp::Solver * solver) {
     ASPKnowledgeManager::setSolver(solver);
 }
 
+void SRGKnowledgeManager::ask(const std::string& question) {
+
+}
+
 void SRGKnowledgeManager::addRoom(const srg::world::Room* room)
 {
     std::vector<std::string> backgroundRules;

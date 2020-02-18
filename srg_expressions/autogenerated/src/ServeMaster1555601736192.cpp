@@ -17,7 +17,7 @@ bool PreCondition1558533725689::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1558533725689) ENABLED START*/
     // TODO implement wm and check whether stop/start message was received
-    return false;
+    return true;
     /*PROTECTED REGION END*/
 }
 /* generated comment

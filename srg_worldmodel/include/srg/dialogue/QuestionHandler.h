@@ -8,23 +8,17 @@
 namespace srg
 {
 class SRGWorldModel;
-namespace conceptnet
-{
-class ConceptNet;
-}
 namespace dialogue
 {
-class InformHandler
+class QuestionHandler
 {
 public:
-    explicit InformHandler(SRGWorldModel* wm);
+    explicit QuestionHandler(SRGWorldModel* wm);
 
-    std::shared_ptr<agent::SpeechAct> answerInform(const agent::SpeechAct informAct);
+    std::shared_ptr<agent::SpeechAct> answerQuestion(const agent::SpeechAct requestAct);
 
 private:
     srg::SRGWorldModel* wm;
-    conceptnet::ConceptNet* cn;
 };
-
 } // namespace dialogue
 } // namespace srg

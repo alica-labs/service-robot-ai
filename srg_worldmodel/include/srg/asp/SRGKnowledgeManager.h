@@ -25,6 +25,7 @@ public:
     virtual ~SRGKnowledgeManager();
     void setSolver(reasoner::asp::Solver *solver) override;
 
+    void ask(const std::string& question);
     void addRoom(const srg::world::Room* room);
 private:
     Generator* gen;
