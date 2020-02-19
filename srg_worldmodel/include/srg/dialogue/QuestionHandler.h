@@ -10,6 +10,7 @@ namespace srg
 class SRGWorldModel;
 namespace dialogue
 {
+class BasicHumanNeeds;
 class QuestionHandler
 {
 public:
@@ -19,6 +20,7 @@ public:
 
 private:
     srg::SRGWorldModel* wm;
+    BasicHumanNeeds* basicHumanNeeds;
 };
 } // namespace dialogue
 } // namespace srg

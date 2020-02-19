@@ -12,7 +12,7 @@
     "comment" : "",
     "enabled" : true,
     "conditionString" : null,
-    "pluginName" : null,
+    "pluginName" : "DefaultPlugin",
     "variables" : [ ]
   },
   "runtimeCondition" : {
@@ -21,7 +21,7 @@
     "comment" : "",
     "enabled" : true,
     "conditionString" : null,
-    "pluginName" : null,
+    "pluginName" : "DefaultPlugin",
     "variables" : [ ]
   },
   "postCondition" : {
@@ -30,7 +30,7 @@
     "comment" : "",
     "enabled" : true,
     "conditionString" : null,
-    "pluginName" : null,
+    "pluginName" : "DefaultPlugin",
     "variables" : [ ]
   },
   "parameters" : { }

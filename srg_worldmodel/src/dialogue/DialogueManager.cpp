@@ -2,8 +2,8 @@
 
 #include "srg/SRGWorldModel.h"
 #include "srg/dialogue/AnswerGraph.h"
-#include "srg/dialogue/BasicHumanNeeds.h"
 #include "srg/dialogue/InformHandler.h"
+#include "srg/dialogue/QuestionHandler.h"
 #include "srg/tasks/TaskHandler.h"
 
 #include <srg/agent/containers/SpeechAct.h>
@@ -19,7 +19,7 @@ namespace dialogue
 DialogueManager::DialogueManager(srg::SRGWorldModel* wm)
         : wm(wm)
 {
-    this->basicHumanNeeds = new BasicHumanNeeds(wm);
+    this->questionHandler = new QuestionHandler(wm);
     this->informHandler = new InformHandler(wm);
     this->taskHandler = new srg::tasks::TaskHandler(wm);
 }
@@ -31,7 +31,7 @@ DialogueManager::~DialogueManager()
 void DialogueManager::processSpeechAct(std::shared_ptr<supplementary::InformationElement<agent::SpeechAct>> speechAct)
 {
     if (speechAct->getInformation().type == agent::SpeechType::request) {
-        this->speechActs.push_back(this->basicHumanNeeds->answerNeed(speechAct->getInformation()));
+        this->speechActs.push_back(this->questionHandler->answerQuestion(speechAct->getInformation()));
     } else if (speechAct->getInformation().type == agent::SpeechType::inform) {
         this->speechActs.push_back(this->informHandler->answerInform(speechAct->getInformation()));
     } else if (speechAct->getInformation().type == agent::SpeechType::command) {

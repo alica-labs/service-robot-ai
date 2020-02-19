@@ -1,4 +1,5 @@
 #include "ConditionCreator.h"
+#include "Behaviours/Answer1581966891046.h"
 #include "Behaviours/GenerateTasks1575291385685.h"
 #include "Behaviours/Manipulate1571687572903.h"
 #include "Behaviours/Move1568825137528.h"
@@ -69,6 +70,21 @@ std::shared_ptr<BasicCondition> ConditionCreator::createConditions(long conditio
         break;
     case 1573419841944:
         return std::make_shared<PreCondition1573419841944>();
+        break;
+    case 1581966891048:
+        return std::make_shared<PreCondition1581966891048>();
+        break;
+    case 1581966891049:
+        return std::make_shared<RunTimeCondition1581966891049>();
+        break;
+    case 1581966891050:
+        return std::make_shared<PostCondition1581966891050>();
+        break;
+    case 1581966904893:
+        return std::make_shared<PreCondition1581966904893>();
+        break;
+    case 1581966925394:
+        return std::make_shared<PreCondition1581966925394>();
         break;
     default:
         std::cerr << "ConditionCreator: Unknown condition id requested: " << conditionConfId << std::endl;

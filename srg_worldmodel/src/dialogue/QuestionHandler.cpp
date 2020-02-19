@@ -2,6 +2,7 @@
 
 #include "srg/SRGWorldModel.h"
 #include "srg/asp/SRGKnowledgeManager.h"
+#include "srg/dialogue/BasicHumanNeeds.h"
 
 #include <engine/AlicaEngine.h>
 
@@ -12,11 +13,17 @@ namespace dialogue
 QuestionHandler::QuestionHandler(SRGWorldModel* wm)
         : wm(wm)
 {
+    this->basicHumanNeeds = new BasicHumanNeeds(wm);
 }
 
 std::shared_ptr<agent::SpeechAct> QuestionHandler::answerQuestion(const agent::SpeechAct requestAct)
 {
-    // TODO test code
+    // Handling of Basic Human Needs
+    if (requestAct.text.find("NEED") == 0) {
+        return this->basicHumanNeeds->answerNeed(requestAct);
+    }
+
+    // Basic ASP testing
     this->wm->srgKnowledgeManager->ask(requestAct.text);
 
     // prepare answer

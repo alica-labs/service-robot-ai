@@ -20,9 +20,9 @@ bool PreCondition1558533725689::evaluate(shared_ptr<RunningPlan> rp)
     return true;
     /*PROTECTED REGION END*/
 }
-/* generated comment
-    Task: Default  -> EntryPoint-ID: 1555601746711
-*/
+/**
+ * Task: Default  -> EntryPoint-ID: 1555601746711
+ */
 shared_ptr<UtilityFunction> UtilityFunction1555601736192::getUtilityFunction(Plan* plan)
 {
     /*PROTECTED REGION ID(1555601736192) ENABLED START*/
@@ -30,26 +30,22 @@ shared_ptr<UtilityFunction> UtilityFunction1555601736192::getUtilityFunction(Pla
     return defaultFunction;
     /*PROTECTED REGION END*/
 }
-/*
+/**
+ * Outgoing transition:
+ *   - Name: 1558533620473, ConditionString: Start received!, Comment: MISSING_COMMENT
  *
- * Transition:
- *   - Name: 1558533620473, ConditionString: Start received!, Comment : MISSING_COMMENT
+ * Abstractplans in current state:
+ *   - Stop (1555602210283)
  *
- * Plans in State:
- *
- *   - Plan - (Name): Stop, (PlanID): 1555602210283
- *
- * Tasks:
- *
+ * Tasks in plan:
  *   - Default (1575654042058) (Entrypoint: 1555601746711)
  *
- * States:
- *
+ * States in plan:
  *   - Stop (1555601748848)
  *   - Spawn (1558533460297)
  *   - Operate (1558533461982)
  *
- * Vars:
+ * Variables of plan:
  */
 bool PreCondition1558533620473::evaluate(shared_ptr<RunningPlan> rp)
 {
@@ -58,26 +54,22 @@ bool PreCondition1558533620473::evaluate(shared_ptr<RunningPlan> rp)
     return lastCmd.has_value() && lastCmd->cmd == srg::agent::AgentCommand::START;
     /*PROTECTED REGION END*/
 }
-/*
+/**
+ * Outgoing transition:
+ *   - Name: 1558533654035, ConditionString: Stop received, Comment: MISSING_COMMENT
  *
- * Transition:
- *   - Name: 1558533654035, ConditionString: Stop received, Comment : MISSING_COMMENT
+ * Abstractplans in current state:
+ *   - Spawn (1558533534825)
  *
- * Plans in State:
- *
- *   - Plan - (Name): Spawn, (PlanID): 1558533534825
- *
- * Tasks:
- *
+ * Tasks in plan:
  *   - Default (1575654042058) (Entrypoint: 1555601746711)
  *
- * States:
- *
+ * States in plan:
  *   - Stop (1555601748848)
  *   - Spawn (1558533460297)
  *   - Operate (1558533461982)
  *
- * Vars:
+ * Variables of plan:
  */
 bool PreCondition1558533654035::evaluate(shared_ptr<RunningPlan> rp)
 {
@@ -86,26 +78,22 @@ bool PreCondition1558533654035::evaluate(shared_ptr<RunningPlan> rp)
     return lastCmd.has_value() && lastCmd->cmd == srg::agent::AgentCommand::STOP;
     /*PROTECTED REGION END*/
 }
-/*
+/**
+ * Outgoing transition:
+ *   - Name: 1558533667052, ConditionString: Spawn successful (acknowledge through received sim sensor values) && I am a robot, Comment: MISSING_COMMENT
  *
- * Transition:
- *   - Name: 1558533667052, ConditionString: Spawn successful (acknowledge through received sim sensor values) && I am a robot, Comment : MISSING_COMMENT
+ * Abstractplans in current state:
+ *   - Spawn (1558533534825)
  *
- * Plans in State:
- *
- *   - Plan - (Name): Spawn, (PlanID): 1558533534825
- *
- * Tasks:
- *
+ * Tasks in plan:
  *   - Default (1575654042058) (Entrypoint: 1555601746711)
  *
- * States:
- *
+ * States in plan:
  *   - Stop (1555601748848)
  *   - Spawn (1558533460297)
  *   - Operate (1558533461982)
  *
- * Vars:
+ * Variables of plan:
  */
 bool PreCondition1558533667052::evaluate(shared_ptr<RunningPlan> rp)
 {
@@ -113,26 +101,22 @@ bool PreCondition1558533667052::evaluate(shared_ptr<RunningPlan> rp)
     return this->wm->sRGSimData.isLocalised();
     /*PROTECTED REGION END*/
 }
-/*
+/**
+ * Outgoing transition:
+ *   - Name: 1560934538125, ConditionString: Stop received!, Comment: MISSING_COMMENT
  *
- * Transition:
- *   - Name: 1560934538125, ConditionString: Stop received!, Comment : MISSING_COMMENT
+ * Abstractplans in current state:
+ *   - Operate (1575655614484)
  *
- * Plans in State:
- *
- *   - Plan - (Name): Operate, (PlanID): 1575655614484
- *
- * Tasks:
- *
+ * Tasks in plan:
  *   - Default (1575654042058) (Entrypoint: 1555601746711)
  *
- * States:
- *
+ * States in plan:
  *   - Stop (1555601748848)
  *   - Spawn (1558533460297)
  *   - Operate (1558533461982)
  *
- * Vars:
+ * Variables of plan:
  */
 bool PreCondition1560934538125::evaluate(shared_ptr<RunningPlan> rp)
 {
