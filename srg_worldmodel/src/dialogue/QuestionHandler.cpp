@@ -16,8 +16,10 @@ QuestionHandler::QuestionHandler(SRGWorldModel* wm)
 
 std::shared_ptr<agent::SpeechAct> QuestionHandler::answerQuestion(const agent::SpeechAct requestAct)
 {
+    // TODO test code
     this->wm->srgKnowledgeManager->ask(requestAct.text);
-    //this->wm->srgKnowledgeManager->;
+
+    // prepare answer
     std::shared_ptr<agent::SpeechAct> answerSpeechAct = std::make_shared<agent::SpeechAct>();
     answerSpeechAct->text = "";
     answerSpeechAct->type = agent::SpeechType::request;

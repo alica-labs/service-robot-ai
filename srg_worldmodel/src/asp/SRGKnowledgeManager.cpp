@@ -16,7 +16,7 @@ void SRGKnowledgeManager::setSolver(reasoner::asp::Solver * solver) {
 }
 
 void SRGKnowledgeManager::ask(const std::string& question) {
-
+    std::cout << "[SRGKnowledgeManager] Asking the following question '" << question << "'" << std::endl;
 }
 
 void SRGKnowledgeManager::addRoom(const srg::world::Room* room)
