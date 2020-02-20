@@ -1,7 +1,5 @@
 #include "srg/agent/SearchCellSorter.h"
 
-#include <Geometry.h>
-#include <srg/Agent.h>
 #include <srg/world/Cell.h>
 
 namespace srg

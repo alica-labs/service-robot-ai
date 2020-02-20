@@ -10,12 +10,14 @@ SRGKnowledgeManager::SRGKnowledgeManager() {}
 
 SRGKnowledgeManager::~SRGKnowledgeManager() {}
 
-void SRGKnowledgeManager::setSolver(reasoner::asp::Solver * solver) {
+void SRGKnowledgeManager::setSolver(reasoner::asp::Solver* solver)
+{
     this->gen = new Generator(solver->WILDCARD_POINTER, solver->WILDCARD_STRING);
     ASPKnowledgeManager::setSolver(solver);
 }
 
-void SRGKnowledgeManager::ask(const std::string& question) {
+void SRGKnowledgeManager::ask(const std::string& question)
+{
     std::cout << "[SRGKnowledgeManager] Asking the following question '" << question << "'" << std::endl;
     std::vector<std::string> resultStrings = this->filterModel(question);
     std::cout << "[SRGKnowledgeManager] Result: '";

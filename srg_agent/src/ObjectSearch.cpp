@@ -32,13 +32,6 @@ const srg::world::Cell* ObjectSearch::getNextCell()
         return nullptr;
     }
     return this->fringe->begin()->cell;
-
-    //    std::vector<std::pair<int32_t, const srgsim::Cell*>> cellsInPriorityOrder;
-    //    for (SearchCell sCell : *this->fringe) {
-    //        cellsInPriorityOrder.emplace_back(-1, cell);
-    //    }
-    //    std::sort(cellsInPriorityOrder.begin(), cellsInPriorityOrder.end(), CustomCellSorter(this->wm));
-    //    return cellsInPriorityOrder.begin()->second;
 }
 
 void ObjectSearch::update()
@@ -68,6 +61,7 @@ void ObjectSearch::update()
         }
     }
 
+    // for debugging purposes only
     for (auto& cell : *this->fringe) {
         srg::viz::Marker marker(cell.cell->coordinate);
         marker.type = srg::viz::SpriteType::CupRed;
@@ -75,6 +69,13 @@ void ObjectSearch::update()
     }
 }
 
+/**
+ * Called one time per update call of this ObjectSearch.
+ * @param ownCoord
+ * @param world
+ * @param visible The cells that agent is currently able to see.
+ * @param front The cells that are neighbours to the currently seeable cells, i.e. potentially unvisited cells to visit.
+ */
 void ObjectSearch::getVisibleAndFrontCells(srg::world::Coordinate& ownCoord, const srg::World* world, std::unordered_set<const srg::world::Cell*>& visible,
         std::unordered_set<const srg::world::Cell*>& front)
 {
