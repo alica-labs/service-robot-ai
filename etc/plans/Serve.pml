@@ -28,8 +28,8 @@
     "parentPlan" : 1568825275605,
     "abstractPlans" : [ "Behaviours/Stop.beh#1555602210283" ],
     "variableBindings" : [ ],
-    "outTransitions" : [ 1568825336792, 1571661739802, 1573418725423 ],
-    "inTransitions" : [ 1568825392354, 1571661809581, 1573418821209 ]
+    "outTransitions" : [ 1568825336792, 1571661739802, 1573418725423, 1581966904890 ],
+    "inTransitions" : [ 1568825392354, 1571661809581, 1573418821209, 1581966925392 ]
   }, {
     "type" : "State",
     "id" : 1568825309813,
@@ -63,6 +63,17 @@
     "variableBindings" : [ ],
     "outTransitions" : [ 1573418821209 ],
     "inTransitions" : [ 1573418725423 ]
+  }, {
+    "type" : "State",
+    "id" : 1581966845202,
+    "name" : "AnswerQuestion",
+    "comment" : "",
+    "entryPoint" : null,
+    "parentPlan" : 1568825275605,
+    "abstractPlans" : [ "Behaviours/Answer.beh#1581966891046" ],
+    "variableBindings" : [ ],
+    "outTransitions" : [ 1581966925392 ],
+    "inTransitions" : [ 1581966904890 ]
   } ],
   "transitions" : [ {
     "id" : 1568825336792,
@@ -161,6 +172,40 @@
       "comment" : "",
       "enabled" : true,
       "conditionString" : "Any children success",
+      "pluginName" : "DefaultPlugin",
+      "variables" : [ ],
+      "quantifiers" : [ ]
+    },
+    "synchronisation" : null
+  }, {
+    "id" : 1581966904890,
+    "name" : "FromWaitForTaskToAnswerQuestion",
+    "comment" : "MISSING_COMMENT",
+    "inState" : 1568825288640,
+    "outState" : 1581966845202,
+    "preCondition" : {
+      "id" : 1581966904893,
+      "name" : "1581966904893",
+      "comment" : "",
+      "enabled" : true,
+      "conditionString" : null,
+      "pluginName" : "DefaultPlugin",
+      "variables" : [ ],
+      "quantifiers" : [ ]
+    },
+    "synchronisation" : null
+  }, {
+    "id" : 1581966925392,
+    "name" : "FromAnswerQuestionToWaitForTask",
+    "comment" : "MISSING_COMMENT",
+    "inState" : 1581966845202,
+    "outState" : 1568825288640,
+    "preCondition" : {
+      "id" : 1581966925394,
+      "name" : "1581966925394",
+      "comment" : "",
+      "enabled" : true,
+      "conditionString" : null,
       "pluginName" : "DefaultPlugin",
       "variables" : [ ],
       "quantifiers" : [ ]

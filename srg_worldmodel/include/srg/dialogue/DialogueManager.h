@@ -28,9 +28,9 @@ namespace dialogue
 class AnswerGraph;
 class InformHandler;
 class TaskHandler;
-class BasicHumanNeeds;
+class QuestionHandler;
 
-#define inconsistency_eval
+//#define inconsistency_eval
 class DialogueManager
 {
 public:
@@ -38,12 +38,13 @@ public:
     ~DialogueManager();
     void processSpeechAct(std::shared_ptr<supplementary::InformationElement<agent::SpeechAct>> speechAct);
 
-    BasicHumanNeeds* basicHumanNeeds;
+    QuestionHandler* questionHandler;
     InformHandler* informHandler;
     srg::tasks::TaskHandler* taskHandler;
 
 private:
     srg::SRGWorldModel* wm;
+    // TODO limit the length - maybe put a RingBuffer here...
     std::vector<std::shared_ptr<srg::agent::SpeechAct>> speechActs;
     void renderDot() const;
 };

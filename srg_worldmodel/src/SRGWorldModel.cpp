@@ -4,8 +4,6 @@
 #include "srg/asp/SRGKnowledgeManager.h"
 #include "srg/asp/ASPTranslator.h"
 
-#include <knowledge_manager/ASPKnowledgeManager.h>
-
 namespace srg
 {
 
@@ -50,6 +48,10 @@ void SRGWorldModel::init()
     this->communication = new wm::Communication(this);
 }
 
+/**
+ * Must be called before init().
+ * @param solver
+ */
 void SRGWorldModel::setSolver(reasoner::asp::Solver* solver) {
     this->srgKnowledgeManager->setSolver(solver);
   // add asp facts that probably don't change

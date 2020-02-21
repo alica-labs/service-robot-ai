@@ -45,8 +45,8 @@ private:
 
     essentials::SystemConfig* sc;
     srg::SRGWorldModel* wm;
-    uint32_t sightLimit;
-    uint32_t updateCounter;
+    uint32_t sightLimit; /**< The sight radius of the agent in number-of-cells. */
+    uint32_t updateCounter; /**< Is used to give newer SearchCells a higher priority. */
 
     srg::world::ObjectType objectType;
     std::unordered_set<srg::world::RoomType> roomTypes;

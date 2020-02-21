@@ -13,7 +13,14 @@ Generator::Generator(const void* wildcard_pointer, std::string wildcard_string)
 {
 }
 
-// UNARY Predicates
+// BINARY Predicates
+
+/**
+ * Returns a predicate of the form is(room123, kitchen).
+ * @param room The queried room.
+ * @param dotTerminated True, for facts. False, otherwise.
+ * @return String representing the queried "is" predicate.
+ */
 std::string Generator::is(const srg::world::Room* room, bool dotTerminated)
 {
     std::stringstream roomType;

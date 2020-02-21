@@ -31,6 +31,7 @@ private:
     conceptnet::ConceptNet* cn;
 
     void createAnswerPaths(AnswerGraph* answerGraph, conceptnet::Concept *start);
+    std::shared_ptr<agent::SpeechAct> createAnswerSpeechAct(essentials::IdentifierConstPtr previousActID, srg::dialogue::AnswerGraph* answerGraph);
 };
 } // namespace wm
 } // namespace srg

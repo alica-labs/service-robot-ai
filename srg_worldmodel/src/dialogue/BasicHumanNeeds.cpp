@@ -41,6 +41,11 @@ std::shared_ptr<agent::SpeechAct> BasicHumanNeeds::answerNeed(const agent::Speec
     srg::dialogue::AnswerGraph* answerGraph = new srg::dialogue::AnswerGraph();
     conceptnet::Concept* root = this->cn->getConcept(answerGraph, needAct.text);
     answerGraph->setRoot(root);
+    if (!root) {
+        // did not find any concept for the given text
+        std::cout << "[BasicHumanNeeds] No root concept found for '" << needAct.text << "'" << std::endl;
+        return createAnswerSpeechAct(needAct.actID, answerGraph);
+    }
 
     // 1. ask ConceptNet for MotivatedByGoal(WILDCARD, need) and CausesDesire(need, WILDCARD)
     root->addEdges(this->cn->getIncomingEdges(answerGraph, conceptnet::MotivatedByGoal, needAct.text, bestNumberOfElements));
@@ -73,14 +78,18 @@ std::shared_ptr<agent::SpeechAct> BasicHumanNeeds::answerNeed(const agent::Speec
 //    }
 #endif
 
-    //TODO add again later
-    //answerGraph->renderDot();
+    // TODO add again later
+    // answerGraph->renderDot();
+    return createAnswerSpeechAct(needAct.actID, answerGraph);
+}
 
+std::shared_ptr<agent::SpeechAct> BasicHumanNeeds::createAnswerSpeechAct(essentials::IdentifierConstPtr previousActID, srg::dialogue::AnswerGraph* answerGraph)
+{
     std::shared_ptr<agent::SpeechAct> answerSpeechAct = std::make_shared<agent::SpeechAct>();
     answerSpeechAct->text = "";
     answerSpeechAct->answerGraph = answerGraph;
     answerSpeechAct->type = agent::SpeechType::request;
-    answerSpeechAct->previousActID = needAct.actID;
+    answerSpeechAct->previousActID = previousActID;
     answerSpeechAct->actID = this->wm->getEngine()->getIdManager()->generateID();
     answerSpeechAct->senderID = this->wm->getOwnId();
     return answerSpeechAct;

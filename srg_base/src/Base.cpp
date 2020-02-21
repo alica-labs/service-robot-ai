@@ -43,8 +43,8 @@ Base::Base(std::string roleSetName, std::string masterPlanName, std::string role
 
     wm = SRGWorldModel::getInstance();
     wm->setEngine(ae);
-    wm->init();
     wm->setSolver(solver);
+    wm->init();
 
     if (!ae->init(bc, cc, uc, crc)) {
         std::cerr << "Base: Unable to initialize the Alica Engine successfull!" << std::endl;

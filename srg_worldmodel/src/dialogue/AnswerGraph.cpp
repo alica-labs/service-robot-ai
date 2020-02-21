@@ -153,6 +153,10 @@ std::string AnswerGraph::toString()
 
 void AnswerGraph::renderDot(Agraph_t* g, bool markInconsistencies)
 {
+    if (!root) {
+        std::cerr << "[AnswerGraph] No root node to rended anything!" << std::endl;
+        return;
+    }
     std::vector<conceptnet::Concept*> openNodes;
     std::vector<conceptnet::Concept*> closedNodes;
 
