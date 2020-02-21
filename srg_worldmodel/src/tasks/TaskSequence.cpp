@@ -47,6 +47,10 @@ int32_t TaskSequence::getActiveTaskIdx() {
     return this->activeTaskIdx;
 }
 
+void TaskSequence::setActiveTaskIdx(int32_t newActiveTaskIdx) {
+    this->activeTaskIdx = newActiveTaskIdx;
+}
+
 Task* TaskSequence::getTask(int32_t taskIdx)
 {
     return this->taskSequence[taskIdx];

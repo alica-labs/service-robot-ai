@@ -10,6 +10,7 @@ namespace srg
 {
 namespace tasks
 {
+class TaskHandler;
 class Task;
 class TaskSequence
 {
@@ -21,13 +22,17 @@ public:
     Task* getTask(int32_t taskIdx);
     Task* getActiveTask();
     int32_t getActiveTaskIdx();
+
     int32_t size() const;
     bool isSuccessful();
     void setStartTime(alica::AlicaTime startTime);
     void setEndTime(alica::AlicaTime endTime);
     std::string toLogString(essentials::IdentifierConstPtr agentID);
     friend std::ostream& operator<<(std::ostream& os, const srg::tasks::TaskSequence& taskSequence);
+    friend TaskHandler;
 private:
+    void setActiveTaskIdx(int32_t newActiveTaskIdx);
+
     alica::AlicaTime startTime;
     alica::AlicaTime endTime;
     int32_t activeTaskIdx;

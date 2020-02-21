@@ -58,8 +58,12 @@ void TaskHandler::updateCurrentTaskSequence()
     }
     Task* activeTask = this->currentTaskSequence->getActiveTask();
     if (activeTask->isCompletelySpecified()) {
+        this->removeInvalidKnowledge(this->currentTaskSequence);
         return;
     }
+
+    // search tasks are always completely specified, so the active task must not be a search task
+    assert (activeTask->type != TaskType::Search);
 
     // find last search task before active task
     int32_t taskIdx = this->currentTaskSequence->getActiveTaskIdx();
@@ -106,6 +110,46 @@ void TaskHandler::updateCurrentTaskSequence()
     }
 }
 
+void TaskHandler::removeInvalidKnowledge(std::shared_ptr<TaskSequence> taskSequence)
+{
+    assert(!taskSequence->isSuccessful());
+    assert(taskSequence->getActiveTask()->isCompletelySpecified());
+
+    // loop backwards over the task sequence
+    int32_t taskIdx = taskSequence->getActiveTaskIdx();
+    while (taskIdx >= 0) {
+        Task* task = taskSequence->getTask(taskIdx);
+        if (task->type == TaskType::Search) {
+            // a search task does not contain knowledge that could render to be invalid
+            break;
+        }
+
+        if (!task->objectID) {
+            // no knowledge to invalidate
+            break;
+        }
+
+        std::shared_ptr<const world::Object> object = this->wm->sRGSimData.getWorld()->getObject(task->objectID);
+        if (object && object->getCoordinate().x >= 0) {
+            // everything is fine for this task
+            break;
+        }
+
+        if (object && object->getCoordinate().x < 0) {
+            // object still exists, but has not coordinates so remove it from the world
+            this->wm->sRGSimData.getWorld()->removeObjectIfUnknown(task->objectID);
+        }
+        task->objectID = nullptr;
+        task->objectType = world::ObjectType::Unknown;
+        if (task->type != TaskType::PutDown) {
+            task->coordinate = world::Coordinate(-1,-1);
+        }
+        task->successful = false;
+        taskIdx--;
+    }
+    taskSequence->setActiveTaskIdx(taskIdx);
+}
+
 void TaskHandler::setNextTaskSequence()
 {
     if (this->currentTaskSequence) {
@@ -138,7 +182,8 @@ void TaskHandler::processTaskAct(std::shared_ptr<supplementary::InformationEleme
     this->taskActBuffer->add(taskAct);
 }
 
-void TaskHandler::logTaskSequence(std::shared_ptr<TaskSequence> taskSequence) {
+void TaskHandler::logTaskSequence(std::shared_ptr<TaskSequence> taskSequence)
+{
     taskSequence->setEndTime(this->wm->getTime());
     std::ofstream fileWriter;
     fileWriter.open(essentials::FileSystem::combinePaths("results", "TaskLog.csv"), std::ios_base::app);

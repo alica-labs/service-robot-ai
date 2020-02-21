@@ -29,7 +29,7 @@ Task::~Task() {}
 bool Task::checkSuccess(SRGWorldModel* wm) const
 {
     if (!this->isSuccessful() && isCompletelySpecified()) {
-        switch (type) {
+        switch (this->type) {
         case TaskType::Move:
             this->successful = this->checkMoveSuccess(wm);
             break;
