@@ -118,7 +118,7 @@ void ObjectSearch::trace(const srg::World* world, srg::world::Coordinate& from, 
         }
         bool sightBlocked = false;
         for (auto& objectEntry : cell->getObjects()) {
-            if(class srg::world::Door* door = dynamic_cast<class srg::world::Door*>(objectEntry.second)) {
+            if(std::shared_ptr<srg::world::Door> door = std::dynamic_pointer_cast<srg::world::Door>(objectEntry.second)) {
                 sightBlocked = !door->isOpen();
                 break;
             }

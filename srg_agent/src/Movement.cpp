@@ -121,7 +121,7 @@ bool Movement::checkValidity(srg::world::Coordinate coord)
     }
 
     for (auto& objectEntry : cell->getObjects()) {
-        if (class srg::world::Door* door = dynamic_cast<class srg::world::Door*>(objectEntry.second)) {
+        if (std::shared_ptr<srg::world::Door> door = std::dynamic_pointer_cast<srg::world::Door>(objectEntry.second)) {
             return door->isOpen();
         }
     }

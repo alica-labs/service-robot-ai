@@ -75,7 +75,7 @@ void TaskHandler::updateCurrentTaskSequence()
         return;
     }
 
-    const srg::world::Object* foundObject = nullptr;
+    std::shared_ptr<const srg::world::Object> foundObject = nullptr;
     if (completionHelperTask->objectID) {
         foundObject = this->wm->sRGSimData.getWorld()->getObject(completionHelperTask->objectID);
     } else {

@@ -53,18 +53,18 @@ void SRGSimData::processPerception(srg::sim::containers::SimPerceptions simPerce
         const srg::world::Cell* cell = this->world->getCell(srg::world::Coordinate(cellPerception.x, cellPerception.y));
         if (cell) {
             // update objects itself
-            std::vector<world::Object*> objects;
-            for (srg::world::Object* object : cellPerception.objects) {
+            std::vector<std::shared_ptr<world::Object>> objects;
+            for (std::shared_ptr<srg::world::Object> object : cellPerception.objects) {
                 objects.push_back(this->world->createOrUpdateObject(object));
             }
 
             // update association with cell
             this->world->updateCell(srg::world::Coordinate(cellPerception.x, cellPerception.y), objects);
-            for (world::Object* object : objects) {
+            for (std::shared_ptr<world::Object> object : objects) {
                 switch (object->getType()) {
                 case world::ObjectType::Robot:
                 case world::ObjectType::Human:{
-                    this->world->addAgent(static_cast<srg::world::Agent*>(object));
+                    this->world->addAgent(std::dynamic_pointer_cast<srg::world::Agent>(object));
                     const world::Cell* cell = dynamic_cast<const world::Cell*>(object->getParentContainer());
                     auto ownPositionInfo = std::make_shared<supplementary::InformationElement<srg::world::Coordinate>>(
                             cell->coordinate, wm->getTime(), ownPositionValidityDuration, 1.0);

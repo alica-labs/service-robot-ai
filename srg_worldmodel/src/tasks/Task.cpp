@@ -77,8 +77,8 @@ bool Task::checkMoveSuccess(SRGWorldModel* wm) const
 
 bool Task::checkManipulationSuccess(SRGWorldModel* wm) const
 {
-    const srg::world::Object* object = nullptr;
-    const srg::world::Agent* agent = nullptr;
+    std::shared_ptr<const srg::world::Object> object = nullptr;
+    std::shared_ptr<const srg::world::Agent> agent = nullptr;
     const srg::world::Cell* cell = nullptr;
     bool success = false;
     switch (this->type) {
