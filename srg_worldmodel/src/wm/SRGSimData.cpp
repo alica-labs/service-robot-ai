@@ -78,6 +78,9 @@ void SRGSimData::processPerception(srg::sim::containers::SimPerceptions simPerce
         }
     }
 
+    // remove objects that don't have coordinates -> you don't know them anymore
+    this->world->removeUnknownObjects();
+
     // call to update success status of tasks
     this->dialogueManager->taskHandler->tick();
 
