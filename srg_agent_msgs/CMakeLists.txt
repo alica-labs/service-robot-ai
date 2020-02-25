@@ -5,12 +5,12 @@ set(CMAKE_BUILD_TYPE Debug)
 
 add_compile_options(-std=c++11)
 
-find_package(catkin REQUIRED capnzero id_capnzero id_manager)
+find_package(catkin REQUIRED capnzero id_capnzero id_manager grid_sim)
 
 catkin_package(
         INCLUDE_DIRS include
         LIBRARIES srg_agent_msgs
-        CATKIN_DEPENDS capnzero id_capnzero
+        CATKIN_DEPENDS capnzero id_capnzero grid_sim
         #  DEPENDS system_lib
 )
 
@@ -21,7 +21,11 @@ include_directories(
 
 #### AGENT MESSAGES
 find_package(CapnProto REQUIRED)
-set(CAPNPC_IMPORT_DIRS "${id_capnzero_SOURCE_PREFIX}/include")# include external capnp message schema files
+# include external capnp message schema files
+set(CAPNPC_IMPORT_DIRS
+        "${id_capnzero_SOURCE_PREFIX}/include"
+        "${grid_sim_SOURCE_PREFIX}/include"
+)
 set(capnp_msg_folder "${CMAKE_CURRENT_SOURCE_DIR}/include/srg/agent")
 file(GLOB_RECURSE capnp_messages ${capnp_msg_folder} *.capnp)
 set(CAPNPC_SRC_PREFIX ${capnp_msg_folder})

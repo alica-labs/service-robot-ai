@@ -82,7 +82,8 @@ std::vector<Edge*> ConceptNet::getEdges(CNManager* cnManager, Relation relation,
     return edges;
 }
 
-std::vector<Edge*> ConceptNet::getCompleteEdge(CNManager* cnManager, Relation relation, const std::string& fromConcept, const std::string& toConcept, int limit)
+std::vector<Edge*> ConceptNet::getCompleteEdges(
+        CNManager* cnManager, Relation relation, const std::string& fromConcept, const std::string& toConcept, int limit)
 {
     std::vector<Edge*> edges;
     std::string json = httpGet(
@@ -131,7 +132,7 @@ std::vector<Edge*> ConceptNet::getRelations(CNManager* cnManager, const std::str
 std::vector<Edge*> ConceptNet::getEquivalentOutgoingEdges(CNManager* cnManager, const conceptnet::Concept* concept, int limit)
 {
     std::vector<Edge*> edges = this->getOutgoingEdges(cnManager, conceptnet::Synonym, concept->term, limit);
-    // TODO insert symmetric edge?
+
     std::vector<Edge*> similarToEdges = this->getOutgoingEdges(cnManager, conceptnet::SimilarTo, concept->term, limit);
     edges.insert(edges.end(), similarToEdges.begin(), similarToEdges.end());
 
@@ -139,6 +140,16 @@ std::vector<Edge*> ConceptNet::getEquivalentOutgoingEdges(CNManager* cnManager, 
     edges.insert(edges.end(), instanceOfEdges.begin(), instanceOfEdges.end());
 
     return edges;
+}
+
+std::vector<Concept*> ConceptNet::getEquivalentConcepts(CNManager* cnManager, conceptnet::Concept* concept, int limit)
+{
+    std::vector<conceptnet::Edge*> edges = this->getEquivalentOutgoingEdges(cnManager, concept, -1);
+    std::vector<conceptnet::Concept*> equivalentConcepts;
+    for (conceptnet::Edge* edge : edges) {
+        equivalentConcepts.push_back(edge->toConcept);
+    }
+    return equivalentConcepts;
 }
 
 double ConceptNet::getRelatedness(const std::string& firstConcept, const std::string& secondConcept)
@@ -328,14 +339,14 @@ void ConceptNet::findInconsistencies(srg::dialogue::AnswerGraph* answerGraph, in
 {
     collectAntonyms(answerGraph, limit);
     std::vector<Concept*> newAntonyms;
-    for(int i = 0; i < ConceptNet::SYNONYMDEPTH; i++) {
+    for (int i = 0; i < ConceptNet::SYNONYMDEPTH; i++) {
         newAntonyms = getNewAdjectives(answerGraph);
         for (auto concept : newAntonyms) {
-            std::vector<Edge *> equivalent = this->getEquivalentOutgoingEdges(answerGraph, concept, limit);
+            std::vector<Edge*> equivalent = this->getEquivalentOutgoingEdges(answerGraph, concept, limit);
             if (answerGraph->adjectiveAntonymMap.find(concept) == answerGraph->adjectiveAntonymMap.end()) {
                 answerGraph->adjectiveAntonymMap.emplace(concept, equivalent);
             } else {
-                for (Edge *edge : equivalent) {
+                for (Edge* edge : equivalent) {
                     auto tmp = answerGraph->adjectiveAntonymMap.at(concept);
                     if (std::find(tmp.begin(), tmp.end(), edge) == tmp.end()) {
                         answerGraph->adjectiveAntonymMap.at(concept).push_back(edge);
@@ -345,7 +356,6 @@ void ConceptNet::findInconsistencies(srg::dialogue::AnswerGraph* answerGraph, in
             concept->addEdges(equivalent);
         }
     }
-
 
     for (auto pair : answerGraph->adjectiveAntonymMap) {
         if (pair.second.empty()) {

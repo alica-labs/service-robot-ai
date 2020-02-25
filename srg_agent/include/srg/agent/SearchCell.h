@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <memory>
 
 namespace srg
 {
@@ -12,9 +13,9 @@ namespace agent
 {
 struct SearchCell
 {
-    SearchCell(int32_t priority, const srg::world::Cell* cell);
+    SearchCell(int32_t priority, std::shared_ptr<const world::Cell> cell);
     int32_t priority;
-    const srg::world::Cell* cell;
+    std::shared_ptr<const world::Cell> cell;
 };
 } // namespace agent
 } // namespace srg

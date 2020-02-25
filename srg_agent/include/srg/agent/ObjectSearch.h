@@ -35,13 +35,13 @@ public:
 
     void addRoomType(srg::world::RoomType type);
     void update();
-    const srg::world::Cell* getNextCell();
+    std::shared_ptr<const world::Cell> getNextCell();
 
 private:
-    void getVisibleAndFrontCells(srg::world::Coordinate& ownCoord, const srg::World* world, std::unordered_set<const srg::world::Cell*>& visible,
-            std::unordered_set<const srg::world::Cell*>& front);
-    void trace(const srg::World* world, srg::world::Coordinate& from, srg::world::Coordinate& to, std::unordered_set<const srg::world::Cell*>& visible,
-            std::unordered_set<const srg::world::Cell*>& front);
+    void getVisibleAndFrontCells(srg::world::Coordinate& ownCoord, const srg::World* world, std::unordered_set<std::shared_ptr<const world::Cell>>& visible,
+            std::unordered_set<std::shared_ptr<const world::Cell>>& front);
+    void trace(const srg::World* world, srg::world::Coordinate& from, srg::world::Coordinate& to, std::unordered_set<std::shared_ptr<const world::Cell>>& visible,
+            std::unordered_set<std::shared_ptr<const world::Cell>>& front);
 
     essentials::SystemConfig* sc;
     srg::SRGWorldModel* wm;
@@ -52,7 +52,7 @@ private:
     std::unordered_set<srg::world::RoomType> roomTypes;
 
     std::set<SearchCell, SearchCellSorter>* fringe;
-    std::unordered_set<const srg::world::Cell*>* visited;
+    std::unordered_set<std::shared_ptr<const world::Cell>>* visited;
 };
 
 } // namespace agent

@@ -40,7 +40,7 @@ void Search::run(void* msg)
     }
 
     this->search->update();
-    const srg::world::Cell* cell = this->search->getNextCell();
+    std::shared_ptr<const srg::world::Cell> cell = this->search->getNextCell();
     if (cell) {
         this->agent->move(cell->coordinate);
     } else {

@@ -6,7 +6,7 @@ namespace srg
 {
 namespace agent
 {
-SearchCell::SearchCell(int32_t priority, const srg::world::Cell* cell)
+SearchCell::SearchCell(int32_t priority, std::shared_ptr<const world::Cell> cell)
         : priority(priority)
         , cell(cell)
 {

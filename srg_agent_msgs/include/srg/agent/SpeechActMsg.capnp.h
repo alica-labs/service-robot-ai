@@ -11,6 +11,7 @@
 #endif
 
 #include <capnzero/ID.capnp.h>
+#include <srg/sim/msgs/PerceptionMsg.capnp.h>
 
 namespace capnp {
 namespace schemas {
@@ -31,7 +32,7 @@ struct SpeechActMsg {
   class Pipeline;
 
   struct _capnpPrivate {
-    CAPNP_DECLARE_STRUCT_HEADER(fef39a4d8b9203e5, 1, 5)
+    CAPNP_DECLARE_STRUCT_HEADER(fef39a4d8b9203e5, 1, 6)
     #if !CAPNP_LITE
     static constexpr ::capnp::_::RawBrandedSchema const* brand() { return &schema->defaultBrand; }
     #endif  // !CAPNP_LITE
@@ -73,6 +74,11 @@ public:
   inline  ::capnp::Text::Reader getText() const;
 
   inline  ::uint16_t getSpeechType() const;
+
+  inline  ::srg::sim::PerceptionMsg::Object::Type getObjectRequestType() const;
+
+  inline bool hasPerception() const;
+  inline  ::srg::sim::PerceptionMsg::Reader getPerception() const;
 
 private:
   ::capnp::_::StructReader _reader;
@@ -140,6 +146,16 @@ public:
   inline  ::uint16_t getSpeechType();
   inline void setSpeechType( ::uint16_t value);
 
+  inline  ::srg::sim::PerceptionMsg::Object::Type getObjectRequestType();
+  inline void setObjectRequestType( ::srg::sim::PerceptionMsg::Object::Type value);
+
+  inline bool hasPerception();
+  inline  ::srg::sim::PerceptionMsg::Builder getPerception();
+  inline void setPerception( ::srg::sim::PerceptionMsg::Reader value);
+  inline  ::srg::sim::PerceptionMsg::Builder initPerception();
+  inline void adoptPerception(::capnp::Orphan< ::srg::sim::PerceptionMsg>&& value);
+  inline ::capnp::Orphan< ::srg::sim::PerceptionMsg> disownPerception();
+
 private:
   ::capnp::_::StructBuilder _builder;
   template <typename, ::capnp::Kind>
@@ -162,6 +178,7 @@ public:
   inline  ::capnzero::ID::Pipeline getReceiverID();
   inline  ::capnzero::ID::Pipeline getActID();
   inline  ::capnzero::ID::Pipeline getPreviousActID();
+  inline  ::srg::sim::PerceptionMsg::Pipeline getPerception();
 private:
   ::capnp::AnyPointer::Pipeline _typeless;
   friend class ::capnp::PipelineHook;
@@ -374,6 +391,59 @@ inline  ::uint16_t SpeechActMsg::Builder::getSpeechType() {
 inline void SpeechActMsg::Builder::setSpeechType( ::uint16_t value) {
   _builder.setDataField< ::uint16_t>(
       ::capnp::bounded<0>() * ::capnp::ELEMENTS, value);
+}
+
+inline  ::srg::sim::PerceptionMsg::Object::Type SpeechActMsg::Reader::getObjectRequestType() const {
+  return _reader.getDataField< ::srg::sim::PerceptionMsg::Object::Type>(
+      ::capnp::bounded<1>() * ::capnp::ELEMENTS);
+}
+
+inline  ::srg::sim::PerceptionMsg::Object::Type SpeechActMsg::Builder::getObjectRequestType() {
+  return _builder.getDataField< ::srg::sim::PerceptionMsg::Object::Type>(
+      ::capnp::bounded<1>() * ::capnp::ELEMENTS);
+}
+inline void SpeechActMsg::Builder::setObjectRequestType( ::srg::sim::PerceptionMsg::Object::Type value) {
+  _builder.setDataField< ::srg::sim::PerceptionMsg::Object::Type>(
+      ::capnp::bounded<1>() * ::capnp::ELEMENTS, value);
+}
+
+inline bool SpeechActMsg::Reader::hasPerception() const {
+  return !_reader.getPointerField(
+      ::capnp::bounded<5>() * ::capnp::POINTERS).isNull();
+}
+inline bool SpeechActMsg::Builder::hasPerception() {
+  return !_builder.getPointerField(
+      ::capnp::bounded<5>() * ::capnp::POINTERS).isNull();
+}
+inline  ::srg::sim::PerceptionMsg::Reader SpeechActMsg::Reader::getPerception() const {
+  return ::capnp::_::PointerHelpers< ::srg::sim::PerceptionMsg>::get(_reader.getPointerField(
+      ::capnp::bounded<5>() * ::capnp::POINTERS));
+}
+inline  ::srg::sim::PerceptionMsg::Builder SpeechActMsg::Builder::getPerception() {
+  return ::capnp::_::PointerHelpers< ::srg::sim::PerceptionMsg>::get(_builder.getPointerField(
+      ::capnp::bounded<5>() * ::capnp::POINTERS));
+}
+#if !CAPNP_LITE
+inline  ::srg::sim::PerceptionMsg::Pipeline SpeechActMsg::Pipeline::getPerception() {
+  return  ::srg::sim::PerceptionMsg::Pipeline(_typeless.getPointerField(5));
+}
+#endif  // !CAPNP_LITE
+inline void SpeechActMsg::Builder::setPerception( ::srg::sim::PerceptionMsg::Reader value) {
+  ::capnp::_::PointerHelpers< ::srg::sim::PerceptionMsg>::set(_builder.getPointerField(
+      ::capnp::bounded<5>() * ::capnp::POINTERS), value);
+}
+inline  ::srg::sim::PerceptionMsg::Builder SpeechActMsg::Builder::initPerception() {
+  return ::capnp::_::PointerHelpers< ::srg::sim::PerceptionMsg>::init(_builder.getPointerField(
+      ::capnp::bounded<5>() * ::capnp::POINTERS));
+}
+inline void SpeechActMsg::Builder::adoptPerception(
+    ::capnp::Orphan< ::srg::sim::PerceptionMsg>&& value) {
+  ::capnp::_::PointerHelpers< ::srg::sim::PerceptionMsg>::adopt(_builder.getPointerField(
+      ::capnp::bounded<5>() * ::capnp::POINTERS), kj::mv(value));
+}
+inline ::capnp::Orphan< ::srg::sim::PerceptionMsg> SpeechActMsg::Builder::disownPerception() {
+  return ::capnp::_::PointerHelpers< ::srg::sim::PerceptionMsg>::disown(_builder.getPointerField(
+      ::capnp::bounded<5>() * ::capnp::POINTERS));
 }
 
 }  // namespace

@@ -82,11 +82,17 @@ double ConceptPath::getUtility() const
     return utility;
 }
 
-std::string ConceptPath::toString(std::string indent) const {
+std::string ConceptPath::toString(std::string indent, bool verbose) const {
     std::stringstream ss;
-    ss << indent << "#ConceptPath: End: " << this->end->term << " Length: " << this->path.size() << std::endl;
-    for (Edge* edge : path) {
-        ss << edge->toString(indent) << std::endl;
+    if (verbose) {
+        ss << indent << "#ConceptPath: End: " << this->end->term << " Length: " << this->path.size() << std::endl;
+        for (Edge *edge : path) {
+            ss << edge->toString(indent) << std::endl;
+        }
+    } else {
+        for (Edge *edge : path) {
+            ss << indent << edge->fromConcept->term << " - " << relations[edge->relation] << " -> " << edge->toConcept->term << std::endl;
+        }
     }
     return ss.str();
 }

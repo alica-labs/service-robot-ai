@@ -39,27 +39,26 @@ std::shared_ptr<agent::SpeechAct> BasicHumanNeeds::answerNeed(const agent::Speec
      *  6. return answer graph
      */
     srg::dialogue::AnswerGraph* answerGraph = new srg::dialogue::AnswerGraph();
-    conceptnet::Concept* root = this->cn->getConcept(answerGraph, needAct.text);
-    answerGraph->setRoot(root);
-    if (!root) {
+    answerGraph->root = this->cn->getConcept(answerGraph, needAct.text);
+    if (!answerGraph->root) {
         // did not find any concept for the given text
         std::cout << "[BasicHumanNeeds] No root concept found for '" << needAct.text << "'" << std::endl;
         return createAnswerSpeechAct(needAct.actID, answerGraph);
     }
 
     // 1. ask ConceptNet for MotivatedByGoal(WILDCARD, need) and CausesDesire(need, WILDCARD)
-    root->addEdges(this->cn->getIncomingEdges(answerGraph, conceptnet::MotivatedByGoal, needAct.text, bestNumberOfElements));
-    root->addEdges(this->cn->getOutgoingEdges(answerGraph, conceptnet::CausesDesire, needAct.text, bestNumberOfElements));
+    answerGraph->root->addEdges(this->cn->getIncomingEdges(answerGraph, conceptnet::MotivatedByGoal, needAct.text, bestNumberOfElements));
+    answerGraph->root->addEdges(this->cn->getOutgoingEdges(answerGraph, conceptnet::CausesDesire, needAct.text, bestNumberOfElements));
 
     // 2. ask ConceptNet for Synonyms for top bestWeightedEdges results from 1.
     // => Synonym, SimilarTo, InstanceOf
-    std::vector<conceptnet::Concept*> connectedConcepts = root->getConnectedConcepts({conceptnet::MotivatedByGoal, conceptnet::CausesDesire}, false);
+    std::vector<conceptnet::Concept*> connectedConcepts = answerGraph->root->getConnectedConcepts({conceptnet::MotivatedByGoal, conceptnet::CausesDesire}, false);
     for (conceptnet::Concept* concept : connectedConcepts) {
         concept->addEdges(this->cn->getEquivalentOutgoingEdges(answerGraph, concept, bestNumberOfElements));
     }
 
     // 3. ask ConceptNet for UsedFor(WILDCARD, concept)
-    connectedConcepts = root->getConnectedConcepts({conceptnet::MotivatedByGoal, conceptnet::CausesDesire}, true); // include synonyms
+    connectedConcepts = answerGraph->root->getConnectedConcepts({conceptnet::MotivatedByGoal, conceptnet::CausesDesire}, true); // include synonyms
     for (conceptnet::Concept* concept : connectedConcepts) {
         concept->addEdges(this->cn->getIncomingEdges(answerGraph, conceptnet::UsedFor, concept->term, bestNumberOfElements));
     }
@@ -71,7 +70,7 @@ std::shared_ptr<agent::SpeechAct> BasicHumanNeeds::answerNeed(const agent::Speec
             answerGraph->answerConcepts.push_back(connectedConcept);
         }
     }
-    this->createAnswerPaths(answerGraph, root);
+    this->createAnswerPaths(answerGraph, answerGraph->root);
 #ifdef HUMAN_NEEDS_DEBUG
 //    for (conceptnet::ConceptPath* conceptPath : answerGraph->answerPaths) {
 //        std::cout << "BasicHumanNeeds:" << conceptPath->toString() << std::endl;

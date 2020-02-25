@@ -26,7 +26,7 @@ Path* Movement::searchPath(srg::world::Coordinate start, srg::world::Coordinate 
 
     Path* initialPath = new Path(start, goal, wm);
     fringe.push(initialPath);
-    std::vector<const srg::world::Cell*> visited;
+    std::vector<std::shared_ptr<const world::Cell>> visited;
 
     while (Path* currentPath = fringe.top()) {
         fringe.pop();
@@ -115,7 +115,7 @@ Path* Movement::searchPath(srg::world::Coordinate start, srg::world::Coordinate 
 
 bool Movement::checkValidity(srg::world::Coordinate coord)
 {
-    const srg::world::Cell* cell = wm->sRGSimData.getWorld()->getCell(coord);
+    std::shared_ptr<const world::Cell> cell = wm->sRGSimData.getWorld()->getCell(coord);
     if (cell->getType() == srg::world::RoomType::Wall) {
         return false;
     }

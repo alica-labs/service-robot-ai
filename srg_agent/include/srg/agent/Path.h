@@ -19,8 +19,8 @@ public:
     bool isGoalPath();
     int getTotalCosts();
     int getHeuristicCosts();
-    std::vector<Path*> expand(std::vector<const srg::world::Cell*>& visited);
-    const srg::world::Cell* getCell();
+    std::vector<Path*> expand(std::vector<std::shared_ptr<const world::Cell>>& visited);
+    std::shared_ptr<const world::Cell> getCell();
     friend std::ostream& operator<<(std::ostream& os, const srg::agent::Path& path)
     {
         os << "Path: ";
@@ -34,11 +34,11 @@ public:
     }
 
 private:
-    Path* addStep(const srg::world::Cell* cell);
-    bool checkValidity(std::vector<const srg::world::Cell*>& visited, srg::world::Cell* cell);
+    Path* addStep(std::shared_ptr<const world::Cell> cell);
+    bool checkValidity(std::vector<std::shared_ptr<const world::Cell>>& visited, std::shared_ptr<world::Cell> cell);
 
     int costs;
-    const srg::world::Cell* cell;
+    std::shared_ptr<const world::Cell> cell;
     srg::world::Coordinate start;
     srg::world::Coordinate goal;
     Path* lastStep;

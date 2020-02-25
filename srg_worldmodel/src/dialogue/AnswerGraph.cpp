@@ -36,14 +36,12 @@ AnswerGraph::~AnswerGraph()
     }
 }
 
-void AnswerGraph::setRoot(srg::conceptnet::Concept* root)
-{
-    this->root = root;
-}
-
 std::vector<srg::conceptnet::Concept*> AnswerGraph::getBestAnswers(int maxNumberOfAnswers)
 {
     this->calculateUtilities();
+    if (maxNumberOfAnswers == -1) {
+        maxNumberOfAnswers = this->utilities.size();
+    }
 
     std::vector<conceptnet::Concept*> bestConcepts;
     for (auto utilityEntry : this->utilities) {
@@ -143,10 +141,14 @@ void AnswerGraph::markInconsistentEdges()
 std::string AnswerGraph::toString()
 {
     std::stringstream ret;
-    ret << "root: " << root->term << std::endl;
-    ret << "edges: " << std::endl;
+    ret << "[AnswerGraph] Root: " << root->term << std::endl;
+    ret << "Edges: " << std::endl;
     for (conceptnet::Edge* edge : root->getEdges()) {
         ret << "\t" << edge->toString() << std::endl;
+    }
+    ret << "AnswerConcepts: " << std::endl;
+    for (conceptnet::Concept* concept : this->answerConcepts) {
+        ret << "\t" << concept->term << std::endl;
     }
     return ret.str();
 }

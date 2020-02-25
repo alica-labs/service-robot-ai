@@ -36,7 +36,8 @@ class DialogueManager
 public:
     explicit DialogueManager(SRGWorldModel* wm);
     ~DialogueManager();
-    void processSpeechAct(std::shared_ptr<supplementary::InformationElement<agent::SpeechAct>> speechAct);
+    void processSpeechAct(std::shared_ptr<supplementary::InformationElement<agent::SpeechAct>> speechActInfo);
+    void tick();
 
     QuestionHandler* questionHandler;
     InformHandler* informHandler;
@@ -44,8 +45,8 @@ public:
 
 private:
     srg::SRGWorldModel* wm;
-    // TODO limit the length - maybe put a RingBuffer here...
-    std::vector<std::shared_ptr<srg::agent::SpeechAct>> speechActs;
+    std::unordered_map<essentials::IdentifierConstPtr, std::shared_ptr<agent::SpeechAct>> dialogueMap;
+    std::vector<std::shared_ptr<agent::SpeechAct>> pendingSpeechActs;
     void renderDot() const;
 };
 } // namespace dialogue

@@ -67,7 +67,7 @@ bool Task::checkMoveSuccess(SRGWorldModel* wm) const
         return false;
     }
     srg::world::Coordinate diff = (this->coordinate - ownCoord.value()).abs();
-    const srg::world::Cell* goalCell = wm->sRGSimData.getWorld()->getCell(this->coordinate);
+    std::shared_ptr<const world::Cell> goalCell = wm->sRGSimData.getWorld()->getCell(this->coordinate);
     if ((goalCell->isBlocked() && diff.x < 2 && diff.y < 2) || (diff.x == 0 && diff.y == 0)) {
         std::cout << "[Task] Move to " << this->coordinate << " successful!" << std::endl;
         return true;
@@ -79,7 +79,7 @@ bool Task::checkManipulationSuccess(SRGWorldModel* wm) const
 {
     std::shared_ptr<const srg::world::Object> object = nullptr;
     std::shared_ptr<const srg::world::Agent> agent = nullptr;
-    const srg::world::Cell* cell = nullptr;
+    std::shared_ptr<const world::Cell> cell = nullptr;
     bool success = false;
     switch (this->type) {
     case TaskType::Open:

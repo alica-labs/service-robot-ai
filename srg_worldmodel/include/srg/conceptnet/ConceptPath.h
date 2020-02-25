@@ -20,7 +20,7 @@ public:
     bool containsNode(conceptnet::Concept* concept);
     conceptnet::Concept* getEnd() const;
     std::vector<conceptnet::Edge*> getPath() const;
-    std::string toString(std::string indent = "") const;
+    std::string toString(std::string indent = "", bool verbose = false) const;
 
 private:
     conceptnet::Concept* end;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <engine/AlicaClock.h>
-#include <srg/sim/containers/SimPerceptions.h>
+#include <srg/sim/containers/Perceptions.h>
 #include <supplementary/InfoBuffer.h>
 #include <supplementary/InformationElement.h>
 
@@ -38,7 +38,7 @@ public:
     void init();
     const supplementary::InfoBuffer<srg::world::Coordinate>& getOwnPositionBuffer() const;
 
-    void processPerception(srg::sim::containers::SimPerceptions simPerceptions);
+    void processPerception(srg::sim::containers::Perceptions perceptions);
     bool isLocalised();
     srg::World* getWorld();
 

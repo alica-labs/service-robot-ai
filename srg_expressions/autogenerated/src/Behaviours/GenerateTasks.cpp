@@ -106,18 +106,18 @@ const srg::world::Coordinate GenerateTasks::getRandomCoordinate()
     // statistic evaluation of room
     int randRoomValue = rand() % 100;
     std::vector<srg::world::Room*> rooms;
-    if (randRoomValue < 40) {
+    if (randRoomValue < 20) {
         // kitchen
         rooms = this->wm->sRGSimData.getWorld()->getRooms(srg::world::RoomType::Kitchen);
     } else if (randRoomValue < 80) {
         // office
-        rooms = this->wm->sRGSimData.getWorld()->getRooms(srg::world::RoomType::Workroom);
+        rooms = this->wm->sRGSimData.getWorld()->getRooms(srg::world::RoomType::Office);
     } else {
         // other room types
         for (auto& roomEntry : this->wm->sRGSimData.getWorld()->getRooms()) {
             switch (roomEntry.second->getType()) {
             case srg::world::RoomType::Kitchen:
-            case srg::world::RoomType::Workroom:
+            case srg::world::RoomType::Office:
             case srg::world::RoomType::Wall:
                 continue;
             default:
@@ -131,7 +131,7 @@ const srg::world::Coordinate GenerateTasks::getRandomCoordinate()
     srg::world::Room* room = rooms[randRoomValue];
 
     auto& cells = room->getCells();
-    std::map<srg::world::Coordinate, srg::world::Cell*>::const_iterator cellIter;
+    std::map<srg::world::Coordinate, std::shared_ptr<srg::world::Cell>>::const_iterator cellIter;
     cellIter = cells.begin();
     std::advance(cellIter, rand() % cells.size());
     return cellIter->first;

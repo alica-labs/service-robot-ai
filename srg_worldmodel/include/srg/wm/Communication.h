@@ -1,5 +1,7 @@
 #pragma once
 
+#include <srg/agent/containers/SpeechAct.h>
+
 #include <SystemConfig.h>
 #include <capnzero/CapnZero.h>
 
@@ -12,8 +14,10 @@ namespace wm
 class Communication
 {
 public:
-    Communication(SRGWorldModel* wm);
+    explicit Communication(SRGWorldModel* wm);
     virtual ~Communication();
+
+    void sendSpeechAct(std::shared_ptr<const srg::agent::SpeechAct> speechAct) const;
 
 private:
     SRGWorldModel* wm;
@@ -22,6 +26,7 @@ private:
     void* ctx;
     capnzero::Subscriber* telegramMessageSub;
     capnzero::Subscriber* speechActSub;
+    capnzero::Publisher* speechActPub;
     capnzero::Subscriber* agentCommandSub;
     capnzero::Subscriber* perceptionSub;
 

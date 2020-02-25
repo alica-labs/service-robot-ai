@@ -1,6 +1,8 @@
 #pragma once
 
 #include <essentials/IdentifierConstPtr.h>
+#include <srg/world/ObjectType.h>
+#include <srg/sim/containers/Perceptions.h>
 
 #include <iosfwd>
 #include <string>
@@ -11,10 +13,6 @@ namespace dialogue
 {
 class AnswerGraph;
 }
-} // namespace srg
-
-namespace srg
-{
 namespace agent
 {
 enum SpeechType : uint16_t
@@ -35,14 +33,17 @@ public:
 
     SpeechType type;
     std::string text;
+    srg::world::ObjectType objectRequestType;
+    srg::sim::containers::Perceptions perceptions;
     srg::dialogue::AnswerGraph* answerGraph;
 
-    friend std::ostream& operator<<(std::ostream& os, const srg::agent::SpeechAct& act) {
+    friend std::ostream& operator<<(std::ostream& os, const srg::agent::SpeechAct& act)
+    {
         os << "[SpeechAct] Type: " << act.type << " Text: " << act.text;
         os << " Sender: " << act.senderID << " Receiver: " << act.receiverID;
         os << " ActID: " << act.actID << " Previous ActID: " << act.previousActID;
         return os;
     }
 };
-} // namespace human
+} // namespace agent
 } // namespace srg

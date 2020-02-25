@@ -23,24 +23,40 @@ DialogueManager::DialogueManager(srg::SRGWorldModel* wm)
     this->informHandler = new InformHandler(wm);
     this->taskHandler = new srg::tasks::TaskHandler(wm);
 }
-DialogueManager::~DialogueManager()
-{
+DialogueManager::~DialogueManager() {}
 
-}
-
-void DialogueManager::processSpeechAct(std::shared_ptr<supplementary::InformationElement<agent::SpeechAct>> speechAct)
+void DialogueManager::processSpeechAct(std::shared_ptr<supplementary::InformationElement<agent::SpeechAct>> speechActInfo)
 {
-    if (speechAct->getInformation().type == agent::SpeechType::request) {
-        this->speechActs.push_back(this->questionHandler->answerQuestion(speechAct->getInformation()));
-    } else if (speechAct->getInformation().type == agent::SpeechType::inform) {
-        this->speechActs.push_back(this->informHandler->answerInform(speechAct->getInformation()));
-    } else if (speechAct->getInformation().type == agent::SpeechType::command) {
-        this->taskHandler->processTaskAct(speechAct);
+    // make_shared calls implicit copy constructor - maybe that is not what you want (create your own then)
+    this->dialogueMap.emplace(speechActInfo->getInformation().actID, std::make_shared<agent::SpeechAct>(speechActInfo->getInformation()));
+
+    std::shared_ptr<agent::SpeechAct> answerSpeechAct = nullptr;
+    if (speechActInfo->getInformation().type == agent::SpeechType::request) {
+        answerSpeechAct = this->questionHandler->answerQuestion(speechActInfo->getInformation());
+    } else if (speechActInfo->getInformation().type == agent::SpeechType::inform) {
+        answerSpeechAct = this->informHandler->answerInform(speechActInfo->getInformation());
+    } else if (speechActInfo->getInformation().type == agent::SpeechType::command) {
+        this->taskHandler->processTaskAct(speechActInfo);
+    }
+    if (answerSpeechAct) {
+        this->pendingSpeechActs.push_back(answerSpeechAct);
     }
 
 #ifdef inconsistency_eval
     renderDot();
 #endif
+}
+
+void DialogueManager::tick()
+{
+    // call to update success status of tasks
+    this->taskHandler->tick();
+
+    // send pending speech act answers
+    for (std::shared_ptr<srg::agent::SpeechAct> speechAct : this->pendingSpeechActs) {
+        this->dialogueMap.emplace(speechAct->actID, speechAct);
+        this->wm->communication->sendSpeechAct(speechAct);
+    }
 }
 
 void DialogueManager::renderDot() const
@@ -54,8 +70,8 @@ void DialogueManager::renderDot() const
     /* Create a simple digraph */
     g = agopen("g", Agdirected, NULL);
     agsafeset(g, "rankdir", "RL", "");
-    for (auto act : speechActs) {
-        act->answerGraph->renderDot(g, true);
+    for (auto& act : dialogueMap) {
+        act.second->answerGraph->renderDot(g, true);
     }
     /* Set an attribute - in this case one that affects the visible rendering */
 

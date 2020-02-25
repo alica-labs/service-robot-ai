@@ -1,9 +1,9 @@
 #include "srg/agent/ObjectSearch.h"
 
 #include <srg/SRGWorldModel.h>
+#include <srg/World.h>
 #include <srg/world/Cell.h>
 #include <srg/world/Door.h>
-#include <srg/World.h>
 
 #include <cnc_geometry/Calculator.h>
 
@@ -19,14 +19,15 @@ ObjectSearch::ObjectSearch(srg::world::ObjectType objectType, srg::SRGWorldModel
     this->sc = essentials::SystemConfig::getInstance();
     this->sightLimit = (*sc)["ObjectDetection"]->get<uint32_t>("sightLimit", NULL);
     this->fringe = new std::set<SearchCell, SearchCellSorter>(SearchCellSorter(this->wm));
-    this->visited = new std::unordered_set<const srg::world::Cell*>();
+    this->visited = new std::unordered_set<std::shared_ptr<const world::Cell>>();
 }
 
-void ObjectSearch::addRoomType(srg::world::RoomType type){
+void ObjectSearch::addRoomType(srg::world::RoomType type)
+{
     this->roomTypes.insert(type);
 };
 
-const srg::world::Cell* ObjectSearch::getNextCell()
+std::shared_ptr<const world::Cell> ObjectSearch::getNextCell()
 {
     if (this->fringe->size() == 0) {
         return nullptr;
@@ -43,10 +44,10 @@ void ObjectSearch::update()
 
     updateCounter++;
 
-    std::unordered_set<const srg::world::Cell*> visible;
-    std::unordered_set<const srg::world::Cell*> front;
+    std::unordered_set<std::shared_ptr<const world::Cell>> visible;
+    std::unordered_set<std::shared_ptr<const world::Cell>> front;
     this->getVisibleAndFrontCells(ownCoord.value(), wm->sRGSimData.getWorld(), visible, front);
-    for (const srg::world::Cell* cell : visible) {
+    for (std::shared_ptr<const world::Cell> cell : visible) {
         for (auto iter = this->fringe->begin(); iter != this->fringe->end(); ++iter) {
             if (iter->cell == cell) {
                 this->fringe->erase(iter);
@@ -55,7 +56,7 @@ void ObjectSearch::update()
         }
         this->visited->insert(cell);
     }
-    for (const srg::world::Cell* cell : front) {
+    for (std::shared_ptr<const world::Cell> cell : front) {
         if (this->visited->find(cell) == this->visited->end()) {
             this->fringe->insert(SearchCell(updateCounter, cell));
         }
@@ -76,8 +77,8 @@ void ObjectSearch::update()
  * @param visible The cells that agent is currently able to see.
  * @param front The cells that are neighbours to the currently seeable cells, i.e. potentially unvisited cells to visit.
  */
-void ObjectSearch::getVisibleAndFrontCells(srg::world::Coordinate& ownCoord, const srg::World* world, std::unordered_set<const srg::world::Cell*>& visible,
-        std::unordered_set<const srg::world::Cell*>& front)
+void ObjectSearch::getVisibleAndFrontCells(srg::world::Coordinate& ownCoord, const srg::World* world,
+        std::unordered_set<std::shared_ptr<const world::Cell>>& visible, std::unordered_set<std::shared_ptr<const world::Cell>>& front)
 {
     double increment = atan2(1, sightLimit + 2);
     for (double currentDegree = -M_PI; currentDegree < M_PI; currentDegree += increment) {
@@ -88,8 +89,8 @@ void ObjectSearch::getVisibleAndFrontCells(srg::world::Coordinate& ownCoord, con
     }
 }
 
-void ObjectSearch::trace(const srg::World* world, srg::world::Coordinate& from, srg::world::Coordinate& to, std::unordered_set<const srg::world::Cell*>& visible,
-        std::unordered_set<const srg::world::Cell*>& front)
+void ObjectSearch::trace(const srg::World* world, srg::world::Coordinate& from, srg::world::Coordinate& to,
+        std::unordered_set<std::shared_ptr<const world::Cell>>& visible, std::unordered_set<std::shared_ptr<const world::Cell>>& front)
 {
     visible.insert(world->getCell(from));
     int32_t sign_x = ((int32_t) to.x - (int32_t) from.x) > 0 ? 1 : -1;
@@ -111,14 +112,14 @@ void ObjectSearch::trace(const srg::World* world, srg::world::Coordinate& from, 
         }
 
         // check if sight is blocked in this cell
-        const srg::world::Cell* cell = world->getCell(currentPoint);
+        std::shared_ptr<const world::Cell> cell = world->getCell(currentPoint);
         front.erase(cell);
         if (!cell || cell->getType() == srg::world::RoomType::Wall) {
             break;
         }
         bool sightBlocked = false;
         for (auto& objectEntry : cell->getObjects()) {
-            if(std::shared_ptr<srg::world::Door> door = std::dynamic_pointer_cast<srg::world::Door>(objectEntry.second)) {
+            if (std::shared_ptr<srg::world::Door> door = std::dynamic_pointer_cast<srg::world::Door>(objectEntry.second)) {
                 sightBlocked = !door->isOpen();
                 break;
             }

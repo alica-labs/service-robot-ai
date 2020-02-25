@@ -25,9 +25,10 @@ public:
     virtual ~ConceptNet() = default;
 
     Concept* getConcept(CNManager* cnManager, const std::string& conceptName);
+    std::vector<Concept*> getEquivalentConcepts(CNManager* cnManager, conceptnet::Concept* concept, int limit);
     std::vector<Edge*> getEdges(CNManager* cnManager, const std::string& concept, int limit = 1000);
     std::vector<Edge*> getEdges(CNManager* cnManager, Relation relation, const std::string& concept, int limit = 1000);
-    std::vector<Edge*> getCompleteEdge(CNManager* cnManager, Relation relation, const std::string& fromConcept, const std::string& toConcept, int limit = 1000);
+    std::vector<Edge*> getCompleteEdges(CNManager* cnManager, Relation relation, const std::string& fromConcept, const std::string& toConcept, int limit = 1000);
     std::vector<Edge*> getOutgoingEdges(CNManager* cnManager, Relation relation, const std::string& fromConcept, int limit = 1000);
     std::vector<Edge*> getIncomingEdges(CNManager* cnManager, Relation relation, const std::string& toConcept, int limit = 1000);
     std::vector<Edge*> getRelations(CNManager* cnManager, const std::string& concept, const std::string& otherConcept, int limit = 1000);

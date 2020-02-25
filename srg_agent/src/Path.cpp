@@ -1,8 +1,8 @@
 #include "srg/agent/Path.h"
 
 #include <srg/World.h>
-#include <srg/world/Object.h>
 #include <srg/world/Door.h>
+#include <srg/world/Object.h>
 #include <srg/world/RoomType.h>
 
 #include <iostream>
@@ -29,11 +29,12 @@ Path::Path(const srg::agent::Path& path)
 {
 }
 
-Path::~Path() {
+Path::~Path()
+{
     delete this->lastStep;
 }
 
-    srg::world::Direction Path::getDirection()
+srg::world::Direction Path::getDirection()
 {
     if (start == goal) {
         return srg::world::Direction::None;
@@ -43,7 +44,7 @@ Path::~Path() {
     while (firstStep->lastStep->lastStep != nullptr) {
         firstStep = firstStep->lastStep;
     }
-//    std::cout << "Path::getDirection(): First Step is " << firstStep->getCell()->coordinate << " Start is " << this->start <<std::endl;
+    //    std::cout << "Path::getDirection(): First Step is " << firstStep->getCell()->coordinate << " Start is " << this->start <<std::endl;
     if (this->start.x < firstStep->cell->coordinate.x) {
         return srg::world::Direction::Right;
     } else if (this->start.x > firstStep->cell->coordinate.x) {
@@ -73,19 +74,19 @@ int Path::getHeuristicCosts()
     return std::abs<int>(this->goal.x - this->cell->coordinate.x) + std::abs<int>(this->goal.y - this->cell->coordinate.y);
 }
 
-std::vector<Path*> Path::expand(std::vector<const srg::world::Cell*>& visited)
+std::vector<Path*> Path::expand(std::vector<std::shared_ptr<const world::Cell>>& visited)
 {
     std::vector<Path*> newPaths;
-    if (checkValidity(visited, cell->down)){
+    if (checkValidity(visited, cell->down)) {
         newPaths.push_back(this->addStep(cell->down));
     }
-    if (checkValidity(visited, cell->left)){
+    if (checkValidity(visited, cell->left)) {
         newPaths.push_back(this->addStep(cell->left));
     }
-    if (checkValidity(visited, cell->right)){
+    if (checkValidity(visited, cell->right)) {
         newPaths.push_back(this->addStep(cell->right));
     }
-    if (checkValidity(visited, cell->up)){
+    if (checkValidity(visited, cell->up)) {
         newPaths.push_back(this->addStep(cell->up));
     }
     return newPaths;
@@ -97,7 +98,8 @@ std::vector<Path*> Path::expand(std::vector<const srg::world::Cell*>& visited)
  * @param cell
  * @return
  */
-bool Path::checkValidity(std::vector<const srg::world::Cell*>& visited, srg::world::Cell* cell) {
+bool Path::checkValidity(std::vector<std::shared_ptr<const world::Cell>>& visited, std::shared_ptr<world::Cell> cell)
+{
     if (!cell) {
         return false;
     }
@@ -112,7 +114,7 @@ bool Path::checkValidity(std::vector<const srg::world::Cell*>& visited, srg::wor
     }
 
     for (auto& objectEntry : cell->getObjects()) {
-        if(std::shared_ptr<srg::world::Door> door = std::dynamic_pointer_cast<srg::world::Door>(objectEntry.second)) {
+        if (std::shared_ptr<srg::world::Door> door = std::dynamic_pointer_cast<srg::world::Door>(objectEntry.second)) {
             return door->isOpen();
         }
     }
@@ -120,11 +122,12 @@ bool Path::checkValidity(std::vector<const srg::world::Cell*>& visited, srg::wor
     return true;
 }
 
-const srg::world::Cell* Path::getCell() {
+std::shared_ptr<const world::Cell> Path::getCell()
+{
     return this->cell;
 }
 
-Path* Path::addStep(const srg::world::Cell* cell)
+Path* Path::addStep(std::shared_ptr<const world::Cell> cell)
 {
     Path* newPath = new Path(*this);
     newPath->lastStep = this;

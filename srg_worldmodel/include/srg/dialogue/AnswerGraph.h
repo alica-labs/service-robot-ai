@@ -24,19 +24,13 @@ class AnswerGraph : public conceptnet::CNManager
 public:
     AnswerGraph();
     virtual ~AnswerGraph();
-    srg::conceptnet::Concept* root;
-    std::vector<srg::conceptnet::Concept*> answerConcepts;
-    std::vector<srg::conceptnet::ConceptPath*> answerPaths;
-    std::map<srg::conceptnet::Concept*, std::vector<srg::conceptnet::Edge*>> adjectiveAntonymMap;
-    std::set<srg::conceptnet::Concept*> closedProperties;
 
     std::string toString();
     void renderDot(Agraph_t* g, bool markInconsistencies = false);
 
     void calculateUtilities();
-    std::vector<srg::conceptnet::Concept*> getBestAnswers(int maxNumberOfAnswers);
+    std::vector<srg::conceptnet::Concept*> getBestAnswers(int maxNumberOfAnswers = -1);
 
-    void setRoot(srg::conceptnet::Concept* root);
     conceptnet::Concept* getConcept(std::string conceptId) const override;
     conceptnet::Concept* createConcept(std::string conceptId, std::string term, std::string senseLabel) override;
 
@@ -48,6 +42,12 @@ public:
     const std::map<std::string, conceptnet::Edge *> &getEdges() const;
 
     void markInconsistentEdges();
+
+    srg::conceptnet::Concept* root;
+    std::vector<srg::conceptnet::Concept*> answerConcepts;
+    std::vector<srg::conceptnet::ConceptPath*> answerPaths;
+    std::map<srg::conceptnet::Concept*, std::vector<srg::conceptnet::Edge*>> adjectiveAntonymMap;
+    std::set<srg::conceptnet::Concept*> closedProperties;
 
 private:
     bool utilitiesCalculated;

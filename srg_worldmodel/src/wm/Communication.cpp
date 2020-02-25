@@ -6,6 +6,7 @@
 #include <srg/agent/SpeechActMsg.capnp.h>
 #include <srg/agent/containers/ContainerUtils.h>
 #include <srg/sim/ContainerUtils.h>
+#include <srg/agent/containers/ContainerUtils.h>
 
 #include <engine/AlicaEngine.h>
 
@@ -34,6 +35,10 @@ Communication::Communication(SRGWorldModel* wm)
     this->speechActSub->setTopic(speechActTopic);
     this->speechActSub->addAddress((*sc)["Voice"]->get<std::string>("SpeechAct.address", NULL));
     this->speechActSub->subscribe(&Communication::onSpeechAct, &(*this));
+
+    this->speechActPub = new capnzero::Publisher(this->ctx, capnzero::Protocol::UDP);
+    this->speechActPub->setDefaultTopic(speechActTopic);
+    this->speechActPub->addAddress((*sc)["Voice"]->get<std::string>("SpeechAct.address", NULL));
 
     std::string agendCmdTopic = (*sc)["Voice"]->get<std::string>("AgentCmd.topic", NULL);
     this->agentCommandSub = new capnzero::Subscriber(this->ctx, capnzero::Protocol::UDP);
@@ -78,10 +83,18 @@ void Communication::onAgentCmd(capnp::FlatArrayMessageReader& msg)
 
 void Communication::onSimPerceptions(capnp::FlatArrayMessageReader& msg)
 {
-    auto simPerceptions = srg::sim::ContainerUtils::toSimPerceptions(msg, this->wm->getEngine()->getIdManager());
+    auto simPerceptions = srg::sim::ContainerUtils::toPerceptions(msg, this->wm->getEngine()->getIdManager());
     if (simPerceptions.receiverID == this->wm->getOwnId()) {
         this->wm->rawSensorData.processSimPerceptions(simPerceptions);
     }
 }
+
+void Communication::sendSpeechAct(std::shared_ptr<const srg::agent::SpeechAct> speechAct) const
+{
+    ::capnp::MallocMessageBuilder msgBuilder;
+    srg::agent::ContainerUtils::toMsg(*speechAct, msgBuilder);
+    this->speechActPub->send(msgBuilder);
+}
+
 } // namespace wm
 } // namespace srg

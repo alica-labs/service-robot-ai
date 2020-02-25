@@ -6,6 +6,7 @@
 #include "srg/agent/containers/AgentCommand.h"
 
 #include <essentials/IDManager.h>
+#include <srg/sim/ContainerUtils.h>
 
 namespace srg
 {
@@ -45,6 +46,31 @@ SpeechAct ContainerUtils::toSpeechAct(::capnp::FlatArrayMessageReader& msg, esse
             reader.getPreviousActID().getValue().asBytes().begin(), reader.getPreviousActID().getValue().size(), (uint8_t) reader.getPreviousActID().getType());
     speechAct.text = std::string(reader.getText().cStr());
     speechAct.type = (SpeechType) reader.getSpeechType();
+    // TYPE
+    switch (reader.getObjectRequestType()) {
+        case srg::sim::PerceptionMsg::Object::Type::ROBOT:
+            speechAct.objectRequestType = srg::world::ObjectType::Robot;
+            break;
+        case srg::sim::PerceptionMsg::Object::Type::HUMAN:
+            speechAct.objectRequestType = srg::world::ObjectType::Human;
+            break;
+        case srg::sim::PerceptionMsg::Object::Type::DOOR:
+            speechAct.objectRequestType = srg::world::ObjectType::Door;
+            break;
+        case srg::sim::PerceptionMsg::Object::Type::CUPRED:
+            speechAct.objectRequestType = srg::world::ObjectType::CupRed;
+            break;
+        case srg::sim::PerceptionMsg::Object::Type::CUPBLUE:
+            speechAct.objectRequestType = srg::world::ObjectType::CupBlue;
+            break;
+        case srg::sim::PerceptionMsg::Object::Type::CUPYELLOW:
+            speechAct.objectRequestType = srg::world::ObjectType::CupYellow;
+            break;
+        default:
+            std::cerr << "[ContainterUtils] Unknown object type in capnp message found!" << std::endl;
+            break;
+    }
+    speechAct.perceptions = srg::sim::ContainerUtils::createPerceptions(reader.getPerception(), idManager);
 
     return speechAct;
 }

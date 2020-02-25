@@ -8,7 +8,7 @@
 #include <supplementary/InfoBuffer.h>
 
 #include <memory>
-#include <srg/sim/containers/SimPerceptions.h>
+#include <srg/sim/containers/Perceptions.h>
 #include <essentials/WildcardID.h>
 
 namespace srg
@@ -29,7 +29,7 @@ RawSensorData::RawSensorData(srg::SRGWorldModel* wm)
     this->agentCmdBuffer = new supplementary::InfoBuffer<agent::AgentCommand>((*sc)["SRGWorldModel"]->get<int>("Data.AgentCmd.BufferLength", NULL));
 
     this->perceptionsValidityDuration = alica::AlicaTime::nanoseconds((*sc)["SRGWorldModel"]->get<int>("Data.Perception.ValidityDuration", NULL));
-    this->perceptionsBuffer = new supplementary::InfoBuffer<srg::sim::containers::SimPerceptions>((*sc)["SRGWorldModel"]->get<int>("Data.Perception.BufferLength", NULL));
+    this->perceptionsBuffer = new supplementary::InfoBuffer<srg::sim::containers::Perceptions>((*sc)["SRGWorldModel"]->get<int>("Data.Perception.BufferLength", NULL));
 }
 
 RawSensorData::~RawSensorData() {}
@@ -49,7 +49,7 @@ const supplementary::InfoBuffer<agent::SpeechAct>& RawSensorData::getSpeechActBu
     return *this->speechActBuffer;
 }
 
-const supplementary::InfoBuffer<srg::sim::containers::SimPerceptions>& RawSensorData::getPerceptionsBuffer()
+const supplementary::InfoBuffer<srg::sim::containers::Perceptions>& RawSensorData::getPerceptionsBuffer()
 {
     return *this->perceptionsBuffer;
 }
@@ -78,9 +78,9 @@ void RawSensorData::processAgentCmd(agent::AgentCommand agentCmd)
     agentCmdBuffer->add(agentCmdInfo);
 }
 
-void RawSensorData::processSimPerceptions(srg::sim::containers::SimPerceptions simPerceptions)
+void RawSensorData::processSimPerceptions(srg::sim::containers::Perceptions simPerceptions)
 {
-    auto perceptionsInfo = std::make_shared<supplementary::InformationElement<srg::sim::containers::SimPerceptions>>(simPerceptions, wm->getTime(), perceptionsValidityDuration, 1.0);
+    auto perceptionsInfo = std::make_shared<supplementary::InformationElement<srg::sim::containers::Perceptions>>(simPerceptions, wm->getTime(), perceptionsValidityDuration, 1.0);
     perceptionsBuffer->add(perceptionsInfo);
 
     // further processing

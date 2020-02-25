@@ -8,6 +8,7 @@
   <depend>capnzero</depend>
   <depend>id_capnzero</depend>
   <depend>id_manager</depend>
+  <depend>grid_sim</depend>
   <buildtool_depend>catkin</buildtool_depend>
   <export>
   </export>

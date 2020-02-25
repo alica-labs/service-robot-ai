@@ -21,6 +21,8 @@ std::shared_ptr<agent::SpeechAct> QuestionHandler::answerQuestion(const agent::S
     // Handling of Basic Human Needs
     if (requestAct.text.find("NEED") == 0) {
         return this->basicHumanNeeds->answerNeed(requestAct);
+    } else if (requestAct.text.find("OBJECTS") == 0) {
+        std::cout << "[QuestionHandler] " << requestAct << std::endl;
     }
 
     // Basic ASP testing
