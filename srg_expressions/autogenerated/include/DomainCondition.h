@@ -15,7 +15,8 @@ public:
 
     /*PROTECTED REGION ID(domainHeader) ENABLED START*/
     // Add additional options here
-    srg::SRGWorldModel *wm = srg::SRGWorldModel::getInstance();
+    srg::SRGWorldModel* wm = srg::SRGWorldModel::getInstance();
+
     /*PROTECTED REGION END*/
 
 protected:

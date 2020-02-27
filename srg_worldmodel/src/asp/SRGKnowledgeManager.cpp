@@ -19,11 +19,11 @@ void SRGKnowledgeManager::setSolver(reasoner::asp::Solver* solver)
 void SRGKnowledgeManager::ask(const std::string& question)
 {
     std::cout << "[SRGKnowledgeManager] Asking the following question '" << question << "'" << std::endl;
-    std::vector<std::string> resultStrings = this->filterModel(question);
+//    std::vector<std::string> resultStrings = this->filterModel(question);
     std::cout << "[SRGKnowledgeManager] Result: '";
-    for (auto& result : resultStrings) {
-        std::cout << result << std::endl;
-    }
+//    for (auto& result : resultStrings) {
+//        std::cout << result << std::endl;
+//    }
     std::cout << "'" << std::endl;
 }
 
@@ -31,7 +31,7 @@ void SRGKnowledgeManager::addRoom(const srg::world::Room* room)
 {
     std::vector<std::string> backgroundRules;
     backgroundRules.push_back(gen->is(room));
-    this->addBackgroundRules(backgroundRules);
+//    this->addBackgroundRules(backgroundRules);
 }
 
 } // namespace asp
