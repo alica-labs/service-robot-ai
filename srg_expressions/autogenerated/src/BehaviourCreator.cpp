@@ -1,5 +1,4 @@
 #include "BehaviourCreator.h"
-#include "Behaviours/Answer.h"
 #include "Behaviours/GenerateTasks.h"
 #include "Behaviours/Manipulate.h"
 #include "Behaviours/Move.h"
@@ -39,9 +38,6 @@ std::shared_ptr<BasicBehaviour> BehaviourCreator::createBehaviour(long behaviour
         break;
     case 1575291385685:
         return std::make_shared<GenerateTasks>();
-        break;
-    case 1581966891046:
-        return std::make_shared<Answer>();
         break;
     default:
         std::cerr << "BehaviourCreator: Unknown behaviour requested: " << behaviourId << std::endl;

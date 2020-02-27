@@ -5,7 +5,7 @@
 #include <srg/Agent.h>
 #include <srg/SRGWorldModel.h>
 #include <srg/agent/Movement.h>
-#include <srg/tasks/TaskHandler.h>
+#include <srg/tasks/CommandHandler.h>
 /*PROTECTED REGION END*/
 
 namespace alica
@@ -48,7 +48,7 @@ void Move::run(void* msg)
 void Move::initialiseParameters()
 {
     /*PROTECTED REGION ID(initialiseParameters1568825137528) ENABLED START*/
-    this->taskSequence = this->wm->dialogueManager.taskHandler->getActiveTaskSequence();
+    this->taskSequence = this->wm->dialogueManager.commandHandler->getActiveTaskSequence();
     if (this->taskSequence) {
         this->activeTask = this->taskSequence->getActiveTask();
     }

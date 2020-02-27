@@ -17,13 +17,13 @@ namespace srg
 namespace tasks
 {
 class TaskFactory;
-class TaskHandler
+class CommandHandler
 {
 public:
-    TaskHandler(SRGWorldModel* wm);
-    virtual ~TaskHandler();
+    CommandHandler(SRGWorldModel* wm);
+    virtual ~CommandHandler();
     void tick();
-    void processTaskAct(std::shared_ptr<supplementary::InformationElement<agent::SpeechAct>> commandAct);
+    std::shared_ptr<agent::SpeechAct> handle(std::shared_ptr<supplementary::InformationElement<agent::SpeechAct>> commandAct);
 
     const supplementary::InfoBuffer<agent::SpeechAct>& getTaskActBuffer();
     std::shared_ptr<TaskSequence> getActiveTaskSequence();

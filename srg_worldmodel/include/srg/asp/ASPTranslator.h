@@ -6,16 +6,19 @@
 
 namespace srg
 {
-class SRGWorldModel;
+
 namespace conceptnet
 {
 class Edge;
 class Concept;
 } // namespace conceptnet
+
 namespace dialogue
 {
 class AnswerGraph;
 }
+
+class SRGWorldModel;
 namespace asp
 {
 
@@ -30,17 +33,18 @@ public:
     };
 
     ASPTranslator(srg::SRGWorldModel* wm);
-    std::string extractASPProgram(srg::dialogue::AnswerGraph* answerGraph, InconsistencyRemoval inconsistencyRemoval = InconsistencyRemoval::None);
+    std::string addToKnowledgeBase(srg::dialogue::AnswerGraph* answerGraph, InconsistencyRemoval inconsistencyRemoval = InconsistencyRemoval::None);
 
 private:
-    std::string expandConceptNetPredicate(std::string predicate);
+//    std::string expandConceptNetPredicate(std::string predicate);
     std::string createASPPredicates(srg::dialogue::AnswerGraph* answerGraph, InconsistencyRemoval inconsistencyRemoval = InconsistencyRemoval::None);
     std::string conceptToASPPredicate(std::string concept);
 
-    std::map<std::string, std::string> extractBackgroundKnowledgePrograms(
+    std::map<std::string, std::string> extractCommonsenseKnowledgePrograms(
             srg::dialogue::AnswerGraph* answerGraph, InconsistencyRemoval inconsistencyRemoval = InconsistencyRemoval::None);
     std::string createBackgroundKnowledgeRule(std::string relation, srg::conceptnet::Edge* edge);
-    std::string createInconsistencyBackgroundKnowledgeRule(srg::conceptnet::Concept* root, srg::conceptnet::Concept* adjective, std::string antonym, std::string relation);
+    std::string createInconsistencyBackgroundKnowledgeRule(
+            srg::conceptnet::Concept* root, srg::conceptnet::Concept* adjective, std::string antonym, std::string relation);
 
     std::vector<std::string> split(std::string toSplit);
     std::string trim(const std::string& s);

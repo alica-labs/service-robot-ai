@@ -1,11 +1,16 @@
 #include "srg/agent/ObjectSearch.h"
 
 #include <srg/SRGWorldModel.h>
+#include <engine/AlicaEngine.h>
+#include <srg/dialogue/RequestHandler.h>
 #include <srg/World.h>
 #include <srg/world/Cell.h>
 #include <srg/world/Door.h>
+#include <srg/world/Room.h>
 
 #include <cnc_geometry/Calculator.h>
+
+#include <limits>
 
 namespace srg
 {
@@ -20,12 +25,8 @@ ObjectSearch::ObjectSearch(srg::world::ObjectType objectType, srg::SRGWorldModel
     this->sightLimit = (*sc)["ObjectDetection"]->get<uint32_t>("sightLimit", NULL);
     this->fringe = new std::set<SearchCell, SearchCellSorter>(SearchCellSorter(this->wm));
     this->visited = new std::unordered_set<std::shared_ptr<const world::Cell>>();
+    this->initFringeWithProbableLocations(); // Remark: activate, or deactivate for different evaluations
 }
-
-void ObjectSearch::addRoomType(srg::world::RoomType type)
-{
-    this->roomTypes.insert(type);
-};
 
 std::shared_ptr<const world::Cell> ObjectSearch::getNextCell()
 {
@@ -67,6 +68,27 @@ void ObjectSearch::update()
         srg::viz::Marker marker(cell.cell->coordinate);
         marker.type = srg::viz::SpriteType::CupRed;
         wm->gui->addMarker(marker);
+    }
+}
+
+void ObjectSearch::initFringeWithProbableLocations() {
+    // request
+    agent::SpeechAct request;
+    request.text = "room"; // Future Work: this should depend on other parameters of the Object Search in future
+    request.objectRequestType = this->objectType;
+    request.type = agent::SpeechType::request;
+    request.actID = this->wm->getEngine()->getIdManager()->generateID();
+    request.senderID = this->wm->getOwnId();
+    std::shared_ptr<agent::SpeechAct> answer = this->wm->dialogueManager.requestHandler->handle(request);
+
+    // init fringe with room cells
+    for (const srg::world::RoomType roomType : answer->probableRoomTypes) {
+        this->roomTypes.insert(roomType);
+        for (world::Room* room : this->wm->sRGSimData.getWorld()->getRooms(roomType)) {
+            for (auto& cellEntry : room->getCells()) {
+                this->fringe->insert(SearchCell(std::numeric_limits<uint32_t>::max(), cellEntry.second));
+            }
+        }
     }
 }
 

@@ -3,8 +3,8 @@
 #include "srg/SRGWorldModel.h"
 #include "srg/dialogue/AnswerGraph.h"
 #include "srg/dialogue/InformHandler.h"
-#include "srg/dialogue/QuestionHandler.h"
-#include "srg/tasks/TaskHandler.h"
+#include "srg/dialogue/RequestHandler.h"
+#include "srg/tasks/CommandHandler.h"
 
 #include <srg/agent/containers/SpeechAct.h>
 
@@ -19,9 +19,9 @@ namespace dialogue
 DialogueManager::DialogueManager(srg::SRGWorldModel* wm)
         : wm(wm)
 {
-    this->questionHandler = new QuestionHandler(wm);
+    this->requestHandler = new RequestHandler(wm);
     this->informHandler = new InformHandler(wm);
-    this->taskHandler = new srg::tasks::TaskHandler(wm);
+    this->commandHandler = new srg::tasks::CommandHandler(wm);
 }
 DialogueManager::~DialogueManager() {}
 
@@ -32,12 +32,13 @@ void DialogueManager::processSpeechAct(std::shared_ptr<supplementary::Informatio
 
     std::shared_ptr<agent::SpeechAct> answerSpeechAct = nullptr;
     if (speechActInfo->getInformation().type == agent::SpeechType::request) {
-        answerSpeechAct = this->questionHandler->answerQuestion(speechActInfo->getInformation());
+        answerSpeechAct = this->requestHandler->handle(speechActInfo->getInformation());
     } else if (speechActInfo->getInformation().type == agent::SpeechType::inform) {
-        answerSpeechAct = this->informHandler->answerInform(speechActInfo->getInformation());
+        answerSpeechAct = this->informHandler->handle(speechActInfo->getInformation());
     } else if (speechActInfo->getInformation().type == agent::SpeechType::command) {
-        this->taskHandler->processTaskAct(speechActInfo);
+        answerSpeechAct = this->commandHandler->handle(speechActInfo);
     }
+
     if (answerSpeechAct) {
         this->pendingSpeechActs.push_back(answerSpeechAct);
     }
@@ -50,7 +51,7 @@ void DialogueManager::processSpeechAct(std::shared_ptr<supplementary::Informatio
 void DialogueManager::tick()
 {
     // call to update success status of tasks
-    this->taskHandler->tick();
+    this->commandHandler->tick();
 
     // send pending speech act answers
     for (std::shared_ptr<srg::agent::SpeechAct> speechAct : this->pendingSpeechActs) {

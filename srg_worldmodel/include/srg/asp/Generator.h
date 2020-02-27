@@ -10,6 +10,7 @@ namespace srg
 namespace world
 {
 class Room;
+class Object;
 }
 namespace asp
 {
@@ -19,9 +20,11 @@ public:
     Generator(const void* wildcard_pointer, std::string wildcard_string);
 
     // BINARY PREDICATES
+    std::string is(const srg::world::Object* o, bool dotTerminated = true);
     std::string is(const srg::world::Room* r, bool dotTerminated = true);
 
     // LITERALS
+    std::string get(const srg::world::Object* object);
     std::string get(const srg::world::Room* room);
 
 private:

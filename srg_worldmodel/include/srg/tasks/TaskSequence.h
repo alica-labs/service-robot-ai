@@ -10,7 +10,7 @@ namespace srg
 {
 namespace tasks
 {
-class TaskHandler;
+class CommandHandler;
 class Task;
 class TaskSequence
 {
@@ -29,7 +29,7 @@ public:
     void setEndTime(alica::AlicaTime endTime);
     std::string toLogString(essentials::IdentifierConstPtr agentID);
     friend std::ostream& operator<<(std::ostream& os, const srg::tasks::TaskSequence& taskSequence);
-    friend TaskHandler;
+    friend CommandHandler;
 private:
     void setActiveTaskIdx(int32_t newActiveTaskIdx);
 

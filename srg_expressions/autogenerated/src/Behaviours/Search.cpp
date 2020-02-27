@@ -5,7 +5,7 @@
 #include <srg/Agent.h>
 #include <srg/SRGWorldModel.h>
 #include <srg/agent/ObjectSearch.h>
-#include <srg/tasks/TaskHandler.h>
+#include <srg/tasks/CommandHandler.h>
 #include <srg/world/Cell.h>
 /*PROTECTED REGION END*/
 
@@ -55,7 +55,7 @@ void Search::initialiseParameters()
     delete search;
 
     // init
-    this->taskSequence = this->wm->dialogueManager.taskHandler->getActiveTaskSequence();
+    this->taskSequence = this->wm->dialogueManager.commandHandler->getActiveTaskSequence();
     if (this->taskSequence) {
         this->activeTask = this->taskSequence->getActiveTask();
     }

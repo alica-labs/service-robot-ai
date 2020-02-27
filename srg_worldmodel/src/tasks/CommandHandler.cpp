@@ -1,4 +1,4 @@
-#include "srg/tasks/TaskHandler.h"
+#include "srg/tasks/CommandHandler.h"
 #include "srg/tasks/TaskFactory.h"
 
 #include <srg/world/Cell.h>
@@ -13,7 +13,7 @@ namespace srg
 {
 namespace tasks
 {
-TaskHandler::TaskHandler(SRGWorldModel* wm)
+CommandHandler::CommandHandler(SRGWorldModel* wm)
         : wm(wm)
         , currentTaskSequence(nullptr)
         , taskFactory(new TaskFactory(wm))
@@ -23,35 +23,35 @@ TaskHandler::TaskHandler(SRGWorldModel* wm)
     this->taskActBuffer = new supplementary::InfoBuffer<agent::SpeechAct>((*sc)["SRGWorldModel"]->get<int64_t>("Data.TaskAct.BufferLength", NULL));
 }
 
-TaskHandler::~TaskHandler()
+CommandHandler::~CommandHandler()
 {
     delete taskFactory;
     delete taskActBuffer;
 }
 
-const supplementary::InfoBuffer<agent::SpeechAct>& TaskHandler::getTaskActBuffer()
+const supplementary::InfoBuffer<agent::SpeechAct>& CommandHandler::getTaskActBuffer()
 {
     return *this->taskActBuffer;
 }
 
-std::shared_ptr<TaskSequence> TaskHandler::getActiveTaskSequence()
+std::shared_ptr<TaskSequence> CommandHandler::getActiveTaskSequence()
 {
     return this->currentTaskSequence;
 }
 
-void TaskHandler::tick()
+void CommandHandler::tick()
 {
     this->updateCurrentTaskSequence();
     this->setNextTaskSequence();
 }
 
-void TaskHandler::updateCurrentTaskSequence()
+void CommandHandler::updateCurrentTaskSequence()
 {
     if (!this->currentTaskSequence) {
         return;
     }
     if (this->currentTaskSequence->isSuccessful()) {
-        std::cout << "[TaskHandler] TaskSequence successful and therefore removed!" << std::endl;
+        std::cout << "[CommandHandler] TaskSequence successful and therefore removed!" << std::endl;
         this->logTaskSequence(this->currentTaskSequence);
         this->currentTaskSequence = nullptr;
         return;
@@ -63,7 +63,7 @@ void TaskHandler::updateCurrentTaskSequence()
     }
 
     // search tasks are always completely specified, so the active task must not be a search task
-    assert (activeTask->type != TaskType::Search);
+    assert(activeTask->type != TaskType::Search);
 
     // find last search task before active task
     int32_t taskIdx = this->currentTaskSequence->getActiveTaskIdx();
@@ -75,7 +75,7 @@ void TaskHandler::updateCurrentTaskSequence()
         }
     }
     if (completionHelperTask->type != TaskType::Search && !completionHelperTask->objectID) {
-        std::cerr << "[TaskHandler] No task found, to complete active task: " << activeTask << std::endl;
+        std::cerr << "[CommandHandler] No task found, to complete active task: " << activeTask << std::endl;
         return;
     }
 
@@ -86,7 +86,7 @@ void TaskHandler::updateCurrentTaskSequence()
         foundObject = this->wm->sRGSimData.getWorld()->getObject(completionHelperTask->objectType);
     }
     if (!foundObject) {
-        std::cerr << "[TaskHandler] No object of type " << completionHelperTask->objectType << ", although search task was successful!" << std::endl;
+        std::cerr << "[CommandHandler] No object of type " << completionHelperTask->objectType << ", although search task was successful!" << std::endl;
         return;
     }
     completionHelperTask->coordinate = foundObject->getCoordinate();
@@ -105,12 +105,12 @@ void TaskHandler::updateCurrentTaskSequence()
         activeTask->objectType = completionHelperTask->objectType;
         break;
     default:
-        std::cout << "[TaskHandler] Incompletely specified task not handled: " << *activeTask << std::endl;
+        std::cout << "[CommandHandler] Incompletely specified task not handled: " << *activeTask << std::endl;
         break;
     }
 }
 
-void TaskHandler::removeInvalidKnowledge(std::shared_ptr<TaskSequence> taskSequence)
+void CommandHandler::removeInvalidKnowledge(std::shared_ptr<TaskSequence> taskSequence)
 {
     assert(!taskSequence->isSuccessful());
     assert(taskSequence->getActiveTask()->isCompletelySpecified());
@@ -142,7 +142,7 @@ void TaskHandler::removeInvalidKnowledge(std::shared_ptr<TaskSequence> taskSeque
         task->objectID = nullptr;
         task->objectType = world::ObjectType::Unknown;
         if (task->type != TaskType::PutDown) {
-            task->coordinate = world::Coordinate(-1,-1);
+            task->coordinate = world::Coordinate(-1, -1);
         }
         task->successful = false;
         taskIdx--;
@@ -150,7 +150,7 @@ void TaskHandler::removeInvalidKnowledge(std::shared_ptr<TaskSequence> taskSeque
     taskSequence->setActiveTaskIdx(taskIdx);
 }
 
-void TaskHandler::setNextTaskSequence()
+void CommandHandler::setNextTaskSequence()
 {
     if (this->currentTaskSequence) {
         return;
@@ -169,7 +169,7 @@ void TaskHandler::setNextTaskSequence()
 
         if (this->currentTaskSequence && !this->currentTaskSequence->isSuccessful()) {
             // new task sequence is not finished yet - that is fine
-            std::cout << "[TaskHandler] New task sequence set " << *currentTaskSequence << std::endl;
+            std::cout << "[CommandHandler] New task sequence set " << *currentTaskSequence << std::endl;
             break;
         } else {
             this->currentTaskSequence = nullptr;
@@ -177,12 +177,13 @@ void TaskHandler::setNextTaskSequence()
     }
 }
 
-void TaskHandler::processTaskAct(std::shared_ptr<supplementary::InformationElement<agent::SpeechAct>> taskAct)
+std::shared_ptr<agent::SpeechAct> CommandHandler::handle(std::shared_ptr<supplementary::InformationElement<agent::SpeechAct>> commandAct)
 {
-    this->taskActBuffer->add(taskAct);
+    this->taskActBuffer->add(commandAct);
+    return nullptr; // todo: maybe send an acknowledge for receiving this task
 }
 
-void TaskHandler::logTaskSequence(std::shared_ptr<TaskSequence> taskSequence)
+void CommandHandler::logTaskSequence(std::shared_ptr<TaskSequence> taskSequence)
 {
     taskSequence->setEndTime(this->wm->getTime());
     std::ofstream fileWriter;

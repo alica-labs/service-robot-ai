@@ -2,6 +2,7 @@
 
 #include <essentials/IdentifierConstPtr.h>
 #include <srg/world/ObjectType.h>
+#include <srg/world/RoomType.h>
 #include <srg/sim/containers/Perceptions.h>
 
 #include <iosfwd>
@@ -33,9 +34,12 @@ public:
 
     SpeechType type;
     std::string text;
+    srg::dialogue::AnswerGraph* answerGraph;
+
+    // Future Work: make these to fields more general
     srg::world::ObjectType objectRequestType;
     srg::sim::containers::Perceptions perceptions;
-    srg::dialogue::AnswerGraph* answerGraph;
+    std::vector<world::RoomType> probableRoomTypes;
 
     friend std::ostream& operator<<(std::ostream& os, const srg::agent::SpeechAct& act)
     {

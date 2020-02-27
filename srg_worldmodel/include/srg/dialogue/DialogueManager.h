@@ -20,7 +20,7 @@ namespace srg
 {
 namespace tasks
 {
-class TaskHandler;
+class CommandHandler;
 }
 class SRGWorldModel;
 namespace dialogue
@@ -28,7 +28,7 @@ namespace dialogue
 class AnswerGraph;
 class InformHandler;
 class TaskHandler;
-class QuestionHandler;
+class RequestHandler;
 
 //#define inconsistency_eval
 class DialogueManager
@@ -39,9 +39,9 @@ public:
     void processSpeechAct(std::shared_ptr<supplementary::InformationElement<agent::SpeechAct>> speechActInfo);
     void tick();
 
-    QuestionHandler* questionHandler;
+    RequestHandler* requestHandler;
     InformHandler* informHandler;
-    srg::tasks::TaskHandler* taskHandler;
+    srg::tasks::CommandHandler* commandHandler;
 
 private:
     srg::SRGWorldModel* wm;

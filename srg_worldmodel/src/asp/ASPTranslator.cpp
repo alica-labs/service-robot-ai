@@ -8,7 +8,6 @@
 #include "srg/asp/SRGKnowledgeManager.h"
 
 #include <algorithm>
-#include <sstream>
 #include <vector>
 
 namespace srg
@@ -23,43 +22,49 @@ ASPTranslator::ASPTranslator(srg::SRGWorldModel* wm)
 {
 }
 
-std::string ASPTranslator::extractASPProgram(srg::dialogue::AnswerGraph* answerGraph, InconsistencyRemoval inconsistencyRemoval)
+std::string ASPTranslator::addToKnowledgeBase(srg::dialogue::AnswerGraph* answerGraph, InconsistencyRemoval inconsistencyRemoval)
 {
     if(answerGraph->getEdges().empty()) {
         return "";
     }
-    std::string programSection = "#program commonsenseKnowledge";
+
     if (inconsistencyRemoval == InconsistencyRemoval::KeepHighestWeight) {
         answerGraph->markInconsistentEdges();
     }
-    std::string program = programSection;
-    program.append(".\n");
-    auto tmp = createASPPredicates(answerGraph, inconsistencyRemoval);
-    program.append(tmp);
 
-    program.append("\n");
-    auto indexLeft = programSection.find("(");
-    auto indexRight = programSection.find(")");
-    if (indexLeft != std::string::npos && indexRight != std::string::npos) {
-        auto tmp = programSection.substr(indexLeft + 1, indexRight - indexLeft - 1);
-        programSection = programSection.substr(0, indexLeft);
-        auto symVec = Clingo::SymbolVector();
-        auto paramList = split(tmp);
-        for (auto it : paramList) {
-            symVec.push_back(this->wm->srgKnowledgeManager->parseValue(it.c_str()));
-        }
-        this->wm->srgKnowledgeManager->ground({{programSection.c_str(), symVec}}, nullptr);
-    } else {
-        this->wm->srgKnowledgeManager->ground({{programSection.c_str(), {}}}, nullptr);
-    }
+    // add commonsense predicate facts
+    std::string programSection = "commonsenseKnowledge";
+    std::string commonsenseFacts = createASPPredicates(answerGraph, inconsistencyRemoval);
+    this->wm->srgKnowledgeManager->add(programSection.c_str(), {}, commonsenseFacts.c_str());
+    this->wm->srgKnowledgeManager->ground({{programSection.c_str(), {}}}, nullptr);
     this->wm->srgKnowledgeManager->solve();
 
-    auto pgmMap = extractBackgroundKnowledgePrograms(answerGraph, inconsistencyRemoval);
+    // ground program section with params, if exist
+//    auto indexLeft = programSection.find("(");
+//    auto indexRight = programSection.find(")");
+//    if (indexLeft != std::string::npos && indexRight != std::string::npos) {
+//        auto tmp = programSection.substr(indexLeft + 1, indexRight - indexLeft - 1);
+//        programSection = programSection.substr(0, indexLeft);
+//        auto symVec = Clingo::SymbolVector();
+//        auto paramList = split(tmp);
+//        for (auto it : paramList) {
+//            symVec.push_back(this->wm->srgKnowledgeManager->parseValue(it.c_str()));
+//        }
+//        this->wm->srgKnowledgeManager->ground({{programSection.c_str(), symVec}}, nullptr);
+//    } else {
+//        this->wm->srgKnowledgeManager->ground({{programSection.c_str(), {}}}, nullptr);
+//    }
+//     solve
+//    this->wm->srgKnowledgeManager->solve();
+
+    // extract and add commonsense knowledge rules
+    auto pgmMap = extractCommonsenseKnowledgePrograms(answerGraph, inconsistencyRemoval);
+    std::string program = "#program " + programSection + ".\n" + commonsenseFacts + "\n";
     for (auto pair : pgmMap) {
         program.append(pair.second).append("\n");
         this->wm->srgKnowledgeManager->add(programSection.c_str(), {}, pair.second.c_str());
     }
-    return program;
+    return program; // for debug
 }
 
 std::string ASPTranslator::conceptToASPPredicate(std::string concept)
@@ -93,12 +98,16 @@ std::string ASPTranslator::createASPPredicates(srg::dialogue::AnswerGraph* answe
     return ret;
 }
 
-std::map<std::string, std::string> ASPTranslator::extractBackgroundKnowledgePrograms(
+std::map<std::string, std::string> ASPTranslator::extractCommonsenseKnowledgePrograms(
         srg::dialogue::AnswerGraph* answerGraph, InconsistencyRemoval inconsistencyRemoval)
 {
     std::map<std::string, std::string> ret;
-    std::vector<std::string> addedRelations;
     for (auto pair : answerGraph->getEdges()) {
+        if (pair.second->relation == srg::conceptnet::Relation::IsA) {
+            // makes no sense for IsA relations
+            continue;
+        }
+
         if (inconsistencyRemoval == InconsistencyRemoval::KeepHighestWeight) {
             if (pair.second->causesInconsistency) {
                 continue;
@@ -106,9 +115,7 @@ std::map<std::string, std::string> ASPTranslator::extractBackgroundKnowledgeProg
         }
         std::string tmpRel = srg::conceptnet::relations[pair.second->relation];
         tmpRel[0] = std::tolower(tmpRel[0]);
-        auto it = std::find(addedRelations.begin(), addedRelations.end(), tmpRel);
-        if (it == addedRelations.end()) {
-            addedRelations.push_back(tmpRel);
+        if (ret.find(tmpRel) == ret.end()) {
             std::string pgm = "#program situationalKnowledge(n,m).\n";
             pgm.append("#external -").append(tmpRel).append("(n, m).\n");
             pgm.append(createBackgroundKnowledgeRule(tmpRel, pair.second));
@@ -186,12 +193,12 @@ std::string ASPTranslator::createBackgroundKnowledgeRule(std::string relation, s
     return ret;
 }
 
-std::string ASPTranslator::expandConceptNetPredicate(std::string predicate)
-{
-    std::string ret = "";
-    ret.append(predicate).append(" :- not ").append("-").append(predicate).append(".\n");
-    return ret;
-}
+//std::string ASPTranslator::expandConceptNetPredicate(std::string predicate)
+//{
+//    std::string ret = "";
+//    ret.append(predicate).append(" :- not ").append("-").append(predicate).append(".\n");
+//    return ret;
+//}
 
 std::vector<std::string> ASPTranslator::split(std::string toSplit)
 {

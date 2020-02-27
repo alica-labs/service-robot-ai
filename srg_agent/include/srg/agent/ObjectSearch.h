@@ -33,11 +33,11 @@ class ObjectSearch
 public:
     ObjectSearch(srg::world::ObjectType objectType, srg::SRGWorldModel* wm);
 
-    void addRoomType(srg::world::RoomType type);
     void update();
     std::shared_ptr<const world::Cell> getNextCell();
 
 private:
+    void initFringeWithProbableLocations();
     void getVisibleAndFrontCells(srg::world::Coordinate& ownCoord, const srg::World* world, std::unordered_set<std::shared_ptr<const world::Cell>>& visible,
             std::unordered_set<std::shared_ptr<const world::Cell>>& front);
     void trace(const srg::World* world, srg::world::Coordinate& from, srg::world::Coordinate& to, std::unordered_set<std::shared_ptr<const world::Cell>>& visible,

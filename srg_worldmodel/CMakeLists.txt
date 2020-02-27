@@ -41,8 +41,8 @@ add_library(srg_worldmodel
   src/dialogue/BasicHumanNeeds.cpp
   src/dialogue/DialogueManager.cpp
   src/dialogue/InformHandler.cpp
-  src/dialogue/QuestionHandler.cpp
-  src/tasks/TaskHandler.cpp
+        src/dialogue/RequestHandler.cpp
+        src/tasks/CommandHandler.cpp
   src/tasks/Task.cpp
   src/tasks/TaskType.cpp
   src/tasks/TaskFactory.cpp

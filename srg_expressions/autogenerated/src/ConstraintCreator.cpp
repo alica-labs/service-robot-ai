@@ -1,6 +1,5 @@
 #include "ConstraintCreator.h"
 
-#include "Behaviours/constraints/Answer1581966891046Constraints.h"
 #include "Behaviours/constraints/GenerateTasks1575291385685Constraints.h"
 #include "Behaviours/constraints/Manipulate1571687572903Constraints.h"
 #include "Behaviours/constraints/Move1568825137528Constraints.h"
