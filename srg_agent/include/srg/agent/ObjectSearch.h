@@ -32,6 +32,7 @@ class ObjectSearch
 {
 public:
     ObjectSearch(srg::world::ObjectType objectType, srg::SRGWorldModel* wm);
+    virtual ~ObjectSearch();
 
     void update();
     std::shared_ptr<const world::Cell> getNextCell();

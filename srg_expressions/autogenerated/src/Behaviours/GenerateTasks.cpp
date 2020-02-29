@@ -106,7 +106,7 @@ const srg::world::Coordinate GenerateTasks::getRandomCoordinate()
     // statistic evaluation of room
     int randRoomValue = rand() % 100;
     std::vector<srg::world::Room*> rooms;
-    if (randRoomValue < 20) {
+    if (randRoomValue < 30) {
         // kitchen
         rooms = this->wm->sRGSimData.getWorld()->getRooms(srg::world::RoomType::Kitchen);
     } else if (randRoomValue < 80) {

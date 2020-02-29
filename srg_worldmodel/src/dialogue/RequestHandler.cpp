@@ -40,27 +40,32 @@ std::shared_ptr<agent::SpeechAct> RequestHandler::handle(const agent::SpeechAct 
     default:
         objectTypeString = "unknown";
     }
-    getLocations(objectTypeString, requestAct.text);
+    std::vector<world::RoomType> roomTypes = getLocations(objectTypeString, requestAct.text);
 
     // prepare answer
     std::shared_ptr<agent::SpeechAct> answerSpeechAct = std::make_shared<agent::SpeechAct>();
-    answerSpeechAct->text = ""; //< TODO fill with rooms
     answerSpeechAct->type = agent::SpeechType::request;
-    answerSpeechAct->previousActID = requestAct.actID;
     answerSpeechAct->actID = this->wm->getEngine()->getIdManager()->generateID();
     answerSpeechAct->senderID = this->wm->getOwnId();
+    answerSpeechAct->previousActID = requestAct.actID;
+    answerSpeechAct->probableRoomTypes = roomTypes;
     return answerSpeechAct;
 }
 
-std::shared_ptr<agent::SpeechAct> RequestHandler::getLocations(const std::string& objectType, const std::string& locationType)
+std::vector<world::RoomType> RequestHandler::getLocations(const std::string& objectType, const std::string& locationType)
 {
+    std::vector<world::RoomType> roomTypes;
+    if (this->queryCachedResults(objectType, locationType, roomTypes)) {
+        return roomTypes;
+    }
+
     srg::dialogue::AnswerGraph* constructionGraph = new srg::dialogue::AnswerGraph();
 
     constructionGraph->root = this->cn->getConcept(constructionGraph, objectType); // << should be SearchedItem
     if (!constructionGraph->root) {
         // did not find any concept for the given object type
         std::cout << "[InformHandler] No root concept found for '" << objectType << "'" << std::endl;
-        return nullptr;
+        return std::vector<world::RoomType>();
     }
 
     // init fringe
@@ -91,7 +96,7 @@ std::shared_ptr<agent::SpeechAct> RequestHandler::getLocations(const std::string
         }
 
         // LIMIT SEARCH DEPTH
-        if (currentPath->getPath().size() == 3) {
+        if (currentPath->getPath().size() == 2) {
             delete currentPath;
             continue;
         }
@@ -114,10 +119,14 @@ std::shared_ptr<agent::SpeechAct> RequestHandler::getLocations(const std::string
     constructionGraph->calculateUtilities();
 
     // build the answer graph we want
+    std::vector<srg::conceptnet::Concept*> bestAnswers = constructionGraph->getBestAnswers(3);
     AnswerGraph* answerGraph = new srg::dialogue::AnswerGraph();
     answerGraph->createConcept(constructionGraph->root->id, constructionGraph->root->term, constructionGraph->root->senseLabel);
     answerGraph->root = answerGraph->getConcept(constructionGraph->root->id);
     for (srg::conceptnet::ConceptPath* answerPath : constructionGraph->answerPaths) {
+        if (find(bestAnswers.begin(), bestAnswers.end(), answerPath->getEnd()) == bestAnswers.end()) {
+            continue;
+        }
         answerGraph->createConcept(answerPath->getEnd()->id, answerPath->getEnd()->term, answerPath->getEnd()->senseLabel);
         answerGraph->createEdge(
                 constructionGraph->root->term + "_" + conceptnet::relations[conceptnet::Relation::AtLocation] + "_" + answerPath->getEnd()->term, "en",
@@ -126,19 +135,48 @@ std::shared_ptr<agent::SpeechAct> RequestHandler::getLocations(const std::string
     }
 
     // Integrate Commonsense Knowledge into ASP
-    std::cout << "[RequestHandler] ASP Program: " << std::endl;
-    std::cout << this->wm->aspTranslator->addToKnowledgeBase(answerGraph, asp::ASPTranslator::InconsistencyRemoval::UseExternals);
+    this->wm->aspTranslator->addToKnowledgeBase(answerGraph, asp::ASPTranslator::InconsistencyRemoval::UseExternals);
 
     // Filter Model for location of objects
-    // TODO: process result
-    std::vector<std::string> resultStrings = this->wm->srgKnowledgeManager->ask("cs_AtLocation("+objectType+", wildcard, wildcard)");
-    std::cout << "[RequestHandler] Result: '";
-    for (auto& result : resultStrings) {
-        std::cout << " " << result;
-    }
-    std::cout << "'" << std::endl;
+    std::vector<std::string> resultStrings = this->wm->srgKnowledgeManager->ask("cs_AtLocation(" + objectType + ", wildcard, wildcard)");
 
-    return nullptr;
+    for (auto& result : resultStrings) {
+        size_t firstCommaIdx = result.find(",", 0);
+        size_t secondCommaIdx = result.find(",", firstCommaIdx + 1);
+        std::string roomTypeString = this->trim(result.substr(firstCommaIdx + 1, secondCommaIdx - firstCommaIdx - 1));
+        std::cout << "[RequestHandler] " << roomTypeString << std::endl;
+        roomTypes.push_back(srg::world::FromString(roomTypeString));
+    }
+
+    this->cachedRequests.insert(std::make_pair(std::make_pair(objectType, locationType), roomTypes));
+
+    return roomTypes;
+}
+
+bool RequestHandler::queryCachedResults(const std::string& objectType, const std::string& locationType, std::vector<srg::world::RoomType>& roomTypes) {
+    for (auto& cacheEntry : this->cachedRequests) {
+        if (cacheEntry.first.first.compare(objectType) == 0
+        && cacheEntry.first.second.compare(locationType) == 0) {
+            roomTypes = cacheEntry.second;
+            return true;
+        }
+    }
+    return false;
+}
+
+std::string RequestHandler::trim(const std::string& s)
+{
+    auto start = s.begin();
+    while (start != s.end() && std::isspace(*start)) {
+        start++;
+    }
+
+    auto end = s.end();
+    do {
+        end--;
+    } while (std::distance(start, end) > 0 && std::isspace(*end));
+
+    return std::string(start, end + 1);
 }
 
 std::shared_ptr<agent::SpeechAct> RequestHandler::testGetLocationsViaRelatedness(const agent::SpeechAct requestAct)

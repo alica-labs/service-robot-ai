@@ -20,6 +20,7 @@ public:
     bool checkManipulationSuccess(SRGWorldModel* wm) const;
     bool checkSearchSuccess(srg::SRGWorldModel* wm) const;
     bool isCompletelySpecified() const;
+    void revertProgress();
     friend std::ostream& operator<<(std::ostream& os, const srg::tasks::Task& task);
 
     // Dialogue and Communication
@@ -33,6 +34,9 @@ public:
     world::Coordinate coordinate;
     essentials::IdentifierConstPtr objectID;
     world::ObjectType objectType;
+    bool objectIDIsFixed;
+    bool coordinateIsFixed;
+    bool objectTypeIsFixed;
     mutable bool successful;
 };
 } // namespace dialogue

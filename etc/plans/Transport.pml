@@ -29,7 +29,7 @@
     "abstractPlans" : [ "Behaviours/Search.beh#1573419059418" ],
     "variableBindings" : [ ],
     "outTransitions" : [ 1573419007368 ],
-    "inTransitions" : [ ]
+    "inTransitions" : [ 1582991323347, 1582991345018 ]
   }, {
     "type" : "State",
     "id" : 1573418937725,
@@ -39,7 +39,7 @@
     "parentPlan" : 1573418869596,
     "abstractPlans" : [ "Behaviours/Manipulate.beh#1571687572903" ],
     "variableBindings" : [ ],
-    "outTransitions" : [ 1573418998111 ],
+    "outTransitions" : [ 1573418998111, 1582991345018 ],
     "inTransitions" : [ 1573419009128 ]
   }, {
     "type" : "State",
@@ -72,7 +72,7 @@
     "parentPlan" : 1573418869596,
     "abstractPlans" : [ "Behaviours/Move.beh#1568825137528" ],
     "variableBindings" : [ ],
-    "outTransitions" : [ 1573419009128 ],
+    "outTransitions" : [ 1573419009128, 1582991323347 ],
     "inTransitions" : [ 1573419007368 ]
   }, {
     "type" : "TerminalState",
@@ -168,6 +168,40 @@
       "comment" : "",
       "enabled" : true,
       "conditionString" : "At the object, now pick it up!",
+      "pluginName" : "DefaultPlugin",
+      "variables" : [ ],
+      "quantifiers" : [ ]
+    },
+    "synchronisation" : null
+  }, {
+    "id" : 1582991323347,
+    "name" : "FromMoveCloseTo Search",
+    "comment" : "MISSING_COMMENT",
+    "inState" : 1573418941076,
+    "outState" : 1573418936395,
+    "preCondition" : {
+      "id" : 1582991323350,
+      "name" : "1582991323350",
+      "comment" : "",
+      "enabled" : true,
+      "conditionString" : "MoveClose does not work anymore, because its target object vanished! Go back to Search.",
+      "pluginName" : "DefaultPlugin",
+      "variables" : [ ],
+      "quantifiers" : [ ]
+    },
+    "synchronisation" : null
+  }, {
+    "id" : 1582991345018,
+    "name" : "FromPickUpTo Search",
+    "comment" : "MISSING_COMMENT",
+    "inState" : 1573418937725,
+    "outState" : 1573418936395,
+    "preCondition" : {
+      "id" : 1582991345020,
+      "name" : "1582991345020",
+      "comment" : "",
+      "enabled" : true,
+      "conditionString" : "PickUp is not executable, because its object vanished. Go back to Search!",
       "pluginName" : "DefaultPlugin",
       "variables" : [ ],
       "quantifiers" : [ ]

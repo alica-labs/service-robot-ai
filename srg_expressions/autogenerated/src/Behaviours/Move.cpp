@@ -51,6 +51,7 @@ void Move::initialiseParameters()
     this->taskSequence = this->wm->dialogueManager.commandHandler->getActiveTaskSequence();
     if (this->taskSequence) {
         this->activeTask = this->taskSequence->getActiveTask();
+        std::cout << "[Move] " << *this->activeTask << std::endl;
     }
 
     if (activeTask && activeTask->type != srg::tasks::TaskType::Move) {

@@ -28,6 +28,11 @@ ObjectSearch::ObjectSearch(srg::world::ObjectType objectType, srg::SRGWorldModel
     this->initFringeWithProbableLocations(); // Remark: activate, or deactivate for different evaluations
 }
 
+ObjectSearch::~ObjectSearch() {
+    delete this->fringe;
+    delete this->visited;
+}
+
 std::shared_ptr<const world::Cell> ObjectSearch::getNextCell()
 {
     if (this->fringe->size() == 0) {
@@ -85,8 +90,9 @@ void ObjectSearch::initFringeWithProbableLocations() {
     for (const srg::world::RoomType roomType : answer->probableRoomTypes) {
         this->roomTypes.insert(roomType);
         for (world::Room* room : this->wm->sRGSimData.getWorld()->getRooms(roomType)) {
+            std::cout << "[ObjectSearch] Add cells of room " << room->getID() << " Type " << room->getType() << std::endl;
             for (auto& cellEntry : room->getCells()) {
-                this->fringe->insert(SearchCell(std::numeric_limits<uint32_t>::max(), cellEntry.second));
+                this->fringe->insert(SearchCell(std::numeric_limits<int32_t>::max(), cellEntry.second));
             }
         }
     }

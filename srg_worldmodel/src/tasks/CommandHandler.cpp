@@ -56,16 +56,23 @@ void CommandHandler::updateCurrentTaskSequence()
         this->currentTaskSequence = nullptr;
         return;
     }
-    Task* activeTask = this->currentTaskSequence->getActiveTask();
-    if (activeTask->isCompletelySpecified()) {
-        this->removeInvalidKnowledge(this->currentTaskSequence);
-        return;
+
+    if (!this->currentTaskSequence->getActiveTask()->isCompletelySpecified()) {
+        this->propagateKnowledge();
     }
 
-    // search tasks are always completely specified, so the active task must not be a search task
-    assert(activeTask->type != TaskType::Search);
+    if (this->currentTaskSequence->getActiveTask()->isCompletelySpecified()) {
+        this->removeInvalidKnowledge();
+    }
 
-    // find last search task before active task
+//    std::cout << "[CommandHandler] Active Task is " << *this->currentTaskSequence->getActiveTask() << std::endl;
+}
+
+void CommandHandler::propagateKnowledge()
+{
+    // find last task before active task, that specifies a specific object or is a Search task
+    // the task found is denoted as completionHelperTask
+    auto activeTask = this->currentTaskSequence->getActiveTask();
     int32_t taskIdx = this->currentTaskSequence->getActiveTaskIdx();
     Task* completionHelperTask = nullptr;
     while (taskIdx >= 0) {
@@ -110,44 +117,34 @@ void CommandHandler::updateCurrentTaskSequence()
     }
 }
 
-void CommandHandler::removeInvalidKnowledge(std::shared_ptr<TaskSequence> taskSequence)
+void CommandHandler::removeInvalidKnowledge()
 {
-    assert(!taskSequence->isSuccessful());
-    assert(taskSequence->getActiveTask()->isCompletelySpecified());
-
     // loop backwards over the task sequence
-    int32_t taskIdx = taskSequence->getActiveTaskIdx();
+    int32_t taskIdx = this->currentTaskSequence->getActiveTaskIdx();
     while (taskIdx >= 0) {
-        Task* task = taskSequence->getTask(taskIdx);
+        Task* task = this->currentTaskSequence->getTask(taskIdx);
+
+        std::shared_ptr<const world::Object> object;
+
+        // special handling for search task
         if (task->type == TaskType::Search) {
-            // a search task does not contain knowledge that could render to be invalid
+            object = this->wm->sRGSimData.getWorld()->getObject(task->objectID);
+            if (!object && task->isSuccessful()) {
+                task->revertProgress();
+            }
             break;
         }
 
-        if (!task->objectID) {
-            // no knowledge to invalidate
+        // handling for all other tasks
+        object = this->wm->sRGSimData.getWorld()->getObject(task->objectID);
+        if ((object && object->getCoordinate().x >= 0) || task->coordinateIsFixed) {
             break;
         }
 
-        std::shared_ptr<const world::Object> object = this->wm->sRGSimData.getWorld()->getObject(task->objectID);
-        if (object && object->getCoordinate().x >= 0) {
-            // everything is fine for this task
-            break;
-        }
-
-        if (object && object->getCoordinate().x < 0) {
-            // object still exists, but has not coordinates so remove it from the world
-            this->wm->sRGSimData.getWorld()->removeObjectIfUnknown(task->objectID);
-        }
-        task->objectID = nullptr;
-        task->objectType = world::ObjectType::Unknown;
-        if (task->type != TaskType::PutDown) {
-            task->coordinate = world::Coordinate(-1, -1);
-        }
-        task->successful = false;
+        task->revertProgress();
         taskIdx--;
     }
-    taskSequence->setActiveTaskIdx(taskIdx);
+    this->currentTaskSequence->setActiveTaskIdx(taskIdx);
 }
 
 void CommandHandler::setNextTaskSequence()

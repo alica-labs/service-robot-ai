@@ -89,12 +89,14 @@ void TaskFactory::setObjectType(const std::string& objectTypeToken, Task* task)
     } else {
         std::cerr << "[TaskFactory] Unhandled object type '" << objectTypeToken << "' encountered!" << std::endl;
     }
+    task->objectTypeIsFixed = true;
 }
 
 void TaskFactory::setObjectID(const std::string& objectIDToken, Task* task)
 {
     uint32_t idInt = std::stoi(objectIDToken);
     task->objectID = this->wm->getEngine()->getId<uint32_t>(idInt);
+    task->objectIDIsFixed = true;
 }
 
 void TaskFactory::setCoordinate(const std::string& coordToken, Task* task)
@@ -106,6 +108,7 @@ void TaskFactory::setCoordinate(const std::string& coordToken, Task* task)
         std::cerr << "[TaskFactory] This coordinates are outside of the world: " << coord << std::endl;
     }
     task->coordinate = coord;
+    task->coordinateIsFixed = true;
 }
 
 void TaskFactory::setIDFields(const agent::SpeechAct& speechAct, Task* task)

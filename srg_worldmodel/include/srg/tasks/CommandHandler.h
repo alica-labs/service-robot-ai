@@ -30,7 +30,8 @@ public:
 
 private:
     void updateCurrentTaskSequence();
-    void removeInvalidKnowledge(std::shared_ptr<TaskSequence> taskSequence);
+    void removeInvalidKnowledge();
+    void propagateKnowledge();
     void setNextTaskSequence();
     void logTaskSequence(std::shared_ptr<TaskSequence> taskSequence);
 

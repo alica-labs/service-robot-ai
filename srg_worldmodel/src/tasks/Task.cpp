@@ -2,10 +2,10 @@
 
 #include "srg/SRGWorldModel.h"
 
+#include <srg/world/Agent.h>
 #include <srg/world/Cell.h>
 #include <srg/world/Object.h>
 #include <srg/world/RoomType.h>
-#include <srg/world/Agent.h>
 
 namespace srg
 {
@@ -20,6 +20,9 @@ Task::Task(srg::tasks::TaskType type)
         , previousActID(nullptr)
         , objectID(nullptr)
         , objectType(world::ObjectType::Unknown)
+        , objectIDIsFixed(false)
+        , objectTypeIsFixed(false)
+        , coordinateIsFixed(false)
         , successful(false)
 {
 }
@@ -69,7 +72,7 @@ bool Task::checkMoveSuccess(SRGWorldModel* wm) const
     srg::world::Coordinate diff = (this->coordinate - ownCoord.value()).abs();
     std::shared_ptr<const world::Cell> goalCell = wm->sRGSimData.getWorld()->getCell(this->coordinate);
     if ((goalCell->isBlocked() && diff.x < 2 && diff.y < 2) || (diff.x == 0 && diff.y == 0)) {
-        std::cout << "[Task] Move to " << this->coordinate << " successful!" << std::endl;
+        std::cout << "[Task] " << this->type << " successful: " << this->coordinate << std::endl;
         return true;
     }
     return false;
@@ -80,7 +83,7 @@ bool Task::checkManipulationSuccess(SRGWorldModel* wm) const
     std::shared_ptr<const srg::world::Object> object = nullptr;
     std::shared_ptr<const srg::world::Agent> agent = nullptr;
     std::shared_ptr<const world::Cell> cell = nullptr;
-    bool success = false;
+    bool success;
     switch (this->type) {
     case TaskType::Open:
         object = wm->sRGSimData.getWorld()->getObject(this->objectID);
@@ -103,7 +106,7 @@ bool Task::checkManipulationSuccess(SRGWorldModel* wm) const
         success = false;
     }
     if (success) {
-        std::cout << "[Task] " << this->type << " of " << this->objectType << "(ID: "<< this->objectID << ") to  successful!" << std::endl;
+        std::cout << "[Task] " << this->type << " successful: " << this->objectType << "(ID: " << this->objectID << ")" << std::endl;
     }
     return success;
 }
@@ -111,7 +114,7 @@ bool Task::checkManipulationSuccess(SRGWorldModel* wm) const
 bool Task::checkSearchSuccess(srg::SRGWorldModel* wm) const
 {
     if (wm->sRGSimData.getWorld()->getObject(this->objectType)) {
-        std::cout << "[Task] Search for " << this->objectType << " successful!" << std::endl;
+        std::cout << "[Task] " << this->type << " successful: " << this->objectType << "(ID: " << this->objectID << ")" << std::endl;
         return true;
     }
     return false;
@@ -133,6 +136,21 @@ bool Task::isCompletelySpecified() const
     default:
         return false;
     }
+}
+
+void Task::revertProgress()
+{
+    std::cout << "[Task] -----> Revert " << *this << std::endl;
+    if (!objectIDIsFixed) {
+        this->objectID = nullptr;
+    }
+    if (!objectTypeIsFixed) {
+        this->objectType = world::ObjectType::Unknown;
+    }
+    if (!coordinateIsFixed) {
+        this->coordinate = world::Coordinate(-1, -1);
+    }
+    this->successful = false;
 }
 
 std::ostream& operator<<(std::ostream& os, const srg::tasks::Task& task)

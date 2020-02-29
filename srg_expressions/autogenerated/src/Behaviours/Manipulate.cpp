@@ -51,6 +51,7 @@ void Manipulate::initialiseParameters()
     this->taskSequence = this->wm->dialogueManager.commandHandler->getActiveTaskSequence();
     if (this->taskSequence) {
         this->activeTask = this->taskSequence->getActiveTask();
+        std::cout << "[Manipulate] " << *this->activeTask << std::endl;
     }
 
     if (activeTask && activeTask->type != srg::tasks::TaskType::PickUp && activeTask->type != srg::tasks::TaskType::Close &&
