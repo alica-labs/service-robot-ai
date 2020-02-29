@@ -160,7 +160,7 @@
       "name" : "1573418838905",
       "comment" : "",
       "enabled" : true,
-      "conditionString" : "Any children success",
+      "conditionString" : "I am in the Pseudo Success State",
       "pluginName" : "DefaultPlugin",
       "variables" : [ ],
       "quantifiers" : [ ]

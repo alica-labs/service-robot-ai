@@ -62,6 +62,7 @@ void SRGSimData::processPerception(srg::sim::containers::Perceptions perceptions
             objects.push_back(this->world->createOrUpdateObject(object));
         }
         // update asp knowledge about objects
+        std::cout << "[SRGSimData] " << cellPerception << std::endl;
         this->wm->srgKnowledgeManager->handleObjects(cellPerception.objects, true);
 
         // update association with cell

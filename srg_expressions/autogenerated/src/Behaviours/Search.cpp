@@ -52,7 +52,7 @@ void Search::initialiseParameters()
 {
     /*PROTECTED REGION ID(initialiseParameters1573419059418) ENABLED START*/
     // clean up
-    delete search;
+    delete this->search;
 
     // init
     this->taskSequence = this->wm->dialogueManager.commandHandler->getActiveTaskSequence();

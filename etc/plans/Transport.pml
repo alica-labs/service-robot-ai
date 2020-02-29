@@ -12,7 +12,7 @@
     "id" : 1573418933317,
     "name" : "1573418933317",
     "comment" : "",
-    "successRequired" : true,
+    "successRequired" : false,
     "minCardinality" : 1,
     "maxCardinality" : 20,
     "task" : "ServiceRobotsTasks.tsk#1555601323994",
@@ -61,7 +61,7 @@
     "parentPlan" : 1573418869596,
     "abstractPlans" : [ "Behaviours/Manipulate.beh#1571687572903" ],
     "variableBindings" : [ ],
-    "outTransitions" : [ 1573419003625 ],
+    "outTransitions" : [ 1583008562199 ],
     "inTransitions" : [ 1573419000441 ]
   }, {
     "type" : "State",
@@ -75,18 +75,16 @@
     "outTransitions" : [ 1573419009128, 1582991323347 ],
     "inTransitions" : [ 1573419007368 ]
   }, {
-    "type" : "TerminalState",
-    "id" : 1573418943460,
-    "name" : "TransportDone",
+    "type" : "State",
+    "id" : 1583008553235,
+    "name" : "PseudoSuccess",
     "comment" : "",
     "entryPoint" : null,
     "parentPlan" : 1573418869596,
     "abstractPlans" : [ ],
     "variableBindings" : [ ],
     "outTransitions" : [ ],
-    "inTransitions" : [ 1573419003625 ],
-    "success" : true,
-    "postCondition" : null
+    "inTransitions" : [ 1583008562199 ]
   } ],
   "transitions" : [ {
     "id" : 1573418998111,
@@ -117,23 +115,6 @@
       "comment" : "",
       "enabled" : true,
       "conditionString" : "Object carried to destination, now put it down.",
-      "pluginName" : "DefaultPlugin",
-      "variables" : [ ],
-      "quantifiers" : [ ]
-    },
-    "synchronisation" : null
-  }, {
-    "id" : 1573419003625,
-    "name" : "FromPutDownToTransportDone",
-    "comment" : "MISSING_COMMENT",
-    "inState" : 1573418939737,
-    "outState" : 1573418943460,
-    "preCondition" : {
-      "id" : 1573419841944,
-      "name" : "1573419841944",
-      "comment" : "",
-      "enabled" : true,
-      "conditionString" : "Object put down, transport task successful!",
       "pluginName" : "DefaultPlugin",
       "variables" : [ ],
       "quantifiers" : [ ]
@@ -202,6 +183,23 @@
       "comment" : "",
       "enabled" : true,
       "conditionString" : "PickUp is not executable, because its object vanished. Go back to Search!",
+      "pluginName" : "DefaultPlugin",
+      "variables" : [ ],
+      "quantifiers" : [ ]
+    },
+    "synchronisation" : null
+  }, {
+    "id" : 1583008562199,
+    "name" : "FromPutDownTo Default Name",
+    "comment" : "MISSING_COMMENT",
+    "inState" : 1573418939737,
+    "outState" : 1583008553235,
+    "preCondition" : {
+      "id" : 1583008562201,
+      "name" : "1583008562201",
+      "comment" : "",
+      "enabled" : true,
+      "conditionString" : null,
       "pluginName" : "DefaultPlugin",
       "variables" : [ ],
       "quantifiers" : [ ]
