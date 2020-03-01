@@ -73,6 +73,10 @@ void CommandHandler::propagateKnowledge()
     // find last task before active task, that specifies a specific object or is a Search task
     // the task found is denoted as completionHelperTask
     auto activeTask = this->currentTaskSequence->getActiveTask();
+    if (activeTask->type == TaskType::Search) {
+        // nothing to propagate, if the active task is still search
+        return;
+    }
     int32_t taskIdx = this->currentTaskSequence->getActiveTaskIdx();
     Task* completionHelperTask = nullptr;
     while (taskIdx >= 0) {
@@ -96,6 +100,7 @@ void CommandHandler::propagateKnowledge()
         std::cerr << "[CommandHandler] No object of type " << completionHelperTask->objectType << ", although search task was successful!" << std::endl;
         return;
     }
+    //TODO
     completionHelperTask->coordinate = foundObject->getCoordinate();
     completionHelperTask->objectID = foundObject->getID();
     completionHelperTask->objectType = foundObject->getType();
