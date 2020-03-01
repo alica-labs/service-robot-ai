@@ -99,7 +99,12 @@ bool Task::checkManipulationSuccess(SRGWorldModel* wm) const
         break;
     case TaskType::PutDown:
         cell = wm->sRGSimData.getWorld()->getCell(this->coordinate);
-        success = cell->contains(this->objectID);
+        if (cell->contains(this->objectID)) {
+            success = true;
+        } else {
+            auto carryingAgent = std::dynamic_pointer_cast<const srg::world::Agent>(wm->sRGSimData.getWorld()->getObject(this->objectID)->getParentContainer());
+            success = carryingAgent && carryingAgent->getID() != this->receiverID;
+        }
         break;
     default:
         std::cerr << "[Task] Unknown manipulation task encountered: " << this->type << std::endl;
@@ -135,6 +140,19 @@ bool Task::isCompletelySpecified() const
         return this->objectType != srg::world::ObjectType::Unknown;
     default:
         return false;
+    }
+}
+
+void Task::addInformation(essentials::IdentifierConstPtr objectID, world::ObjectType objectType, world::Coordinate coordinate)
+{
+    if (!objectIDIsFixed) {
+        this->objectID = objectID;
+    }
+    if (!objectTypeIsFixed) {
+        this->objectType = objectType;
+    }
+    if (!coordinateIsFixed) {
+        this->coordinate = coordinate;
     }
 }
 

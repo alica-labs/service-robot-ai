@@ -11,8 +11,8 @@
 #include <SystemConfig.h>
 #include <capnzero/Publisher.h>
 #include <engine/AlicaEngine.h>
-#include <engine/teammanager/TeamManager.h>
 #include <engine/IRoleAssignment.h>
+#include <engine/teammanager/TeamManager.h>
 
 #include <capnp/message.h>
 
@@ -28,7 +28,8 @@ Agent* Agent::getInstance()
 Agent::Agent(srg::SRGWorldModel* wm)
         : wm(wm)
         , movement(new srg::agent::Movement(wm))
-
+        , lastPosition(-1, -1)
+        , lastTimeSendMoveCmd(std::chrono::system_clock::now())
 {
     this->id = this->wm->getEngine()->getTeamManager()->getLocalAgentID();
     this->voice = new srg::agent::Voice(this->id, this->wm->getEngine()->getIdManager());
@@ -95,13 +96,21 @@ int32_t Agent::getPathCost(srg::world::Coordinate goal) const
  * @param goal
  * @return True, if movement is necessary. False, otherwise.
  */
-bool Agent::move(srg::world::Coordinate goal) const
+bool Agent::move(srg::world::Coordinate goal)
 {
     auto ownCoordinate = this->wm->sRGSimData.getOwnPositionBuffer().getLastValidContent();
     if (!ownCoordinate.has_value()) {
         std::cerr << "[Agent] Not localised!" << std::endl;
         return true;
     }
+
+    // this should avoid flickering due to overshooting
+    auto now = std::chrono::system_clock::now();
+    if (ownCoordinate == lastPosition && std::chrono::duration_cast<std::chrono::milliseconds>(now - lastTimeSendMoveCmd) < std::chrono::milliseconds(60)) {
+        return false;
+    }
+    this->lastPosition = ownCoordinate.value();
+    this->lastTimeSendMoveCmd = now;
 
     agent::Path* path = this->movement->searchPath(ownCoordinate.value(), goal);
     //    std::cout << "Agent::move(): Result " << *path << std::endl;

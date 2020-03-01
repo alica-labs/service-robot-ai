@@ -38,7 +38,7 @@ public:
 
     // methods for doing something
     void spawn() const;
-    bool move(srg::world::Coordinate goal) const;
+    bool move(srg::world::Coordinate goal);
     void manipulate(const srg::tasks::Task* task) const;
     void speak(std::string input) const;
     void speak(srg::agent::SpeechAct sa) const;
@@ -57,6 +57,9 @@ private:
     srg::SRGWorldModel* wm;
     essentials::IdentifierConstPtr id;
     srg::agent::Movement* movement;
+    srg::world::Coordinate lastPosition;
+    std::chrono::system_clock::time_point lastTimeSendMoveCmd;
+
     srg::agent::ObjectSearch* search;
     srg::agent::Voice* voice;
 

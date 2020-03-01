@@ -57,69 +57,44 @@ void CommandHandler::updateCurrentTaskSequence()
         return;
     }
 
-//    if (!this->currentTaskSequence->getActiveTask()->isCompletelySpecified()) {
-        this->propagateKnowledge();
-//    }
+    this->propagateKnowledge();
 
     if (this->currentTaskSequence->getActiveTask()->isCompletelySpecified()) {
         this->removeInvalidKnowledge();
     }
-
-//    std::cout << "[CommandHandler] Active Task is " << *this->currentTaskSequence->getActiveTask() << std::endl;
 }
 
 void CommandHandler::propagateKnowledge()
 {
-    // find last task before active task, that specifies a specific object or is a Search task
-    // the task found is denoted as completionHelperTask
-    auto activeTask = this->currentTaskSequence->getActiveTask();
-    if (activeTask->type == TaskType::Search) {
-        // nothing to propagate, if the active task is still search
-        return;
-    }
+    // find latest task, that specifies a specific object or is a Search task
+    Task* taskWithInfos = nullptr;
     int32_t taskIdx = this->currentTaskSequence->getActiveTaskIdx();
-    Task* completionHelperTask = nullptr;
     while (taskIdx >= 0) {
-        completionHelperTask = this->currentTaskSequence->getTask(taskIdx--);
-        if (completionHelperTask->type == TaskType::Search || completionHelperTask->objectID) {
+        taskWithInfos = this->currentTaskSequence->getTask(taskIdx--);
+        if (taskWithInfos->type == TaskType::Search || taskWithInfos->objectID) {
             break;
         }
     }
-    if (completionHelperTask->type != TaskType::Search && !completionHelperTask->objectID) {
+
+    auto activeTask = this->currentTaskSequence->getActiveTask();
+    if (taskWithInfos->type != TaskType::Search && !taskWithInfos->objectID) {
         std::cerr << "[CommandHandler] No task found, to complete active task: " << activeTask << std::endl;
         return;
     }
 
     std::shared_ptr<const srg::world::Object> foundObject = nullptr;
-    if (completionHelperTask->objectID) {
-        foundObject = this->wm->sRGSimData.getWorld()->getObject(completionHelperTask->objectID);
+    if (taskWithInfos->objectID) {
+        foundObject = this->wm->sRGSimData.getWorld()->getObject(taskWithInfos->objectID);
     } else {
-        foundObject = this->wm->sRGSimData.getWorld()->getObject(completionHelperTask->objectType);
+        foundObject = this->wm->sRGSimData.getWorld()->getObject(taskWithInfos->objectType);
     }
     if (!foundObject) {
-        std::cerr << "[CommandHandler] No object of type " << completionHelperTask->objectType << ", although search task was successful!" << std::endl;
+        // Search task was not successful, yet!
         return;
     }
-    //TODO
-    completionHelperTask->coordinate = foundObject->getCoordinate();
-    completionHelperTask->objectID = foundObject->getID();
-    completionHelperTask->objectType = foundObject->getType();
 
     // completely specify tasks with found object
-    switch (activeTask->type) {
-    case TaskType::Move:
-    case TaskType::PickUp:
-    case TaskType::PutDown:
-        if (activeTask->coordinate.x < 0) {
-            activeTask->coordinate = completionHelperTask->coordinate;
-        }
-        activeTask->objectID = completionHelperTask->objectID;
-        activeTask->objectType = completionHelperTask->objectType;
-        break;
-    default:
-        std::cout << "[CommandHandler] Incompletely specified task not handled: " << *activeTask << std::endl;
-        break;
-    }
+    activeTask->addInformation(foundObject->getID(), foundObject->getType(), foundObject->getCoordinate());
 }
 
 void CommandHandler::removeInvalidKnowledge()

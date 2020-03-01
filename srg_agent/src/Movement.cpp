@@ -1,7 +1,7 @@
 #include "srg/agent/Movement.h"
+#include <srg/World.h>
 #include <srg/world/Door.h>
 #include <srg/world/RoomType.h>
-#include <srg/World.h>
 
 #include <queue>
 
@@ -52,7 +52,7 @@ Path* Movement::searchPath(srg::world::Coordinate start, srg::world::Coordinate 
     return initialPath;
 }
 
-    srg::world::Coordinate Movement::findAlternativeGoal(srg::world::Coordinate start, srg::world::Coordinate goal)
+srg::world::Coordinate Movement::findAlternativeGoal(srg::world::Coordinate start, srg::world::Coordinate goal)
 {
     int32_t deltaX = (start.x - goal.x > 0 ? 1 : -1);
     int32_t deltaY = (start.y - goal.y > 0 ? 1 : -1);

@@ -1,9 +1,9 @@
 #pragma once
 
 #include <essentials/IdentifierConstPtr.h>
+#include <srg/tasks/TaskType.h>
 #include <srg/world/Coordinate.h>
 #include <srg/world/ObjectType.h>
-#include <srg/tasks/TaskType.h>
 namespace srg
 {
 class SRGWorldModel;
@@ -21,6 +21,7 @@ public:
     bool checkSearchSuccess(srg::SRGWorldModel* wm) const;
     bool isCompletelySpecified() const;
     void revertProgress();
+    void addInformation(essentials::IdentifierConstPtr objectID, world::ObjectType objectType, world::Coordinate coordinate);
     friend std::ostream& operator<<(std::ostream& os, const srg::tasks::Task& task);
 
     // Dialogue and Communication
@@ -39,5 +40,5 @@ public:
     bool objectTypeIsFixed;
     mutable bool successful;
 };
-} // namespace dialogue
+} // namespace tasks
 } // namespace srg
