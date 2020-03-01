@@ -1,9 +1,9 @@
 #include "srg/agent/ObjectSearch.h"
 
-#include <srg/SRGWorldModel.h>
 #include <engine/AlicaEngine.h>
-#include <srg/dialogue/RequestHandler.h>
+#include <srg/SRGWorldModel.h>
 #include <srg/World.h>
+#include <srg/dialogue/RequestHandler.h>
 #include <srg/world/Cell.h>
 #include <srg/world/Door.h>
 #include <srg/world/Room.h>
@@ -16,26 +16,71 @@ namespace srg
 {
 namespace agent
 {
-ObjectSearch::ObjectSearch(srg::world::ObjectType objectType, srg::SRGWorldModel* wm)
-        : objectType(objectType)
+ObjectSearch::ObjectSearch(srg::SRGWorldModel* wm)
+        : objectType(srg::world::ObjectType::Unknown)
         , wm(wm)
         , updateCounter(0)
+        , initialised(false)
 {
     this->sc = essentials::SystemConfig::getInstance();
     this->sightLimit = (*sc)["ObjectDetection"]->get<uint32_t>("sightLimit", NULL);
     this->fringe = new std::set<SearchCell, SearchCellSorter>(SearchCellSorter(this->wm));
     this->visited = new std::unordered_set<std::shared_ptr<const world::Cell>>();
-    this->initFringeWithProbableLocations(); // Remark: activate, or deactivate for different evaluations
 }
 
-ObjectSearch::~ObjectSearch() {
+ObjectSearch::~ObjectSearch()
+{
     delete this->fringe;
     delete this->visited;
+}
+
+void ObjectSearch::reset()
+{
+    this->updateCounter = 0;
+    this->roomTypes.clear();
+    this->fringe->clear();
+    this->visited->clear();
+    this->objectType = srg::world::ObjectType::Unknown;
+}
+
+void ObjectSearch::init(srg::world::ObjectType objectType)
+{
+    this->reset();
+    this->objectType = objectType;
+    this->initFringeWithProbableLocations(); // Remark: activate, or deactivate for evaluation with(out) cs_Knowledge
+}
+
+/**
+ * Triggers the integration of commonsense knowledge via CN5 and ASP.
+ */
+void ObjectSearch::initFringeWithProbableLocations()
+{
+    // request
+    agent::SpeechAct request;
+    request.text = "room"; // Future Work: this should depend on other parameters of the Object Search in future
+    request.objectRequestType = this->objectType;
+    request.type = agent::SpeechType::request;
+    request.actID = this->wm->getEngine()->getIdManager()->generateID();
+    request.previousActID = this->wm->getEngine()->getIdManager()->getWildcardID();
+    request.senderID = this->wm->getOwnId();
+    std::shared_ptr<agent::SpeechAct> answer = this->wm->dialogueManager.requestHandler->handle(request);
+
+    // init fringe with room cells
+    for (const srg::world::RoomType roomType : answer->probableRoomTypes) {
+        this->roomTypes.insert(roomType);
+        for (world::Room* room : this->wm->sRGSimData.getWorld()->getRooms(roomType)) {
+            std::cout << "[ObjectSearch] Add cells of room " << room->getID() << " Type " << room->getType() << std::endl;
+            for (auto& cellEntry : room->getCells()) {
+                this->fringe->insert(SearchCell(std::numeric_limits<int32_t>::max(), cellEntry.second));
+            }
+        }
+    }
 }
 
 std::shared_ptr<const world::Cell> ObjectSearch::getNextCell()
 {
     if (this->fringe->size() == 0) {
+        this->init(this->objectType);
         return nullptr;
     }
     return this->fringe->begin()->cell;
@@ -73,28 +118,6 @@ void ObjectSearch::update()
         srg::viz::Marker marker(cell.cell->coordinate);
         marker.type = srg::viz::SpriteType::CupRed;
         wm->gui->addMarker(marker);
-    }
-}
-
-void ObjectSearch::initFringeWithProbableLocations() {
-    // request
-    agent::SpeechAct request;
-    request.text = "room"; // Future Work: this should depend on other parameters of the Object Search in future
-    request.objectRequestType = this->objectType;
-    request.type = agent::SpeechType::request;
-    request.actID = this->wm->getEngine()->getIdManager()->generateID();
-    request.senderID = this->wm->getOwnId();
-    std::shared_ptr<agent::SpeechAct> answer = this->wm->dialogueManager.requestHandler->handle(request);
-
-    // init fringe with room cells
-    for (const srg::world::RoomType roomType : answer->probableRoomTypes) {
-        this->roomTypes.insert(roomType);
-        for (world::Room* room : this->wm->sRGSimData.getWorld()->getRooms(roomType)) {
-            std::cout << "[ObjectSearch] Add cells of room " << room->getID() << " Type " << room->getType() << std::endl;
-            for (auto& cellEntry : room->getCells()) {
-                this->fringe->insert(SearchCell(std::numeric_limits<int32_t>::max(), cellEntry.second));
-            }
-        }
     }
 }
 

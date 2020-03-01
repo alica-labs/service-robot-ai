@@ -76,6 +76,9 @@ std::shared_ptr<BasicCondition> ConditionCreator::createConditions(long conditio
     case 1583008562201:
         return std::make_shared<PreCondition1583008562201>();
         break;
+    case 1583070277040:
+        return std::make_shared<PreCondition1583070277040>();
+        break;
     default:
         std::cerr << "ConditionCreator: Unknown condition id requested: " << conditionConfId << std::endl;
         throw new std::exception();

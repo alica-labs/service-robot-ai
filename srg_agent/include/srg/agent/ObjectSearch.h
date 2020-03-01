@@ -31,9 +31,11 @@ namespace agent
 class ObjectSearch
 {
 public:
-    ObjectSearch(srg::world::ObjectType objectType, srg::SRGWorldModel* wm);
+    ObjectSearch(srg::SRGWorldModel* wm);
     virtual ~ObjectSearch();
 
+    void init(srg::world::ObjectType objectType);
+    void reset();
     void update();
     std::shared_ptr<const world::Cell> getNextCell();
 
@@ -54,6 +56,7 @@ private:
 
     std::set<SearchCell, SearchCellSorter>* fringe;
     std::unordered_set<std::shared_ptr<const world::Cell>>* visited;
+    bool initialised;
 };
 
 } // namespace agent

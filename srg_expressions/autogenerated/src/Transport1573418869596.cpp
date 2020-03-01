@@ -50,6 +50,9 @@ bool PreCondition1573419765536::evaluate(shared_ptr<RunningPlan> rp)
         return true;
     }
     auto activeTask = taskSequence->getActiveTask();
+    if (rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::Move) {
+        std::cout << "{Search} -> {MoveClose}" << std::endl;
+    }
     return rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::Move;
     /*PROTECTED REGION END*/
 }
@@ -81,6 +84,9 @@ bool PreCondition1573419810456::evaluate(shared_ptr<RunningPlan> rp)
         return true;
     }
     auto activeTask = taskSequence->getActiveTask();
+    if (rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::Move) {
+        std::cout << "{PickUp} -> {MoveDestination}" << std::endl;
+    }
     return rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::Move;
     /*PROTECTED REGION END*/
 }
@@ -112,6 +118,9 @@ bool PreCondition1582991345020::evaluate(shared_ptr<RunningPlan> rp)
         return true;
     }
     auto activeTask = taskSequence->getActiveTask();
+    if (activeTask && activeTask->type == srg::tasks::TaskType::Search) {
+        std::cout << "{PickUp} -> {Search}" << std::endl;
+    }
     return activeTask && activeTask->type == srg::tasks::TaskType::Search;
     /*PROTECTED REGION END*/
 }
@@ -144,6 +153,9 @@ bool PreCondition1573419828606::evaluate(shared_ptr<RunningPlan> rp)
         return true;
     }
     auto activeTask = taskSequence->getActiveTask();
+    if (rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::PutDown) {
+        std::cout << "{MoveDestination} -> {PutDown}" << std::endl;
+    }
     return rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::PutDown;
     /*PROTECTED REGION END*/
 }
@@ -170,7 +182,44 @@ bool PreCondition1573419828606::evaluate(shared_ptr<RunningPlan> rp)
 bool PreCondition1583008562201::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1583008562199) ENABLED START*/
+    if (rp->isAnyChildStatus(PlanStatus::Success)) {
+        std::cout << "{PutDown} -> {PseudoSuccess}" << std::endl;
+    }
     return rp->isAnyChildStatus(PlanStatus::Success);
+    /*PROTECTED REGION END*/
+}
+/**
+ * Outgoing transition:
+ *   - Name: 1583070277040, ConditionString: , Comment: MISSING_COMMENT
+ *
+ * Abstractplans in current state:
+ *   - Manipulate (1571687572903)
+ *
+ * Tasks in plan:
+ *   - Fetch (1555601323994) (Entrypoint: 1573418933317)
+ *
+ * States in plan:
+ *   - Search (1573418936395)
+ *   - PickUp (1573418937725)
+ *   - MoveDestination (1573418938883)
+ *   - PutDown (1573418939737)
+ *   - MoveClose (1573418941076)
+ *   - PseudoSuccess (1583008553235)
+ *
+ * Variables of plan:
+ */
+bool PreCondition1583070277040::evaluate(shared_ptr<RunningPlan> rp)
+{
+    /*PROTECTED REGION ID(1583070277037) ENABLED START*/
+    auto taskSequence = this->wm->dialogueManager.commandHandler->getActiveTaskSequence();
+    if (!taskSequence) {
+        return true;
+    }
+    auto activeTask = taskSequence->getActiveTask();
+    if (activeTask && activeTask->type == srg::tasks::TaskType::Search) {
+        std::cout << "{PutDown} -> {Search}" << std::endl;
+    }
+    return activeTask && activeTask->type == srg::tasks::TaskType::Search;
     /*PROTECTED REGION END*/
 }
 /**
@@ -201,6 +250,9 @@ bool PreCondition1573419800282::evaluate(shared_ptr<RunningPlan> rp)
         return true;
     }
     auto activeTask = taskSequence->getActiveTask();
+    if (rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::PickUp) {
+        std::cout << "{MoveClose} -> {PickUp}" << std::endl;
+    }
     return rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::PickUp;
     /*PROTECTED REGION END*/
 }
@@ -232,6 +284,9 @@ bool PreCondition1582991323350::evaluate(shared_ptr<RunningPlan> rp)
         return true;
     }
     auto activeTask = taskSequence->getActiveTask();
+    if (activeTask && activeTask->type == srg::tasks::TaskType::Search) {
+        std::cout << "{MoveClose} -> {Search}" << std::endl;
+    }
     return activeTask && activeTask->type == srg::tasks::TaskType::Search;
     /*PROTECTED REGION END*/
 }

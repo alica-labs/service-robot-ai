@@ -29,7 +29,7 @@
     "abstractPlans" : [ "Behaviours/Search.beh#1573419059418" ],
     "variableBindings" : [ ],
     "outTransitions" : [ 1573419007368 ],
-    "inTransitions" : [ 1582991323347, 1582991345018 ]
+    "inTransitions" : [ 1582991323347, 1582991345018, 1583070277037 ]
   }, {
     "type" : "State",
     "id" : 1573418937725,
@@ -61,7 +61,7 @@
     "parentPlan" : 1573418869596,
     "abstractPlans" : [ "Behaviours/Manipulate.beh#1571687572903" ],
     "variableBindings" : [ ],
-    "outTransitions" : [ 1583008562199 ],
+    "outTransitions" : [ 1583008562199, 1583070277037 ],
     "inTransitions" : [ 1573419000441 ]
   }, {
     "type" : "State",
@@ -197,6 +197,23 @@
     "preCondition" : {
       "id" : 1583008562201,
       "name" : "1583008562201",
+      "comment" : "",
+      "enabled" : true,
+      "conditionString" : null,
+      "pluginName" : "DefaultPlugin",
+      "variables" : [ ],
+      "quantifiers" : [ ]
+    },
+    "synchronisation" : null
+  }, {
+    "id" : 1583070277037,
+    "name" : "FromPutDownTo Search",
+    "comment" : "MISSING_COMMENT",
+    "inState" : 1573418939737,
+    "outState" : 1573418936395,
+    "preCondition" : {
+      "id" : 1583070277040,
+      "name" : "1583070277040",
       "comment" : "",
       "enabled" : true,
       "conditionString" : null,

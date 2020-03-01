@@ -44,7 +44,6 @@ void GenerateTasks::run(void* msg)
 void GenerateTasks::initialiseParameters()
 {
     /*PROTECTED REGION ID(initialiseParameters1575291385685) ENABLED START*/
-    std::cout << "[GenerateTasks] Init params!" << std::endl;
     this->sentCounter = 0;
     generateSpeechActs(10);
     // debug
@@ -57,6 +56,7 @@ void GenerateTasks::initialiseParameters()
 /*PROTECTED REGION ID(methods1575291385685) ENABLED START*/
 void GenerateTasks::generateSpeechActs(int numberOfTasks)
 {
+    this->speechActs.clear();
     for (int i = 0; i < numberOfTasks; i++) {
         srg::agent::SpeechAct sa;
         sa.senderID = this->wm->getOwnId();

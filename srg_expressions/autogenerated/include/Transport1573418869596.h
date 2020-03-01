@@ -38,6 +38,10 @@ class PreCondition1583008562201 : public DomainCondition
 {
     bool evaluate(std::shared_ptr<RunningPlan> rp);
 };
+class PreCondition1583070277040 : public DomainCondition
+{
+    bool evaluate(std::shared_ptr<RunningPlan> rp);
+};
 class PreCondition1573419800282 : public DomainCondition
 {
     bool evaluate(std::shared_ptr<RunningPlan> rp);

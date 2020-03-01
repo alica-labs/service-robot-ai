@@ -33,6 +33,7 @@ void Stop::initialiseParameters()
 {
     /*PROTECTED REGION ID(initialiseParameters1555602210283) ENABLED START*/
     // Add additional options here
+    std::cout << "[Stop] Init called." << std::endl;
 
     /*PROTECTED REGION END*/
 }

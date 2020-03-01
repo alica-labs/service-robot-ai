@@ -57,9 +57,9 @@ void CommandHandler::updateCurrentTaskSequence()
         return;
     }
 
-    if (!this->currentTaskSequence->getActiveTask()->isCompletelySpecified()) {
+//    if (!this->currentTaskSequence->getActiveTask()->isCompletelySpecified()) {
         this->propagateKnowledge();
-    }
+//    }
 
     if (this->currentTaskSequence->getActiveTask()->isCompletelySpecified()) {
         this->removeInvalidKnowledge();
@@ -184,7 +184,8 @@ void CommandHandler::logTaskSequence(std::shared_ptr<TaskSequence> taskSequence)
 {
     taskSequence->setEndTime(this->wm->getTime());
     std::ofstream fileWriter;
-    fileWriter.open(essentials::FileSystem::combinePaths("results", "TaskLog.csv"), std::ios_base::app);
+    std::string filename = "TaskLog_" + this->wm->getAgentName() + ".csv";
+    fileWriter.open(essentials::FileSystem::combinePaths("results", filename), std::ios_base::app);
     fileWriter << std::fixed << taskSequence->toLogString(this->wm->getOwnId()) << std::endl;
 }
 

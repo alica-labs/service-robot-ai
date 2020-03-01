@@ -19,12 +19,13 @@ Search::Search()
 {
     /*PROTECTED REGION ID(con1573419059418) ENABLED START*/
     activeTask = nullptr;
-    search = nullptr;
+    search = new srg::agent::ObjectSearch(this->wm);
     /*PROTECTED REGION END*/
 }
 Search::~Search()
 {
     /*PROTECTED REGION ID(dcon1573419059418) ENABLED START*/
+    delete search;
     /*PROTECTED REGION END*/
 }
 void Search::run(void* msg)
@@ -51,9 +52,6 @@ void Search::run(void* msg)
 void Search::initialiseParameters()
 {
     /*PROTECTED REGION ID(initialiseParameters1573419059418) ENABLED START*/
-    // clean up
-    delete this->search;
-
     // init
     this->taskSequence = this->wm->dialogueManager.commandHandler->getActiveTaskSequence();
     if (this->taskSequence) {
@@ -62,8 +60,9 @@ void Search::initialiseParameters()
     }
 
     if (activeTask && activeTask->type == srg::tasks::TaskType::Search) {
-        search = new srg::agent::ObjectSearch(activeTask->objectType, this->wm);
+        this->search->init(activeTask->objectType);
     } else {
+        this->search->reset();
         this->activeTask = nullptr;
         this->taskSequence = nullptr;
     }
