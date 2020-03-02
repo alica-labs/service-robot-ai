@@ -15,10 +15,10 @@ public:
     Task(srg::tasks::TaskType type);
     virtual ~Task();
     bool isSuccessful() const;
-    bool checkSuccess(SRGWorldModel* wm) const;
+    bool checkSuccess(SRGWorldModel* wm);
     bool checkMoveSuccess(SRGWorldModel* wm) const;
     bool checkManipulationSuccess(SRGWorldModel* wm) const;
-    bool checkSearchSuccess(srg::SRGWorldModel* wm) const;
+    bool checkSearchSuccess(srg::SRGWorldModel* wm);
     bool isCompletelySpecified() const;
     void revertProgress();
     void addInformation(essentials::IdentifierConstPtr objectID, world::ObjectType objectType, world::Coordinate coordinate);

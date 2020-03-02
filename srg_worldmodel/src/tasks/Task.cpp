@@ -29,7 +29,7 @@ Task::Task(srg::tasks::TaskType type)
 
 Task::~Task() {}
 
-bool Task::checkSuccess(SRGWorldModel* wm) const
+bool Task::checkSuccess(SRGWorldModel* wm)
 {
     if (!this->isSuccessful() && isCompletelySpecified()) {
         switch (this->type) {
@@ -98,13 +98,11 @@ bool Task::checkManipulationSuccess(SRGWorldModel* wm) const
         success = agent->contains(this->objectID);
         break;
     case TaskType::PutDown:
-        cell = wm->sRGSimData.getWorld()->getCell(this->coordinate);
-        if (cell->contains(this->objectID)) {
-            success = true;
-        } else {
-            auto carryingAgent = std::dynamic_pointer_cast<const srg::world::Agent>(wm->sRGSimData.getWorld()->getObject(this->objectID)->getParentContainer());
-            success = carryingAgent && carryingAgent->getID() != this->receiverID;
-        }
+        // note: A stronger condition with regard to the target coordinates cannot
+        // be evaluated correctly in all cases, because the simulator could displace
+        // the object before the object is recognised at the target coordinates.
+        agent = wm->sRGSimData.getWorld()->getAgent(this->receiverID);
+        success = !agent->contains(this->objectID);
         break;
     default:
         std::cerr << "[Task] Unknown manipulation task encountered: " << this->type << std::endl;
@@ -116,12 +114,15 @@ bool Task::checkManipulationSuccess(SRGWorldModel* wm) const
     return success;
 }
 
-bool Task::checkSearchSuccess(srg::SRGWorldModel* wm) const
+bool Task::checkSearchSuccess(srg::SRGWorldModel* wm)
 {
     auto object = wm->sRGSimData.getWorld()->getObject(this->objectType);
     if (!object || !object->canBePickedUp(wm->getOwnId())) {
         return false;
     }
+    // remember details for knowledge propagation in task sequence
+    this->objectID = object->getID();
+    this->coordinate = object->getCoordinate();
 
     std::cout << "[Task] " << this->type << " successful: " << this->objectType << "(ID: " << this->objectID << ")" << std::endl;
     return true;

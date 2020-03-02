@@ -66,7 +66,22 @@ void CommandHandler::updateCurrentTaskSequence()
 
 void CommandHandler::propagateKnowledge()
 {
-    // find latest task, that specifies a specific object or is a Search task
+    auto activeTask = this->currentTaskSequence->getActiveTask();
+    if (activeTask->type == TaskType::Search) {
+        // nothing to do for search task
+        return;
+    }
+
+    // the last task must have all information, because we always propagate them
+    Task* taskWithInfos = this->currentTaskSequence->getTask(this->currentTaskSequence->getActiveTaskIdx()-1);
+
+    // completely specify tasks with found object
+    activeTask->addInformation(taskWithInfos->objectID, taskWithInfos->objectType, taskWithInfos->coordinate);
+
+    /////////////////////////////////////////////////////////////////////////
+
+
+    /*// find latest task, that specifies a specific object or is a Search task
     Task* taskWithInfos = nullptr;
     int32_t taskIdx = this->currentTaskSequence->getActiveTaskIdx();
     while (taskIdx >= 0) {
@@ -95,32 +110,27 @@ void CommandHandler::propagateKnowledge()
 
     // completely specify tasks with found object
     activeTask->addInformation(foundObject->getID(), foundObject->getType(), foundObject->getCoordinate());
+     */
 }
 
 void CommandHandler::removeInvalidKnowledge()
 {
-    // loop backwards over the task sequence
     int32_t taskIdx = this->currentTaskSequence->getActiveTaskIdx();
+    Task* task = this->currentTaskSequence->getTask(taskIdx);
+    std::shared_ptr<const world::Object> object = this->wm->sRGSimData.getWorld()->getObject(task->objectID);
+    if ((object && object->canBePickedUp(this->wm->getOwnId())) || task->type == TaskType::PutDown) {
+        // everything is fine
+        return;
+    }
+
+    // Otherwise Search would be reverted without having effect, while it
+    // is not successful, yet.
+    if (task->type == TaskType::Search && !task->isSuccessful()) {
+        return;
+    }
+
+    // revert the whole sequence
     while (taskIdx >= 0) {
-        Task* task = this->currentTaskSequence->getTask(taskIdx);
-
-        std::shared_ptr<const world::Object> object;
-
-        // special handling for search task
-        if (task->type == TaskType::Search) {
-            object = this->wm->sRGSimData.getWorld()->getObject(task->objectID);
-            if ((!object || !object->canBePickedUp(this->wm->getOwnId())) && task->isSuccessful()) {
-                task->revertProgress();
-            }
-            break;
-        }
-
-        // handling for all other tasks
-        object = this->wm->sRGSimData.getWorld()->getObject(task->objectID);
-        if ((object && object->canBePickedUp(this->wm->getOwnId()) && object->getCoordinate().x >= 0) || task->coordinateIsFixed) {
-            break;
-        }
-
         task->revertProgress();
         taskIdx--;
     }
