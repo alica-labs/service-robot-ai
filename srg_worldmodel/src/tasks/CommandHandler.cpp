@@ -88,7 +88,7 @@ void CommandHandler::propagateKnowledge()
     } else {
         foundObject = this->wm->sRGSimData.getWorld()->getObject(taskWithInfos->objectType);
     }
-    if (!foundObject) {
+    if (!foundObject || !foundObject->canBePickedUp(this->wm->getOwnId())) {
         // Search task was not successful, yet!
         return;
     }
@@ -109,7 +109,7 @@ void CommandHandler::removeInvalidKnowledge()
         // special handling for search task
         if (task->type == TaskType::Search) {
             object = this->wm->sRGSimData.getWorld()->getObject(task->objectID);
-            if (!object && task->isSuccessful()) {
+            if ((!object || !object->canBePickedUp(this->wm->getOwnId())) && task->isSuccessful()) {
                 task->revertProgress();
             }
             break;
@@ -117,7 +117,7 @@ void CommandHandler::removeInvalidKnowledge()
 
         // handling for all other tasks
         object = this->wm->sRGSimData.getWorld()->getObject(task->objectID);
-        if ((object && object->getCoordinate().x >= 0) || task->coordinateIsFixed) {
+        if ((object && object->canBePickedUp(this->wm->getOwnId()) && object->getCoordinate().x >= 0) || task->coordinateIsFixed) {
             break;
         }
 

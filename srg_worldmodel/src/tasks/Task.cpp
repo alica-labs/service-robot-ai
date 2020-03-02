@@ -118,11 +118,13 @@ bool Task::checkManipulationSuccess(SRGWorldModel* wm) const
 
 bool Task::checkSearchSuccess(srg::SRGWorldModel* wm) const
 {
-    if (wm->sRGSimData.getWorld()->getObject(this->objectType)) {
-        std::cout << "[Task] " << this->type << " successful: " << this->objectType << "(ID: " << this->objectID << ")" << std::endl;
-        return true;
+    auto object = wm->sRGSimData.getWorld()->getObject(this->objectType);
+    if (!object || !object->canBePickedUp(wm->getOwnId())) {
+        return false;
     }
-    return false;
+
+    std::cout << "[Task] " << this->type << " successful: " << this->objectType << "(ID: " << this->objectID << ")" << std::endl;
+    return true;
 }
 
 bool Task::isCompletelySpecified() const
