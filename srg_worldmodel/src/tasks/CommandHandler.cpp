@@ -73,13 +73,12 @@ void CommandHandler::propagateKnowledge()
     }
 
     // the last task must have all information, because we always propagate them
-    Task* taskWithInfos = this->currentTaskSequence->getTask(this->currentTaskSequence->getActiveTaskIdx()-1);
+    Task* taskWithInfos = this->currentTaskSequence->getTask(this->currentTaskSequence->getActiveTaskIdx() - 1);
 
     // completely specify tasks with found object
     activeTask->addInformation(taskWithInfos->objectID, taskWithInfos->objectType, taskWithInfos->coordinate);
 
     /////////////////////////////////////////////////////////////////////////
-
 
     /*// find latest task, that specifies a specific object or is a Search task
     Task* taskWithInfos = nullptr;
@@ -130,11 +129,11 @@ void CommandHandler::removeInvalidKnowledge()
     }
 
     // revert the whole sequence
-    while (taskIdx >= 0) {
+    while (taskIdx > 0) {
         task->revertProgress();
-        taskIdx--;
+        task = this->currentTaskSequence->getTask(--taskIdx);
     }
-    this->currentTaskSequence->setActiveTaskIdx(taskIdx);
+    this->currentTaskSequence->setActiveTaskIdx(0);
 }
 
 void CommandHandler::setNextTaskSequence()

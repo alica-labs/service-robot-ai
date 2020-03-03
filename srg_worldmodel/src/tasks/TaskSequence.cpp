@@ -40,6 +40,9 @@ bool TaskSequence::isSuccessful()
 
 Task* TaskSequence::getActiveTask()
 {
+    if (this->taskSequence.empty()) {
+        return nullptr;
+    }
     return this->taskSequence[this->activeTaskIdx];
 }
 
