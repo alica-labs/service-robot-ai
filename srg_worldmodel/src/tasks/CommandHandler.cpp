@@ -77,39 +77,6 @@ void CommandHandler::propagateKnowledge()
 
     // completely specify tasks with found object
     activeTask->addInformation(taskWithInfos->objectID, taskWithInfos->objectType, taskWithInfos->coordinate);
-
-    /////////////////////////////////////////////////////////////////////////
-
-    /*// find latest task, that specifies a specific object or is a Search task
-    Task* taskWithInfos = nullptr;
-    int32_t taskIdx = this->currentTaskSequence->getActiveTaskIdx();
-    while (taskIdx >= 0) {
-        taskWithInfos = this->currentTaskSequence->getTask(taskIdx--);
-        if (taskWithInfos->type == TaskType::Search || taskWithInfos->objectID) {
-            break;
-        }
-    }
-
-    auto activeTask = this->currentTaskSequence->getActiveTask();
-    if (taskWithInfos->type != TaskType::Search && !taskWithInfos->objectID) {
-        std::cerr << "[CommandHandler] No task found, to complete active task: " << activeTask << std::endl;
-        return;
-    }
-
-    std::shared_ptr<const srg::world::Object> foundObject = nullptr;
-    if (taskWithInfos->objectID) {
-        foundObject = this->wm->sRGSimData.getWorld()->getObject(taskWithInfos->objectID);
-    } else {
-        foundObject = this->wm->sRGSimData.getWorld()->getObject(taskWithInfos->objectType);
-    }
-    if (!foundObject || !foundObject->canBePickedUp(this->wm->getOwnId())) {
-        // Search task was not successful, yet!
-        return;
-    }
-
-    // completely specify tasks with found object
-    activeTask->addInformation(foundObject->getID(), foundObject->getType(), foundObject->getCoordinate());
-     */
 }
 
 void CommandHandler::removeInvalidKnowledge()
@@ -117,7 +84,8 @@ void CommandHandler::removeInvalidKnowledge()
     int32_t taskIdx = this->currentTaskSequence->getActiveTaskIdx();
     Task* task = this->currentTaskSequence->getTask(taskIdx);
     std::shared_ptr<const world::Object> object = this->wm->sRGSimData.getWorld()->getObject(task->objectID);
-    if ((object && object->canBePickedUp(this->wm->getOwnId())) || task->type == TaskType::PutDown) {
+    // TODO: Implement a validity test method for tasks. The coordinates only have to match, if the coordinates are not fixed....
+    if ((object && object->canBePickedUp(this->wm->getOwnId()) && object->getCoordinate() == task->coordinate) || task->type == TaskType::PutDown) {
         // everything is fine
         return;
     }
@@ -129,9 +97,13 @@ void CommandHandler::removeInvalidKnowledge()
     }
 
     // revert the whole sequence
-    while (taskIdx > 0) {
+    while (true) {
         task->revertProgress();
-        task = this->currentTaskSequence->getTask(--taskIdx);
+        if (taskIdx > 0) {
+            task = this->currentTaskSequence->getTask(--taskIdx);
+        } else {
+            break;
+        }
     }
     this->currentTaskSequence->setActiveTaskIdx(0);
 }
