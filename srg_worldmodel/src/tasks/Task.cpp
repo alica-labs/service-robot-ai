@@ -146,7 +146,7 @@ bool Task::isCompletelySpecified() const
     }
 }
 
-void Task::addInformation(essentials::IdentifierConstPtr objectID, world::ObjectType objectType, world::Coordinate coordinate)
+void Task::addKnowledge(essentials::IdentifierConstPtr objectID, world::ObjectType objectType, world::Coordinate coordinate)
 {
     if (!objectIDIsFixed) {
         this->objectID = objectID;
@@ -159,7 +159,37 @@ void Task::addInformation(essentials::IdentifierConstPtr objectID, world::Object
     }
 }
 
-void Task::revertProgress()
+bool Task::isKnowledgeValid(SRGWorldModel* wm) const {
+    if (this->type == TaskType::PutDown) {
+        // PutDown cannot be invalid, because it can only fail, when the target position is invalid, which is fixed.
+        return true;
+    }
+
+    if (this->type == TaskType::Search && !this->isSuccessful()) {
+        // Otherwise Search would be reverted without having effect, while it is not successful, yet.
+        return true;
+    }
+
+    std::shared_ptr<const world::Object> object = wm->sRGSimData.getWorld()->getObject(this->objectID);
+    if (!object) {
+        // object does not exist anymore
+        return false;
+    }
+
+    if (!object->canBePickedUp(wm->getOwnId())) {
+        // object cannot be picked by me anymore
+        return false;
+    }
+
+    if (!this->coordinateIsFixed && object->getCoordinate() != this->coordinate) {
+        // object is not located at the original position anymore
+        return false;
+    }
+
+    return true;
+}
+
+void Task::revertKnowledge()
 {
     std::cout << "[Task] -----> Revert " << *this << std::endl;
     if (!objectIDIsFixed) {

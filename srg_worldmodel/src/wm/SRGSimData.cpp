@@ -62,7 +62,6 @@ void SRGSimData::processPerception(srg::sim::containers::Perceptions perceptions
             objects.push_back(this->world->createOrUpdateObject(object));
         }
         // update asp knowledge about objects
-//        std::cout << "[SRGSimData] " << cellPerception << std::endl;
         this->wm->srgKnowledgeManager->handleObjects(cellPerception.objects, true);
 
         // update association with cell
@@ -72,10 +71,14 @@ void SRGSimData::processPerception(srg::sim::containers::Perceptions perceptions
             case world::ObjectType::Robot:
             case world::ObjectType::Human: {
                 this->world->addAgent(std::dynamic_pointer_cast<srg::world::Agent>(object));
-                std::shared_ptr<const world::Cell> cell = std::dynamic_pointer_cast<const world::Cell>(object->getParentContainer());
-                auto ownPositionInfo = std::make_shared<supplementary::InformationElement<srg::world::Coordinate>>(
-                        cell->coordinate, wm->getTime(), ownPositionValidityDuration, 1.0);
-                this->ownPositionBuffer->add(ownPositionInfo);
+                // update own pos
+                if (object->getID() == this->wm->getOwnId()) {
+                    std::shared_ptr<const world::Cell> cell = std::dynamic_pointer_cast<const world::Cell>(
+                            object->getParentContainer());
+                    auto ownPositionInfo = std::make_shared<supplementary::InformationElement<srg::world::Coordinate>>(
+                            cell->coordinate, wm->getTime(), ownPositionValidityDuration, 1.0);
+                    this->ownPositionBuffer->add(ownPositionInfo);
+                }
             } break;
             default:
                 // nothing extra to do for other types

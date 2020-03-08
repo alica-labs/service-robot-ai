@@ -76,29 +76,20 @@ void CommandHandler::propagateKnowledge()
     Task* taskWithInfos = this->currentTaskSequence->getTask(this->currentTaskSequence->getActiveTaskIdx() - 1);
 
     // completely specify tasks with found object
-    activeTask->addInformation(taskWithInfos->objectID, taskWithInfos->objectType, taskWithInfos->coordinate);
+    activeTask->addKnowledge(taskWithInfos->objectID, taskWithInfos->objectType, taskWithInfos->coordinate);
 }
 
 void CommandHandler::removeInvalidKnowledge()
 {
-    int32_t taskIdx = this->currentTaskSequence->getActiveTaskIdx();
-    Task* task = this->currentTaskSequence->getTask(taskIdx);
-    std::shared_ptr<const world::Object> object = this->wm->sRGSimData.getWorld()->getObject(task->objectID);
-    // TODO: Implement a validity test method for tasks. The coordinates only have to match, if the coordinates are not fixed....
-    if ((object && object->canBePickedUp(this->wm->getOwnId()) && object->getCoordinate() == task->coordinate) || task->type == TaskType::PutDown) {
-        // everything is fine
-        return;
-    }
-
-    // Otherwise Search would be reverted without having effect, while it
-    // is not successful, yet.
-    if (task->type == TaskType::Search && !task->isSuccessful()) {
+    Task* task = this->currentTaskSequence->getActiveTask();
+    if (task->isKnowledgeValid(this->wm)) {
         return;
     }
 
     // revert the whole sequence
+    int32_t taskIdx = this->currentTaskSequence->getActiveTaskIdx();
     while (true) {
-        task->revertProgress();
+        task->revertKnowledge();
         if (taskIdx > 0) {
             task = this->currentTaskSequence->getTask(--taskIdx);
         } else {

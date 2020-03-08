@@ -20,8 +20,9 @@ public:
     bool checkManipulationSuccess(SRGWorldModel* wm) const;
     bool checkSearchSuccess(srg::SRGWorldModel* wm);
     bool isCompletelySpecified() const;
-    void revertProgress();
-    void addInformation(essentials::IdentifierConstPtr objectID, world::ObjectType objectType, world::Coordinate coordinate);
+    bool isKnowledgeValid(SRGWorldModel* wm) const;
+    void revertKnowledge();
+    void addKnowledge(essentials::IdentifierConstPtr objectID, world::ObjectType objectType, world::Coordinate coordinate);
     friend std::ostream& operator<<(std::ostream& os, const srg::tasks::Task& task);
 
     // Dialogue and Communication

@@ -106,7 +106,7 @@ bool Agent::move(srg::world::Coordinate goal)
 
     // this should avoid flickering due to overshooting
     auto now = std::chrono::system_clock::now();
-    if (ownCoordinate == lastPosition && std::chrono::duration_cast<std::chrono::milliseconds>(now - lastTimeSendMoveCmd) < std::chrono::milliseconds(60)) {
+    if (ownCoordinate == lastPosition && std::chrono::duration_cast<std::chrono::milliseconds>(now - lastTimeSendMoveCmd) < std::chrono::milliseconds(300)) {
         return false;
     }
     this->lastPosition = ownCoordinate.value();
