@@ -24,13 +24,11 @@ private:
     essentials::SystemConfig* sc;
 
     void* ctx;
-    capnzero::Subscriber* telegramMessageSub;
     capnzero::Subscriber* speechActSub;
     capnzero::Publisher* speechActPub;
     capnzero::Subscriber* agentCommandSub;
     capnzero::Subscriber* perceptionSub;
 
-    void onTelegramMessage(capnp::FlatArrayMessageReader& msg);
     void onSpeechAct(capnp::FlatArrayMessageReader& msg);
     void onAgentCmd(capnp::FlatArrayMessageReader& msg);
     void onSimPerceptions(capnp::FlatArrayMessageReader& msg);

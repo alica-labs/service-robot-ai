@@ -19,9 +19,6 @@ RawSensorData::RawSensorData(srg::SRGWorldModel* wm)
 {
     this->wm = wm;
     auto sc = essentials::SystemConfig::getInstance();
-    this->telegramMessageValidityDuration = alica::AlicaTime::nanoseconds((*sc)["SRGWorldModel"]->get<int>("Data.Telegram.ValidityDuration", NULL));
-    this->telegramMessageBuffer = new supplementary::InfoBuffer<Message>((*sc)["SRGWorldModel"]->get<int>("Data.Telegram.BufferLength", NULL));
-
     this->speechActValidityDuration = alica::AlicaTime::nanoseconds((*sc)["SRGWorldModel"]->get<int>("Data.SpeechAct.ValidityDuration", NULL));
     this->speechActBuffer = new supplementary::InfoBuffer<agent::SpeechAct>((*sc)["SRGWorldModel"]->get<int>("Data.SpeechAct.BufferLength", NULL));
 
@@ -33,11 +30,6 @@ RawSensorData::RawSensorData(srg::SRGWorldModel* wm)
 }
 
 RawSensorData::~RawSensorData() {}
-
-const supplementary::InfoBuffer<Message>& RawSensorData::getTelegramMessageBuffer()
-{
-    return *this->telegramMessageBuffer;
-}
 
 const supplementary::InfoBuffer<agent::AgentCommand>& RawSensorData::getAgentCmdBuffer()
 {
@@ -52,12 +44,6 @@ const supplementary::InfoBuffer<agent::SpeechAct>& RawSensorData::getSpeechActBu
 const supplementary::InfoBuffer<srg::sim::containers::Perceptions>& RawSensorData::getPerceptionsBuffer()
 {
     return *this->perceptionsBuffer;
-}
-
-void RawSensorData::processTelegramMessage(Message message)
-{
-    auto messageInfo = std::make_shared<supplementary::InformationElement<Message>>(message, wm->getTime(), telegramMessageValidityDuration, 1.0);
-    telegramMessageBuffer->add(messageInfo);
 }
 
 void RawSensorData::processSpeechAct(agent::SpeechAct act)

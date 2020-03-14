@@ -20,7 +20,6 @@
   <depend>asp_solver</depend>
   <depend>asp_commons</depend>
   <depend>capnzero</depend>
-  <depend>telegram-client</depend>
   <depend>id_manager</depend>
   <depend>knowledge_manager</depend>
   <depend>srg_agent_msgs</depend>

@@ -4,7 +4,6 @@
 
 #include <srg/sim/containers/Perceptions.h>
 
-#include <Message.h>
 #include <srg/agent/containers/AgentCommand.h>
 #include <supplementary/InformationElement.h>
 
@@ -22,22 +21,17 @@ namespace srg {
             virtual ~RawSensorData();
 
             // Methods for accessing the buffers
-            const supplementary::InfoBuffer<Message>& getTelegramMessageBuffer();
             const supplementary::InfoBuffer<agent::AgentCommand>& getAgentCmdBuffer();
             const supplementary::InfoBuffer<agent::SpeechAct>& getSpeechActBuffer();
             const supplementary::InfoBuffer<srg::sim::containers::Perceptions>& getPerceptionsBuffer();
 
             // Methods for processing Messages
-            void processTelegramMessage(Message message);
             void processSpeechAct(agent::SpeechAct act);
             void processAgentCmd(agent::AgentCommand agentCmd);
             void processSimPerceptions(srg::sim::containers::Perceptions perceptions);
 
         private:
             SRGWorldModel* wm;
-
-            alica::AlicaTime telegramMessageValidityDuration;
-            supplementary::InfoBuffer<Message>* telegramMessageBuffer;
 
             alica::AlicaTime agentCmdValidityDuration;
             supplementary::InfoBuffer<agent::AgentCommand>* agentCmdBuffer;

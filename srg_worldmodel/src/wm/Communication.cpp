@@ -2,7 +2,6 @@
 
 #include <srg/SRGWorldModel.h>
 
-#include <Message.h>
 #include <srg/agent/SpeechActMsg.capnp.h>
 #include <srg/agent/containers/ContainerUtils.h>
 #include <srg/sim/ContainerUtils.h>
@@ -23,12 +22,6 @@ Communication::Communication(SRGWorldModel* wm)
 {
     this->ctx = zmq_ctx_new();
     this->sc = essentials::SystemConfig::getInstance();
-
-    std::string telegramMessageTopic = (*sc)["SRGWorldModel"]->get<std::string>("Data.Telegram.Topic", NULL);
-    this->telegramMessageSub = new capnzero::Subscriber(this->ctx, capnzero::Protocol::UDP);
-    this->telegramMessageSub->setTopic(telegramMessageTopic);
-    this->telegramMessageSub->addAddress((*sc)["SRGWorldModel"]->get<std::string>("Data.Telegram.Address", NULL));
-    this->telegramMessageSub->subscribe(&Communication::onTelegramMessage, &(*this));
 
     std::string speechActTopic = (*sc)["Voice"]->get<std::string>("SpeechAct.topic", NULL);
     this->speechActSub = new capnzero::Subscriber(this->ctx, capnzero::Protocol::UDP);
@@ -55,17 +48,9 @@ Communication::Communication(SRGWorldModel* wm)
 
 Communication::~Communication()
 {
-    delete this->telegramMessageSub;
     delete this->speechActSub;
     delete this->perceptionSub;
     delete this->agentCommandSub;
-}
-
-void Communication::onTelegramMessage(capnp::FlatArrayMessageReader& msg)
-{
-    Message m;
-    m.fromCapnp(msg);
-    this->wm->rawSensorData.processTelegramMessage(m);
 }
 
 void Communication::onSpeechAct(capnp::FlatArrayMessageReader& msg)
