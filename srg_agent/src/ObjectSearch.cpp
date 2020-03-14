@@ -1,6 +1,5 @@
 #include "srg/agent/ObjectSearch.h"
 
-#include <engine/AlicaEngine.h>
 #include <srg/SRGWorldModel.h>
 #include <srg/World.h>
 #include <srg/dialogue/RequestHandler.h>
@@ -9,6 +8,8 @@
 #include <srg/world/Room.h>
 
 #include <cnc_geometry/Calculator.h>
+#include <engine/AlicaEngine.h>
+#include <engine/teammanager/TeamManager.h>
 
 #include <limits>
 
@@ -47,7 +48,27 @@ void ObjectSearch::init(srg::world::ObjectType objectType)
 {
     this->reset();
     this->objectType = objectType;
-    this->initFringeWithProbableLocations(); // Remark: activate, or deactivate for evaluation with(out) cs_Knowledge
+    this->queryOthersForKnownLocations();
+    //    this->initFringeWithProbableLocations(); // Remark: activate, or deactivate for evaluation with(out) cs_Knowledge
+}
+
+void ObjectSearch::queryOthersForKnownLocations()
+{
+    for (const auto& agentId : this->wm->getEngine()->getTeamManager()->getActiveAgentIds()) {
+        if (agentId == this->wm->getOwnId()) {
+            continue;
+        }
+
+        agent::SpeechAct request;
+        request.text = "known-locations"; // Future Work: this should depend on other parameters of the Object Search in future
+        request.objectRequestType = this->objectType;
+        request.type = agent::SpeechType::request;
+        request.actID = this->wm->getEngine()->getIdManager()->generateID();
+        request.previousActID = this->wm->getEngine()->getIdManager()->getWildcardID();
+        request.senderID = this->wm->getOwnId();
+        request.receiverID = agentId;
+        this->wm->communication->sendSpeechAct(std::make_shared<agent::SpeechAct>(request));
+    }
 }
 
 /**
@@ -63,6 +84,7 @@ void ObjectSearch::initFringeWithProbableLocations()
     request.actID = this->wm->getEngine()->getIdManager()->generateID();
     request.previousActID = this->wm->getEngine()->getIdManager()->getWildcardID();
     request.senderID = this->wm->getOwnId();
+
     std::shared_ptr<agent::SpeechAct> answer = this->wm->dialogueManager.requestHandler->handle(request);
 
     // init fringe with room cells

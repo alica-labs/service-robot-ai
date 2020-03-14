@@ -23,9 +23,9 @@ RequestHandler::RequestHandler(SRGWorldModel* wm)
 std::shared_ptr<agent::SpeechAct> RequestHandler::handle(const agent::SpeechAct requestAct)
 {
     // Handling of Basic Human Needs
-    if (requestAct.text.find("OBJECTS") == 0) {
+    if (requestAct.text.find("known-locations") == 0) {
         // TODO: Answer requests for known objects
-        std::cout << "[RequestHandler] " << requestAct << std::endl;
+        std::cout << "[RequestHandler] Was queried for known locations: " << requestAct << std::endl;
         return nullptr;
     }
 

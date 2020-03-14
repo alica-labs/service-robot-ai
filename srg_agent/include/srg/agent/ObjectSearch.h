@@ -40,6 +40,7 @@ public:
     std::shared_ptr<const world::Cell> getNextCell();
 
 private:
+    void queryOthersForKnownLocations();
     void initFringeWithProbableLocations();
     void getVisibleAndFrontCells(srg::world::Coordinate& ownCoord, const srg::World* world, std::unordered_set<std::shared_ptr<const world::Cell>>& visible,
             std::unordered_set<std::shared_ptr<const world::Cell>>& front);
