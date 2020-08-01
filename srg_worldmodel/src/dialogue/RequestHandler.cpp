@@ -22,12 +22,14 @@ RequestHandler::RequestHandler(SRGWorldModel* wm)
 
 std::shared_ptr<agent::SpeechAct> RequestHandler::handle(const agent::SpeechAct requestAct)
 {
-    // Handling of Basic Human Needs
+    // ## Handle Question from other robots, which are asking for object locations
     if (requestAct.text.find("known-locations") == 0) {
         // TODO: Answer requests for known objects
         std::cout << "[RequestHandler] Was queried for known locations: " << requestAct << std::endl;
         return nullptr;
     }
+
+    // ## Handle Question from your own ObjectSearch:
 
     // Query Concept Net for a Concept's Location and integrate that knowledge into the ASP Knowledge Base
     std::string objectTypeString;
