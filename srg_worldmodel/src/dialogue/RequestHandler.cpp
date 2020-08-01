@@ -64,7 +64,7 @@ std::vector<world::RoomType> RequestHandler::getLocations(const std::string& obj
     constructionGraph->root = this->cn->getConcept(constructionGraph, objectType); // << should be SearchedItem
     if (!constructionGraph->root) {
         // did not find any concept for the given object type
-        std::cout << "[InformHandler] No root concept found for '" << objectType << "'" << std::endl;
+        std::cout << "[RequestHandler] No root concept found for '" << objectType << "'" << std::endl;
         return std::vector<world::RoomType>();
     }
 
@@ -185,43 +185,43 @@ std::shared_ptr<agent::SpeechAct> RequestHandler::testGetLocationsViaRelatedness
     conceptnet::Concept* root = this->cn->getConcept(answerGraph, requestAct.text); // << should be cup
     std::stringstream ss;
     ss << srg::world::RoomType::Floor;
-    std::cout << "[InformHandler] kitchen/room Relatedness:" << this->cn->getRelatedness("kitchen", "room") << std::endl;
+    std::cout << "[RequestHandler] kitchen/room Relatedness:" << this->cn->getRelatedness("kitchen", "room") << std::endl;
     ss.clear();
 
     ss << srg::world::RoomType::Office;
-    std::cout << "[InformHandler] Cup/Office Relatedness:" << this->cn->getRelatedness(root->term, ss.str()) << std::endl;
+    std::cout << "[RequestHandler] Cup/Office Relatedness:" << this->cn->getRelatedness(root->term, ss.str()) << std::endl;
     ss.clear();
 
     ss << srg::world::RoomType::Kitchen;
-    std::cout << "[InformHandler] Cup/Kitchen Relatedness:" << this->cn->getRelatedness(root->term, ss.str()) << std::endl;
+    std::cout << "[RequestHandler] Cup/Kitchen Relatedness:" << this->cn->getRelatedness(root->term, ss.str()) << std::endl;
     ss.clear();
 
     ss << srg::world::RoomType::Bathroom;
-    std::cout << "[InformHandler] Cup/Bathroom Relatedness:" << this->cn->getRelatedness(root->term, ss.str()) << std::endl;
+    std::cout << "[RequestHandler] Cup/Bathroom Relatedness:" << this->cn->getRelatedness(root->term, ss.str()) << std::endl;
     ss.clear();
 
     ss << srg::world::RoomType::ConferenceRoom;
-    std::cout << "[InformHandler] Cup/ConferenceRoom Relatedness:" << this->cn->getRelatedness(root->term, ss.str()) << std::endl;
+    std::cout << "[RequestHandler] Cup/ConferenceRoom Relatedness:" << this->cn->getRelatedness(root->term, ss.str()) << std::endl;
     ss.clear();
 
     ss << srg::world::RoomType::ReceptionRoom;
-    std::cout << "[InformHandler] Cup/ReceptionRoom Relatedness:" << this->cn->getRelatedness(root->term, ss.str()) << std::endl;
+    std::cout << "[RequestHandler] Cup/ReceptionRoom Relatedness:" << this->cn->getRelatedness(root->term, ss.str()) << std::endl;
     ss.clear();
 
     ss << srg::world::RoomType::ServerRoom;
-    std::cout << "[InformHandler] Cup/ServerRoom Relatedness:" << this->cn->getRelatedness(root->term, ss.str()) << std::endl;
+    std::cout << "[RequestHandler] Cup/ServerRoom Relatedness:" << this->cn->getRelatedness(root->term, ss.str()) << std::endl;
     ss.clear();
 
     ss << srg::world::RoomType::Storeroom;
-    std::cout << "[InformHandler] Cup/Storeroom Relatedness:" << this->cn->getRelatedness(root->term, ss.str()) << std::endl;
+    std::cout << "[RequestHandler] Cup/Storeroom Relatedness:" << this->cn->getRelatedness(root->term, ss.str()) << std::endl;
     ss.clear();
 
     ss << srg::world::RoomType::UtilityRoom;
-    std::cout << "[InformHandler] Cup/UtilityRoom Relatedness:" << this->cn->getRelatedness(root->term, ss.str()) << std::endl;
+    std::cout << "[RequestHandler] Cup/UtilityRoom Relatedness:" << this->cn->getRelatedness(root->term, ss.str()) << std::endl;
     ss.clear();
 
     ss << srg::world::RoomType::WorkshopRoom;
-    std::cout << "[InformHandler] Cup/WorkshopRoom Relatedness:" << this->cn->getRelatedness(root->term, ss.str()) << std::endl;
+    std::cout << "[RequestHandler] Cup/WorkshopRoom Relatedness:" << this->cn->getRelatedness(root->term, ss.str()) << std::endl;
     ss.clear();
 
     std::cout << answerGraph->toString() << std::endl;
