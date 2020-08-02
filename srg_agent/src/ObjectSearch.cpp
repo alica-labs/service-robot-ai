@@ -48,7 +48,7 @@ void ObjectSearch::init(srg::world::ObjectType objectType)
 {
     this->reset();
     this->objectType = objectType;
-    this->queryOthersForKnownLocations();
+    this->queryOthersForKnownLocations(); // Remark: activate, or  deactivate for evaluation with(out) knowledge-based cooperation
     this->initFringeWithProbableLocations(); // Remark: activate, or deactivate for evaluation with(out) cs_Knowledge
 }
 

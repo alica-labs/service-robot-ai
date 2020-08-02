@@ -4,6 +4,7 @@
 #include "srg/dialogue/AnswerGraph.h"
 
 #include "srg/SRGWorldModel.h"
+#include "srg/asp/SRGKnowledgeManager.h"
 
 #include <engine/AlicaEngine.h>
 
@@ -21,7 +22,18 @@ InformHandler::InformHandler(SRGWorldModel* wm)
 
 std::shared_ptr<agent::SpeechAct> InformHandler::handle(const agent::SpeechAct informAct)
 {
-    return testInconsistencyStuff(informAct);
+    if (informAct.text.find("known-locations") == 0) {
+        std::cout << "[InformHandler] Got " << informAct.perceptions.cellPerceptions.size() << " locations from " << informAct.senderID << " with " << informAct.objectRequestType << std::endl;
+        this->wm->rawSensorData.processSimPerceptions(informAct.perceptions);
+    }
+
+    std::cout << "[InformHandler] Human informed me about: '" << informAct.text << "'" << std::endl;
+    // TODO: Either send this knowledge via the human that generates the tasks, or add it here for evaluation
+    std::vector<std::string> information;
+    information.push_back(informAct.text);
+    wm->srgKnowledgeManager->addInformation(information);
+    
+    return nullptr;
 }
 
 std::shared_ptr<agent::SpeechAct> InformHandler::createAnswerSpeechAct(essentials::IdentifierConstPtr previousActID, srg::dialogue::AnswerGraph* answerGraph, agent::SpeechType type)

@@ -24,6 +24,7 @@ private:
     bool queryCachedResults(const std::string& objectType, const std::string& locationType, std::vector<srg::world::RoomType>& roomTypes);
     std::vector<world::RoomType> getLocations(const std::string& objectType, const std::string& locationType);
     std::shared_ptr<agent::SpeechAct> testGetLocationsViaRelatedness(const agent::SpeechAct requestAct);
+    std::vector<srg::sim::containers::CellPerception> createPerceptions(srg::world::ObjectType objectType);
     std::string trim(const std::string& s);
 
     srg::SRGWorldModel* wm;

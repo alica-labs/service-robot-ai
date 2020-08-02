@@ -8,6 +8,9 @@
 #include "srg/dialogue/AnswerGraph.h"
 #include "srg/dialogue/BasicHumanNeeds.h"
 
+#include <srg/sim/containers/CellPerception.h>
+#include <srg/world/Cell.h>
+
 #include <engine/AlicaEngine.h>
 
 namespace srg
@@ -24,9 +27,26 @@ std::shared_ptr<agent::SpeechAct> RequestHandler::handle(const agent::SpeechAct 
 {
     // ## Handle Question from other robots, which are asking for object locations
     if (requestAct.text.find("known-locations") == 0) {
-        // TODO: Answer requests for known objects
-        std::cout << "[RequestHandler] Was queried for known locations: " << requestAct << std::endl;
-        return nullptr;
+        std::cout << "[RequestHandler] Was queried for known locations with typ " << requestAct.objectRequestType << " from " << requestAct.senderID << std::endl;
+
+        // prepare answer
+        std::shared_ptr<agent::SpeechAct> answerSpeechAct = std::make_shared<agent::SpeechAct>();
+        answerSpeechAct->type = agent::SpeechType::inform;
+        answerSpeechAct->text = requestAct.text;
+        answerSpeechAct->objectRequestType = requestAct.objectRequestType;
+        answerSpeechAct->actID = this->wm->getEngine()->getIdManager()->generateID();
+        answerSpeechAct->senderID = this->wm->getOwnId();
+        answerSpeechAct->previousActID = requestAct.actID;
+        answerSpeechAct->receiverID = requestAct.senderID;
+
+        // create perceptions with requested object type
+        srg::sim::containers::Perceptions myPerceptions;
+        myPerceptions.receiverID = requestAct.senderID;
+        std::vector<srg::sim::containers::CellPerception> myCellPerception = createPerceptions(requestAct.objectRequestType);
+        myPerceptions.cellPerceptions.insert(myPerceptions.cellPerceptions.end(), myCellPerception.begin(), myCellPerception.end());
+        answerSpeechAct->perceptions = myPerceptions;
+
+        return answerSpeechAct;
     }
 
     // ## Handle Question from your own ObjectSearch:
@@ -52,6 +72,36 @@ std::shared_ptr<agent::SpeechAct> RequestHandler::handle(const agent::SpeechAct 
     answerSpeechAct->previousActID = requestAct.actID;
     answerSpeechAct->probableRoomTypes = roomTypes;
     return answerSpeechAct;
+}
+
+std::vector<srg::sim::containers::CellPerception> RequestHandler::createPerceptions(srg::world::ObjectType objectType)
+{
+    // collect cells with objects
+    std::map<world::Coordinate, std::shared_ptr<const world::Cell>> objectContainingCells;
+    for (auto& object : this->wm->sRGSimData.getWorld()->editObjects()) {
+        // only add cells, that are not already in the map
+        if (object->getType() == objectType && objectContainingCells.find(object->getCoordinate()) == objectContainingCells.end()) {
+            objectContainingCells.at(object->getCoordinate()) = wm->sRGSimData.getWorld()->getCell(object->getCoordinate());
+        }
+    }
+
+    // collect objects as perceptions
+    std::vector<srg::sim::containers::CellPerception> cellPerceptionsList;
+    for (auto& entry : objectContainingCells) {
+        auto& objects = entry.second->getObjects();
+        srg::sim::containers::CellPerception cellPerceptions;
+        cellPerceptions.x = entry.second->coordinate.x;
+        cellPerceptions.y = entry.second->coordinate.y;
+        cellPerceptions.time = entry.second->timeOfLastUpdate;
+        for (auto& objectEntry : objects) {
+            if (objectEntry.second->getType() == objectType) {
+                cellPerceptions.objects.push_back(objectEntry.second);
+            }
+        }
+        cellPerceptionsList.push_back(cellPerceptions);
+    }
+
+    return cellPerceptionsList;
 }
 
 std::vector<world::RoomType> RequestHandler::getLocations(const std::string& objectType, const std::string& locationType)
@@ -155,10 +205,10 @@ std::vector<world::RoomType> RequestHandler::getLocations(const std::string& obj
     return roomTypes;
 }
 
-bool RequestHandler::queryCachedResults(const std::string& objectType, const std::string& locationType, std::vector<srg::world::RoomType>& roomTypes) {
+bool RequestHandler::queryCachedResults(const std::string& objectType, const std::string& locationType, std::vector<srg::world::RoomType>& roomTypes)
+{
     for (auto& cacheEntry : this->cachedRequests) {
-        if (cacheEntry.first.first.compare(objectType) == 0
-        && cacheEntry.first.second.compare(locationType) == 0) {
+        if (cacheEntry.first.first.compare(objectType) == 0 && cacheEntry.first.second.compare(locationType) == 0) {
             roomTypes = cacheEntry.second;
             return true;
         }
