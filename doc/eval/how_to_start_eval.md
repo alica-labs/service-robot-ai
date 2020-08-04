@@ -22,15 +22,21 @@ Further it supports the optional command line argument  `--headless` in order to
 
 **CN5 Database**
 
-The CN5 Database is only accessible through a webserver that needs to be spawned, so that all service robots have access to it during the evaluation. It can be started with: ``
+The CN5 Database is only accessible through a web server that needs to be spawned, so that all service robots have access to it during the evaluation. It can be started with: 
+
+`cd conceptnet5/`
+
+`python3 web/conceptnet_web/api.py`
 
 ## Evaluation Scenarios
 
-For all the evaluation scenarios you need to start the control panel as well as the grid simulator:
+For all the evaluation scenarios you need to start the control panel, the grid simulator, and the Concept Net web server:
 
 `rosrun control_panel control_panel `
 
-`rosun grid_sim grid_sim`
+`rosrun grid_sim grid_sim`
+
+`python3 web/conceptnet_web/api.py`
 
 ### Single Robot Scenarios
 
@@ -40,5 +46,5 @@ In all the different single robot scenarios you will need to start one SRG Base 
 
 `ROBOT=donatello rosrun srg_base srg_base -m ServeMaster`
 
-In order to distinguish between with commensense and without commensense, you will need to modify and recompile the ObjectSearch.cpp file in the srg_agent package. In the ini(..) method you need to comment the initFringeWithProbableLocations() method.
+In order to distinguish between with commensense and without commensense, you will need to modify and recompile the ObjectSearch.cpp file in the srg_agent package. In the init(..) method you need to comment the initFringeWithProbableLocations() method.
 
