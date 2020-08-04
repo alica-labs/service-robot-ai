@@ -66,6 +66,9 @@ SpeechAct ContainerUtils::toSpeechAct(::capnp::FlatArrayMessageReader& msg, esse
         case srg::sim::PerceptionMsg::Object::Type::CUPYELLOW:
             speechAct.objectRequestType = srg::world::ObjectType::CupYellow;
             break;
+        case srg::sim::PerceptionMsg::Object::Type::UNKNOWN:
+            speechAct.objectRequestType = srg::world::ObjectType::Unknown;
+            break;
         default:
             std::cerr << "[ContainterUtils] Unknown object type in capnp message found!" << std::endl;
             break;
@@ -94,6 +97,37 @@ void ContainerUtils::toMsg(const SpeechAct& speechAct, ::capnp::MallocMessageBui
     capnzero::ID::Builder previousID = msg.initPreviousActID();
     previousID.setValue(kj::arrayPtr(speechAct.previousActID->getRaw(), (unsigned int) speechAct.previousActID->getSize()));
     previousID.setType(speechAct.previousActID->getType());
+
+    // TYPE
+    switch (speechAct.objectRequestType) {
+        case srg::world::ObjectType::Robot:
+            msg.setObjectRequestType(srg::sim::PerceptionMsg::Object::Type::ROBOT);
+            break;
+        case srg::world::ObjectType::Human:
+            msg.setObjectRequestType(srg::sim::PerceptionMsg::Object::Type::HUMAN);
+            break;
+        case srg::world::ObjectType::Door:
+            msg.setObjectRequestType(srg::sim::PerceptionMsg::Object::Type::DOOR);
+            break;
+        case srg::world::ObjectType::CupRed:
+            msg.setObjectRequestType(srg::sim::PerceptionMsg::Object::Type::CUPRED);
+            break;
+        case srg::world::ObjectType::CupBlue:
+            msg.setObjectRequestType(srg::sim::PerceptionMsg::Object::Type::CUPBLUE);
+            break;
+        case  srg::world::ObjectType::CupYellow:
+            msg.setObjectRequestType(srg::sim::PerceptionMsg::Object::Type::CUPYELLOW);
+            break;
+        case  srg::world::ObjectType::Unknown:
+            msg.setObjectRequestType(srg::sim::PerceptionMsg::Object::Type::UNKNOWN);
+            break;
+        default:
+            std::cerr << "[ContainterUtils] Unknown object type '" << speechAct.objectRequestType << "' in speech act found!" << std::endl;
+            break;
+    }
+
+    ::srg::sim::PerceptionMsg::Builder perceptionsBuilder = msg.initPerception();
+    srg::sim::ContainerUtils::toMsg(speechAct.perceptions, perceptionsBuilder);
 
     msg.setText(speechAct.text);
     msg.setSpeechType(speechAct.type);

@@ -15,10 +15,10 @@ namespace conceptnet
 {
 
 /*Use this for the web hosted conceptnet*/
-const std::string ConceptNet::BASE_URL = "http://api.conceptnet.io";
+//const std::string ConceptNet::BASE_URL = "http://api.conceptnet.io";
 
 /*Use this for the locally hosted conceptnet*/
-//const std::string ConceptNet::BASE_URL = "http://api.localhost:8084";
+const std::string ConceptNet::BASE_URL = "http://api.localhost:8084";
 
 const std::string ConceptNet::QUERYSTART = "/query?start=/c/en/";
 const std::string ConceptNet::QUERYEND = "/query?end=/c/en/";
@@ -41,7 +41,6 @@ ConceptNet::ConceptNet(SRGWorldModel* wm)
 Concept* ConceptNet::getConcept(CNManager* cnManager, const std::string& conceptName)
 {
     std::string json = httpGet(ConceptNet::BASE_URL + ConceptNet::QUERYNODE + conceptName + "&limit=" + std::to_string(1));
-    std::cout << "[RESULT] " << json << std::endl;
     YAML::Node node;
     node = YAML::Load(json);
     if (!isValid(node)) {
@@ -205,7 +204,7 @@ std::string ConceptNet::httpGet(const std::string& url)
     curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &httpCode);
     curl_easy_cleanup(curl);
 
-    std::cout << "[Result] " << *httpData << std::endl;
+//    std::cout << "[Result] " << *httpData << std::endl;
     return *httpData;
 
 }

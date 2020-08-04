@@ -63,6 +63,7 @@ std::string ASPTranslator::addToKnowledgeBase(srg::dialogue::AnswerGraph* answer
     for (auto pair : pgmMap) {
         program.append(pair.second).append("\n");
         // TODO: print out what is added and see how this can be inserted via "addInformation", or just use "add" as well
+        std::cout << "[ASPTranslator] ProgramSection: '" << programSection << "' Program '" << pair.second << "'" << std::endl;
         this->wm->srgKnowledgeManager->add(programSection.c_str(), {}, pair.second.c_str());
     }
     return program; // for debug

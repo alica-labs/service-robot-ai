@@ -63,6 +63,7 @@ void GenerateTasks::generateSpeechActs(int numberOfTasks)
         sa.actID = this->wm->getEngine()->getIdManager()->generateID();
         sa.previousActID = this->wm->getEngine()->getIdManager()->getWildcardID();
         sa.type = srg::agent::SpeechType::command;
+        sa.objectRequestType = srg::world::ObjectType::Unknown;
 
         // receiver ID
         auto& agents = this->wm->getEngine()->getTeamManager()->getAllAgents();
@@ -72,6 +73,7 @@ void GenerateTasks::generateSpeechActs(int numberOfTasks)
             std::advance(agentIter, rand() % agents.size());
         } while (agentIter->first == this->wm->getOwnId() || !agentIter->second->isActive());
         sa.receiverID = agentIter->first;
+        sa.perceptions.receiverID = sa.receiverID;
 
         // task text
         sa.text = "transport ";

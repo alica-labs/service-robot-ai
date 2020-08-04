@@ -67,6 +67,8 @@ void ObjectSearch::queryOthersForKnownLocations()
         request.previousActID = this->wm->getEngine()->getIdManager()->getWildcardID();
         request.senderID = this->wm->getOwnId();
         request.receiverID = agentId;
+        request.perceptions.receiverID = agentId;
+        std::cout << "[ObjectSearch] Asks for "  << this->objectType << std::endl;
         this->wm->communication->sendSpeechAct(std::make_shared<agent::SpeechAct>(request));
     }
 }

@@ -49,40 +49,47 @@ void SRGSimData::processPerception(srg::sim::containers::Perceptions perceptions
 {
     if (!world)
         return;
-    for (srg::sim::containers::CellPerception cellPerception : perceptions.cellPerceptions) {
-        std::shared_ptr<const world::Cell> cell = this->world->getCell(srg::world::Coordinate(cellPerception.x, cellPerception.y));
-        if (!cell || cell->timeOfLastUpdate > cellPerception.time) {
-            // invalid or old information
-            continue;
-        }
 
-        // update objects itself
-        std::vector<std::shared_ptr<world::Object>> objects;
-        for (std::shared_ptr<srg::world::Object> object : cellPerception.objects) {
-            objects.push_back(this->world->createOrUpdateObject(object));
-        }
-        // update asp knowledge about objects
-        this->wm->srgKnowledgeManager->handleObjects(cellPerception.objects, true);
+    { // scope for lock guard
+        std::lock_guard<std::recursive_mutex> lockGuard(world->getDataMutex());
+        for (srg::sim::containers::CellPerception cellPerception : perceptions.cellPerceptions) {
+            std::shared_ptr<const world::Cell> cell = this->world->getCell(
+                    srg::world::Coordinate(cellPerception.x, cellPerception.y));
+            if (!cell || cell->timeOfLastUpdate > cellPerception.time) {
+                // invalid or old information
+                continue;
+            }
 
-        // update association with cell
-        this->world->updateCell(srg::world::Coordinate(cellPerception.x, cellPerception.y), objects, cellPerception.time);
-        for (std::shared_ptr<world::Object> object : objects) {
-            switch (object->getType()) {
-            case world::ObjectType::Robot:
-            case world::ObjectType::Human: {
-                this->world->addAgent(std::dynamic_pointer_cast<srg::world::Agent>(object));
-                // update own pos
-                if (object->getID() == this->wm->getOwnId()) {
-                    std::shared_ptr<const world::Cell> cell = std::dynamic_pointer_cast<const world::Cell>(
-                            object->getParentContainer());
-                    auto ownPositionInfo = std::make_shared<supplementary::InformationElement<srg::world::Coordinate>>(
-                            cell->coordinate, wm->getTime(), ownPositionValidityDuration, 1.0);
-                    this->ownPositionBuffer->add(ownPositionInfo);
+            // update objects itself
+            std::vector<std::shared_ptr<world::Object>> objects;
+            for (std::shared_ptr<srg::world::Object> object : cellPerception.objects) {
+                objects.push_back(this->world->createOrUpdateObject(object));
+            }
+            // update asp knowledge about objects
+            this->wm->srgKnowledgeManager->handleObjects(cellPerception.objects, true);
+
+            // update association with cell
+            this->world->updateCell(srg::world::Coordinate(cellPerception.x, cellPerception.y), objects,
+                                    cellPerception.time);
+            for (std::shared_ptr<world::Object> object : objects) {
+                switch (object->getType()) {
+                    case world::ObjectType::Robot:
+                    case world::ObjectType::Human: {
+                        this->world->addAgent(std::dynamic_pointer_cast<srg::world::Agent>(object));
+                        // update own pos
+                        if (object->getID() == this->wm->getOwnId()) {
+                            std::shared_ptr<const world::Cell> cell = std::dynamic_pointer_cast<const world::Cell>(
+                                    object->getParentContainer());
+                            auto ownPositionInfo = std::make_shared<supplementary::InformationElement<srg::world::Coordinate>>(
+                                    cell->coordinate, wm->getTime(), ownPositionValidityDuration, 1.0);
+                            this->ownPositionBuffer->add(ownPositionInfo);
+                        }
+                    }
+                        break;
+                    default:
+                        // nothing extra to do for other types
+                        break;
                 }
-            } break;
-            default:
-                // nothing extra to do for other types
-                break;
             }
         }
     }

@@ -86,6 +86,7 @@ bool Voice::parseInput(std::string input, SpeechAct& speechAct)
 void Voice::speak(SpeechAct speechAct) const
 {
     ::capnp::MallocMessageBuilder msgBuilder;
+    std::cout << "[Voice] sending " << speechAct << std::endl;
     ContainerUtils::toMsg(speechAct, msgBuilder);
 //    std::cout << "[Voice] sending msg '" << msgBuilder.getRoot<SpeechActMsg>().toString().flatten().cStr() << "'" << std::endl;
     this->speechActPublisher->send(msgBuilder);

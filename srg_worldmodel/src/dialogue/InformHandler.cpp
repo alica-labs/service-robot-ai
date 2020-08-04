@@ -23,8 +23,9 @@ InformHandler::InformHandler(SRGWorldModel* wm)
 std::shared_ptr<agent::SpeechAct> InformHandler::handle(const agent::SpeechAct informAct)
 {
     if (informAct.text.find("known-locations") == 0) {
-        std::cout << "[InformHandler] Got " << informAct.perceptions.cellPerceptions.size() << " locations from " << informAct.senderID << " with " << informAct.objectRequestType << std::endl;
+        std::cout << "[InformHandler] Got " << informAct.perceptions.cellPerceptions.size() << " locations from Agent " << informAct.senderID << " for object type " << informAct.objectRequestType << std::endl;
         this->wm->rawSensorData.processSimPerceptions(informAct.perceptions);
+        return nullptr;
     }
 
     std::cout << "[InformHandler] Human informed me about: '" << informAct.text << "'" << std::endl;
@@ -32,7 +33,7 @@ std::shared_ptr<agent::SpeechAct> InformHandler::handle(const agent::SpeechAct i
     std::vector<std::string> information;
     information.push_back(informAct.text);
     wm->srgKnowledgeManager->addInformation(information);
-    
+
     return nullptr;
 }
 
