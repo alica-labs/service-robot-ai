@@ -41,6 +41,9 @@ private:
     alica::AlicaTime taskValidityDuration;
     supplementary::InfoBuffer<agent::SpeechAct>* taskActBuffer;
     std::shared_ptr<TaskSequence> currentTaskSequence;
+
+    std::string logPath;
+    std::ofstream fileWriter;
 };
 } // namespace tasks
 } // namespace srg

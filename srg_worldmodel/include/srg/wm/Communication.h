@@ -2,7 +2,7 @@
 
 #include <srg/agent/containers/SpeechAct.h>
 
-#include <SystemConfig.h>
+#include <essentials/SystemConfig.h>
 #include <capnzero/CapnZero.h>
 
 namespace srg
@@ -21,7 +21,7 @@ public:
 
 private:
     SRGWorldModel* wm;
-    essentials::SystemConfig* sc;
+    essentials::SystemConfig& sc;
 
     void* ctx;
     capnzero::Subscriber* speechActSub;

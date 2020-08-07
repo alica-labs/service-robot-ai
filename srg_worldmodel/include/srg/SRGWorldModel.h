@@ -7,7 +7,7 @@
 #include "wm/Communication.h"
 #include "wm/SRGSimData.h"
 
-#include <SystemConfig.h>
+#include <essentials/SystemConfig.h>
 #include <essentials/EventTrigger.h>
 #include <srg/GUI.h>
 #include <supplementary/InformationElement.h>
@@ -47,7 +47,6 @@ public:
     virtual ~SRGWorldModel();
     void init();
     void setSolver(::reasoner::asp::Solver* solver);
-    std::string getAgentName();
 
     // Public Data Access Classes
     wm::SRGSimData sRGSimData;
@@ -61,7 +60,6 @@ public:
 
 private:
     SRGWorldModel(); /**< Private Singleton Constructor */
-    std::string agentName;
 };
 
 } /* namespace srg */

@@ -51,7 +51,7 @@ private:
     void updateUI();
 
     Agent* getAgent(essentials::IdentifierConstPtr id);
-    essentials::SystemConfig* sc;
+    essentials::SystemConfig& sc;
 
     QTimer* doWorkTimer;
 
@@ -64,8 +64,6 @@ private:
     ExecutableRegistry* executableRegistry;
     std::map<essentials::IdentifierConstPtr, Agent*> agents;
     Talker* talker;
-
-
 };
 
 } // namespace control

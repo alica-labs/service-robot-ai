@@ -20,20 +20,20 @@ namespace wm
 
 SRGSimData::SRGSimData(SRGWorldModel* wm)
         : world(nullptr)
+        , sc(essentials::SystemConfig::getInstance())
 {
     this->wm = wm;
-    this->sc = this->wm->getSystemConfig();
     this->dialogueManager = &wm->dialogueManager;
 
-    this->ownPositionValidityDuration = alica::AlicaTime::nanoseconds((*sc)["SRGWorldModel"]->get<int>("Data.Perception.ValidityDuration", NULL));
-    this->ownPositionBuffer = new supplementary::InfoBuffer<srg::world::Coordinate>((*sc)["SRGWorldModel"]->get<int>("Data.Perception.BufferLength", NULL));
+    this->ownPositionValidityDuration = alica::AlicaTime::nanoseconds(sc["SRGWorldModel"]->get<int>("Data.Perception.ValidityDuration", NULL));
+    this->ownPositionBuffer = new supplementary::InfoBuffer<srg::world::Coordinate>(sc["SRGWorldModel"]->get<int>("Data.Perception.BufferLength", NULL));
 }
 
 SRGSimData::~SRGSimData() {}
 
 void SRGSimData::init()
 {
-    this->world = new srg::World((*sc).getConfigPath() + "/textures/Department.tmx", wm->getEngine()->getIdManager());
+    this->world = new srg::World(sc.getConfigPath() + "/textures/Department.tmx", const_cast<essentials::IDManager&>(wm->getAlicaContext()->getIDManager()));
     // add asp facts that probably don't change
     for (auto& roomEntry : this->world->getRooms()) {
         this->wm->srgKnowledgeManager->addRoom(roomEntry.second);

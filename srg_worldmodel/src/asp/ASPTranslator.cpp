@@ -35,6 +35,7 @@ std::string ASPTranslator::addToKnowledgeBase(srg::dialogue::AnswerGraph* answer
     // add commonsense predicate facts
     std::string programSection = "commonsenseKnowledge";
     std::string commonsenseFacts = createASPPredicates(answerGraph, inconsistencyRemoval);
+    std::cout << "[ASPTranslator] ProgramSection: '" << programSection << "' Commonsense Facts '" << commonsenseFacts << "'" << std::endl;
     this->wm->srgKnowledgeManager->add(programSection.c_str(), {}, commonsenseFacts.c_str());
     this->wm->srgKnowledgeManager->ground({{programSection.c_str(), {}}}, nullptr);
     this->wm->srgKnowledgeManager->solve();
@@ -62,8 +63,6 @@ std::string ASPTranslator::addToKnowledgeBase(srg::dialogue::AnswerGraph* answer
     std::string program = "#program " + programSection + ".\n" + commonsenseFacts + "\n";
     for (auto pair : pgmMap) {
         program.append(pair.second).append("\n");
-        // TODO: print out what is added and see how this can be inserted via "addInformation", or just use "add" as well
-        std::cout << "[ASPTranslator] ProgramSection: '" << programSection << "' Program '" << pair.second << "'" << std::endl;
         this->wm->srgKnowledgeManager->add(programSection.c_str(), {}, pair.second.c_str());
     }
     return program; // for debug

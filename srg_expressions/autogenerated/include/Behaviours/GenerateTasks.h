@@ -31,6 +31,7 @@ protected:
     /*PROTECTED REGION END*/
 private:
     /*PROTECTED REGION ID(prv1575291385685) ENABLED START*/
+    void generateHumanKnowledge();
     void generateSpeechActs(int numberOfTasks);
     const srg::world::Coordinate getRandomCoordinate();
     std::string getRandomObjectString();

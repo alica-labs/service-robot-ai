@@ -22,9 +22,9 @@ ObjectSearch::ObjectSearch(srg::SRGWorldModel* wm)
         , wm(wm)
         , updateCounter(0)
         , initialised(false)
+        , sc(essentials::SystemConfig::getInstance())
 {
-    this->sc = essentials::SystemConfig::getInstance();
-    this->sightLimit = (*sc)["ObjectDetection"]->get<uint32_t>("sightLimit", NULL);
+    this->sightLimit = sc["ObjectDetection"]->get<uint32_t>("sightLimit", NULL);
     this->fringe = new std::set<SearchCell, SearchCellSorter>(SearchCellSorter(this->wm));
     this->visited = new std::unordered_set<std::shared_ptr<const world::Cell>>();
 }
@@ -54,17 +54,17 @@ void ObjectSearch::init(srg::world::ObjectType objectType)
 
 void ObjectSearch::queryOthersForKnownLocations()
 {
-    for (const auto& agentId : this->wm->getEngine()->getTeamManager()->getActiveAgentIds()) {
+    for (const auto& agentId : this->wm->getAlicaContext()->getActiveAgentIDs()) {
         if (agentId == this->wm->getOwnId()) {
             continue;
         }
 
         agent::SpeechAct request;
-        request.text = "known-locations"; // Future Work: this should depend on other parameters of the Object Search in future
+        request.text = "known-locations";
         request.objectRequestType = this->objectType;
         request.type = agent::SpeechType::request;
-        request.actID = this->wm->getEngine()->getIdManager()->generateID();
-        request.previousActID = this->wm->getEngine()->getIdManager()->getWildcardID();
+        request.actID = this->wm->getAlicaContext()->generateID(16);
+        request.previousActID = this->wm->getAlicaContext()->getIDManager().getWildcardID();
         request.senderID = this->wm->getOwnId();
         request.receiverID = agentId;
         request.perceptions.receiverID = agentId;
@@ -83,8 +83,8 @@ void ObjectSearch::initFringeWithProbableLocations()
     request.text = "room"; // Future Work: this should depend on other parameters of the Object Search in future
     request.objectRequestType = this->objectType;
     request.type = agent::SpeechType::request;
-    request.actID = this->wm->getEngine()->getIdManager()->generateID();
-    request.previousActID = this->wm->getEngine()->getIdManager()->getWildcardID();
+    request.actID = this->wm->getAlicaContext()->generateID(16);
+    request.previousActID = this->wm->getAlicaContext()->getIDManager().getWildcardID();
     request.senderID = this->wm->getOwnId();
 
     std::shared_ptr<agent::SpeechAct> answer = this->wm->dialogueManager.requestHandler->handle(request);

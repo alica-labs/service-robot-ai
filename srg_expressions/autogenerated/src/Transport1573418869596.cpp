@@ -45,15 +45,19 @@ shared_ptr<UtilityFunction> UtilityFunction1573418869596::getUtilityFunction(Pla
 bool PreCondition1573419765536::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1573419007368) ENABLED START*/
-    auto taskSequence = this->wm->dialogueManager.commandHandler->getActiveTaskSequence();
-    if (!taskSequence) {
-        return true;
-    }
-    auto activeTask = taskSequence->getActiveTask();
-    if (rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::Move) {
+    //    auto taskSequence = this->wm->dialogueManager.commandHandler->getActiveTaskSequence();
+    //    if (!taskSequence) {
+    //        return true;
+    //    }
+    //    auto activeTask = taskSequence->getActiveTask();
+    //    if (rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::Move) {
+    //        std::cout << "{Search} -> {MoveClose}" << std::endl;
+    //    }
+    //    return rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::Move;
+    if (rp->isAnyChildStatus(PlanStatus::Success)) {
         std::cout << "{Search} -> {MoveClose}" << std::endl;
     }
-    return rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::Move;
+    return rp->isAnyChildStatus(PlanStatus::Success);
     /*PROTECTED REGION END*/
 }
 /**
@@ -79,15 +83,19 @@ bool PreCondition1573419765536::evaluate(shared_ptr<RunningPlan> rp)
 bool PreCondition1573419810456::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1573418998111) ENABLED START*/
-    auto taskSequence = this->wm->dialogueManager.commandHandler->getActiveTaskSequence();
-    if (!taskSequence) {
-        return true;
-    }
-    auto activeTask = taskSequence->getActiveTask();
-    if (rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::Move) {
+//    auto taskSequence = this->wm->dialogueManager.commandHandler->getActiveTaskSequence();
+//    if (!taskSequence) {
+//        return true;
+//    }
+//    auto activeTask = taskSequence->getActiveTask();
+//    if (rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::Move) {
+//        std::cout << "{PickUp} -> {MoveDestination}" << std::endl;
+//    }
+//    return rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::Move;
+    if (rp->isAnyChildStatus(PlanStatus::Success)) {
         std::cout << "{PickUp} -> {MoveDestination}" << std::endl;
     }
-    return rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::Move;
+    return rp->isAnyChildStatus(PlanStatus::Success);
     /*PROTECTED REGION END*/
 }
 /**
@@ -147,16 +155,19 @@ bool PreCondition1582991345020::evaluate(shared_ptr<RunningPlan> rp)
 bool PreCondition1573419828606::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1573419000441) ENABLED START*/
-
-    auto taskSequence = this->wm->dialogueManager.commandHandler->getActiveTaskSequence();
-    if (!taskSequence) {
-        return true;
-    }
-    auto activeTask = taskSequence->getActiveTask();
-    if (rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::PutDown) {
+//    auto taskSequence = this->wm->dialogueManager.commandHandler->getActiveTaskSequence();
+//    if (!taskSequence) {
+//        return true;
+//    }
+//    auto activeTask = taskSequence->getActiveTask();
+//    if (rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::PutDown) {
+//        std::cout << "{MoveDestination} -> {PutDown}" << std::endl;
+//    }
+//    return rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::PutDown;
+    if (rp->isAnyChildStatus(PlanStatus::Success)) {
         std::cout << "{MoveDestination} -> {PutDown}" << std::endl;
     }
-    return rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::PutDown;
+    return rp->isAnyChildStatus(PlanStatus::Success);
     /*PROTECTED REGION END*/
 }
 /**
@@ -245,15 +256,19 @@ bool PreCondition1583070277040::evaluate(shared_ptr<RunningPlan> rp)
 bool PreCondition1573419800282::evaluate(shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1573419009128) ENABLED START*/
-    auto taskSequence = this->wm->dialogueManager.commandHandler->getActiveTaskSequence();
-    if (!taskSequence) {
-        return true;
-    }
-    auto activeTask = taskSequence->getActiveTask();
-    if (rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::PickUp) {
+//    auto taskSequence = this->wm->dialogueManager.commandHandler->getActiveTaskSequence();
+//    if (!taskSequence) {
+//        return true;
+//    }
+//    auto activeTask = taskSequence->getActiveTask();
+//    if (rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::PickUp) {
+//        std::cout << "{MoveClose} -> {PickUp}" << std::endl;
+//    }
+//    return rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::PickUp;
+    if (rp->isAnyChildStatus(PlanStatus::Success)) {
         std::cout << "{MoveClose} -> {PickUp}" << std::endl;
     }
-    return rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::PickUp;
+    return rp->isAnyChildStatus(PlanStatus::Success);
     /*PROTECTED REGION END*/
 }
 /**

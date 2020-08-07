@@ -27,8 +27,11 @@ DialogueManager::~DialogueManager() {}
 
 void DialogueManager::processSpeechAct(std::shared_ptr<supplementary::InformationElement<agent::SpeechAct>> speechActInfo)
 {
-    // make_shared calls implicit copy constructor - maybe that is not what you want (create your own then)
-    this->dialogueMap.emplace(speechActInfo->getInformation().actID, std::make_shared<agent::SpeechAct>(speechActInfo->getInformation()));
+    {
+        std::lock_guard<std::recursive_mutex> lockGuard(_speechActMtx);
+        // make_shared calls implicit copy constructor - maybe that is not what you want (create your own then)
+        this->dialogueMap.emplace(speechActInfo->getInformation().actID, std::make_shared<agent::SpeechAct>(speechActInfo->getInformation()));
+    }
 
     std::shared_ptr<agent::SpeechAct> answerSpeechAct = nullptr;
     if (speechActInfo->getInformation().type == agent::SpeechType::request) {
@@ -40,6 +43,7 @@ void DialogueManager::processSpeechAct(std::shared_ptr<supplementary::Informatio
     }
 
     if (answerSpeechAct) {
+        std::lock_guard<std::recursive_mutex> lockGuard(_speechActMtx);
         this->pendingSpeechActs.push_back(answerSpeechAct);
     }
 
@@ -54,10 +58,12 @@ void DialogueManager::tick()
     this->commandHandler->tick();
 
     // send pending speech act answers
+    std::lock_guard<std::recursive_mutex> lockGuard(_speechActMtx);
     for (std::shared_ptr<srg::agent::SpeechAct> speechAct : this->pendingSpeechActs) {
         this->dialogueMap.emplace(speechAct->actID, speechAct);
         this->wm->communication->sendSpeechAct(speechAct);
     }
+    this->pendingSpeechActs.clear();
 }
 
 void DialogueManager::renderDot() const

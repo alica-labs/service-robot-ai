@@ -44,7 +44,7 @@ public:
 
 private:
     SRGWorldModel* wm;
-    essentials::SystemConfig* sc;
+    essentials::SystemConfig& sc;
     srg::World* world;
     dialogue::DialogueManager* dialogueManager;
 

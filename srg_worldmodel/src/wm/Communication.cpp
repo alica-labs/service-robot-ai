@@ -5,11 +5,9 @@
 #include <srg/agent/SpeechActMsg.capnp.h>
 #include <srg/agent/containers/ContainerUtils.h>
 #include <srg/sim/ContainerUtils.h>
-#include <srg/agent/containers/ContainerUtils.h>
 
-#include <engine/AlicaEngine.h>
+#include <engine/AlicaContext.h>
 
-#include <SystemConfig.h>
 #include <capnzero/Common.h>
 #include <capnzero/Subscriber.h>
 
@@ -19,30 +17,30 @@ namespace wm
 {
 Communication::Communication(SRGWorldModel* wm)
         : wm(wm)
+        , sc(essentials::SystemConfig::getInstance())
 {
     this->ctx = zmq_ctx_new();
-    this->sc = essentials::SystemConfig::getInstance();
 
-    std::string speechActTopic = (*sc)["Voice"]->get<std::string>("SpeechAct.topic", NULL);
+    std::string speechActTopic = sc["Voice"]->get<std::string>("SpeechAct.topic", NULL);
     this->speechActSub = new capnzero::Subscriber(this->ctx, capnzero::Protocol::UDP);
     this->speechActSub->setTopic(speechActTopic);
-    this->speechActSub->addAddress((*sc)["Voice"]->get<std::string>("SpeechAct.address", NULL));
+    this->speechActSub->addAddress(sc["Voice"]->get<std::string>("SpeechAct.address", NULL));
     this->speechActSub->subscribe(&Communication::onSpeechAct, &(*this));
 
     this->speechActPub = new capnzero::Publisher(this->ctx, capnzero::Protocol::UDP);
     this->speechActPub->setDefaultTopic(speechActTopic);
-    this->speechActPub->addAddress((*sc)["Voice"]->get<std::string>("SpeechAct.address", NULL));
+    this->speechActPub->addAddress(sc["Voice"]->get<std::string>("SpeechAct.address", NULL));
 
-    std::string agendCmdTopic = (*sc)["Voice"]->get<std::string>("AgentCmd.topic", NULL);
+    std::string agendCmdTopic = sc["Voice"]->get<std::string>("AgentCmd.topic", NULL);
     this->agentCommandSub = new capnzero::Subscriber(this->ctx, capnzero::Protocol::UDP);
     this->agentCommandSub->setTopic(agendCmdTopic);
-    this->agentCommandSub->addAddress((*sc)["Voice"]->get<std::string>("AgentCmd.address", NULL));
+    this->agentCommandSub->addAddress(sc["Voice"]->get<std::string>("AgentCmd.address", NULL));
     this->agentCommandSub->subscribe(&Communication::onAgentCmd, &(*this));
 
-    std::string perceptionTopic = (*sc)["SRGSim"]->get<std::string>("SRGSim.Communication.perceptionsTopic", NULL);
+    std::string perceptionTopic = sc["SRGSim"]->get<std::string>("SRGSim.Communication.perceptionsTopic", NULL);
     this->perceptionSub = new capnzero::Subscriber(this->ctx, capnzero::Protocol::UDP);
     this->perceptionSub->setTopic(perceptionTopic);
-    this->perceptionSub->addAddress((*sc)["SRGSim"]->get<std::string>("SRGSim.Communication.address", NULL));
+    this->perceptionSub->addAddress(sc["SRGSim"]->get<std::string>("SRGSim.Communication.address", NULL));
     this->perceptionSub->subscribe(&Communication::onSimPerceptions, &(*this));
 }
 
@@ -55,7 +53,7 @@ Communication::~Communication()
 
 void Communication::onSpeechAct(capnp::FlatArrayMessageReader& msg)
 {
-    agent::SpeechAct speechAct = agent::ContainerUtils::toSpeechAct(msg, this->wm->getEngine()->getIdManager());
+    agent::SpeechAct speechAct = agent::ContainerUtils::toSpeechAct(msg, const_cast<essentials::IDManager&>(this->wm->getAlicaContext()->getIDManager()));
     if (speechAct.receiverID == this->wm->getOwnId() || speechAct.receiverID.get()->getType() == essentials::Identifier::WILDCARD_TYPE) {
         this->wm->rawSensorData.processSpeechAct(speechAct);
     }
@@ -63,12 +61,12 @@ void Communication::onSpeechAct(capnp::FlatArrayMessageReader& msg)
 
 void Communication::onAgentCmd(capnp::FlatArrayMessageReader& msg)
 {
-    this->wm->rawSensorData.processAgentCmd(agent::ContainerUtils::toAgentCommand(msg, this->wm->getEngine()->getIdManager()));
+    this->wm->rawSensorData.processAgentCmd(agent::ContainerUtils::toAgentCommand(msg, const_cast<essentials::IDManager&>(this->wm->getAlicaContext()->getIDManager())));
 }
 
 void Communication::onSimPerceptions(capnp::FlatArrayMessageReader& msg)
 {
-    auto simPerceptions = srg::sim::ContainerUtils::toPerceptions(msg, this->wm->getEngine()->getIdManager());
+    auto simPerceptions = srg::sim::ContainerUtils::toPerceptions(msg, const_cast<essentials::IDManager&>(this->wm->getAlicaContext()->getIDManager()));
     if (simPerceptions.receiverID == this->wm->getOwnId()) {
         this->wm->rawSensorData.processSimPerceptions(simPerceptions);
     }

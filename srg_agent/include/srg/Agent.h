@@ -48,7 +48,7 @@ private:
     Agent(srg::SRGWorldModel* wm);  /**< Private Singleton Constructor */
     void send(srg::sim::containers::SimCommand sc) const;
 
-    essentials::SystemConfig* sc;
+    essentials::SystemConfig& sc;
     std::string simCmdTopic;
     std::string simAddress;
     capnzero::Publisher* simPub;

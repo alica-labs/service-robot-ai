@@ -25,7 +25,7 @@ class Voice
 {
 public:
     explicit Voice(bool standalone = false);
-    Voice(essentials::IdentifierConstPtr ownId, essentials::IDManager* idManager);
+    Voice(essentials::IdentifierConstPtr ownId, essentials::IDManager& idManager);
 
     ~Voice();
 
@@ -39,7 +39,7 @@ private:
 
     std::vector<std::string> split(std::string input);
 
-    essentials::SystemConfig* sc;
+    essentials::SystemConfig& sc;
     essentials::IDManager* idManager;
     essentials::IdentifierConstPtr id;
 

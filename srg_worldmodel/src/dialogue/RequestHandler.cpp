@@ -27,14 +27,15 @@ std::shared_ptr<agent::SpeechAct> RequestHandler::handle(const agent::SpeechAct 
 {
     // ## Handle Question from other robots, which are asking for object locations
     if (requestAct.text.find("known-locations") == 0) {
-        std::cout << "[RequestHandler] Was queried for known locations with typ " << requestAct.objectRequestType << " from " << requestAct.senderID << std::endl;
+        std::cout << "[RequestHandler] Was queried for known locations with typ " << requestAct.objectRequestType << " from " << requestAct.senderID
+                  << std::endl;
 
         // prepare answer
         std::shared_ptr<agent::SpeechAct> answerSpeechAct = std::make_shared<agent::SpeechAct>();
         answerSpeechAct->type = agent::SpeechType::inform;
         answerSpeechAct->text = requestAct.text;
         answerSpeechAct->objectRequestType = requestAct.objectRequestType;
-        answerSpeechAct->actID = this->wm->getEngine()->getIdManager()->generateID();
+        answerSpeechAct->actID = this->wm->getAlicaContext()->generateID(16);
         answerSpeechAct->senderID = this->wm->getOwnId();
         answerSpeechAct->previousActID = requestAct.actID;
         answerSpeechAct->receiverID = requestAct.senderID;
@@ -67,7 +68,7 @@ std::shared_ptr<agent::SpeechAct> RequestHandler::handle(const agent::SpeechAct 
     // prepare answer
     std::shared_ptr<agent::SpeechAct> answerSpeechAct = std::make_shared<agent::SpeechAct>();
     answerSpeechAct->type = agent::SpeechType::request;
-    answerSpeechAct->actID = this->wm->getEngine()->getIdManager()->generateID();
+    answerSpeechAct->actID = this->wm->getAlicaContext()->generateID(16);
     answerSpeechAct->senderID = this->wm->getOwnId();
     answerSpeechAct->previousActID = requestAct.actID;
     answerSpeechAct->probableRoomTypes = roomTypes;
@@ -79,9 +80,9 @@ std::vector<srg::sim::containers::CellPerception> RequestHandler::createPercepti
     // collect cells with objects
     std::map<world::Coordinate, std::shared_ptr<const world::Cell>> objectContainingCells;
     for (auto& object : this->wm->sRGSimData.getWorld()->editObjects()) {
-        // only add cells, that are not already in the map
-        if (object->getType() == objectType && objectContainingCells.find(object->getCoordinate()) == objectContainingCells.end()) {
-            objectContainingCells.at(object->getCoordinate()) = wm->sRGSimData.getWorld()->getCell(object->getCoordinate());
+        if (object->getType() == objectType) {
+            // only adds cells, that are not already in the map
+            objectContainingCells.insert(std::pair<world::Coordinate,std::shared_ptr<const world::Cell>>(object->getCoordinate(), wm->sRGSimData.getWorld()->getCell(object->getCoordinate())));
         }
     }
 

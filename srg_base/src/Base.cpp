@@ -1,22 +1,21 @@
 #include "Base.h"
 
-#include <engine/AlicaEngine.h>
 #include <BehaviourCreator.h>
 #include <ConditionCreator.h>
-#include <UtilityFunctionCreator.h>
 #include <ConstraintCreator.h>
+#include <UtilityFunctionCreator.h>
 #include <alica_capnzero_proxy/Communication.h>
-#include <srg/SRGWorldModel.h>
-#include <essentials/IDManager.h>
-
 #include <asp_solver_wrapper/ASPSolverWrapper.h>
+#include <engine/AlicaContext.h>
 #include <reasoner/asp/Solver.h>
+#include <srg/SRGWorldModel.h>
 
 #include <chrono>
+#include <csignal>
 #include <iostream>
+#include <memory>
 #include <thread>
 #include <vector>
-#include <csignal>
 
 namespace srg
 {
@@ -24,48 +23,35 @@ namespace srg
 bool Base::running = false;
 
 Base::Base(std::string roleSetName, std::string masterPlanName, std::string roleSetDir)
+        : ac(new alica::AlicaContext(roleSetName, masterPlanName, false))
 {
-    ae = new alica::AlicaEngine(new essentials::IDManager(), roleSetName, masterPlanName, false);
-    bc = new alica::BehaviourCreator();
-    cc = new alica::ConditionCreator();
-    uc = new alica::UtilityFunctionCreator();
-    crc = new alica::ConstraintCreator();
-
-    ae->setAlicaClock(new alica::AlicaClock());
-    ae->setCommunicator(new alica_capnzero_proxy::Communication(ae));
+    ac->setCommunicator<alica_capnzero_proxy::Communication>();
 
     // ASP Solver
-//    std::vector<char const*> args{"clingo", nullptr};
+    ac->addSolver<alica::reasoner::ASPSolverWrapper>();
     auto solver = new ::reasoner::asp::Solver({});
-    auto solverWrapper = new alica::reasoner::ASPSolverWrapper(ae, {});
-    solverWrapper->init(solver);
-    ae->addSolver(solverWrapper);
+    ac->getSolver<alica::reasoner::ASPSolverWrapper>().init(solver);
 
     wm = SRGWorldModel::getInstance();
-    wm->setEngine(ae);
+    wm->setAlicaContext(ac);
     wm->setSolver(solver);
     wm->init();
-
-    if (!ae->init(bc, cc, uc, crc)) {
-        std::cerr << "Base: Unable to initialize the Alica Engine successfull!" << std::endl;
-    }
-
 }
 
 void Base::start()
 {
     running = true;
-    ae->start();
+    alica::AlicaCreators creators(std::make_unique<alica::ConditionCreator>(), std::make_unique<alica::UtilityFunctionCreator>(),
+            std::make_unique<alica::ConstraintCreator>(), std::make_unique<alica::BehaviourCreator>());
+    if (!ac->init(creators)) {
+        std::cerr << "Base: Unable to initialize the Alica Engine successfull!" << std::endl;
+    }
 }
 
 Base::~Base()
 {
-    ae->shutdown();
-    delete ae;
-    delete cc;
-    delete bc;
-    delete uc;
-    delete crc;
+    ac->terminate();
+    delete ac;
 }
 
 bool Base::isRunning()
@@ -108,7 +94,6 @@ int main(int argc, char** argv)
             masterplan = argv[i + 1];
             i++;
         }
-
         if (std::string(argv[i]) == "-rd" || std::string(argv[i]) == "-rolesetdir") {
             rolesetdir = argv[i + 1];
             i++;

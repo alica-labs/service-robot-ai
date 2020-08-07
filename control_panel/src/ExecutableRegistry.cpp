@@ -3,7 +3,7 @@
 #include "process_manager/ExecutableMetaData.h"
 #include "process_manager/RobotMetaData.h"
 
-#include <ConsoleCommandHelper.h>
+#include <essentials/ConsoleCommandHelper.h>
 
 #include <iostream>
 #include <string.h>
@@ -44,11 +44,11 @@ const map<string, vector<pair<int, int>>>* const ExecutableRegistry::getBundlesM
 {
     if (bundlesMap.size() == 0) {
         // Read bundles from Processes.conf
-        auto bundlesSections = (*this->sc)["ProcessManaging"]->getSections("Processes.Bundles", NULL);
+        auto bundlesSections = this->sc["ProcessManaging"]->getSections("Processes.Bundles", NULL);
         for (auto bundleName : (*bundlesSections)) {
-            vector<int> processList = (*this->sc)["ProcessManaging"]->getList<int>("Processes.Bundles", bundleName.c_str(), "processList", NULL);
+            vector<int> processList = this->sc["ProcessManaging"]->getList<int>("Processes.Bundles", bundleName.c_str(), "processList", NULL);
             vector<string> processParamsList =
-                    (*this->sc)["ProcessManaging"]->getList<string>("Processes.Bundles", bundleName.c_str(), "processParamsList", NULL);
+                    this->sc["ProcessManaging"]->getList<string>("Processes.Bundles", bundleName.c_str(), "processParamsList", NULL);
             if (processList.size() != processParamsList.size()) {
                 cerr << "RobotExecutableReg: Number of processes does not match the number of parameter sets for the "
                         "bundle '"
@@ -137,7 +137,7 @@ int ExecutableRegistry::addExecutable(string execSectionName)
         return -1;
     }
 
-    essentials::SystemConfig* sc = essentials::SystemConfig::getInstance();
+    essentials::SystemConfig& sc = essentials::SystemConfig::getInstance();
     int execId;
     string processMode;
     string execName;
@@ -146,11 +146,11 @@ int ExecutableRegistry::addExecutable(string execSectionName)
     string prefixCmd = "NOT-FOUND";  // optional
 
     try {
-        execId = (*sc)["ProcessManaging"]->get<int>("Processes.ProcessDescriptions", execSectionName.c_str(), "id", NULL);
-        processMode = (*sc)["ProcessManaging"]->get<string>("Processes.ProcessDescriptions", execSectionName.c_str(), "mode", NULL);
-        execName = (*sc)["ProcessManaging"]->get<string>("Processes.ProcessDescriptions", execSectionName.c_str(), "execName", NULL);
-        rosPackage = (*sc)["ProcessManaging"]->tryGet<string>("NOT-FOUND", "Processes.ProcessDescriptions", execSectionName.c_str(), "rosPackage", NULL);
-        prefixCmd = (*sc)["ProcessManaging"]->tryGet<string>("NOT-FOUND", "Processes.ProcessDescriptions", execSectionName.c_str(), "prefixCmd", NULL);
+        execId = sc["ProcessManaging"]->get<int>("Processes.ProcessDescriptions", execSectionName.c_str(), "id", NULL);
+        processMode = sc["ProcessManaging"]->get<string>("Processes.ProcessDescriptions", execSectionName.c_str(), "mode", NULL);
+        execName = sc["ProcessManaging"]->get<string>("Processes.ProcessDescriptions", execSectionName.c_str(), "execName", NULL);
+        rosPackage = sc["ProcessManaging"]->tryGet<string>("NOT-FOUND", "Processes.ProcessDescriptions", execSectionName.c_str(), "rosPackage", NULL);
+        prefixCmd = sc["ProcessManaging"]->tryGet<string>("NOT-FOUND", "Processes.ProcessDescriptions", execSectionName.c_str(), "prefixCmd", NULL);
     } catch (runtime_error& e) {
         cerr << "PM-Registry: Cannot add executable '" << execSectionName << "', because of faulty values in ProcessManaging.conf!" << endl;
         return -1;
@@ -169,12 +169,12 @@ int ExecutableRegistry::addExecutable(string execSectionName)
 
     process_manager::ExecutableMetaData* execMetaData =
             new process_manager::ExecutableMetaData(execSectionName, execId, processMode, execName, rosPackage, prefixCmd, absExecName);
-    auto paramSets = (*sc)["ProcessManaging"]->tryGetNames("NONE", "Processes.ProcessDescriptions", execSectionName.c_str(), "paramSets", NULL);
+    auto paramSets = sc["ProcessManaging"]->tryGetNames("NONE", "Processes.ProcessDescriptions", execSectionName.c_str(), "paramSets", NULL);
     if (paramSets->size() > 1 || paramSets->at(0) != "NONE") {
         for (string paramSetKeyString : (*paramSets)) {
             try {
                 int paramSetKey = stoi(paramSetKeyString);
-                auto paramSetValues = (*sc)["ProcessManaging"]->getList<string>(
+                auto paramSetValues = sc["ProcessManaging"]->getList<string>(
                         "Processes.ProcessDescriptions", execSectionName.c_str(), "paramSets", paramSetKeyString.c_str(), NULL);
 
                 // first param is always the executable name

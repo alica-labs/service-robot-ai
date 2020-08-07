@@ -2,8 +2,8 @@
 #include "process_manager/ProcessManager.h"
 #include <process_manager/RobotExecutableRegistry.h>
 
-#include <Logging.h>
-#include <SystemConfig.h>
+#include <essentials/Logging.h>
+#include <essentials/SystemConfig.h>
 
 #include <cassert>
 #include <chrono>

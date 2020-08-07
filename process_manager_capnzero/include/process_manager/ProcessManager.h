@@ -4,7 +4,7 @@
 
 #include "process_manager/containers/ProcessCommand.h"
 
-#include <SystemConfig.h>
+#include <essentials/SystemConfig.h>
 #include <essentials/Identifier.h>
 
 #include <chrono>
@@ -48,7 +48,7 @@ public:
 
 private:
     friend Communication;
-    essentials::SystemConfig* sc;
+    essentials::SystemConfig& sc;
     Communication* communication;
     std::string ownHostname;
     const essentials::Identifier* ownId;

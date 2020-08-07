@@ -25,15 +25,15 @@ std::shared_ptr<agent::SpeechAct> InformHandler::handle(const agent::SpeechAct i
     if (informAct.text.find("known-locations") == 0) {
         std::cout << "[InformHandler] Got " << informAct.perceptions.cellPerceptions.size() << " locations from Agent " << informAct.senderID << " for object type " << informAct.objectRequestType << std::endl;
         this->wm->rawSensorData.processSimPerceptions(informAct.perceptions);
-        return nullptr;
     }
 
-    std::cout << "[InformHandler] Human informed me about: '" << informAct.text << "'" << std::endl;
-    // TODO: Either send this knowledge via the human that generates the tasks, or add it here for evaluation
-    std::vector<std::string> information;
-    information.push_back(informAct.text);
-    wm->srgKnowledgeManager->addInformation(information);
-
+    if (informAct.text.find("cs_") == 0) {
+        std::cout << "[InformHandler] Human informed me about: '" << informAct.text << "'" << std::endl;
+        std::string commonsenseKnowledgeProgramSection = "commonsenseKnowledge";
+        this->wm->srgKnowledgeManager->add(commonsenseKnowledgeProgramSection.c_str(), {}, informAct.text.c_str());
+        this->wm->srgKnowledgeManager->ground({{commonsenseKnowledgeProgramSection.c_str(), {}}}, nullptr);
+        this->wm->srgKnowledgeManager->solve();
+    }
     return nullptr;
 }
 
@@ -44,7 +44,7 @@ std::shared_ptr<agent::SpeechAct> InformHandler::createAnswerSpeechAct(essential
     answerSpeechAct->answerGraph = answerGraph;
     answerSpeechAct->type = type;
     answerSpeechAct->previousActID = previousActID;
-    answerSpeechAct->actID = this->wm->getEngine()->getIdManager()->generateID();
+    answerSpeechAct->actID = this->wm->getAlicaContext()->generateID(16);
     answerSpeechAct->senderID = this->wm->getOwnId();
     return answerSpeechAct;
 }

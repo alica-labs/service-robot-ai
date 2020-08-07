@@ -7,7 +7,7 @@
 
 #include <engine/AlicaEngine.h>
 
-#include <SystemConfig.h>
+#include <essentials/SystemConfig.h>
 
 namespace srg
 {
@@ -17,16 +17,31 @@ CommandHandler::CommandHandler(SRGWorldModel* wm)
         : wm(wm)
         , currentTaskSequence(nullptr)
         , taskFactory(new TaskFactory(wm))
+        , fileWriter()
 {
-    auto sc = essentials::SystemConfig::getInstance();
-    this->taskValidityDuration = alica::AlicaTime::nanoseconds((*sc)["SRGWorldModel"]->get<int64_t>("Data.TaskAct.ValidityDuration", NULL));
-    this->taskActBuffer = new supplementary::InfoBuffer<agent::SpeechAct>((*sc)["SRGWorldModel"]->get<int64_t>("Data.TaskAct.BufferLength", NULL));
+    auto& sc = essentials::SystemConfig::getInstance();
+    this->taskValidityDuration = alica::AlicaTime::nanoseconds(sc["SRGWorldModel"]->get<int64_t>("Data.TaskAct.ValidityDuration", NULL));
+    this->taskActBuffer = new supplementary::InfoBuffer<agent::SpeechAct>(sc["SRGWorldModel"]->get<int64_t>("Data.TaskAct.BufferLength", NULL));
+
+    // init logging for experiments
+    this->logPath = "results";
+    if (!essentials::FileSystem::isDirectory(logPath)) {
+        if (!essentials::FileSystem::createDirectory(logPath, 0777)) {
+            std::cerr << "[CommandHandler] Cannot create log folder: " << logPath << std::endl;
+        }
+    }
+    std::stringstream sb;
+    struct tm timestruct;
+    auto time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    sb << logPath << "/" << std::put_time(localtime_r(&time, &timestruct), "%Y-%Om-%Od_%OH-%OM-%OS") << "_TaskLog_" << sc.getHostname() << ".csv";
+    this->fileWriter.open(sb.str().c_str(), std::ios_base::app);
 }
 
 CommandHandler::~CommandHandler()
 {
     delete taskFactory;
     delete taskActBuffer;
+    this->fileWriter.close();
 }
 
 const supplementary::InfoBuffer<agent::SpeechAct>& CommandHandler::getTaskActBuffer()
@@ -135,10 +150,8 @@ std::shared_ptr<agent::SpeechAct> CommandHandler::handle(std::shared_ptr<supplem
 void CommandHandler::logTaskSequence(std::shared_ptr<TaskSequence> taskSequence)
 {
     taskSequence->setEndTime(this->wm->getTime());
-    std::ofstream fileWriter;
-    std::string filename = "TaskLog_" + this->wm->getAgentName() + ".csv";
-    fileWriter.open(essentials::FileSystem::combinePaths("results", filename), std::ios_base::app);
-    fileWriter << std::fixed << taskSequence->toLogString(this->wm->getOwnId()) << std::endl;
+    this->fileWriter << std::fixed << taskSequence->toLogString(this->wm->getOwnId());
+    this->fileWriter.flush();
 }
 
 } // namespace tasks

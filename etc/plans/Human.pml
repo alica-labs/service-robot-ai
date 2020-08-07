@@ -26,7 +26,13 @@
     "comment" : "",
     "entryPoint" : 1575294081333,
     "parentPlan" : 1575294066871,
-    "abstractPlans" : [ "Behaviours/GenerateTasks.beh#1575291385685" ],
+    "confAbstractPlanWrappers" : [ {
+      "id" : 1596753066237,
+      "name" : "1596753066237",
+      "comment" : "",
+      "abstractPlan" : "Behaviours/GenerateTasks.beh#1575291385685",
+      "configuration" : null
+    } ],
     "variableBindings" : [ ],
     "outTransitions" : [ ],
     "inTransitions" : [ ]

@@ -95,7 +95,7 @@ void TaskFactory::setObjectType(const std::string& objectTypeToken, Task* task)
 void TaskFactory::setObjectID(const std::string& objectIDToken, Task* task)
 {
     uint32_t idInt = std::stoi(objectIDToken);
-    task->objectID = this->wm->getEngine()->getId<uint32_t>(idInt);
+    task->objectID = this->wm->getAlicaContext()->getID<uint32_t>(idInt);
     task->objectIDIsFixed = true;
 }
 

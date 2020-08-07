@@ -4,7 +4,7 @@
 
 #include <srg/agent/containers/SpeechAct.h>
 
-#include <SystemConfig.h>
+#include <essentials/SystemConfig.h>
 #include <supplementary/InfoBuffer.h>
 
 #include <memory>
@@ -18,15 +18,15 @@ namespace wm
 RawSensorData::RawSensorData(srg::SRGWorldModel* wm)
 {
     this->wm = wm;
-    auto sc = essentials::SystemConfig::getInstance();
-    this->speechActValidityDuration = alica::AlicaTime::nanoseconds((*sc)["SRGWorldModel"]->get<int>("Data.SpeechAct.ValidityDuration", NULL));
-    this->speechActBuffer = new supplementary::InfoBuffer<agent::SpeechAct>((*sc)["SRGWorldModel"]->get<int>("Data.SpeechAct.BufferLength", NULL));
+    auto& sc = essentials::SystemConfig::getInstance();
+    this->speechActValidityDuration = alica::AlicaTime::nanoseconds(sc["SRGWorldModel"]->get<int>("Data.SpeechAct.ValidityDuration", NULL));
+    this->speechActBuffer = new supplementary::InfoBuffer<agent::SpeechAct>(sc["SRGWorldModel"]->get<int>("Data.SpeechAct.BufferLength", NULL));
 
-    this->agentCmdValidityDuration = alica::AlicaTime::nanoseconds((*sc)["SRGWorldModel"]->get<int>("Data.AgentCmd.ValidityDuration", NULL));
-    this->agentCmdBuffer = new supplementary::InfoBuffer<agent::AgentCommand>((*sc)["SRGWorldModel"]->get<int>("Data.AgentCmd.BufferLength", NULL));
+    this->agentCmdValidityDuration = alica::AlicaTime::nanoseconds(sc["SRGWorldModel"]->get<int>("Data.AgentCmd.ValidityDuration", NULL));
+    this->agentCmdBuffer = new supplementary::InfoBuffer<agent::AgentCommand>(sc["SRGWorldModel"]->get<int>("Data.AgentCmd.BufferLength", NULL));
 
-    this->perceptionsValidityDuration = alica::AlicaTime::nanoseconds((*sc)["SRGWorldModel"]->get<int>("Data.Perception.ValidityDuration", NULL));
-    this->perceptionsBuffer = new supplementary::InfoBuffer<srg::sim::containers::Perceptions>((*sc)["SRGWorldModel"]->get<int>("Data.Perception.BufferLength", NULL));
+    this->perceptionsValidityDuration = alica::AlicaTime::nanoseconds(sc["SRGWorldModel"]->get<int>("Data.Perception.ValidityDuration", NULL));
+    this->perceptionsBuffer = new supplementary::InfoBuffer<srg::sim::containers::Perceptions>(sc["SRGWorldModel"]->get<int>("Data.Perception.BufferLength", NULL));
 }
 
 RawSensorData::~RawSensorData() {}

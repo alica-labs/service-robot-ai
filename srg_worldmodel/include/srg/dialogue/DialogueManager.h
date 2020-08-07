@@ -1,9 +1,11 @@
 #pragma once
 
+#include <srg/agent/containers/SpeechAct.h>
+
 #include <map>
 #include <memory>
 #include <vector>
-#include <srg/agent/containers/SpeechAct.h>
+#include <mutex>
 
 namespace supplementary
 {
@@ -48,6 +50,7 @@ private:
     std::unordered_map<essentials::IdentifierConstPtr, std::shared_ptr<agent::SpeechAct>> dialogueMap;
     std::vector<std::shared_ptr<agent::SpeechAct>> pendingSpeechActs;
     void renderDot() const;
+    std::recursive_mutex _speechActMtx;
 };
 } // namespace dialogue
 } // namespace srg

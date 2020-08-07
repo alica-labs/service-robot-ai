@@ -72,9 +72,9 @@ int32_t TaskSequence::size() const
 std::string TaskSequence::toLogString(essentials::IdentifierConstPtr agentID) {
     std::stringstream logStringStream;
     logStringStream << this->endTime-this->startTime << "\t" << this->size() << std::endl;
-    for (Task* task : this->taskSequence) {
-        logStringStream << *task << std::endl;
-    }
+//    for (Task* task : this->taskSequence) {
+//        logStringStream << *task << std::endl;
+//    }
     return logStringStream.str();
 }
 

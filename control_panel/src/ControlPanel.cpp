@@ -21,9 +21,6 @@ ControlPanel::ControlPanel()
         , uiControlPanel(new Ui::ControlPanel())
         , controlPanelQWidget(new QWidget())
 {
-
-
-
     // COMMUNICATION
     this->comm = new Communication(this);
 
@@ -39,7 +36,7 @@ ControlPanel::ControlPanel()
 
     // Register robots from Globals.conf
     this->idManager = new essentials::IDManager();
-    essentials::Configuration* globalsConf = (*sc)["Globals"];
+    essentials::Configuration* globalsConf = sc["Globals"];
     if (globalsConf != nullptr) {
         auto agentNames = globalsConf->getSections("Globals.Team", NULL);
         for (auto agentName : (*agentNames)) {
@@ -51,7 +48,7 @@ ControlPanel::ControlPanel()
 
     // Register executables from ProcessManaging.conf
     this->executableRegistry = ExecutableRegistry::get();
-    auto processDescriptions = (*this->sc)["ProcessManaging"]->getSections("Processes.ProcessDescriptions", NULL);
+    auto processDescriptions = this->sc["ProcessManaging"]->getSections("Processes.ProcessDescriptions", NULL);
     for (auto processSectionName : (*processDescriptions)) {
         this->executableRegistry->addExecutable(processSectionName);
     }

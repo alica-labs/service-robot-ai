@@ -5,6 +5,9 @@
 #include <srg/Agent.h>
 #include <srg/world/Room.h>
 #include <srg/world/RoomType.h>
+#include <engine/AlicaContext.h>
+#include <engine/teammanager/TeamManager.h>
+#include <engine/teammanager/Agent.h>
 #include <sstream>
 /*PROTECTED REGION END*/
 
@@ -44,8 +47,10 @@ void GenerateTasks::run(void* msg)
 void GenerateTasks::initialiseParameters()
 {
     /*PROTECTED REGION ID(initialiseParameters1575291385685) ENABLED START*/
+    this->speechActs.clear();
+    generateHumanKnowledge();
     this->sentCounter = 0;
-    generateSpeechActs(10);
+    generateSpeechActs(1000);
     // debug
     for (srg::agent::SpeechAct sa : this->speechActs) {
         std::cout << "[GenerateTasks] " << sa << std::endl;
@@ -54,25 +59,50 @@ void GenerateTasks::initialiseParameters()
     /*PROTECTED REGION END*/
 }
 /*PROTECTED REGION ID(methods1575291385685) ENABLED START*/
+void GenerateTasks::generateHumanKnowledge()
+{
+    srg::agent::SpeechAct sa;
+    sa.senderID = this->wm->getOwnId();
+    sa.actID = this->wm->getAlicaContext()->generateID();
+    sa.previousActID = this->wm->getAlicaContext()->getIDManager().getWildcardID();
+    sa.type = srg::agent::SpeechType::inform;
+    sa.objectRequestType = srg::world::ObjectType::Unknown;
+
+    // receiver ID
+    auto agents = this->wm->getAlicaContext()->getActiveAgents();
+    const Agent* agent;
+    do {
+        ActiveAgentIterator agentIter = agents.begin();
+        std::advance(agentIter, rand() % agents.size());
+    } while (agent->getId() == this->wm->getOwnId());
+    sa.receiverID = agent->getId();
+    sa.perceptions.receiverID = sa.receiverID;
+
+    // knowledge text
+    sa.text = "cs_AtLocation(cup,office,450).";
+
+    this->speechActs.push_back(sa);
+}
+
 void GenerateTasks::generateSpeechActs(int numberOfTasks)
 {
-    this->speechActs.clear();
     for (int i = 0; i < numberOfTasks; i++) {
         srg::agent::SpeechAct sa;
         sa.senderID = this->wm->getOwnId();
-        sa.actID = this->wm->getEngine()->getIdManager()->generateID();
-        sa.previousActID = this->wm->getEngine()->getIdManager()->getWildcardID();
+        sa.actID = this->wm->getAlicaContext()->generateID();
+        sa.previousActID = this->wm->getAlicaContext()->getIDManager().getWildcardID();
         sa.type = srg::agent::SpeechType::command;
         sa.objectRequestType = srg::world::ObjectType::Unknown;
 
         // receiver ID
-        auto& agents = this->wm->getEngine()->getTeamManager()->getAllAgents();
-        std::map<essentials::IdentifierConstPtr, Agent*>::const_iterator agentIter;
+        auto agents = this->wm->getAlicaContext()->getActiveAgents();
+        const Agent* agent;
         do {
-            agentIter = agents.begin();
+            ActiveAgentIterator agentIter = agents.begin();
             std::advance(agentIter, rand() % agents.size());
-        } while (agentIter->first == this->wm->getOwnId() || !agentIter->second->isActive());
-        sa.receiverID = agentIter->first;
+            agent = *agentIter;
+        } while (agent->getId() == this->wm->getOwnId());
+        sa.receiverID = agent->getId();
         sa.perceptions.receiverID = sa.receiverID;
 
         // task text

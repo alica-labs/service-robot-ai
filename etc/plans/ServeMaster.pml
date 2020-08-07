@@ -35,7 +35,13 @@
     "comment" : "",
     "entryPoint" : 1555601746711,
     "parentPlan" : 1555601736192,
-    "abstractPlans" : [ "Behaviours/Stop.beh#1555602210283" ],
+    "confAbstractPlanWrappers" : [ {
+      "id" : 1596753066361,
+      "name" : "1596753066361",
+      "comment" : "",
+      "abstractPlan" : "Behaviours/Stop.beh#1555602210283",
+      "configuration" : null
+    } ],
     "variableBindings" : [ ],
     "outTransitions" : [ 1558533492085 ],
     "inTransitions" : [ 1558533494595, 1558533714287 ]
@@ -46,7 +52,13 @@
     "comment" : "",
     "entryPoint" : null,
     "parentPlan" : 1555601736192,
-    "abstractPlans" : [ "Behaviours/Spawn.beh#1558533534825" ],
+    "confAbstractPlanWrappers" : [ {
+      "id" : 1596753066364,
+      "name" : "1596753066364",
+      "comment" : "",
+      "abstractPlan" : "Behaviours/Spawn.beh#1558533534825",
+      "configuration" : null
+    } ],
     "variableBindings" : [ ],
     "outTransitions" : [ 1558533494595, 1558533514929 ],
     "inTransitions" : [ 1558533492085 ]
@@ -57,7 +69,13 @@
     "comment" : "",
     "entryPoint" : null,
     "parentPlan" : 1555601736192,
-    "abstractPlans" : [ "Operate.pml#1575655614484" ],
+    "confAbstractPlanWrappers" : [ {
+      "id" : 1596753066368,
+      "name" : "1596753066368",
+      "comment" : "",
+      "abstractPlan" : "Operate.pml#1575655614484",
+      "configuration" : null
+    } ],
     "variableBindings" : [ ],
     "outTransitions" : [ 1558533714287 ],
     "inTransitions" : [ 1558533514929 ]

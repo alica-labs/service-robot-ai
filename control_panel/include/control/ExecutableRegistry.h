@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SystemConfig.h>
+#include <essentials/SystemConfig.h>
 
 #include <map>
 #include <stdint.h>
@@ -40,7 +40,7 @@ private:
     ExecutableRegistry();
     virtual ~ExecutableRegistry();
 
-    essentials::SystemConfig* sc;
+    essentials::SystemConfig& sc;
     std::vector<process_manager::ExecutableMetaData*> executableList;
     std::vector<std::string> interpreter;
     std::map<std::string, std::vector<std::pair<int, int>>> bundlesMap;

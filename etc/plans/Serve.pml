@@ -26,7 +26,13 @@
     "comment" : "",
     "entryPoint" : 1568825285315,
     "parentPlan" : 1568825275605,
-    "abstractPlans" : [ "Behaviours/Stop.beh#1555602210283" ],
+    "confAbstractPlanWrappers" : [ {
+      "id" : 1596753066308,
+      "name" : "1596753066308",
+      "comment" : "",
+      "abstractPlan" : "Behaviours/Stop.beh#1555602210283",
+      "configuration" : null
+    } ],
     "variableBindings" : [ ],
     "outTransitions" : [ 1568825336792, 1571661739802, 1573418725423 ],
     "inTransitions" : [ 1568825392354, 1571661809581, 1573418821209 ]
@@ -37,7 +43,13 @@
     "comment" : "",
     "entryPoint" : null,
     "parentPlan" : 1568825275605,
-    "abstractPlans" : [ "Behaviours/Move.beh#1568825137528" ],
+    "confAbstractPlanWrappers" : [ {
+      "id" : 1596753066312,
+      "name" : "1596753066312",
+      "comment" : "",
+      "abstractPlan" : "Behaviours/Move.beh#1568825137528",
+      "configuration" : null
+    } ],
     "variableBindings" : [ ],
     "outTransitions" : [ 1568825392354 ],
     "inTransitions" : [ 1568825336792 ]
@@ -48,7 +60,13 @@
     "comment" : "",
     "entryPoint" : null,
     "parentPlan" : 1568825275605,
-    "abstractPlans" : [ "Behaviours/Manipulate.beh#1571687572903" ],
+    "confAbstractPlanWrappers" : [ {
+      "id" : 1596753066315,
+      "name" : "1596753066315",
+      "comment" : "",
+      "abstractPlan" : "Behaviours/Manipulate.beh#1571687572903",
+      "configuration" : null
+    } ],
     "variableBindings" : [ ],
     "outTransitions" : [ 1571661809581 ],
     "inTransitions" : [ 1571661739802 ]
@@ -59,7 +77,13 @@
     "comment" : "",
     "entryPoint" : null,
     "parentPlan" : 1568825275605,
-    "abstractPlans" : [ "Transport.pml#1573418869596" ],
+    "confAbstractPlanWrappers" : [ {
+      "id" : 1596753066318,
+      "name" : "1596753066318",
+      "comment" : "",
+      "abstractPlan" : "Transport.pml#1573418869596",
+      "configuration" : null
+    } ],
     "variableBindings" : [ ],
     "outTransitions" : [ 1573418821209 ],
     "inTransitions" : [ 1573418725423 ]

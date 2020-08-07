@@ -43,9 +43,9 @@ ProcessManager::ProcessManager(int argc, char** argv)
         , currentTotalCPUTime(0)
         , simMode(false)
         , ownId(nullptr)
+        , sc(essentials::SystemConfig::getInstance())
 {
-    this->sc = essentials::SystemConfig::getInstance();
-    this->ownHostname = this->sc->getHostname();
+    this->ownHostname = this->sc.getHostname();
     this->pmRegistry = RobotExecutableRegistry::get();
 
     /* Initialise some data structures for better performance in searchProcFS-Method with
@@ -53,7 +53,7 @@ ProcessManager::ProcessManager(int argc, char** argv)
 
     // Register robots from Globals.conf
     const essentials::Identifier* tmpAgentID;
-    auto robotNames = (*this->sc)["Globals"]->getSections("Globals.Team", NULL);
+    auto robotNames = this->sc["Globals"]->getSections("Globals.Team", NULL);
     for (auto robotName : (*robotNames)) {
         tmpAgentID = this->pmRegistry->addRobot(robotName);
         if (robotName == this->ownHostname) {
@@ -84,7 +84,7 @@ ProcessManager::ProcessManager(int argc, char** argv)
 
     // Register executables from Processes.conf
     int tmpExecID = -1;
-    auto processDescriptions = (*this->sc)["ProcessManaging"]->getSections("Processes.ProcessDescriptions", NULL);
+    auto processDescriptions = this->sc["ProcessManaging"]->getSections("Processes.ProcessDescriptions", NULL);
     for (auto processSectionName : (*processDescriptions)) {
         tmpExecID = this->pmRegistry->addExecutable(processSectionName);
         // This autostart functionality is for easier testing. The local robot starts the processes automatically
@@ -93,7 +93,7 @@ ProcessManager::ProcessManager(int argc, char** argv)
         }
     }
 
-    this->interpreters = (*this->sc)["ProcessManaging"]->getList<string>("Processes.Interpreter", NULL);
+    this->interpreters = this->sc["ProcessManaging"]->getList<string>("Processes.Interpreter", NULL);
     cout << "PM: Number of Interpreters: " << this->interpreters.size() << endl;
     this->pmRegistry->setInterpreters(interpreters);
 

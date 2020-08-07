@@ -33,8 +33,8 @@ Agent::Agent(essentials::IdentifierConstPtr agentID, control::ControlPanel* cont
     ss << (*agentID.get());
     this->agentName = ss.str();
 
-    essentials::SystemConfig* sc = essentials::SystemConfig::getInstance();
-    this->msgTimeOut = std::chrono::duration<double>((*sc)["ProcessManaging"]->get<unsigned long>("Control.timeLastMsgReceivedTimeOut", NULL));
+    essentials::SystemConfig& sc = essentials::SystemConfig::getInstance();
+    this->msgTimeOut = std::chrono::duration<double>(sc["ProcessManaging"]->get<unsigned long>("Control.timeLastMsgReceivedTimeOut", NULL));
     QObject::connect(this->uiAgent->agentCommandBtn, SIGNAL(clicked(bool)), this, SLOT(handleAgentCommandBtnClicked(bool)), Qt::DirectConnection);
 }
 

@@ -4,12 +4,12 @@ project(process_manager_capnzero)
 add_compile_options(-std=c++11)
 
 find_package(Threads)
-find_package(catkin REQUIRED id_manager system_config system_util id_capnzero capnzero roscpp)
+find_package(catkin REQUIRED id_manager system_util system_config id_capnzero capnzero roscpp)
 
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES robot_executable_meta_data pm_msgs
-  CATKIN_DEPENDS id_manager system_config system_util id_capnzero
+  CATKIN_DEPENDS system_util id_manager system_config id_capnzero
 )
 
 include_directories(include ${catkin_INCLUDE_DIRS})

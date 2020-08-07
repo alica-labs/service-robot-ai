@@ -5,7 +5,7 @@
 #include "ui_Agent.h"
 #include "ui_Process.h"
 
-#include <SystemConfig.h>
+#include <essentials/SystemConfig.h>
 #include <process_manager/ExecutableMetaData.h>
 #include <process_manager/containers/ProcessCommand.h>
 #include <qt5/QtWidgets/QMenu>
@@ -44,7 +44,7 @@ Process::Process(Agent* parentAgent, int processKey, ExecutableRegistry* executa
     connect(this->processWidget, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenu(const QPoint&)));
 
     this->msgTimeOut = std::chrono::duration<double>(
-            (*essentials::SystemConfig::getInstance())["ProcessManaging"]->get<unsigned long>("Control.timeLastMsgReceivedTimeOut", NULL));
+            essentials::SystemConfig::getInstance()["ProcessManaging"]->get<unsigned long>("Control.timeLastMsgReceivedTimeOut", NULL));
 
     this->parentAgent->addExec(this->processWidget);
     this->processWidget->show();

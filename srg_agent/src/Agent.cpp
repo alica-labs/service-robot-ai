@@ -8,7 +8,7 @@
 #include <srg/tasks/Task.h>
 #include <srg/tasks/TaskType.h>
 
-#include <SystemConfig.h>
+#include <essentials/SystemConfig.h>
 #include <capnzero/Publisher.h>
 #include <engine/AlicaEngine.h>
 #include <engine/IRoleAssignment.h>
@@ -30,13 +30,12 @@ Agent::Agent(srg::SRGWorldModel* wm)
         , movement(new srg::agent::Movement(wm))
         , lastPosition(-1, -1)
         , lastTimeSendMoveCmd(std::chrono::system_clock::now())
+        , sc(essentials::SystemConfig::getInstance())
 {
-    this->id = this->wm->getEngine()->getTeamManager()->getLocalAgentID();
-    this->voice = new srg::agent::Voice(this->id, this->wm->getEngine()->getIdManager());
-
-    this->sc = essentials::SystemConfig::getInstance();
-    this->simCmdTopic = (*sc)["SRGSim"]->get<std::string>("SRGSim.Communication.cmdTopic", NULL);
-    this->simAddress = (*sc)["SRGSim"]->get<std::string>("SRGSim.Communication.address", NULL);
+    this->id = this->wm->getAlicaContext()->getLocalAgentId();
+    this->voice = new srg::agent::Voice(this->id, const_cast<essentials::IDManager&>(this->wm->getAlicaContext()->getIDManager()));
+    this->simCmdTopic = sc["SRGSim"]->get<std::string>("SRGSim.Communication.cmdTopic", NULL);
+    this->simAddress = sc["SRGSim"]->get<std::string>("SRGSim.Communication.address", NULL);
 
     this->capnzeroContext = zmq_ctx_new();
     this->simPub = new capnzero::Publisher(this->capnzeroContext, capnzero::Protocol::UDP);
@@ -54,7 +53,7 @@ void Agent::spawn() const
     srg::sim::containers::SimCommand sc;
     sc.senderID = this->id.get();
     sc.objectID = this->id.get();
-    const alica::Role* ownRole = this->wm->getEngine()->getRoleAssignment()->getRole(this->wm->getOwnId());
+    const alica::Role* ownRole = this->wm->getAlicaContext()->getLocalAgentRole();//getRoleAssignment()->getRole(this->wm->getOwnId());
     if (ownRole->getName().compare("Human") == 0) {
         sc.action = srg::sim::containers::SimCommand::SPAWNHUMAN;
     } else if (ownRole->getName().compare("Assistant") == 0) {

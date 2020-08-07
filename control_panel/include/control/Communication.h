@@ -27,7 +27,7 @@ public:
     void send(process_manager::ProcessCommand pc);
     void send(srg::agent::AgentCommand rc);
 private:
-    essentials::SystemConfig* sc;
+    essentials::SystemConfig& sc;
     ControlPanel* controlPanel;
 
     // capnzero stuff

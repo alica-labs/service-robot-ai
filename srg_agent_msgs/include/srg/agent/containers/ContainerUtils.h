@@ -18,10 +18,10 @@ class ContainerUtils
 {
 public:
 
-    static AgentCommand toAgentCommand(::capnp::FlatArrayMessageReader& msg, essentials::IDManager* idManager);
+    static AgentCommand toAgentCommand(::capnp::FlatArrayMessageReader& msg, essentials::IDManager& idManager);
     static void toMsg(const AgentCommand& agentCommand, ::capnp::MallocMessageBuilder& builder);
 
-    static SpeechAct toSpeechAct(::capnp::FlatArrayMessageReader& msg, essentials::IDManager* idManager);
+    static SpeechAct toSpeechAct(::capnp::FlatArrayMessageReader& msg, essentials::IDManager& idManager);
     static void toMsg(const SpeechAct& speechAct, ::capnp::MallocMessageBuilder& builder);
 
 private:

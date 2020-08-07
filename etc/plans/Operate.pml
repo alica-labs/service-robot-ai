@@ -36,7 +36,13 @@
     "comment" : "",
     "entryPoint" : 1575655644510,
     "parentPlan" : 1575655614484,
-    "abstractPlans" : [ "Serve.pml#1568825275605" ],
+    "confAbstractPlanWrappers" : [ {
+      "id" : 1596753066228,
+      "name" : "1596753066228",
+      "comment" : "",
+      "abstractPlan" : "Serve.pml#1568825275605",
+      "configuration" : null
+    } ],
     "variableBindings" : [ ],
     "outTransitions" : [ ],
     "inTransitions" : [ ]
@@ -47,7 +53,13 @@
     "comment" : "",
     "entryPoint" : 1575655650043,
     "parentPlan" : 1575655614484,
-    "abstractPlans" : [ "Human.pml#1575294066871" ],
+    "confAbstractPlanWrappers" : [ {
+      "id" : 1596753066231,
+      "name" : "1596753066231",
+      "comment" : "",
+      "abstractPlan" : "Human.pml#1575294066871",
+      "configuration" : null
+    } ],
     "variableBindings" : [ ],
     "outTransitions" : [ ],
     "inTransitions" : [ ]

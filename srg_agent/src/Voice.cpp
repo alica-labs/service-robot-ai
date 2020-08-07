@@ -1,6 +1,6 @@
 #include "srg/agent/Voice.h"
 
-#include <SystemConfig.h>
+#include <essentials/SystemConfig.h>
 #include <capnzero/CapnZero.h>
 #include <essentials/IDManager.h>
 #include <essentials/IdentifierConstPtr.h>
@@ -13,33 +13,31 @@ namespace srg
 {
 namespace agent
 {
-Voice::Voice(bool standalone)
+Voice::Voice(bool standalone) : sc(essentials::SystemConfig::getInstance())
 {
-    this->sc = essentials::SystemConfig::getInstance();
-
     if (standalone) {
         this->idManager = new essentials::IDManager();
 
-        int64_t id = (*sc)["Voice"]->get<int64_t>("defaultID", NULL);
+        int64_t id = sc["Voice"]->get<int64_t>("defaultID", NULL);
         this->id = this->idManager->getID<int64_t>(id);
     }
 
     this->ctx = zmq_ctx_new();
 
     this->speechActPublisher = new capnzero::Publisher(this->ctx, capnzero::Protocol::UDP);
-    this->speechActPublisher->setDefaultTopic((*sc)["Voice"]->get<std::string>("SpeechAct.topic", NULL));
-    this->speechActPublisher->addAddress((*sc)["Voice"]->get<std::string>("SpeechAct.address", NULL));
+    this->speechActPublisher->setDefaultTopic(sc["Voice"]->get<std::string>("SpeechAct.topic", NULL));
+    this->speechActPublisher->addAddress(sc["Voice"]->get<std::string>("SpeechAct.address", NULL));
 
     this->speechActSubscriber = new capnzero::Subscriber(this->ctx, capnzero::Protocol::UDP);
-    this->speechActSubscriber->setTopic((*sc)["Voice"]->get<std::string>("SpeechAct.topic", NULL));
-    this->speechActSubscriber->addAddress((*sc)["Voice"]->get<std::string>("SpeechAct.address", NULL));
+    this->speechActSubscriber->setTopic(sc["Voice"]->get<std::string>("SpeechAct.topic", NULL));
+    this->speechActSubscriber->addAddress(sc["Voice"]->get<std::string>("SpeechAct.address", NULL));
     this->speechActSubscriber->subscribe(&Voice::onSpeechAct, &(*this));
 }
 
-Voice::Voice(essentials::IdentifierConstPtr ownId, essentials::IDManager* idManager)
+Voice::Voice(essentials::IdentifierConstPtr ownId, essentials::IDManager& idManager)
         : Voice()
 {
-    this->idManager = idManager;
+    this->idManager = &idManager;
     this->id = ownId;
 }
 

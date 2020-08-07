@@ -47,7 +47,7 @@ private:
     void trace(const srg::World* world, srg::world::Coordinate& from, srg::world::Coordinate& to, std::unordered_set<std::shared_ptr<const world::Cell>>& visible,
             std::unordered_set<std::shared_ptr<const world::Cell>>& front);
 
-    essentials::SystemConfig* sc;
+    essentials::SystemConfig& sc;
     srg::SRGWorldModel* wm;
     uint32_t sightLimit; /**< The sight radius of the agent in number-of-cells. */
     uint32_t updateCounter; /**< Is used to give newer SearchCells a higher priority. */

@@ -4,6 +4,8 @@
 #include "srg/asp/SRGKnowledgeManager.h"
 #include "srg/asp/ASPTranslator.h"
 
+#include <engine/AlicaContext.h>
+
 namespace srg
 {
 
@@ -24,7 +26,6 @@ SRGWorldModel::SRGWorldModel()
         , srgKnowledgeManager(new srg::asp::SRGKnowledgeManager())
         , gui(nullptr)
 {
-    this->agentName = sc->getHostname();
 }
 
 SRGWorldModel::~SRGWorldModel()
@@ -36,15 +37,10 @@ SRGWorldModel::~SRGWorldModel()
     delete this->gui;
 }
 
-std::string SRGWorldModel::getAgentName()
-{
-    return this->agentName;
-}
-
 void SRGWorldModel::init()
 {
     this->sRGSimData.init();
-    this->gui = new srg::GUI(this->agentName);
+    this->gui = new srg::GUI(this->getAlicaContext()->getLocalAgentName());
     this->communication = new wm::Communication(this);
 }
 

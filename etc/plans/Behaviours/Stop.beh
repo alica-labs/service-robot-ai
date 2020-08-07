@@ -6,15 +6,8 @@
   "variables" : [ ],
   "frequency" : 30,
   "deferring" : 0,
+  "eventDriven" : false,
   "preCondition" : null,
   "runtimeCondition" : null,
-  "postCondition" : null,
-  "parameters" : {
-    "D" : "3",
-    "asdf" : "1",
-    "e" : "",
-    "3" : "",
-    "32" : "",
-    "asdeqq" : ""
-  }
+  "postCondition" : null
 }

@@ -3,7 +3,7 @@
 #include "process_manager/RobotExecutableRegistry.h"
 
 
-#include <SystemConfig.h>
+#include <essentials/SystemConfig.h>
 #include <essentials/WildcardID.h>
 #include <process_manager/containers/ContainerUtils.h>
 #include <process_manager/ProcessStatsMsg.capnp.h>

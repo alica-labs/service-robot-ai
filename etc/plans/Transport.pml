@@ -26,7 +26,13 @@
     "comment" : "",
     "entryPoint" : 1573418933317,
     "parentPlan" : 1573418869596,
-    "abstractPlans" : [ "Behaviours/Search.beh#1573419059418" ],
+    "confAbstractPlanWrappers" : [ {
+      "id" : 1596753066244,
+      "name" : "1596753066244",
+      "comment" : "",
+      "abstractPlan" : "Behaviours/Search.beh#1573419059418",
+      "configuration" : null
+    } ],
     "variableBindings" : [ ],
     "outTransitions" : [ 1573419007368 ],
     "inTransitions" : [ 1582991323347, 1582991345018, 1583070277037 ]
@@ -37,7 +43,13 @@
     "comment" : "",
     "entryPoint" : null,
     "parentPlan" : 1573418869596,
-    "abstractPlans" : [ "Behaviours/Manipulate.beh#1571687572903" ],
+    "confAbstractPlanWrappers" : [ {
+      "id" : 1596753066247,
+      "name" : "1596753066247",
+      "comment" : "",
+      "abstractPlan" : "Behaviours/Manipulate.beh#1571687572903",
+      "configuration" : null
+    } ],
     "variableBindings" : [ ],
     "outTransitions" : [ 1573418998111, 1582991345018 ],
     "inTransitions" : [ 1573419009128 ]
@@ -48,7 +60,13 @@
     "comment" : "",
     "entryPoint" : null,
     "parentPlan" : 1573418869596,
-    "abstractPlans" : [ "Behaviours/Move.beh#1568825137528" ],
+    "confAbstractPlanWrappers" : [ {
+      "id" : 1596753066251,
+      "name" : "1596753066251",
+      "comment" : "",
+      "abstractPlan" : "Behaviours/Move.beh#1568825137528",
+      "configuration" : null
+    } ],
     "variableBindings" : [ ],
     "outTransitions" : [ 1573419000441 ],
     "inTransitions" : [ 1573418998111 ]
@@ -59,7 +77,13 @@
     "comment" : "",
     "entryPoint" : null,
     "parentPlan" : 1573418869596,
-    "abstractPlans" : [ "Behaviours/Manipulate.beh#1571687572903" ],
+    "confAbstractPlanWrappers" : [ {
+      "id" : 1596753066254,
+      "name" : "1596753066254",
+      "comment" : "",
+      "abstractPlan" : "Behaviours/Manipulate.beh#1571687572903",
+      "configuration" : null
+    } ],
     "variableBindings" : [ ],
     "outTransitions" : [ 1583008562199, 1583070277037 ],
     "inTransitions" : [ 1573419000441 ]
@@ -70,7 +94,13 @@
     "comment" : "",
     "entryPoint" : null,
     "parentPlan" : 1573418869596,
-    "abstractPlans" : [ "Behaviours/Move.beh#1568825137528" ],
+    "confAbstractPlanWrappers" : [ {
+      "id" : 1596753066257,
+      "name" : "1596753066257",
+      "comment" : "",
+      "abstractPlan" : "Behaviours/Move.beh#1568825137528",
+      "configuration" : null
+    } ],
     "variableBindings" : [ ],
     "outTransitions" : [ 1573419009128, 1582991323347 ],
     "inTransitions" : [ 1573419007368 ]
@@ -81,7 +111,7 @@
     "comment" : "",
     "entryPoint" : null,
     "parentPlan" : 1573418869596,
-    "abstractPlans" : [ ],
+    "confAbstractPlanWrappers" : [ ],
     "variableBindings" : [ ],
     "outTransitions" : [ ],
     "inTransitions" : [ 1583008562199 ]

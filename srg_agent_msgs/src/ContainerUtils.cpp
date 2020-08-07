@@ -12,11 +12,11 @@ namespace srg
 {
 namespace agent
 {
-AgentCommand ContainerUtils::toAgentCommand(::capnp::FlatArrayMessageReader& msg, essentials::IDManager* idManager)
+AgentCommand ContainerUtils::toAgentCommand(::capnp::FlatArrayMessageReader& msg, essentials::IDManager& idManager)
 {
     AgentCommand agentCommand;
     AgentCommandMsg::Reader reader = msg.getRoot<AgentCommandMsg>();
-    agentCommand.receiverID = idManager->getIDFromBytes(
+    agentCommand.receiverID = idManager.getIDFromBytes(
             reader.getReceiverId().getValue().asBytes().begin(), reader.getReceiverId().getValue().size(), (uint8_t) reader.getReceiverId().getType());
     agentCommand.cmd = reader.getCmd();
     return agentCommand;
@@ -31,18 +31,18 @@ void ContainerUtils::toMsg(const AgentCommand& agentCommand, ::capnp::MallocMess
     msg.setCmd(agentCommand.cmd);
 }
 
-SpeechAct ContainerUtils::toSpeechAct(::capnp::FlatArrayMessageReader& msg, essentials::IDManager* idManager)
+SpeechAct ContainerUtils::toSpeechAct(::capnp::FlatArrayMessageReader& msg, essentials::IDManager& idManager)
 {
     SpeechAct speechAct;
 
     SpeechActMsg::Reader reader = msg.getRoot<SpeechActMsg>();
-    speechAct.senderID = idManager->getIDFromBytes(
+    speechAct.senderID = idManager.getIDFromBytes(
             reader.getSenderID().getValue().asBytes().begin(), reader.getSenderID().getValue().size(), (uint8_t) reader.getSenderID().getType());
-    speechAct.receiverID = idManager->getIDFromBytes(
+    speechAct.receiverID = idManager.getIDFromBytes(
             reader.getReceiverID().getValue().asBytes().begin(), reader.getReceiverID().getValue().size(), (uint8_t) reader.getReceiverID().getType());
-    speechAct.actID = idManager->getIDFromBytes(
+    speechAct.actID = idManager.getIDFromBytes(
             reader.getActID().getValue().asBytes().begin(), reader.getActID().getValue().size(), (uint8_t) reader.getActID().getType());
-    speechAct.previousActID = idManager->getIDFromBytes(
+    speechAct.previousActID = idManager.getIDFromBytes(
             reader.getPreviousActID().getValue().asBytes().begin(), reader.getPreviousActID().getValue().size(), (uint8_t) reader.getPreviousActID().getType());
     speechAct.text = std::string(reader.getText().cStr());
     speechAct.type = (SpeechType) reader.getSpeechType();

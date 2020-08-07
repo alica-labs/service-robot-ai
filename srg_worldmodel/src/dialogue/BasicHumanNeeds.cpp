@@ -89,7 +89,7 @@ std::shared_ptr<agent::SpeechAct> BasicHumanNeeds::createAnswerSpeechAct(essenti
     answerSpeechAct->answerGraph = answerGraph;
     answerSpeechAct->type = agent::SpeechType::request;
     answerSpeechAct->previousActID = previousActID;
-    answerSpeechAct->actID = this->wm->getEngine()->getIdManager()->generateID();
+    answerSpeechAct->actID = this->wm->getAlicaContext()->generateID(16);
     answerSpeechAct->senderID = this->wm->getOwnId();
     return answerSpeechAct;
 }

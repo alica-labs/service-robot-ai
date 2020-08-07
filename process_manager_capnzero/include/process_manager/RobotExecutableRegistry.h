@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SystemConfig.h>
+#include <essentials/SystemConfig.h>
 #include <essentials/Identifier.h>
 #include <essentials/IDManager.h>
 
@@ -50,7 +50,7 @@ public:
     RobotExecutableRegistry();
     virtual ~RobotExecutableRegistry();
 
-    essentials::SystemConfig* sc;
+    essentials::SystemConfig& sc;
     std::map<const essentials::Identifier*, RobotMetaData*, essentials::IdentifierComparator> robotMap;
     std::vector<ExecutableMetaData*> executableList;
     std::vector<std::string> interpreter;
