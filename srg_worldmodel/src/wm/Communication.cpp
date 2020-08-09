@@ -25,23 +25,28 @@ Communication::Communication(SRGWorldModel* wm)
     this->speechActSub = new capnzero::Subscriber(this->ctx, capnzero::Protocol::UDP);
     this->speechActSub->setTopic(speechActTopic);
     this->speechActSub->addAddress(sc["Voice"]->get<std::string>("SpeechAct.address", NULL));
+    this->speechActSub->setReceiveQueueSize(1000);
     this->speechActSub->subscribe(&Communication::onSpeechAct, &(*this));
 
     this->speechActPub = new capnzero::Publisher(this->ctx, capnzero::Protocol::UDP);
     this->speechActPub->setDefaultTopic(speechActTopic);
     this->speechActPub->addAddress(sc["Voice"]->get<std::string>("SpeechAct.address", NULL));
+    this->speechActPub->setSendQueueSize(1000);
 
     std::string agendCmdTopic = sc["Voice"]->get<std::string>("AgentCmd.topic", NULL);
     this->agentCommandSub = new capnzero::Subscriber(this->ctx, capnzero::Protocol::UDP);
     this->agentCommandSub->setTopic(agendCmdTopic);
     this->agentCommandSub->addAddress(sc["Voice"]->get<std::string>("AgentCmd.address", NULL));
+    this->agentCommandSub->setReceiveQueueSize(1000);
     this->agentCommandSub->subscribe(&Communication::onAgentCmd, &(*this));
 
     std::string perceptionTopic = sc["SRGSim"]->get<std::string>("SRGSim.Communication.perceptionsTopic", NULL);
     this->perceptionSub = new capnzero::Subscriber(this->ctx, capnzero::Protocol::UDP);
     this->perceptionSub->setTopic(perceptionTopic);
     this->perceptionSub->addAddress(sc["SRGSim"]->get<std::string>("SRGSim.Communication.address", NULL));
+    this->perceptionSub->setReceiveQueueSize(1000);
     this->perceptionSub->subscribe(&Communication::onSimPerceptions, &(*this));
+
 }
 
 Communication::~Communication()
@@ -68,6 +73,10 @@ void Communication::onSimPerceptions(capnp::FlatArrayMessageReader& msg)
 {
     auto simPerceptions = srg::sim::ContainerUtils::toPerceptions(msg, const_cast<essentials::IDManager&>(this->wm->getAlicaContext()->getIDManager()));
     if (simPerceptions.receiverID == this->wm->getOwnId()) {
+        std::chrono::duration<double, std::milli> sendTime = std::chrono::system_clock::now().time_since_epoch() - simPerceptions.timestamp;
+        if (sendTime > std::chrono::milliseconds (15)) {
+            std::cerr << "[Communication] SimPerceptions took " << sendTime.count() << "ms" << std::endl;
+        }
         this->wm->rawSensorData.processSimPerceptions(simPerceptions);
     }
 }

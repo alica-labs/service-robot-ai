@@ -2,12 +2,12 @@
 #include <memory>
 
 /*PROTECTED REGION ID(inccpp1575291385685) ENABLED START*/
+#include <engine/AlicaContext.h>
+#include <engine/teammanager/Agent.h>
+#include <engine/teammanager/TeamManager.h>
 #include <srg/Agent.h>
 #include <srg/world/Room.h>
 #include <srg/world/RoomType.h>
-#include <engine/AlicaContext.h>
-#include <engine/teammanager/TeamManager.h>
-#include <engine/teammanager/Agent.h>
 #include <sstream>
 /*PROTECTED REGION END*/
 
@@ -21,7 +21,7 @@ GenerateTasks::GenerateTasks()
         : DomainBehaviour("GenerateTasks")
 {
     /*PROTECTED REGION ID(con1575291385685) ENABLED START*/
-    // Add additional options here
+    lastSend = std::chrono::system_clock::now();
     /*PROTECTED REGION END*/
 }
 GenerateTasks::~GenerateTasks()
@@ -36,8 +36,8 @@ void GenerateTasks::run(void* msg)
     if (this->isSuccess()) {
         return;
     }
-
-    if (sentCounter < this->speechActs.size()) {
+    auto now = std::chrono::system_clock::now();
+    if (sentCounter < this->speechActs.size() && now - lastSend > std::chrono::seconds(3)) {
         this->agent->speak(this->speechActs[sentCounter++]);
     } else {
         this->setSuccess();
@@ -52,9 +52,9 @@ void GenerateTasks::initialiseParameters()
     this->sentCounter = 0;
     generateSpeechActs(1000);
     // debug
-    for (srg::agent::SpeechAct sa : this->speechActs) {
-        std::cout << "[GenerateTasks] " << sa << std::endl;
-    }
+    //    for (srg::agent::SpeechAct sa : this->speechActs) {
+    //        std::cout << "[GenerateTasks] " << sa << std::endl;
+    //    }
 
     /*PROTECTED REGION END*/
 }
@@ -74,6 +74,7 @@ void GenerateTasks::generateHumanKnowledge()
     do {
         ActiveAgentIterator agentIter = agents.begin();
         std::advance(agentIter, rand() % agents.size());
+        agent = *agentIter;
     } while (agent->getId() == this->wm->getOwnId());
     sa.receiverID = agent->getId();
     sa.perceptions.receiverID = sa.receiverID;

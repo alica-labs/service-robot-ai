@@ -7,6 +7,7 @@
 #include <process_manager/ProcessStatsMsg.capnp.h>
 #include <alica_capnzero_proxy/ContainerUtils.h>
 #include <engine/containers/AlicaEngineInfo.h>
+#include <alica_msg/AlicaEngineInfo.capnp.h>
 
 #include <essentials/SystemConfig.h>
 

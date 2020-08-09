@@ -116,5 +116,18 @@ const supplementary::InfoBuffer<srg::world::Coordinate>& SRGSimData::getOwnPosit
     return *this->ownPositionBuffer;
 }
 
+bool SRGSimData::checkMoveSuccess(world::Coordinate coordinate) {
+    auto ownCoord = getOwnPositionBuffer().getLastValidContent();
+    if (!ownCoord.has_value()) {
+        return false;
+    }
+    srg::world::Coordinate diff = (coordinate - ownCoord.value()).abs();
+    std::shared_ptr<const world::Cell> goalCell = wm->sRGSimData.getWorld()->getCell(coordinate);
+    if ((goalCell->isBlocked() && diff.x < 2 && diff.y < 2) || (diff.x == 0 && diff.y == 0)) {
+        return true;
+    }
+    return false;
+}
+
 } // namespace wm
 } /* namespace srg */

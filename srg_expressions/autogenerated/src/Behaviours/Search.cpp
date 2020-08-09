@@ -31,11 +31,13 @@ Search::~Search()
 void Search::run(void* msg)
 {
     /*PROTECTED REGION ID(run1573419059418) ENABLED START*/
-    if (this->isSuccess() || !this->activeTask) {
+    if (!this->activeTask) {
+        std::cout << "[Search] No task!" << std::endl;
         return;
     }
 
     if (this->activeTask->checkSuccess(this->wm)) {
+        std::cout << "[Search] Task success!" << std::endl;
         this->setSuccess();
         return;
     }
@@ -46,6 +48,7 @@ void Search::run(void* msg)
         this->agent->move(cell->coordinate);
     } else {
         std::cout << "[Search] No cell received!" << std::endl;
+        return;
     }
     /*PROTECTED REGION END*/
 }

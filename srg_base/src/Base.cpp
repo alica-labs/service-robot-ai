@@ -9,6 +9,8 @@
 #include <engine/AlicaContext.h>
 #include <reasoner/asp/Solver.h>
 #include <srg/SRGWorldModel.h>
+#include <essentials/Identifier.h>
+#include <essentials/IDManager.h>
 
 #include <chrono>
 #include <csignal>
@@ -22,8 +24,8 @@ namespace srg
 
 bool Base::running = false;
 
-Base::Base(std::string roleSetName, std::string masterPlanName, std::string roleSetDir)
-        : ac(new alica::AlicaContext(roleSetName, masterPlanName, false))
+Base::Base(std::string roleSetName, std::string masterPlanName, std::string roleSetDir, essentials::IdentifierConstPtr identifier)
+        : ac(new alica::AlicaContext(roleSetName, masterPlanName, false, identifier))
 {
     ac->setCommunicator<alica_capnzero_proxy::Communication>();
 
@@ -43,7 +45,7 @@ void Base::start()
     running = true;
     alica::AlicaCreators creators(std::make_unique<alica::ConditionCreator>(), std::make_unique<alica::UtilityFunctionCreator>(),
             std::make_unique<alica::ConstraintCreator>(), std::make_unique<alica::BehaviourCreator>());
-    if (!ac->init(creators)) {
+    if (ac->init(creators) != 0) {
         std::cerr << "Base: Unable to initialize the Alica Engine successfull!" << std::endl;
     }
 }
@@ -112,7 +114,10 @@ int main(int argc, char** argv)
     std::cout << "\tRolset is:           \"" << (roleset.empty() ? "Default" : roleset) << "\"" << std::endl;
 
     std::cout << "\nConstructing Base ..." << std::endl;
-    srg::Base* base = new srg::Base(roleset, masterplan, rolesetdir);
+    int id = essentials::SystemConfig::getInstance().getOwnRobotID();
+    essentials::IDManager* idManager = new essentials::IDManager();
+    essentials::IdentifierConstPtr agentId = idManager->getID(id);
+    srg::Base* base = new srg::Base(roleset, masterplan, rolesetdir, agentId);
 
     signal(SIGINT, srg::Base::simSigintHandler);
 
@@ -123,6 +128,7 @@ int main(int argc, char** argv)
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
 
+    delete idManager;
     delete base;
 
     return 0;

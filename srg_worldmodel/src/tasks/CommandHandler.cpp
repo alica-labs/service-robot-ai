@@ -97,21 +97,29 @@ void CommandHandler::propagateKnowledge()
 void CommandHandler::removeInvalidKnowledge()
 {
     Task* task = this->currentTaskSequence->getActiveTask();
-    if (task->isKnowledgeValid(this->wm)) {
+    if (!task->isKnowledgeValid(this->wm)) {
+        // revert the whole sequence
+        int32_t taskIdx = this->currentTaskSequence->getActiveTaskIdx();
+        while (true) {
+            task->revertKnowledge();
+            if (taskIdx > 0) {
+                task = this->currentTaskSequence->getTask(--taskIdx);
+            } else {
+                break;
+            }
+        }
+        this->currentTaskSequence->setActiveTaskIdx(0);
         return;
     }
 
-    // revert the whole sequence
-    int32_t taskIdx = this->currentTaskSequence->getActiveTaskIdx();
-    while (true) {
-        task->revertKnowledge();
-        if (taskIdx > 0) {
-            task = this->currentTaskSequence->getTask(--taskIdx);
-        } else {
-            break;
+    // revert from putdown to move, if you are not at a suitable putdown position (happens due to simulator delay)
+    if (task->type == TaskType::PutDown && !this->wm->sRGSimData.checkMoveSuccess(task->coordinate)) {
+        Task* moveTask = this->currentTaskSequence->getTask(this->currentTaskSequence->getActiveTaskIdx() - 1);
+        if (moveTask->type == TaskType::Move) {
+            moveTask->successful = false;
+            this->currentTaskSequence->setActiveTaskIdx(this->currentTaskSequence->getActiveTaskIdx() - 1);
         }
     }
-    this->currentTaskSequence->setActiveTaskIdx(0);
 }
 
 void CommandHandler::setNextTaskSequence()
@@ -125,7 +133,7 @@ void CommandHandler::setNextTaskSequence()
             // stop when no new task speech act is available
             break;
         }
-        TaskSequence* rawCurrentTaskSequence = this->taskFactory->createTaskSequence(taskSpeechAct->getInformation(), taskSpeechAct->getCreationTime());
+        TaskSequence* rawCurrentTaskSequence = this->taskFactory->createTaskSequence(taskSpeechAct->getInformation(), this->wm->getTime());
         if (!rawCurrentTaskSequence) {
             return;
         }

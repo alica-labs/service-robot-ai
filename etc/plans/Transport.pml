@@ -69,7 +69,7 @@
     } ],
     "variableBindings" : [ ],
     "outTransitions" : [ 1573419000441 ],
-    "inTransitions" : [ 1573418998111 ]
+    "inTransitions" : [ 1573418998111, 1596916629819 ]
   }, {
     "type" : "State",
     "id" : 1573418939737,
@@ -85,7 +85,7 @@
       "configuration" : null
     } ],
     "variableBindings" : [ ],
-    "outTransitions" : [ 1583008562199, 1583070277037 ],
+    "outTransitions" : [ 1583008562199, 1583070277037, 1596916629819 ],
     "inTransitions" : [ 1573419000441 ]
   }, {
     "type" : "State",
@@ -244,6 +244,23 @@
     "preCondition" : {
       "id" : 1583070277040,
       "name" : "1583070277040",
+      "comment" : "",
+      "enabled" : true,
+      "conditionString" : null,
+      "pluginName" : "DefaultPlugin",
+      "variables" : [ ],
+      "quantifiers" : [ ]
+    },
+    "synchronisation" : null
+  }, {
+    "id" : 1596916629819,
+    "name" : "FromPutDownTo MoveDestination",
+    "comment" : "MISSING_COMMENT",
+    "inState" : 1573418939737,
+    "outState" : 1573418938883,
+    "preCondition" : {
+      "id" : 1596916629821,
+      "name" : "1596916629821",
       "comment" : "",
       "enabled" : true,
       "conditionString" : null,

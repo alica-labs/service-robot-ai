@@ -2,6 +2,10 @@
 
 #include <iostream>
 
+namespace essentials {
+    class IdentifierConstPtr;
+}
+
 namespace alica
 {
 class AlicaContext;
@@ -19,7 +23,7 @@ class SRGWorldModel;
 class Base
 {
 public:
-    Base(std::string roleSetName, std::string masterPlanName, std::string roleSetDir);
+    Base(std::string roleSetName, std::string masterPlanName, std::string roleSetDir, essentials::IdentifierConstPtr identifier);
     virtual ~Base();
 
     void start();

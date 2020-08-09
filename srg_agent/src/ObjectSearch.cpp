@@ -68,7 +68,7 @@ void ObjectSearch::queryOthersForKnownLocations()
         request.senderID = this->wm->getOwnId();
         request.receiverID = agentId;
         request.perceptions.receiverID = agentId;
-        std::cout << "[ObjectSearch] Asks for "  << this->objectType << std::endl;
+//        std::cout << "[ObjectSearch] Asks for "  << this->objectType << std::endl;
         this->wm->communication->sendSpeechAct(std::make_shared<agent::SpeechAct>(request));
     }
 }
@@ -93,7 +93,7 @@ void ObjectSearch::initFringeWithProbableLocations()
     for (const srg::world::RoomType roomType : answer->probableRoomTypes) {
         this->roomTypes.insert(roomType);
         for (world::Room* room : this->wm->sRGSimData.getWorld()->getRooms(roomType)) {
-            std::cout << "[ObjectSearch] Add cells of room " << room->getID() << " Type " << room->getType() << std::endl;
+//            std::cout << "[ObjectSearch] Add cells of room " << room->getID() << " Type " << room->getType() << std::endl;
             for (auto& cellEntry : room->getCells()) {
                 this->fringe->insert(SearchCell(std::numeric_limits<int32_t>::max(), cellEntry.second));
             }

@@ -37,6 +37,7 @@ private:
     std::string getRandomObjectString();
     int sentCounter;
     std::vector<srg::agent::SpeechAct> speechActs;
+    std::chrono::system_clock::time_point lastSend;
     /*PROTECTED REGION END*/
 };
 } /* namespace alica */

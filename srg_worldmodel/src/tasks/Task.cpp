@@ -65,17 +65,12 @@ bool Task::isSuccessful() const
 
 bool Task::checkMoveSuccess(SRGWorldModel* wm) const
 {
-    auto ownCoord = wm->sRGSimData.getOwnPositionBuffer().getLastValidContent();
-    if (!ownCoord.has_value()) {
-        return false;
-    }
-    srg::world::Coordinate diff = (this->coordinate - ownCoord.value()).abs();
-    std::shared_ptr<const world::Cell> goalCell = wm->sRGSimData.getWorld()->getCell(this->coordinate);
-    if ((goalCell->isBlocked() && diff.x < 2 && diff.y < 2) || (diff.x == 0 && diff.y == 0)) {
+    if (wm->sRGSimData.checkMoveSuccess(this->coordinate)) {
         std::cout << "[Task] " << this->type << " successful: " << this->coordinate << std::endl;
         return true;
+    } else {
+        return false;
     }
-    return false;
 }
 
 bool Task::checkManipulationSuccess(SRGWorldModel* wm) const
@@ -96,6 +91,9 @@ bool Task::checkManipulationSuccess(SRGWorldModel* wm) const
     case TaskType::PickUp:
         agent = wm->sRGSimData.getWorld()->getAgent(this->receiverID);
         success = agent->contains(this->objectID);
+        if (!success) {
+            std::cout << "[PickUp-SuccessTaskCheck] " << *agent << std::endl;
+        }
         break;
     case TaskType::PutDown:
         // note: A stronger condition with regard to the target coordinates cannot
@@ -103,6 +101,9 @@ bool Task::checkManipulationSuccess(SRGWorldModel* wm) const
         // the object before the object is recognised at the target coordinates.
         agent = wm->sRGSimData.getWorld()->getAgent(this->receiverID);
         success = !agent->contains(this->objectID);
+        if (!success) {
+            std::cout << "[PutDown-SuccessTaskCheck] " << *agent << std::endl;
+        }
         break;
     default:
         std::cerr << "[Task] Unknown manipulation task encountered: " << this->type << std::endl;
@@ -159,7 +160,8 @@ void Task::addKnowledge(essentials::IdentifierConstPtr objectID, world::ObjectTy
     }
 }
 
-bool Task::isKnowledgeValid(SRGWorldModel* wm) const {
+bool Task::isKnowledgeValid(SRGWorldModel* wm) const
+{
     if (this->type == TaskType::PutDown) {
         // PutDown cannot be invalid, because it can only fail, when the target position is invalid, which is fixed.
         return true;
@@ -176,8 +178,8 @@ bool Task::isKnowledgeValid(SRGWorldModel* wm) const {
         return false;
     }
 
-    if (!object->canBePickedUp(wm->getOwnId())) {
-        // object cannot be picked by me anymore
+    if (!object->canBePickedUp(wm->getOwnId()) || (this->type == TaskType::PickUp && !wm->sRGSimData.checkMoveSuccess(this->coordinate))) {
+        // object cannot be picked by me anymore || I try to pick it up and am not in reach
         return false;
     }
 

@@ -42,6 +42,8 @@ public:
     bool isLocalised();
     srg::World* getWorld();
 
+    bool checkMoveSuccess(world::Coordinate coordinate);
+
 private:
     SRGWorldModel* wm;
     essentials::SystemConfig& sc;

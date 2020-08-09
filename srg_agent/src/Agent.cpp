@@ -61,6 +61,7 @@ void Agent::spawn() const
     } else {
         std::cerr << "[Agent] Unknown role " << ownRole << std::endl;
     }
+    sc.timestamp = std::chrono::system_clock::now().time_since_epoch();
     send(sc);
 }
 
@@ -136,6 +137,7 @@ bool Agent::move(srg::world::Coordinate goal)
     }
     //    std::cout << "Agent::move(): OwnPos: " << ownCoordinate.value() << " Moving " << path->getDirection() << std::endl;
     delete path;
+    sc.timestamp = std::chrono::system_clock::now().time_since_epoch();
     send(sc);
     return true;
 }
@@ -164,6 +166,7 @@ void Agent::manipulate(const srg::tasks::Task* task) const
     sc.objectID = task->objectID;
     sc.x = task->coordinate.x;
     sc.y = task->coordinate.y;
+    sc.timestamp = std::chrono::system_clock::now().time_since_epoch();
     send(sc);
 }
 
