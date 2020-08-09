@@ -56,11 +56,11 @@ essentials::IdentifierConstPtr Agent::getAgentID()
 
 void Agent::updateGUI(std::chrono::system_clock::time_point now)
 {
-//    if ((now - this->timeLastMsgReceived) > this->msgTimeOut) {
-//        this->agentGroupBox->hide();
-//    } else {
-//        this->agentGroupBox->show();
-//    }
+    if ((now - this->timeLastMsgReceived) > this->msgTimeOut) {
+        this->agentGroupBox->hide();
+    } else {
+        this->agentGroupBox->show();
+    }
 
     for (auto procEntry : this->processes) {
         procEntry.second->update(now);
