@@ -47,9 +47,8 @@ bool PreCondition1573419765536::evaluate(std::shared_ptr<RunningPlan> rp)
     if (!taskSequence) {
         return true;
     }
-    auto activeTask = taskSequence->getActiveTask();
-    //        bool transitionHolds = rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::Move;
-    bool transitionHolds = activeTask && activeTask->type == srg::tasks::TaskType::Move;
+    auto activeTaskIdx = taskSequence->getActiveTaskIdx();
+    bool transitionHolds = activeTaskIdx > 0;
     if (transitionHolds) {
         std::cout << "{Search} -> {MoveClose}" << std::endl;
     }
@@ -83,9 +82,8 @@ bool PreCondition1573419810456::evaluate(std::shared_ptr<RunningPlan> rp)
     if (!taskSequence) {
         return true;
     }
-    auto activeTask = taskSequence->getActiveTask();
-    //    bool transitionHolds = rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::Move;
-    bool transitionHolds = activeTask && activeTask->type == srg::tasks::TaskType::Move;
+    auto activeTaskIdx = taskSequence->getActiveTaskIdx();
+    bool transitionHolds = activeTaskIdx > 2;
     if (transitionHolds) {
         std::cout << "{PickUp} -> {MoveDestination}" << std::endl;
     }
@@ -119,8 +117,8 @@ bool PreCondition1582991345020::evaluate(std::shared_ptr<RunningPlan> rp)
     if (!taskSequence) {
         return true;
     }
-    auto activeTask = taskSequence->getActiveTask();
-    bool transitionHolds = activeTask && activeTask->type == srg::tasks::TaskType::Search;
+    auto activeTaskIdx = taskSequence->getActiveTaskIdx();
+    bool transitionHolds = activeTaskIdx < 2;
     if (transitionHolds) {
         std::cout << "{PickUp} -> {Search}" << std::endl;
     }
@@ -154,9 +152,8 @@ bool PreCondition1573419828606::evaluate(std::shared_ptr<RunningPlan> rp)
     if (!taskSequence) {
         return true;
     }
-    auto activeTask = taskSequence->getActiveTask();
-    //    bool transitionHolds = rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::PutDown;
-    bool transitionHolds = activeTask && activeTask->type == srg::tasks::TaskType::PutDown;
+    auto activeTaskIdx = taskSequence->getActiveTaskIdx();
+    bool transitionHolds = activeTaskIdx > 3;
     if (transitionHolds) {
         std::cout << "{MoveDestination} -> {PutDown}" << std::endl;
     }
@@ -186,10 +183,16 @@ bool PreCondition1573419828606::evaluate(std::shared_ptr<RunningPlan> rp)
 bool PreCondition1583008562201::evaluate(std::shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1583008562199) ENABLED START*/
-    if (rp->isAnyChildStatus(PlanStatus::Success)) {
+    auto taskSequence = this->wm->dialogueManager.commandHandler->getActiveTaskSequence();
+    if (!taskSequence) {
+        return true;
+    }
+    int activeTaskIdx = taskSequence->getActiveTaskIdx();
+    bool transitionHolds = activeTaskIdx >= taskSequence->size() || activeTaskIdx == 1 || activeTaskIdx == 2;
+    if (transitionHolds) {
         std::cout << "{PutDown} -> {PseudoSuccess}" << std::endl;
     }
-    return rp->isAnyChildStatus(PlanStatus::Success);
+    return transitionHolds;
     /*PROTECTED REGION END*/
 }
 /**
@@ -219,8 +222,9 @@ bool PreCondition1583070277040::evaluate(std::shared_ptr<RunningPlan> rp)
     if (!taskSequence) {
         return true;
     }
+    auto activeTaskIdx = taskSequence->getActiveTaskIdx();
     auto activeTask = taskSequence->getActiveTask();
-    bool transitionHolds = activeTask && activeTask->type == srg::tasks::TaskType::Search;
+    bool transitionHolds = activeTask && activeTask->type == srg::tasks::TaskType::Search && activeTaskIdx == 0;
     if (transitionHolds) {
         std::cout << "{PutDown} -> {Search}" << std::endl;
     }
@@ -255,7 +259,8 @@ bool PreCondition1596916629821::evaluate(std::shared_ptr<RunningPlan> rp)
         return true;
     }
     auto activeTask = taskSequence->getActiveTask();
-    bool transitionHolds = activeTask && activeTask->type == srg::tasks::TaskType::Move;
+    int activeTaskIdx = taskSequence->getActiveTaskIdx();
+    bool transitionHolds = activeTask && activeTask->type == srg::tasks::TaskType::Move && activeTaskIdx == 3;
     if (transitionHolds) {
         std::cout << "{PutDown} -> {Move}" << std::endl;
     }
@@ -289,9 +294,8 @@ bool PreCondition1573419800282::evaluate(std::shared_ptr<RunningPlan> rp)
     if (!taskSequence) {
         return true;
     }
-    auto activeTask = taskSequence->getActiveTask();
-    //    bool transitionHolds = rp->isAnyChildStatus(PlanStatus::Success) && activeTask && activeTask->type == srg::tasks::TaskType::PickUp;
-    bool transitionHolds = activeTask && activeTask->type == srg::tasks::TaskType::PickUp;
+    auto activeTaskIdx = taskSequence->getActiveTaskIdx();
+    bool transitionHolds = activeTaskIdx > 1;
     if (transitionHolds) {
         std::cout << "{MoveClose} -> {PickUp}" << std::endl;
     }
@@ -325,8 +329,9 @@ bool PreCondition1582991323350::evaluate(std::shared_ptr<RunningPlan> rp)
     if (!taskSequence) {
         return true;
     }
+    auto activeTaskIdx = taskSequence->getActiveTaskIdx();
     auto activeTask = taskSequence->getActiveTask();
-    bool transitionHolds = activeTask && activeTask->type == srg::tasks::TaskType::Search;
+    bool transitionHolds = activeTask && activeTask->type == srg::tasks::TaskType::Search && activeTaskIdx == 0;
     if (transitionHolds) {
         std::cout << "{MoveClose} -> {Search}" << std::endl;
     }

@@ -83,15 +83,23 @@ void CommandHandler::propagateKnowledge()
 {
     auto activeTask = this->currentTaskSequence->getActiveTask();
     if (activeTask->type == TaskType::Search) {
-        // nothing to do for search task
+        // nothing to do for search task, because there is no predecessor task
         return;
     }
 
-    // the last task must have all information, because we always propagate them
-    Task* taskWithInfos = this->currentTaskSequence->getTask(this->currentTaskSequence->getActiveTaskIdx() - 1);
+    // find last task with infos, because we might skipped several tasks
+    int taskWithInfosIdx = this->currentTaskSequence->getActiveTaskIdx() - 1;
+    while (this->currentTaskSequence->getTask(taskWithInfosIdx)->objectID == nullptr && taskWithInfosIdx > 0) {
+        taskWithInfosIdx--;
+    }
+    Task* taskWithInfos = this->currentTaskSequence->getTask(taskWithInfosIdx);
 
     // completely specify tasks with found object
-    activeTask->addKnowledge(taskWithInfos->objectID, taskWithInfos->objectType, taskWithInfos->coordinate);
+    int taskToUpdateIdx = taskWithInfosIdx + 1;
+    while (taskToUpdateIdx <= this->currentTaskSequence->getActiveTaskIdx()) {
+        this->currentTaskSequence->getTask(taskToUpdateIdx)->addKnowledge(taskWithInfos->objectID, taskWithInfos->objectType, taskWithInfos->coordinate);
+        taskToUpdateIdx++;
+    }
 }
 
 void CommandHandler::removeInvalidKnowledge()

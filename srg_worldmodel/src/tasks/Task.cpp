@@ -161,16 +161,19 @@ bool Task::isKnowledgeValid(SRGWorldModel* wm)
     std::shared_ptr<const world::Object> object = wm->sRGSimData.getWorld()->getObject(this->objectID);
     if (!object) {
         // object does not exist anymore
+        std::cout << "[Task] REVERT-OBJECT-UNKNOWN: " << *this << std::endl;
         return false;
     }
 
     if (!object->canBePickedUp(wm->getOwnId()) || (this->type == TaskType::PickUp && !wm->sRGSimData.checkMoveSuccess(this->coordinate))) {
         // object cannot be picked by me anymore || I try to pick it up and am not in reach
+        std::cout << "[Task] REVERT-NOPICK: " << *this << std::endl;
         return false;
     }
 
     if (!this->coordinateIsFixed && object->getCoordinate() != this->coordinate) {
         // object is not located at the original position anymore
+        std::cout << "[Task] REVERT-OBJECT-MOVED: " << *this << std::endl;
         return false;
     }
 

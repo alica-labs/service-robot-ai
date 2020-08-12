@@ -42,7 +42,11 @@ bool PreCondition1568825457853::evaluate(std::shared_ptr<RunningPlan> rp)
         return false;
     }
     auto firstTask = taskSequence->getTask(0);
-    return firstTask && firstTask->type == srg::tasks::TaskType::Move && !firstTask->checkAndUpdateSuccess(this->wm);
+    bool transitionHolds = firstTask && firstTask->type == srg::tasks::TaskType::Move && !firstTask->checkAndUpdateSuccess(this->wm);
+    if (transitionHolds) {
+        std::cout << "{WaitForTask} -> {MoveTask}" << std::endl;
+    }
+    return transitionHolds;
     /*PROTECTED REGION END*/
 }
 /**
@@ -71,10 +75,14 @@ bool PreCondition1571661980674::evaluate(std::shared_ptr<RunningPlan> rp)
         return false;
     }
     auto firstTask = taskSequence->getTask(0);
-    return firstTask &&
-           (firstTask->type == srg::tasks::TaskType::Open || firstTask->type == srg::tasks::TaskType::Close ||
-                   firstTask->type == srg::tasks::TaskType::PutDown || firstTask->type == srg::tasks::TaskType::PickUp) &&
-           !firstTask->checkAndUpdateSuccess(this->wm);
+    bool transitionHolds = firstTask &&
+                           (firstTask->type == srg::tasks::TaskType::Open || firstTask->type == srg::tasks::TaskType::Close ||
+                            firstTask->type == srg::tasks::TaskType::PutDown || firstTask->type == srg::tasks::TaskType::PickUp) &&
+                           !firstTask->checkAndUpdateSuccess(this->wm);
+    if (transitionHolds) {
+        std::cout << "{WaitForTask} -> {ManipulationTask}" << std::endl;
+    }
+    return transitionHolds;
     /*PROTECTED REGION END*/
 }
 /**
@@ -103,7 +111,11 @@ bool PreCondition1573418732991::evaluate(std::shared_ptr<RunningPlan> rp)
         return false;
     }
     auto firstTask = taskSequence->getTask(0);
-    return firstTask && firstTask->type == srg::tasks::TaskType::Search && !taskSequence->checkAndUpdateSuccess(this->wm);
+    bool transitionHolds = firstTask && firstTask->type == srg::tasks::TaskType::Search && !taskSequence->checkAndUpdateSuccess(this->wm);
+    if (transitionHolds) {
+        std::cout << "{WaitForTask} -> {TransportTask}" << std::endl;
+    }
+    return transitionHolds;
     /*PROTECTED REGION END*/
 }
 /**
@@ -127,7 +139,11 @@ bool PreCondition1573418732991::evaluate(std::shared_ptr<RunningPlan> rp)
 bool PreCondition1568825476581::evaluate(std::shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1568825392354) ENABLED START*/
-    return rp->isAnyChildStatus(PlanStatus::Success);
+    bool transitionHolds = rp->isAnyChildStatus(PlanStatus::Success);
+    if (transitionHolds) {
+        std::cout << "{MoveTask} -> {WaitForTask}" << std::endl;
+    }
+    return transitionHolds;
     /*PROTECTED REGION END*/
 }
 /**
@@ -151,7 +167,11 @@ bool PreCondition1568825476581::evaluate(std::shared_ptr<RunningPlan> rp)
 bool PreCondition1571661864299::evaluate(std::shared_ptr<RunningPlan> rp)
 {
     /*PROTECTED REGION ID(1571661809581) ENABLED START*/
-    return rp->isAnyChildStatus(PlanStatus::Success);
+    bool transitionHolds = rp->isAnyChildStatus(PlanStatus::Success);
+    if (transitionHolds) {
+        std::cout << "{ManipulationTask} -> {WaitForTask}" << std::endl;
+    }
+    return transitionHolds;
     /*PROTECTED REGION END*/
 }
 /**
@@ -177,6 +197,7 @@ bool PreCondition1573418838905::evaluate(std::shared_ptr<RunningPlan> rp)
     /*PROTECTED REGION ID(1573418821209) ENABLED START*/
     for (auto& child : rp->getChildren()) {
         if (child->getActiveState()->getId() == 1583008553235) { // ID of Pseudo Success State
+            std::cout << "{TransportTask} -> {WaitForTask}" << std::endl;
             return true;
         }
     }
