@@ -65,7 +65,7 @@ void CommandHandler::updateCurrentTaskSequence()
     if (!this->currentTaskSequence) {
         return;
     }
-    if (this->currentTaskSequence->isSuccessful()) {
+    if (this->currentTaskSequence->checkAndUpdateSuccess(this->wm)) {
         std::cout << "[CommandHandler] TaskSequence successful and therefore removed!" << std::endl;
         this->logTaskSequence(this->currentTaskSequence);
         this->currentTaskSequence = nullptr;
@@ -116,7 +116,6 @@ void CommandHandler::removeInvalidKnowledge()
     if (task->type == TaskType::PutDown && !this->wm->sRGSimData.checkMoveSuccess(task->coordinate)) {
         Task* moveTask = this->currentTaskSequence->getTask(this->currentTaskSequence->getActiveTaskIdx() - 1);
         if (moveTask->type == TaskType::Move) {
-            moveTask->successful = false;
             this->currentTaskSequence->setActiveTaskIdx(this->currentTaskSequence->getActiveTaskIdx() - 1);
         }
     }
@@ -139,7 +138,7 @@ void CommandHandler::setNextTaskSequence()
         }
         this->currentTaskSequence = std::shared_ptr<TaskSequence>(rawCurrentTaskSequence);
 
-        if (this->currentTaskSequence && !this->currentTaskSequence->isSuccessful()) {
+        if (this->currentTaskSequence && !this->currentTaskSequence->checkAndUpdateSuccess(this->wm)) {
             // new task sequence is not finished yet - that is fine
             std::cout << "[CommandHandler] New task sequence set " << *currentTaskSequence << std::endl;
             break;
@@ -149,7 +148,7 @@ void CommandHandler::setNextTaskSequence()
     }
 }
 
-std::shared_ptr<agent::SpeechAct> CommandHandler::handle(std::shared_ptr<supplementary::InformationElement<agent::SpeechAct>> commandAct)
+std::shared_ptr<agent::SpeechAct> CommandHandler::handle(const std::shared_ptr<const supplementary::InformationElement<agent::SpeechAct>> commandAct)
 {
     this->taskActBuffer->add(commandAct);
     return nullptr; // todo: maybe send an acknowledge for receiving this task

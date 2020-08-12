@@ -30,19 +30,8 @@ Manipulate::~Manipulate()
 void Manipulate::run(void* msg)
 {
     /*PROTECTED REGION ID(run1571687572903) ENABLED START*/
-    if (!this->activeTask) {
-        std::cout << "[Manipulate] No task!" << std::endl;
-        return;
-    }
-
-    if (this->activeTask->checkSuccess(this->wm)) {
-        std::cout << "[Manipulate] Task success!" << std::endl;
-        this->setSuccess();
-        return;
-    }
-
-    if (!this->activeTask->isCompletelySpecified()) {
-        std::cout << "[Manipulate] Task incomplete!" << std::endl;
+    if (!this->activeTask || !this->activeTask->isCompletelySpecified()) {
+        std::cout << "[Manipulate] No or incomplete task!" << std::endl;
         return;
     }
     this->agent->manipulate(activeTask);

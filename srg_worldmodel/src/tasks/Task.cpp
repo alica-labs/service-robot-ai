@@ -23,44 +23,30 @@ Task::Task(srg::tasks::TaskType type)
         , objectIDIsFixed(false)
         , objectTypeIsFixed(false)
         , coordinateIsFixed(false)
-        , successful(false)
 {
 }
 
 Task::~Task() {}
 
-bool Task::checkSuccess(SRGWorldModel* wm)
+bool Task::checkAndUpdateSuccess(SRGWorldModel* wm)
 {
-    if (!this->isSuccessful() && isCompletelySpecified()) {
-        switch (this->type) {
-        case TaskType::Move:
-            this->successful = this->checkMoveSuccess(wm);
-            break;
-        case TaskType::Search:
-            this->successful = this->checkSearchSuccess(wm);
-            break;
-        case TaskType::Close:
-            this->successful = this->checkManipulationSuccess(wm);
-            break;
-        case TaskType::Open:
-            this->successful = this->checkManipulationSuccess(wm);
-            break;
-        case TaskType::PickUp:
-            this->successful = this->checkManipulationSuccess(wm);
-            break;
-        case TaskType::PutDown:
-            this->successful = this->checkManipulationSuccess(wm);
-            break;
-        default:
-            this->successful = false;
-        }
+    if (!isCompletelySpecified()) {
+        return false;
     }
-    return isSuccessful();
-}
 
-bool Task::isSuccessful() const
-{
-    return this->successful;
+    switch (this->type) {
+    case TaskType::Move:
+        return this->checkMoveSuccess(wm);
+    case TaskType::Search:
+        return this->checkSearchSuccess(wm);
+    case TaskType::Close:
+    case TaskType::Open:
+    case TaskType::PickUp:
+    case TaskType::PutDown:
+        return this->checkManipulationSuccess(wm);
+    default:
+        return false;
+    }
 }
 
 bool Task::checkMoveSuccess(SRGWorldModel* wm) const
@@ -160,14 +146,14 @@ void Task::addKnowledge(essentials::IdentifierConstPtr objectID, world::ObjectTy
     }
 }
 
-bool Task::isKnowledgeValid(SRGWorldModel* wm) const
+bool Task::isKnowledgeValid(SRGWorldModel* wm)
 {
     if (this->type == TaskType::PutDown) {
         // PutDown cannot be invalid, because it can only fail, when the target position is invalid, which is fixed.
         return true;
     }
 
-    if (this->type == TaskType::Search && !this->isSuccessful()) {
+    if (this->type == TaskType::Search && !this->checkSearchSuccess(wm)) {
         // Otherwise Search would be reverted without having effect, while it is not successful, yet.
         return true;
     }
@@ -203,7 +189,6 @@ void Task::revertKnowledge()
     if (!coordinateIsFixed) {
         this->coordinate = world::Coordinate(-1, -1);
     }
-    this->successful = false;
 }
 
 std::ostream& operator<<(std::ostream& os, const srg::tasks::Task& task)

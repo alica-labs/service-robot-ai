@@ -45,8 +45,9 @@ public:
     static SRGWorldModel* getInstance(); /**< Singleton Getter */
 
     virtual ~SRGWorldModel();
-    void init();
+    void init() override;
     void setSolver(::reasoner::asp::Solver* solver);
+    void run();
 
     // Public Data Access Classes
     wm::SRGSimData sRGSimData;
@@ -60,6 +61,8 @@ public:
 
 private:
     SRGWorldModel(); /**< Private Singleton Constructor */
+    std::thread* dataProcessingThread;
+    bool dataProcessingRunning;
 };
 
 } /* namespace srg */

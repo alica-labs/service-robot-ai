@@ -36,8 +36,8 @@ void GenerateTasks::run(void* msg)
     if (this->isSuccess()) {
         return;
     }
-    auto now = std::chrono::system_clock::now();
-    if (sentCounter < this->speechActs.size() && now - lastSend > std::chrono::seconds(3)) {
+    bool sendIntervalPassed = std::chrono::system_clock::now() - lastSend > std::chrono::seconds(3);
+    if (sentCounter < this->speechActs.size() && sendIntervalPassed) {
         this->agent->speak(this->speechActs[sentCounter++]);
     } else {
         this->setSuccess();
@@ -48,13 +48,14 @@ void GenerateTasks::initialiseParameters()
 {
     /*PROTECTED REGION ID(initialiseParameters1575291385685) ENABLED START*/
     this->speechActs.clear();
-    generateHumanKnowledge();
     this->sentCounter = 0;
+    generateHumanKnowledge();
     generateSpeechActs(1000);
+
     // debug
-    //    for (srg::agent::SpeechAct sa : this->speechActs) {
-    //        std::cout << "[GenerateTasks] " << sa << std::endl;
-    //    }
+    for (srg::agent::SpeechAct sa : this->speechActs) {
+        std::cout << "[GenerateTasks] " << sa << std::endl;
+    }
 
     /*PROTECTED REGION END*/
 }

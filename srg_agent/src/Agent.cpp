@@ -55,9 +55,9 @@ void Agent::spawn() const
     sc.objectID = this->id.get();
     const alica::Role* ownRole = this->wm->getAlicaContext()->getLocalAgentRole();//getRoleAssignment()->getRole(this->wm->getOwnId());
     if (ownRole->getName().compare("Human") == 0) {
-        sc.action = srg::sim::containers::SimCommand::SPAWNHUMAN;
+        sc.action = srg::sim::containers::Action::SPAWNHUMAN;
     } else if (ownRole->getName().compare("Assistant") == 0) {
-        sc.action = srg::sim::containers::SimCommand::SPAWNROBOT;
+        sc.action = srg::sim::containers::Action::SPAWNROBOT;
     } else {
         std::cerr << "[Agent] Unknown role " << ownRole << std::endl;
     }
@@ -119,16 +119,16 @@ bool Agent::move(srg::world::Coordinate goal)
     sc.objectID = this->id.get();
     switch (path->getDirection()) {
     case srg::world::Direction::Up:
-        sc.action = srg::sim::containers::SimCommand::GOUP;
+        sc.action = srg::sim::containers::Action::GOUP;
         break;
     case srg::world::Direction::Down:
-        sc.action = srg::sim::containers::SimCommand::GODOWN;
+        sc.action = srg::sim::containers::Action::GODOWN;
         break;
     case srg::world::Direction::Right:
-        sc.action = srg::sim::containers::SimCommand::GORIGHT;
+        sc.action = srg::sim::containers::Action::GORIGHT;
         break;
     case srg::world::Direction::Left:
-        sc.action = srg::sim::containers::SimCommand::GOLEFT;
+        sc.action = srg::sim::containers::Action::GOLEFT;
         break;
     default:
         std::cout << "Agent::move(): No movement necessary or found!" << std::endl;
@@ -147,16 +147,16 @@ void Agent::manipulate(const srg::tasks::Task* task) const
     srg::sim::containers::SimCommand sc;
     switch (task->type) {
     case srg::tasks::TaskType::Open:
-        sc.action = srg::sim::containers::SimCommand::Action::OPEN;
+        sc.action = srg::sim::containers::Action::OPEN;
         break;
     case srg::tasks::TaskType::Close:
-        sc.action = srg::sim::containers::SimCommand::Action::CLOSE;
+        sc.action = srg::sim::containers::Action::CLOSE;
         break;
     case srg::tasks::TaskType::PickUp:
-        sc.action = srg::sim::containers::SimCommand::Action::PICKUP;
+        sc.action = srg::sim::containers::Action::PICKUP;
         break;
     case srg::tasks::TaskType::PutDown:
-        sc.action = srg::sim::containers::SimCommand::Action::PUTDOWN;
+        sc.action = srg::sim::containers::Action::PUTDOWN;
         break;
     default:
         return;
@@ -172,6 +172,7 @@ void Agent::manipulate(const srg::tasks::Task* task) const
 
 void Agent::send(srg::sim::containers::SimCommand sc) const
 {
+    std::cout << "[Agent] " << sc << std::endl;
     ::capnp::MallocMessageBuilder msgBuilder;
     srg::sim::ContainerUtils::toMsg(sc, msgBuilder);
     this->simPub->send(msgBuilder);

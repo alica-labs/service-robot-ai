@@ -52,6 +52,7 @@ void Base::start()
 
 Base::~Base()
 {
+    delete wm;
     ac->terminate();
     delete ac;
 }

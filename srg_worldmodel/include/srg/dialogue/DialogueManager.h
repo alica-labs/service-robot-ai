@@ -38,7 +38,7 @@ class DialogueManager
 public:
     explicit DialogueManager(SRGWorldModel* wm);
     ~DialogueManager();
-    void processSpeechAct(std::shared_ptr<supplementary::InformationElement<agent::SpeechAct>> speechActInfo);
+    void processSpeechAct(const std::shared_ptr<const supplementary::InformationElement<agent::SpeechAct>> speechActInfo);
     void tick();
 
     RequestHandler* requestHandler;

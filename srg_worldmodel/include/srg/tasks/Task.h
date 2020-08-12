@@ -14,13 +14,12 @@ class Task
 public:
     Task(srg::tasks::TaskType type);
     virtual ~Task();
-    bool isSuccessful() const;
-    bool checkSuccess(SRGWorldModel* wm);
+    bool checkAndUpdateSuccess(SRGWorldModel* wm);
     bool checkMoveSuccess(SRGWorldModel* wm) const;
     bool checkManipulationSuccess(SRGWorldModel* wm) const;
     bool checkSearchSuccess(srg::SRGWorldModel* wm);
     bool isCompletelySpecified() const;
-    bool isKnowledgeValid(SRGWorldModel* wm) const;
+    bool isKnowledgeValid(SRGWorldModel* wm);
     void revertKnowledge();
     void addKnowledge(essentials::IdentifierConstPtr objectID, world::ObjectType objectType, world::Coordinate coordinate);
     friend std::ostream& operator<<(std::ostream& os, const srg::tasks::Task& task);
@@ -39,7 +38,6 @@ public:
     bool objectIDIsFixed;
     bool coordinateIsFixed;
     bool objectTypeIsFixed;
-    mutable bool successful;
 };
 } // namespace tasks
 } // namespace srg

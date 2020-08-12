@@ -23,7 +23,7 @@ public:
     CommandHandler(SRGWorldModel* wm);
     virtual ~CommandHandler();
     void tick();
-    std::shared_ptr<agent::SpeechAct> handle(std::shared_ptr<supplementary::InformationElement<agent::SpeechAct>> commandAct);
+    std::shared_ptr<agent::SpeechAct> handle(const std::shared_ptr<const supplementary::InformationElement<agent::SpeechAct>> commandAct);
 
     const supplementary::InfoBuffer<agent::SpeechAct>& getTaskActBuffer();
     std::shared_ptr<TaskSequence> getActiveTaskSequence();

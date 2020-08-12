@@ -30,19 +30,8 @@ Move::~Move()
 void Move::run(void* msg)
 {
     /*PROTECTED REGION ID(run1568825137528) ENABLED START*/
-    if (!this->activeTask) {
-        std::cout << "[Move] No task!" << std::endl;
-        return;
-    }
-
-    if (this->activeTask->checkSuccess(this->wm)) {
-        std::cout << "[Move] Task success!" << std::endl;
-        this->setSuccess();
-        return;
-    }
-
-    if (!this->activeTask->isCompletelySpecified()) {
-        std::cout << "[Move] Task incomplete!" << std::endl;
+    if (!this->activeTask || !this->activeTask->isCompletelySpecified()) {
+        std::cout << "[Move] No or incomplete task!" << std::endl;
         return;
     }
     this->agent->move(activeTask->coordinate);

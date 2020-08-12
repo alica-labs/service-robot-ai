@@ -23,7 +23,9 @@ namespace srg {
             // Methods for accessing the buffers
             const supplementary::InfoBuffer<agent::AgentCommand>& getAgentCmdBuffer();
             const supplementary::InfoBuffer<agent::SpeechAct>& getSpeechActBuffer();
+            supplementary::InfoBuffer<agent::SpeechAct>& editSpeechActBuffer();
             const supplementary::InfoBuffer<srg::sim::containers::Perceptions>& getPerceptionsBuffer();
+            supplementary::InfoBuffer<srg::sim::containers::Perceptions>& editPerceptionsBuffer();
 
             // Methods for processing Messages
             void processSpeechAct(agent::SpeechAct act);

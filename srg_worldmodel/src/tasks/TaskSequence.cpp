@@ -1,6 +1,7 @@
 #include "srg/tasks/TaskSequence.h"
 
 #include "srg/tasks/Task.h"
+#include "srg/SRGWorldModel.h"
 
 #include <iostream>
 #include <sstream>
@@ -30,9 +31,9 @@ void TaskSequence::setEndTime(alica::AlicaTime endTime) {
     this->endTime = endTime;
 }
 
-bool TaskSequence::isSuccessful()
+bool TaskSequence::checkAndUpdateSuccess(srg::SRGWorldModel* wm)
 {
-    while (this->activeTaskIdx < this->taskSequence.size() && this->taskSequence[this->activeTaskIdx]->isSuccessful()) {
+    while (this->activeTaskIdx < this->taskSequence.size() && this->taskSequence[this->activeTaskIdx]->checkAndUpdateSuccess(wm)) {
         this->activeTaskIdx++;
     }
     return this->activeTaskIdx >= this->taskSequence.size();

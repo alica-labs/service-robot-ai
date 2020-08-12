@@ -46,7 +46,6 @@ Communication::Communication(SRGWorldModel* wm)
     this->perceptionSub->addAddress(sc["SRGSim"]->get<std::string>("SRGSim.Communication.address", NULL));
     this->perceptionSub->setReceiveQueueSize(1000);
     this->perceptionSub->subscribe(&Communication::onSimPerceptions, &(*this));
-
 }
 
 Communication::~Communication()
@@ -66,15 +65,18 @@ void Communication::onSpeechAct(capnp::FlatArrayMessageReader& msg)
 
 void Communication::onAgentCmd(capnp::FlatArrayMessageReader& msg)
 {
-    this->wm->rawSensorData.processAgentCmd(agent::ContainerUtils::toAgentCommand(msg, const_cast<essentials::IDManager&>(this->wm->getAlicaContext()->getIDManager())));
+    agent::AgentCommand agentCommand = agent::ContainerUtils::toAgentCommand(msg, const_cast<essentials::IDManager&>(this->wm->getAlicaContext()->getIDManager()));
+    if (agentCommand.receiverID == this->wm->getOwnId() || agentCommand.receiverID.get()->getType() == essentials::Identifier::WILDCARD_TYPE) {
+        this->wm->rawSensorData.processAgentCmd(agentCommand);
+    }
 }
 
 void Communication::onSimPerceptions(capnp::FlatArrayMessageReader& msg)
 {
     auto simPerceptions = srg::sim::ContainerUtils::toPerceptions(msg, const_cast<essentials::IDManager&>(this->wm->getAlicaContext()->getIDManager()));
-    if (simPerceptions.receiverID == this->wm->getOwnId()) {
+    if (simPerceptions.receiverID == this->wm->getOwnId() || simPerceptions.receiverID.get()->getType() == essentials::Identifier::WILDCARD_TYPE) {
         std::chrono::duration<double, std::milli> sendTime = std::chrono::system_clock::now().time_since_epoch() - simPerceptions.timestamp;
-        if (sendTime > std::chrono::milliseconds (15)) {
+        if (sendTime > std::chrono::milliseconds (10)) {
             std::cerr << "[Communication] SimPerceptions took " << sendTime.count() << "ms" << std::endl;
         }
         this->wm->rawSensorData.processSimPerceptions(simPerceptions);

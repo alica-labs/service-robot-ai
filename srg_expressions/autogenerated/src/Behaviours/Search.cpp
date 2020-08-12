@@ -31,14 +31,8 @@ Search::~Search()
 void Search::run(void* msg)
 {
     /*PROTECTED REGION ID(run1573419059418) ENABLED START*/
-    if (!this->activeTask) {
-        std::cout << "[Search] No task!" << std::endl;
-        return;
-    }
-
-    if (this->activeTask->checkSuccess(this->wm)) {
-        std::cout << "[Search] Task success!" << std::endl;
-        this->setSuccess();
+    if (!this->activeTask || !this->activeTask->isCompletelySpecified()) {
+        std::cout << "[Search] No or incomplete task!" << std::endl;
         return;
     }
 

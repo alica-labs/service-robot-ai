@@ -42,7 +42,7 @@ bool PreCondition1568825457853::evaluate(std::shared_ptr<RunningPlan> rp)
         return false;
     }
     auto firstTask = taskSequence->getTask(0);
-    return firstTask && firstTask->type == srg::tasks::TaskType::Move && !firstTask->checkSuccess(this->wm);
+    return firstTask && firstTask->type == srg::tasks::TaskType::Move && !firstTask->checkAndUpdateSuccess(this->wm);
     /*PROTECTED REGION END*/
 }
 /**
@@ -74,7 +74,7 @@ bool PreCondition1571661980674::evaluate(std::shared_ptr<RunningPlan> rp)
     return firstTask &&
            (firstTask->type == srg::tasks::TaskType::Open || firstTask->type == srg::tasks::TaskType::Close ||
                    firstTask->type == srg::tasks::TaskType::PutDown || firstTask->type == srg::tasks::TaskType::PickUp) &&
-           !firstTask->checkSuccess(this->wm);
+           !firstTask->checkAndUpdateSuccess(this->wm);
     /*PROTECTED REGION END*/
 }
 /**
@@ -103,7 +103,7 @@ bool PreCondition1573418732991::evaluate(std::shared_ptr<RunningPlan> rp)
         return false;
     }
     auto firstTask = taskSequence->getTask(0);
-    return firstTask && firstTask->type == srg::tasks::TaskType::Search && !taskSequence->isSuccessful();
+    return firstTask && firstTask->type == srg::tasks::TaskType::Search && !taskSequence->checkAndUpdateSuccess(this->wm);
     /*PROTECTED REGION END*/
 }
 /**

@@ -25,7 +25,7 @@ DialogueManager::DialogueManager(srg::SRGWorldModel* wm)
 }
 DialogueManager::~DialogueManager() {}
 
-void DialogueManager::processSpeechAct(std::shared_ptr<supplementary::InformationElement<agent::SpeechAct>> speechActInfo)
+void DialogueManager::processSpeechAct(const std::shared_ptr<const supplementary::InformationElement<agent::SpeechAct>> speechActInfo)
 {
     {
         std::lock_guard<std::recursive_mutex> lockGuard(_speechActMtx);
