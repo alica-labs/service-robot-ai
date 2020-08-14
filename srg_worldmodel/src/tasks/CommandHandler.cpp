@@ -73,7 +73,6 @@ void CommandHandler::updateCurrentTaskSequence()
     }
 
     this->propagateKnowledge();
-
     if (this->currentTaskSequence->getActiveTask()->isCompletelySpecified()) {
         this->removeInvalidKnowledge();
     }

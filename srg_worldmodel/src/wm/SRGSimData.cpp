@@ -98,9 +98,6 @@ void SRGSimData::processPerception(srg::sim::containers::Perceptions perceptions
     // && update asp knowledge about vanished objects
     this->wm->srgKnowledgeManager->handleObjects(this->world->removeUnknownObjects(), false);
 
-    // updates task sequences and sends pending answers
-    this->dialogueManager->tick();
-
     // draw the world from the robots perspective
     this->wm->gui->draw(world);
 }
